@@ -43,6 +43,8 @@ public interface IPlatformSpecificService
     
     bool CutFile(string path);
     
+    Task CopyImageToClipboard();
+    
     Task<bool> ExtractWithLocalSoftwareAsync(string path, string tempDirectory);
 
     string DefaultJsonKeyMap();

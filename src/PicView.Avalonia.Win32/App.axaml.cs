@@ -20,10 +20,11 @@ using PicView.WindowsNT.Lockscreen;
 using PicView.WindowsNT.Taskbar;
 using PicView.WindowsNT.Wallpaper;
 using Dispatcher = Avalonia.Threading.Dispatcher;
+using Win32Clipboard = PicView.WindowsNT.Copy.Win32Clipboard;
 
 namespace PicView.Avalonia.Win32;
 
-public class App : Application, IPlatformSpecificService
+public partial class App : Application, IPlatformSpecificService
 {
     private WinMainWindow? _mainWindow;
     private ExifWindow? _exifWindow;
@@ -402,6 +403,11 @@ public class App : Application, IPlatformSpecificService
     public bool CutFile(string path)
     {
         return Win32Clipboard.CopyFileToClipboard(true, path);
+    }
+
+    public Task CopyImageToClipboard()
+    {
+        return Task.CompletedTask;
     }
     
     public async Task<bool> ExtractWithLocalSoftwareAsync(string path, string tempDirectory)

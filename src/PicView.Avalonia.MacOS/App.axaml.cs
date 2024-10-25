@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
+﻿using System.Diagnostics;
 using System.Runtime;
-using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -318,7 +314,12 @@ public void ShowAboutWindow()
         // TODO: Implement CutFile
         return false;
     }
-    
+
+    public Task CopyImageToClipboard()
+    {
+        return Task.CompletedTask;
+    }
+
     public Task<bool> ExtractWithLocalSoftwareAsync(string path, string tempDirectory)
     {
         // TODO: Implement ExtractWithLocalSoftwareAsync

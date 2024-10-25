@@ -700,7 +700,11 @@ public static class FunctionsHelper
 
     public static async Task CopyImage()
     {
-        await ClipboardHelper.CopyImageToClipboard();
+        if (Vm is null)
+        {
+            return;
+        }
+        await ClipboardHelper.CopyImageToClipboard(Vm);
     }
 
     public static async Task CopyBase64()

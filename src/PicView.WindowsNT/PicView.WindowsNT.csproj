@@ -29,10 +29,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Copy\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\PicView.Core\PicView.Core.csproj" />
   </ItemGroup>
 </Project>

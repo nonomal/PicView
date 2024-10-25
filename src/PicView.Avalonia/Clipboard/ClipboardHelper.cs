@@ -64,7 +64,7 @@ public static class ClipboardHelper
         }
     }
 
-    public static async Task CopyImageToClipboard()
+    public static async Task CopyImageToClipboard(MainViewModel vm)
     {
         // TODO: Implement CopyImageToClipboard
     }
