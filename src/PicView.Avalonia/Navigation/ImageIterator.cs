@@ -395,7 +395,10 @@ public sealed class ImageIterator : IDisposable
 
         if (skip100)
         {
-            PreLoader.Clear();
+            if (ImagePaths.Count > PreLoader.MaxCount)
+            {
+                PreLoader.Clear();
+            }
         }
     
         // Determine skipAmount based on input flags
