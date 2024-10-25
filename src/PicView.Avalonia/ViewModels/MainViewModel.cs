@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Reactive;
-using System.Reactive.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -1871,7 +1870,7 @@ public class MainViewModel : ViewModelBase
 
         #region File commands
 
-        OpenFileCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.Open, Observable.Return(true));
+        OpenFileCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.Open);
 
         OpenLastFileCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.OpenLastFile);
 
