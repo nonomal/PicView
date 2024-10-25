@@ -50,6 +50,10 @@
   <ItemGroup>
     <PackageReference Include="Avalonia.Desktop" Version="11.2.0-rc1" />
     <PackageReference Include="Avalonia.Themes.Simple" Version="11.2.0-rc1" />
+    <PackageReference Include="HarfBuzzSharp" Version="8.3.0-preview.5.4" />
+    <PackageReference Include="SkiaSharp.HarfBuzz" Version="3.0.0-preview.5.4" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Win32" Version="3.0.0-preview.5.4" />
+    <PackageReference Include="System.IO.Pipelines" Version="9.0.0-rc.2.24473.5" />
   </ItemGroup>
 
   <ItemGroup>
