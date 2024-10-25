@@ -463,13 +463,38 @@ public static class NavigationHelper
     /// <returns>A task representing the asynchronous operation.</returns>
     public static async Task LoadPicFromDirectoryAsync(string file, MainViewModel vm, FileInfo? fileInfo = null)
     {
+        vm.IsLoading = true;
+        SetTitleHelper.SetLoadingTitle(vm);
+        
         if (SettingsHelper.Settings.UIProperties.IsTaskbarProgressEnabled)
         {
             vm.PlatformService.StopTaskbarProgress();
         }
+        
         fileInfo ??= new FileInfo(file);
         vm.ImageIterator?.Dispose();
-        vm.ImageIterator = new ImageIterator(fileInfo, vm);
+        var fileList = await Task.FromResult(vm.PlatformService.GetFiles(fileInfo)).ConfigureAwait(false);
+        if (fileList.Count <= 0)
+        {
+            // Attempt to reload with subdirectories and reset the setting
+            if (!SettingsHelper.Settings.Sorting.IncludeSubDirectories)
+            {
+                SettingsHelper.Settings.Sorting.IncludeSubDirectories = true;
+                fileList = await Task.FromResult(vm.PlatformService.GetFiles(fileInfo)).ConfigureAwait(false);
+                if (fileList.Count <= 0)
+                {
+                    await ErrorHandling.ReloadAsync(vm).ConfigureAwait(false);
+                    return;
+                }
+                SettingsHelper.Settings.Sorting.IncludeSubDirectories = false;
+            }
+            else
+            {
+                await ErrorHandling.ReloadAsync(vm).ConfigureAwait(false);
+                return;
+            }
+        }
+        vm.ImageIterator = new ImageIterator(fileInfo, fileList, 0, vm);
         await vm.ImageIterator.IterateToIndex(0);
         await CheckAndReloadGallery(fileInfo, vm);
     }

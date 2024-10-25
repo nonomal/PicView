@@ -584,7 +584,6 @@ public sealed class ImageIterator : IDisposable
                     return;
                 }
 
-                SetTitleHelper.SetLoadingTitle(_vm);
                 _vm.IsLoading = true;
                 _vm.ImageSource = null;
                 _vm.SecondaryImageSource = null;

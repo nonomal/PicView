@@ -58,6 +58,7 @@ public static class ErrorHandling
             vm.GalleryMargin = new Thickness(0, 0, 0, 0);
             vm.GetIndex = 0;
             vm.PlatformService.StopTaskbarProgress();
+            vm.IsLoading = false;
         }
     }
 
