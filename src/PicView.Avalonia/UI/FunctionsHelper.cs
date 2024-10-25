@@ -37,6 +37,10 @@ public static class FunctionsHelper
             "Down" => Down,
             "Last" => Last,
             "First" => First,
+            "Next10" => Next10,
+            "Prev10" => Prev10,
+            "Next100" => Next100,
+            "Prev100" => Prev100,
             
             // Rotate
             "RotateLeft" => RotateLeft,
@@ -227,6 +231,27 @@ public static class FunctionsHelper
     {
         await NavigationHelper.NavigateFirstOrLast(last: false, Vm);
     }
+    
+    public static async Task Next10()
+    {
+        await Vm?.ImageIterator.Next10Iteration(true);
+    }
+    
+    public static async Task Next100()
+    {
+        await Vm?.ImageIterator.Next100Iteration(true);
+    }
+    
+    public static async Task Prev10()
+    {
+        await Vm?.ImageIterator.Next10Iteration(false);
+    }
+    
+    public static async Task Prev100()
+    {
+        await Vm?.ImageIterator.Next100Iteration(false);
+    }
+    
 
     public static async Task Up()
     {

@@ -423,6 +423,10 @@ public class MainViewModel : ViewModelBase
     public ReactiveCommand<Unit, Unit>? PreviousFolderCommand { get; }
     public ReactiveCommand<Unit, Unit>? FirstCommand { get; }
     public ReactiveCommand<Unit, Unit>? LastCommand { get; }
+    public ReactiveCommand<Unit, Unit>? Skip10Command { get; }
+    public ReactiveCommand<Unit, Unit>? Prev10Command { get; }
+    public ReactiveCommand<Unit, Unit>? Skip100Command { get; }
+    public ReactiveCommand<Unit, Unit>? Prev100Command { get; }
     public ReactiveCommand<Unit, Unit>? OpenFileCommand { get; }
     public ReactiveCommand<Unit, Unit>? SaveFileCommand { get; }
     public ReactiveCommand<Unit, Unit>? SaveFileAsCommand { get; }

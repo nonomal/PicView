@@ -236,9 +236,45 @@ public class ViewModelBase : ReactiveObject
         Quality = TranslationHelper.Translation.Quality;
         SaveAs = TranslationHelper.Translation.SaveAs;
         Reset = TranslationHelper.Translation.Reset;
+        AdvanceBy10Images = TranslationHelper.Translation.AdvanceBy10Images;
+        AdvanceBy100Images = TranslationHelper.Translation.AdvanceBy100Images;
+        GoBackBy10Images = TranslationHelper.Translation.GoBackBy10Images;
+        GoBackBy100Images = TranslationHelper.Translation.GoBackBy100Images;
     }
 
     #region Strings
+    
+    private string? _advanceBy10Images;
+    
+    public string? AdvanceBy10Images
+    {
+        get => _advanceBy10Images;
+        set => this.RaiseAndSetIfChanged(ref _advanceBy10Images, value);
+    }
+    
+    private string? _advanceBy100Images;
+    
+    public string? AdvanceBy100Images
+    {
+        get => _advanceBy100Images;
+        set => this.RaiseAndSetIfChanged(ref _advanceBy100Images, value);
+    }
+    
+    private string? _goBackBy10Images;
+    
+    public string? GoBackBy10Images
+    {
+        get => _goBackBy10Images;
+        set => this.RaiseAndSetIfChanged(ref _goBackBy10Images, value);
+    }
+    
+    private string? _goBackBy100Images;
+    
+    public string? GoBackBy100Images
+    {
+        get => _goBackBy100Images;
+        set => this.RaiseAndSetIfChanged(ref _goBackBy100Images, value);
+    }
     
     private string? _reset;
     

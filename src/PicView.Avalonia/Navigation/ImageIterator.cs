@@ -389,10 +389,17 @@ public sealed class ImageIterator : IDisposable
         await IterateToIndex(CurrentIndex).ConfigureAwait(false);
     }
 
-    public int GetIteration(int index, NavigateTo navigateTo, bool skip1 = false)
+    public int GetIteration(int index, NavigateTo navigateTo, bool skip1 = false, bool skip10 = false, bool skip100 = false)
     {
         int next;
-        var skipAmount = skip1 ? 2 : 1;
+
+        if (skip100)
+        {
+            PreLoader.Clear();
+        }
+    
+        // Determine skipAmount based on input flags
+        var skipAmount = skip100 ? 100 : skip10 ? 10 : skip1 ? 2 : 1;
 
         switch (navigateTo)
         {
@@ -403,26 +410,18 @@ public sealed class ImageIterator : IDisposable
 
                 if (SettingsHelper.Settings.UIProperties.Looping)
                 {
+                    // Calculate new index with looping
                     next = (index + indexChange + ImagePaths.Count) % ImagePaths.Count;
                 }
                 else
                 {
+                    // Calculate new index without looping and ensure bounds
                     var newIndex = index + indexChange;
-
-                    // Ensure the new index doesn't go out of bounds
-                    if (newIndex < 0)
-                    {
-                        return 0;
-                    }
-
-                    if (newIndex >= ImagePaths.Count)
-                    {
-                        return ImagePaths.Count - 1;
-                    }
+                    if (newIndex < 0) return 0;
+                    if (newIndex >= ImagePaths.Count) return ImagePaths.Count - 1;
 
                     next = newIndex;
                 }
-
                 break;
 
             case NavigateTo.First:
@@ -431,7 +430,6 @@ public sealed class ImageIterator : IDisposable
                 {
                     PreLoader.Clear();
                 }
-
                 next = navigateTo == NavigateTo.First ? 0 : ImagePaths.Count - 1;
                 break;
 
@@ -458,6 +456,18 @@ public sealed class ImageIterator : IDisposable
         {
             await TimerIteration(index);
         }
+    }
+    
+    public async Task Next10Iteration(bool forwards)
+    {
+        var index = GetIteration(CurrentIndex, forwards ? NavigateTo.Next : NavigateTo.Previous, false, true);
+        await IterateToIndex(index).ConfigureAwait(false);
+    }
+    
+    public async Task Next100Iteration(bool forwards)
+    {
+        var index = GetIteration(CurrentIndex, forwards ? NavigateTo.Next : NavigateTo.Previous, false, false, true);
+        await IterateToIndex(index).ConfigureAwait(false);
     }
 
     public async Task IterateToIndex(int index)

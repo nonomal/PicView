@@ -383,4 +383,8 @@ public record LanguageModel
     public string? GlassTheme { get; set; }
     
     public string? Reset { get; set; }
+    public string? AdvanceBy10Images { get; set; }
+    public string? AdvanceBy100Images { get; set; }
+    public string? GoBackBy10Images { get; set; }
+    public string? GoBackBy100Images { get; set; }
 }

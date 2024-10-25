@@ -47,6 +47,7 @@
             TextAlignment="Center"
             x:Name="NavigationTextBlock" />
 
+        <!--  Next image  -->
         <StackPanel Margin="15,0,10,10" Orientation="Horizontal">
             <TextBlock
                 Classes="txt"
@@ -67,6 +68,111 @@
                 Width="140" />
         </StackPanel>
 
+        <!--  Next 10 images  -->
+        <StackPanel Margin="15,0,10,10" Orientation="Horizontal">
+            <TextBlock
+                Classes="txt"
+                FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
+                Text="{CompiledBinding AdvanceBy10Images}"
+                Width="170" />
+            <customControls:KeybindTextBox
+                Alt="False"
+                Classes="hover TStyle"
+                MethodName="Next10"
+                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                Width="140" />
+            <customControls:KeybindTextBox
+                Alt="True"
+                Classes="hover TStyle"
+                MethodName="Next10"
+                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                Width="140" />
+        </StackPanel>
+
+        <!--  Next 100 images  -->
+        <StackPanel Margin="15,0,10,10" Orientation="Horizontal">
+            <TextBlock
+                Classes="txt"
+                FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
+                Text="{CompiledBinding AdvanceBy100Images}"
+                Width="170" />
+            <customControls:KeybindTextBox
+                Alt="False"
+                Classes="hover TStyle"
+                MethodName="Next100"
+                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                Width="140" />
+            <customControls:KeybindTextBox
+                Alt="True"
+                Classes="hover TStyle"
+                MethodName="Next100"
+                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                Width="140" />
+        </StackPanel>
+
+        <!--  Previous image  -->
+        <StackPanel Margin="15,5,10,10" Orientation="Horizontal">
+            <TextBlock
+                Classes="txt"
+                FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
+                Text="{CompiledBinding PrevImage}"
+                Width="170" />
+            <customControls:KeybindTextBox
+                Classes="hover TStyle"
+                MethodName="Prev"
+                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                Width="140" />
+            <customControls:KeybindTextBox
+                Alt="True"
+                Classes="hover TStyle"
+                MethodName="Prev"
+                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                Width="140" />
+        </StackPanel>
+
+        <!--  Previous 10 images  -->
+        <StackPanel Margin="15,0,10,10" Orientation="Horizontal">
+            <TextBlock
+                Classes="txt"
+                FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
+                Text="{CompiledBinding GoBackBy10Images}"
+                Width="170" />
+            <customControls:KeybindTextBox
+                Alt="False"
+                Classes="hover TStyle"
+                MethodName="Prev10"
+                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                Width="140" />
+            <customControls:KeybindTextBox
+                Alt="True"
+                Classes="hover TStyle"
+                MethodName="Prev10"
+                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                Width="140" />
+        </StackPanel>
+
+        <!--  Previous 100 images  -->
+        <StackPanel Margin="15,0,10,10" Orientation="Horizontal">
+            <TextBlock
+                Classes="txt"
+                FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
+                Text="{CompiledBinding GoBackBy100Images}"
+                Width="170" />
+            <customControls:KeybindTextBox
+                Alt="False"
+                Classes="hover TStyle"
+                MethodName="Prev100"
+                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                Width="140" />
+            <customControls:KeybindTextBox
+                Alt="True"
+                Classes="hover TStyle"
+                MethodName="Prev100"
+                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                Width="140" />
+        </StackPanel>
+
+        <!--  Last image  -->
         <StackPanel Margin="15,0,10,10" Orientation="Horizontal">
             <TextBlock
                 Classes="txt"
@@ -83,6 +189,26 @@
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="Last"
+                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                Width="140" />
+        </StackPanel>
+
+        <!--  First image  -->
+        <StackPanel Margin="15,0,10,10" Orientation="Horizontal">
+            <TextBlock
+                Classes="txt"
+                FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
+                Text="{CompiledBinding FirstImage}"
+                Width="170" />
+            <customControls:KeybindTextBox
+                Classes="hover TStyle"
+                MethodName="First"
+                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                Width="140" />
+            <customControls:KeybindTextBox
+                Alt="True"
+                Classes="hover TStyle"
+                MethodName="First"
                 ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
@@ -107,43 +233,8 @@
                 Width="140" />
         </StackPanel>
 
-        <StackPanel Margin="15,5,10,10" Orientation="Horizontal">
-            <TextBlock
-                Classes="txt"
-                FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding PrevImage}"
-                Width="170" />
-            <customControls:KeybindTextBox
-                Classes="hover TStyle"
-                MethodName="Prev"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
-                Width="140" />
-            <customControls:KeybindTextBox
-                Alt="True"
-                Classes="hover TStyle"
-                MethodName="Prev"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
-                Width="140" />
-        </StackPanel>
 
-        <StackPanel Margin="15,0,10,10" Orientation="Horizontal">
-            <TextBlock
-                Classes="txt"
-                FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding FirstImage}"
-                Width="170" />
-            <customControls:KeybindTextBox
-                Classes="hover TStyle"
-                MethodName="First"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
-                Width="140" />
-            <customControls:KeybindTextBox
-                Alt="True"
-                Classes="hover TStyle"
-                MethodName="First"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
-                Width="140" />
-        </StackPanel>
+
 
         <StackPanel Margin="15,0,10,10" Orientation="Horizontal">
             <TextBlock
