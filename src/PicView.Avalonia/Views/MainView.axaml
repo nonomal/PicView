@@ -434,6 +434,64 @@
 
                 <Separator />
 
+                <!--  Next 10  -->
+                <MenuItem
+                    Command="{CompiledBinding Skip10Command}"
+                    Header="{CompiledBinding AdvanceBy10Images,
+                                             Mode=OneWay}"
+                    StaysOpenOnClick="True">
+                    <MenuItem.Icon>
+                        <Image
+                            Height="12"
+                            Source="{StaticResource NextImage}"
+                            Width="12" />
+                    </MenuItem.Icon>
+                </MenuItem>
+
+                <!--  Next 100  -->
+                <MenuItem
+                    Command="{CompiledBinding Skip100Command}"
+                    Header="{CompiledBinding AdvanceBy100Images,
+                                             Mode=OneWay}"
+                    StaysOpenOnClick="True">
+                    <MenuItem.Icon>
+                        <Image
+                            Height="12"
+                            Source="{StaticResource NextImage}"
+                            Width="12" />
+                    </MenuItem.Icon>
+                </MenuItem>
+
+                <!--  Prev 10  -->
+                <MenuItem
+                    Command="{CompiledBinding Prev10Command}"
+                    Header="{CompiledBinding GoBackBy10Images,
+                                             Mode=OneWay}"
+                    StaysOpenOnClick="True">
+                    <MenuItem.Icon>
+                        <Image
+                            Height="12"
+                            Source="{StaticResource PrevImage}"
+                            Width="12" />
+                    </MenuItem.Icon>
+                </MenuItem>
+
+                <!--  Prev 100  -->
+                <MenuItem
+                    Command="{CompiledBinding Prev100Command}"
+                    Header="{CompiledBinding GoBackBy100Images,
+                                             Mode=OneWay}"
+                    StaysOpenOnClick="True">
+                    <MenuItem.Icon>
+                        <Image
+                            Height="12"
+                            Source="{StaticResource PrevImage}"
+                            Width="12" />
+                    </MenuItem.Icon>
+                </MenuItem>
+
+                <Separator />
+
                 <!--  First Image  -->
                 <MenuItem Command="{CompiledBinding FirstCommand}" Header="{CompiledBinding FirstImage}">
                     <MenuItem.Icon>

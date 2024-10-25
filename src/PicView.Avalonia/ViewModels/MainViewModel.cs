@@ -1783,6 +1783,14 @@ public class MainViewModel : ViewModelBase
         });
         
         PreviousFolderCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.PrevFolder);
+        
+        Skip10Command = ReactiveCommand.CreateFromTask(FunctionsHelper.Next10);
+
+        Skip100Command = ReactiveCommand.CreateFromTask(FunctionsHelper.Next100);
+        
+        Prev10Command = ReactiveCommand.CreateFromTask(FunctionsHelper.Prev10);
+
+        Prev100Command = ReactiveCommand.CreateFromTask(FunctionsHelper.Prev100);
 
         FirstCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.First);
 
