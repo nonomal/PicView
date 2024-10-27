@@ -12,7 +12,7 @@ namespace PicView.Avalonia.CustomControls;
 /// A custom button control that displays an icon, which can be either a <see cref="DrawingImage"/>
 /// or a <see cref="StreamGeometry"/>. It also supports dynamic brush changes to reflect hover states.
 /// </summary>
-public class IconButton : Button
+public class IconButton : RepeatButton
 {
     /// <summary>
     /// Defines the <see cref="Icon"/> property.

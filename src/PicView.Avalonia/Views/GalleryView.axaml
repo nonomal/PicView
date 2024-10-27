@@ -16,7 +16,7 @@
 
         <customControls:BlurMask
             BlurEnabled="False"
-            BlurRadius="9"
+            BlurRadius="7"
             x:Name="BlurMask" />
 
         <Panel.ContextMenu>

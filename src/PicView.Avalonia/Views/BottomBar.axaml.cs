@@ -69,6 +69,13 @@ public partial class BottomBar : UserControl
             NextButton.Foreground = new SolidColorBrush(color);
             PreviousButton.Foreground = new SolidColorBrush(color);
 
+
+            NextButton.Delay =
+                (int)TimeSpan.FromSeconds(SettingsHelper.Settings.UIProperties.NavSpeed).TotalMilliseconds;
+
+            PreviousButton.Delay =
+                (int)TimeSpan.FromSeconds(SettingsHelper.Settings.UIProperties.NavSpeed).TotalMilliseconds;
+
         };
     }
 

@@ -205,8 +205,8 @@
                             </Button>
                         </MenuFlyout>
                     </SplitButton.Flyout>
-
                 </SplitButton>
+
             </StackPanel>
         </StackPanel>
     </Panel>

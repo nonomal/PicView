@@ -38,7 +38,7 @@
                     <StackPanel Margin="15,10" Orientation="Horizontal">
                         <TextBlock
                             Classes="txt"
-                            Margin="0,8,2,0"
+                            Margin="0,8,0,0"
                             Text="{CompiledBinding FileName,
                                                    Mode=OneWay}"
                             Width="100" />
