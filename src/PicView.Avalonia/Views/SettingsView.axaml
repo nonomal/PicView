@@ -15,6 +15,8 @@
         <viewModels:MainViewModel />
     </Design.DataContext>
     <UserControl.Resources>
+        <Thickness x:Key="TabMargin">20,5,40,20</Thickness>
+        <Thickness x:Key="TabPadding">45,5,45,20</Thickness>
         <DrawingImage x:Key="KeyboardImage">
             <DrawingGroup>
                 <GeometryDrawing Geometry="F1 M10 8L10.01 8">
@@ -761,7 +763,7 @@
                     <Style Selector="TabItem.headerStyle">
                         <Setter Property="HorizontalContentAlignment" Value="Left" />
                         <Setter Property="Padding" Value="12, 15" />
-                        <Setter Property="Width" Value="250" />
+                        <Setter Property="Width" Value="225" />
                     </Style>
                     <Style Selector="Image.imageStyle">
                         <Setter Property="Margin" Value="2,0,8,0" />
@@ -790,7 +792,10 @@
                     </StackPanel>
                 </TabItem.Header>
                 <customControls:AutoScrollViewer>
-                    <views:GeneralSettingsView Background="Transparent" Margin="20,5,40,20" />
+                    <views:GeneralSettingsView
+                        Background="Transparent"
+                        Margin="{StaticResource TabMargin}"
+                        Padding="{StaticResource TabPadding}" />
                 </customControls:AutoScrollViewer>
             </TabItem>
 
@@ -806,7 +811,10 @@
                     </StackPanel>
                 </TabItem.Header>
                 <customControls:AutoScrollViewer>
-                    <views:AppearanceView Background="Transparent" Margin="20,5,40,20" />
+                    <views:AppearanceView
+                        Background="Transparent"
+                        Margin="{StaticResource TabMargin}"
+                        Padding="{StaticResource TabPadding}" />
                 </customControls:AutoScrollViewer>
             </TabItem>
 
@@ -822,7 +830,10 @@
                     </StackPanel>
                 </TabItem.Header>
                 <customControls:AutoScrollViewer>
-                    <views:ImageSettingsView Background="Transparent" Margin="20,5,40,20" />
+                    <views:ImageSettingsView
+                        Background="Transparent"
+                        Margin="{StaticResource TabMargin}"
+                        Padding="{StaticResource TabPadding}" />
                 </customControls:AutoScrollViewer>
             </TabItem>
 
@@ -839,7 +850,10 @@
                     </StackPanel>
                 </TabItem.Header>
                 <customControls:AutoScrollViewer>
-                    <views:GalleryView Background="Transparent" Margin="20,5,40,20" />
+                    <views:GalleryView
+                        Background="Transparent"
+                        Margin="{StaticResource TabMargin}"
+                        Padding="{StaticResource TabPadding}" />
                 </customControls:AutoScrollViewer>
             </TabItem>
 
@@ -856,7 +870,10 @@
                     </StackPanel>
                 </TabItem.Header>
                 <ScrollViewer>
-                    <views:SlideshowSettingsView Background="Transparent" Margin="20,5,40,20" />
+                    <views:SlideshowSettingsView
+                        Background="Transparent"
+                        Margin="{StaticResource TabMargin}"
+                        Padding="{StaticResource TabPadding}" />
                 </ScrollViewer>
             </TabItem>
 
@@ -873,7 +890,10 @@
                 </TabItem.Header>
 
                 <customControls:AutoScrollViewer>
-                    <views:NavigationView Background="Transparent" Margin="20,5,40,20" />
+                    <views:NavigationView
+                        Background="Transparent"
+                        Margin="{StaticResource TabMargin}"
+                        Padding="{StaticResource TabPadding}" />
                 </customControls:AutoScrollViewer>
             </TabItem>
 
@@ -889,7 +909,10 @@
                     </StackPanel>
                 </TabItem.Header>
                 <customControls:AutoScrollViewer>
-                    <views:ZoomSettingsView Background="Transparent" Margin="20,5,40,20" />
+                    <views:ZoomSettingsView
+                        Background="Transparent"
+                        Margin="{StaticResource TabMargin}"
+                        Padding="{StaticResource TabPadding}" />
                 </customControls:AutoScrollViewer>
             </TabItem>
 
@@ -905,7 +928,10 @@
                     </StackPanel>
                 </TabItem.Header>
                 <customControls:AutoScrollViewer>
-                    <views:MouseWheelView Background="Transparent" Margin="20,5,40,20" />
+                    <views:MouseWheelView
+                        Background="Transparent"
+                        Margin="{StaticResource TabMargin}"
+                        Padding="{StaticResource TabPadding}" />
                 </customControls:AutoScrollViewer>
             </TabItem>
 
@@ -921,7 +947,10 @@
                     </StackPanel>
                 </TabItem.Header>
                 <customControls:AutoScrollViewer>
-                    <views:LanguageView Background="Transparent" Margin="20,5,40,20" />
+                    <views:LanguageView
+                        Background="Transparent"
+                        Margin="{StaticResource TabMargin}"
+                        Padding="{StaticResource TabPadding}" />
                 </customControls:AutoScrollViewer>
             </TabItem>
 
@@ -942,7 +971,7 @@
                     Classes="ButtonBorder hover"
                     Command="{CompiledBinding ShowKeybindingsWindowCommand}"
                     HorizontalAlignment="Left"
-                    Margin="20,40,00,20"
+                    Margin="65,50,0,20"
                     Padding="0,0,7,0"
                     ToolTip.Tip="{CompiledBinding ApplicationShortcuts,
                                                   Mode=OneWay}"
@@ -991,7 +1020,7 @@
             HorizontalAlignment="Left"
             Margin="0"
             VerticalAlignment="Bottom"
-            Width="251">
+            Width="211">
             <StackPanel Orientation="Horizontal">
                 <Image Margin="5,0,10,0">
                     <DrawingImage>

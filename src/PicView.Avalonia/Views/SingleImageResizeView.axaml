@@ -12,42 +12,12 @@
     xmlns:viewModels="clr-namespace:PicView.Avalonia.ViewModels;assembly=PicView.Avalonia"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Panel>
-
         <uc:SpinWaiter IsVisible="False" x:Name="SpinWaiter" />
 
         <StackPanel x:Name="ParentContainer">
             <StackPanel Margin="30">
 
-                <StackPanel Orientation="Horizontal">
-                    <RadioButton
-                        HorizontalAlignment="Center"
-                        IsChecked="True"
-                        Width="255"
-                        x:Name="PixelsTabItem">
-                        <TextBlock
-                            Classes="txt"
-                            FontFamily="/Assets/Fonts/Roboto-Medium.ttf#Roboto"
-                            FontSize="14"
-                            Text="{CompiledBinding Pixels,
-                                                   Mode=OneWay}" />
-                    </RadioButton>
-                    <RadioButton
-                        HorizontalAlignment="Center"
-                        IsEnabled="False"
-                        x:Name="PercentageTabItem">
-                        <TextBlock
-                            Classes="txt"
-                            FontFamily="/Assets/Fonts/Roboto-Medium.ttf#Roboto"
-                            FontSize="14"
-                            Text="{CompiledBinding Percentage,
-                                                   Mode=OneWay}" />
-                    </RadioButton>
-                </StackPanel>
-
-                <StackPanel
-                    IsVisible="{Binding Path=IsChecked, ElementName=PixelsTabItem}"
-                    Margin="0,25,0,30"
-                    Orientation="Horizontal">
+                <StackPanel Margin="0,5,0,30" Orientation="Horizontal">
                     <StackPanel>
                         <TextBlock
                             Classes="txt"

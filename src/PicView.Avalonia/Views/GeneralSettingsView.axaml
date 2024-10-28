@@ -42,7 +42,7 @@
                 FontSize="14"
                 Foreground="{StaticResource SecondaryTextColor}"
                 Margin="0,20,0,20"
-                Text="{CompiledBinding MiscSettings,
+                Text="{CompiledBinding WindowManagement,
                                        Mode=OneWay}" />
 
             <ToggleButton
