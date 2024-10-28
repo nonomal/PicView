@@ -1,8 +1,9 @@
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Styling;
+using PicView.Avalonia.Update;
+using PicView.Avalonia.ViewModels;
 using PicView.Core.Config;
-using PicView.Core.ProcessHandling;
 
 namespace PicView.Avalonia.Views;
 
@@ -41,9 +42,9 @@ public partial class AboutView : UserControl
             };
 
             // TODO: replace with auto update service
-            UpdateButton.Click += (_, _) =>
+            UpdateButton.Click += async (_, _) =>
             {
-                ProcessHelper.OpenLink("https://picview.org/avalonia-download");
+                await UpdateManager.UpdateCurrentVersion(DataContext as MainViewModel);
             };
         };
     }
