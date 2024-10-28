@@ -23,13 +23,11 @@ jobs:
         with:
           dotnet-version: '9.x'
 
-      # Step 3: Get version from the project file
-      - name: Get version from the project file
-        uses: kzrnm/get-net-sdk-project-versions-action@v2
+      # Step 3: Get version from Directory.Build.props using PowerShell
+      - name: Get version from Directory.Build.props
         id: get-version
-        with:
-          proj-path: .\src\PicView.Avalonia.Win32\PicView.Avalonia.Win32.csproj
-
+        run: pwsh -File "${{ github.workspace }}/Build/Get-VersionInfo.ps1"
+  
       # Step 4 (x64): Publish x64 version
       - name: Publish x64 version
         run: |
