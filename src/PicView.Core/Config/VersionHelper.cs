@@ -23,7 +23,7 @@ public static class VersionHelper
         }
     }
 
-    public static Version? GetCurrentVersionAsVersion()
+    public static Version? GetAssemblyVersion()
     {
         try
         {

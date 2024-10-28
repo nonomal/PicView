@@ -16,14 +16,43 @@ public partial class UpdateSourceGenerationContext : JsonSerializerContext;
 
 public static class UpdateManager
 {
-    public static void CheckForUpdates()
-    {
-    }
-
     public static async Task UpdateCurrentVersion(MainViewModel vm)
     {
         var currentDirectory = new DirectoryInfo(Environment.ProcessPath);
-        var currentVersion = VersionHelper.GetCurrentVersionAsVersion();
+
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            bool isAdmin;
+            try
+            {
+                isAdmin = currentDirectory.GetAccessControl().AreAccessRulesProtected;
+            }
+            catch (Exception)
+            {
+                isAdmin = false;
+            }
+
+            if (isAdmin)
+            {
+                // Restart the application as admin
+                var process = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        Verb = "runas",
+                        UseShellExecute = true,
+                        FileName = "PicView.exe",
+                        Arguments = "update",
+                        WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory
+                    }
+                };
+                process.Start();
+                Environment.Exit(0);
+            }
+        }
+
+        // ReSharper disable once RedundantAssignment
+        var currentVersion = VersionHelper.GetAssemblyVersion();
         var url = "https://picview.org/update.json";
         var tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + "PicView");
         Directory.CreateDirectory(tempPath);
@@ -78,16 +107,6 @@ public static class UpdateManager
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            var isAdmin = false;
-            try
-            {
-                isAdmin = currentDirectory.GetAccessControl().AreAccessRulesProtected;
-            }
-            catch (Exception)
-            {
-                isAdmin = false;
-            }
-
             var isInstalled = CheckIfIsInstalled();
 
             var architecture = RuntimeInformation.ProcessArchitecture switch
@@ -105,70 +124,49 @@ public static class UpdateManager
                 return;
             }
 
-            if (isAdmin)
+            switch (architecture)
             {
-                // Restart the application as admin
-                var process = new Process
-                {
-                    StartInfo = new ProcessStartInfo
+                case InstalledArchitecture.Arm64Install:
+                    var fileName = Path.GetFileName(updateInfo.X64Install);
+                    var tempFileDownloadPath = Path.Combine(tempPath, fileName);
+                    await StartFileDownloader(vm, updateInfo.Arm64Install, tempFileDownloadPath);
+                    var process = new Process
                     {
-                        Verb = "runas",
-                        UseShellExecute = true,
-                        FileName = "PicView.exe",
-                        Arguments = $"update,{architecture},{currentVersion},{tempPath}",
-                        WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory
-                    }
-                };
-                process.Start();
-                Environment.Exit(0);
-            }
-            else
-            {
-                switch (architecture)
-                {
-                    case InstalledArchitecture.Arm64Install:
-                        var fileName = Path.GetFileName(updateInfo.X64Install);
-                        var tempFileDownloadPath = Path.Combine(tempPath, fileName);
-                        await StartFileDownloader(vm, updateInfo.Arm64Install, tempFileDownloadPath);
-                        var process = new Process
+                        StartInfo = new ProcessStartInfo
                         {
-                            StartInfo = new ProcessStartInfo
-                            {
-                                Verb = "runas",
-                                UseShellExecute = true,
-                                FileName = tempFileDownloadPath
-                            }
-                        };
-                        process.Start();
-                        return;
-                    case InstalledArchitecture.Arm64Portable:
-                        fileName = Path.GetFileName(updateInfo.X64Portable);
-                        tempFileDownloadPath = Path.Combine(tempPath, fileName);
-                        await StartFileDownloader(vm, updateInfo.Arm64Portable, tempFileDownloadPath);
-                        vm.PlatformService.LocateOnDisk(tempFileDownloadPath);
-                        return;
-                    case InstalledArchitecture.X64Install:
-                        fileName = Path.GetFileName(updateInfo.X64Install);
-                        tempFileDownloadPath = Path.Combine(tempPath, fileName);
-                        await StartFileDownloader(vm, updateInfo.X64Install, tempFileDownloadPath);
-                        process = new Process
+                            Verb = "runas",
+                            UseShellExecute = true,
+                            FileName = tempFileDownloadPath
+                        }
+                    };
+                    process.Start();
+                    return;
+                case InstalledArchitecture.Arm64Portable:
+                    fileName = Path.GetFileName(updateInfo.X64Portable);
+                    tempFileDownloadPath = Path.Combine(tempPath, fileName);
+                    await StartFileDownloader(vm, updateInfo.Arm64Portable, tempFileDownloadPath);
+                    vm.PlatformService.LocateOnDisk(tempFileDownloadPath);
+                    return;
+                case InstalledArchitecture.X64Install:
+                    fileName = Path.GetFileName(updateInfo.X64Install);
+                    tempFileDownloadPath = Path.Combine(tempPath, fileName);
+                    await StartFileDownloader(vm, updateInfo.X64Install, tempFileDownloadPath);
+                    process = new Process
+                    {
+                        StartInfo = new ProcessStartInfo
                         {
-                            StartInfo = new ProcessStartInfo
-                            {
-                                Verb = "runas",
-                                UseShellExecute = true,
-                                FileName = tempFileDownloadPath
-                            }
-                        };
-                        process.Start();
-                        return;
-                    case InstalledArchitecture.X64Portable:
-                        fileName = Path.GetFileName(updateInfo.X64Portable);
-                        tempFileDownloadPath = Path.Combine(tempPath, fileName);
-                        await StartFileDownloader(vm, updateInfo.X64Portable, tempFileDownloadPath);
-                        vm.PlatformService.LocateOnDisk(tempFileDownloadPath);
-                        return;
-                }
+                            UseShellExecute = true,
+                            FileName = tempFileDownloadPath
+                        }
+                    };
+                    process.Start();
+                    return;
+                case InstalledArchitecture.X64Portable:
+                    fileName = Path.GetFileName(updateInfo.X64Portable);
+                    tempFileDownloadPath = Path.Combine(tempPath, fileName);
+                    await StartFileDownloader(vm, updateInfo.X64Portable, tempFileDownloadPath);
+                    vm.PlatformService.LocateOnDisk(tempFileDownloadPath);
+                    return;
             }
         }
         else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
@@ -250,12 +248,14 @@ public static class UpdateManager
         }
     }
 
-    private static void ProgressChanged(MainViewModel vm, long? totalfilesize, long? totalbytesdownloaded, double? progresspercentage)
+    private static void ProgressChanged(MainViewModel vm, long? totalfilesize, long? totalbytesdownloaded,
+        double? progresspercentage)
     {
         if (totalfilesize is null || totalbytesdownloaded is null || progresspercentage is null)
         {
             return;
         }
+
         vm.PlatformService.SetTaskbarProgress((ulong)totalbytesdownloaded, (ulong)totalfilesize);
     }
 

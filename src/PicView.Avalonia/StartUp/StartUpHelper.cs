@@ -7,6 +7,7 @@ using PicView.Avalonia.Input;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.SettingsManagement;
 using PicView.Avalonia.UI;
+using PicView.Avalonia.Update;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views;
 using PicView.Avalonia.WindowBehavior;
@@ -33,6 +34,11 @@ public static class StartUpHelper
                 ProcessHelper.CheckIfAnotherInstanceIsRunning())
             {
                 HandleMultipleInstances(args);
+            }
+            else if (args.Length > 1 && args[1].Equals("update", StringComparison.InvariantCultureIgnoreCase))
+            {
+                Task.Run(async () => await UpdateManager.UpdateCurrentVersion(vm));
+                return;
             }
         }
         
