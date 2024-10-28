@@ -18,6 +18,8 @@ public static class UpdateManager
 {
     public static async Task UpdateCurrentVersion(MainViewModel vm)
     {
+        // TODO Add support for other OS
+        // TODO add UI
         var currentDirectory = new DirectoryInfo(Environment.ProcessPath);
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -53,8 +55,8 @@ public static class UpdateManager
 
         // ReSharper disable once RedundantAssignment
         var currentVersion = VersionHelper.GetAssemblyVersion();
-        var url = "https://picview.org/update.json";
-        var tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + "PicView");
+        const string url = "https://picview.org/update.json";
+        var tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
         Directory.CreateDirectory(tempPath);
         var tempJsonFileDestination = Path.Combine(tempPath, "update.json");
 
@@ -134,7 +136,6 @@ public static class UpdateManager
                     {
                         StartInfo = new ProcessStartInfo
                         {
-                            Verb = "runas",
                             UseShellExecute = true,
                             FileName = tempFileDownloadPath
                         }
@@ -142,10 +143,16 @@ public static class UpdateManager
                     process.Start();
                     return;
                 case InstalledArchitecture.Arm64Portable:
-                    fileName = Path.GetFileName(updateInfo.X64Portable);
-                    tempFileDownloadPath = Path.Combine(tempPath, fileName);
-                    await StartFileDownloader(vm, updateInfo.Arm64Portable, tempFileDownloadPath);
-                    vm.PlatformService.LocateOnDisk(tempFileDownloadPath);
+                    process = new Process
+                    {
+                        StartInfo = new ProcessStartInfo(updateInfo.Arm64Portable)
+                        {
+                            UseShellExecute = true,
+                            Verb = "open"
+                        }
+                    };
+                    process.Start();
+                    await process.WaitForExitAsync();
                     return;
                 case InstalledArchitecture.X64Install:
                     fileName = Path.GetFileName(updateInfo.X64Install);
@@ -162,10 +169,16 @@ public static class UpdateManager
                     process.Start();
                     return;
                 case InstalledArchitecture.X64Portable:
-                    fileName = Path.GetFileName(updateInfo.X64Portable);
-                    tempFileDownloadPath = Path.Combine(tempPath, fileName);
-                    await StartFileDownloader(vm, updateInfo.X64Portable, tempFileDownloadPath);
-                    vm.PlatformService.LocateOnDisk(tempFileDownloadPath);
+                    process = new Process
+                    {
+                        StartInfo = new ProcessStartInfo(updateInfo.X64Portable)
+                        {
+                            UseShellExecute = true,
+                            Verb = "open"
+                        }
+                    };
+                    process.Start();
+                    await process.WaitForExitAsync();
                     return;
             }
         }
