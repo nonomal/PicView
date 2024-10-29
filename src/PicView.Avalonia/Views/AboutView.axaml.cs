@@ -44,7 +44,20 @@ public partial class AboutView : UserControl
             // TODO: replace with auto update service
             UpdateButton.Click += async (_, _) =>
             {
-                await UpdateManager.UpdateCurrentVersion(DataContext as MainViewModel);
+                //Set loading and prevent user from interacting with UI
+                ParentContainer.Opacity = .1;
+                ParentContainer.IsHitTestVisible = false;
+                SpinWaiter.IsVisible = true;
+                try
+                {
+                    await UpdateManager.UpdateCurrentVersion(DataContext as MainViewModel);
+                }
+                finally
+                {
+                    SpinWaiter.IsVisible = false;
+                    ParentContainer.IsHitTestVisible = true;
+                    ParentContainer.Opacity = 1;
+                }
             };
         };
     }
