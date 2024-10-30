@@ -56,6 +56,7 @@ public static class UpdateManager
         // ReSharper disable once RedundantAssignment
         var currentVersion = VersionHelper.GetAssemblyVersion();
         const string url = "https://picview.org/update.json";
+        const string backUpUrl  = "https://picview.netlify.app/update.json";
         var tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
         Directory.CreateDirectory(tempPath);
         var tempJsonFileDestination = Path.Combine(tempPath, "update.json");
@@ -76,8 +77,19 @@ public static class UpdateManager
 #if DEBUG
             Console.WriteLine(e);
 #endif
-            await TooltipHelper.ShowTooltipMessageAsync(e.Message);
-            return;
+            try
+            {
+                using var retryJsonFileDownloader = new HttpHelper.HttpClientDownloadWithProgress(backUpUrl, tempJsonFileDestination);
+                await jsonFileDownloader.StartDownloadAsync();
+            }
+            catch (Exception exception)
+            {
+#if DEBUG
+                Console.WriteLine(exception);
+#endif
+                await TooltipHelper.ShowTooltipMessageAsync(exception.Message);
+                return;
+            }
         }
 
         // Read and deserialize the JSON
