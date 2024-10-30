@@ -4,16 +4,16 @@ using PicView.Core.Localization;
 
 namespace PicView.Avalonia.MacOS.Views;
 
-public partial class ImageResizeWindow : Window
+public partial class BatchResizeWindow : Window
 {
-    public ImageResizeWindow()
+    public BatchResizeWindow()
     {
         InitializeComponent();
         Loaded += (_, _) =>
         {
             MinWidth = MaxWidth = Width;
             Height = 500;
-            Title = TranslationHelper.Translation.ResizeImage + " - PicView";
+            Title = TranslationHelper.Translation.BatchResize + " - PicView";
         };
         KeyDown += (_, e) =>
         {

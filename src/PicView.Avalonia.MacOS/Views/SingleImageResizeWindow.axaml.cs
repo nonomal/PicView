@@ -1,24 +1,19 @@
 using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.Media;
-using PicView.Core.Config;
 using PicView.Core.Localization;
 
 namespace PicView.Avalonia.MacOS.Views;
 
-public partial class AboutWindow : Window
+public partial class SingleImageResizeWindow : Window
 {
-    public AboutWindow()
+    public SingleImageResizeWindow()
     {
         InitializeComponent();
-        if (!SettingsHelper.Settings.Theme.Dark || SettingsHelper.Settings.Theme.GlassTheme)
-        {
-            XAboutView.Background = Brushes.Transparent;
-        }
-        Loaded += delegate
+        Loaded += (_, _) =>
         {
             MinWidth = MaxWidth = Width;
-            Title = $"{TranslationHelper.Translation.About} - PicView";
+            Height = 500;
+            Title = TranslationHelper.Translation.ResizeImage + " - PicView";
         };
         KeyDown += (_, e) =>
         {

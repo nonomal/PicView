@@ -3,12 +3,11 @@
     ExtendClientAreaChromeHints="SystemChrome"
     ExtendClientAreaTitleBarHeightHint="-1"
     SizeToContent="WidthAndHeight"
-    Title="SettingsWindow"
     WindowStartupLocation="CenterOwner"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d"
-    x:Class="PicView.Avalonia.MacOS.Views.SettingsWindow"
+    x:Class="PicView.Avalonia.MacOS.Views.SingleImageResizeWindow"
     x:DataType="viewModels:MainViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -22,20 +21,28 @@
     <Border
         BorderBrush="{DynamicResource MainBorderColor}"
         BorderThickness="1"
-        CornerRadius="8"
-        PointerPressed="MoveWindow">
-        <StackPanel>
-            <TextBlock
-                Background="{DynamicResource WindowBackgroundColor}"
-                Classes="txt"
-                Height="28"
-                LineHeight="28"
-                Text="{CompiledBinding Settings,
-                                       Mode=OneWay}"
-                TextAlignment="Center"
-                x:Name="TitleText" />
+        CornerRadius="8">
+        <Panel>
 
-            <views:SettingsView Background="{DynamicResource WindowBackgroundColor}" x:Name="XSettingsView" />
-        </StackPanel>
+            <DockPanel
+                Background="{DynamicResource SecondaryBackgroundColor}"
+                Height="28"
+                PointerPressed="MoveWindow"
+                VerticalAlignment="Top">
+
+                <TextBlock
+                    Classes="txt"
+                    Text="{CompiledBinding ResizeImage,
+                                           Mode=OneWay}"
+                    TextAlignment="Center" />
+            </DockPanel>
+
+            <views:SingleImageResizeView
+                Background="{DynamicResource WindowBackgroundColor}"
+                Margin="0,28,0,0"
+                Padding="10,5,5,10"
+                PointerPressed="MoveWindow"
+                x:Name="XAboutView" />
+        </Panel>
     </Border>
 </Window>

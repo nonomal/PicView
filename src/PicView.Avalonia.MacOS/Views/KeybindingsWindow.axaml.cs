@@ -11,9 +11,10 @@ public partial class KeybindingsWindow : Window
     public KeybindingsWindow()
     {
         InitializeComponent();
-        if (!SettingsHelper.Settings.Theme.Dark)
+        if (!SettingsHelper.Settings.Theme.Dark || SettingsHelper.Settings.Theme.GlassTheme)
         {
             WindowBorder.Background = Brushes.Transparent;
+            XShortcutsView.Background = Brushes.Transparent;
         }
         Loaded += (sender, e) =>
         {

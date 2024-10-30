@@ -12,7 +12,7 @@ public partial class ExifWindow : Window
     public ExifWindow()
     {
         InitializeComponent();
-        if (!SettingsHelper.Settings.Theme.Dark)
+        if (!SettingsHelper.Settings.Theme.Dark || SettingsHelper.Settings.Theme.GlassTheme)
         {
             WindowBorder.Background = Brushes.Transparent;
             XExifView.Background = Brushes.Transparent;

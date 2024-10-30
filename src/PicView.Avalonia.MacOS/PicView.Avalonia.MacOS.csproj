@@ -60,6 +60,10 @@
       <SubType>Code</SubType>
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
+    <Compile Update="Views\BatchResizeWindow.axaml.cs">
+      <DependentUpon>BatchResizeWindow.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
 	<ItemGroup>

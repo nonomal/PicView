@@ -21,7 +21,7 @@
     </Design.DataContext>
     <DockPanel PointerPressed="MoveWindow">
         <StackPanel
-            Background="{StaticResource SecondaryBackgroundColor}"
+            Background="{DynamicResource SecondaryBackgroundColor}"
             DockPanel.Dock="Top"
             Height="28"
             Orientation="Horizontal"
@@ -29,7 +29,7 @@
             <Rectangle DockPanel.Dock="Left" Width="70" />
 
             <Button
-                BorderBrush="{StaticResource MainBorderColor}"
+                BorderBrush="{DynamicResource MainBorderColor}"
                 BorderThickness="1,0,1,0"
                 Classes="noBorderHover"
                 Command="{CompiledBinding DuplicateFileCommand}"
@@ -59,7 +59,7 @@
             </Button>
 
             <Button
-                BorderBrush="{StaticResource MainBorderColor}"
+                BorderBrush="{DynamicResource MainBorderColor}"
                 BorderThickness="0,0,1,0"
                 Classes="noBorderHover"
                 Command="{CompiledBinding OptimizeImageCommand}"
@@ -73,11 +73,12 @@
             </Button>
 
             <Button
-                BorderBrush="{StaticResource MainBorderColor}"
+                BorderBrush="{DynamicResource MainBorderColor}"
                 BorderThickness="0,0,1,0"
                 Classes="noBorderHover"
                 Command="{CompiledBinding OpenWithCommand}"
-                CommandParameter="{CompiledBinding FileInfo.FullName}"
+                CommandParameter="{CompiledBinding FileInfo.FullName,
+                                                   FallbackValue=''}"
                 Height="28"
                 Width="130">
                 <TextBlock
@@ -88,23 +89,24 @@
             </Button>
 
             <Button
-                BorderBrush="{StaticResource MainBorderColor}"
+                BorderBrush="{DynamicResource MainBorderColor}"
                 BorderThickness="0,0,1,0"
                 Classes="noBorderHover"
                 Command="{CompiledBinding LocateOnDiskCommand}"
-                CommandParameter="{CompiledBinding FileInfo.FullName}"
+                CommandParameter="{CompiledBinding FileInfo.FullName,
+                                                   FallbackValue=''}"
                 Height="28"
                 Width="130">
                 <TextBlock
                     Classes="txt"
                     HorizontalAlignment="Center"
-                    Text="{Binding ShowInFolder}"
+                    Text="{CompiledBinding ShowInFolder}"
                     VerticalAlignment="Center" />
             </Button>
             <buttons:StarOutlineButtons Margin="10,0,0,0" />
         </StackPanel>
         <views:ExifView
-            Background="{StaticResource WindowBackgroundColor}"
+            Background="{DynamicResource WindowBackgroundColor}"
             PointerPressed="MoveWindow"
             x:Name="XExifView" />
     </DockPanel>

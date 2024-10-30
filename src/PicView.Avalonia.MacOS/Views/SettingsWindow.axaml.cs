@@ -11,7 +11,7 @@ public partial class SettingsWindow : Window
     public SettingsWindow()
     {
         InitializeComponent();
-        if (!SettingsHelper.Settings.Theme.Dark)
+        if (!SettingsHelper.Settings.Theme.Dark || SettingsHelper.Settings.Theme.GlassTheme)
         {
             TitleText.Background = Brushes.Transparent;
             XSettingsView.Background = Brushes.Transparent;
