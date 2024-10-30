@@ -12,7 +12,7 @@ public partial class TaskbarProgress
     /// </exception>
     public TaskbarProgress(IntPtr windowHandle)
     {
-        var hr = CoCreateInstance(ref _clsidTaskbarList, IntPtr.Zero, 1 /*CLSCTX_INPROC_SERVER*/, ref _iidITaskbarList3, out _taskbarInstance);
+        var hr = CoCreateInstance(ref _clsidTaskbarList, IntPtr.Zero, 1, ref _iidITaskbarList3, out _taskbarInstance);
         if (hr != 0 || _taskbarInstance == null)
         {
             throw new InvalidOperationException("Failed to create TaskbarList COM object.");

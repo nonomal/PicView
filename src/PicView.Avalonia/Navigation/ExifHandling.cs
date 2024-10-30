@@ -12,7 +12,7 @@ namespace PicView.Avalonia.Navigation;
 
 public static class ExifHandling
 {
-    public static void UpdateExifValues(ImageModel imageModel, MainViewModel vm)
+    public static void UpdateExifValues(MainViewModel vm)
     {
         if (vm.FileInfo is null || vm is { PixelWidth: <= 0, PixelHeight: <= 0 })
         {
@@ -45,16 +45,16 @@ public static class ExifHandling
                 }
             }
 
-            if (vm.DpiX is 0 && imageModel.ImageType is ImageType.Bitmap or ImageType.AnimatedGif or ImageType.AnimatedWebp)
+            if (vm.DpiX is 0 && vm.ImageType is ImageType.Bitmap or ImageType.AnimatedGif or ImageType.AnimatedWebp)
             {
-                if (imageModel.Image is Bitmap bmp)
+                if (vm.ImageSource is Bitmap bmp)
                 {
                     vm.DpiX = bmp?.Dpi.X ?? 0;
                     vm.DpiY = bmp?.Dpi.Y ?? 0;
                 }
             }
 
-            vm.GetOrientation = imageModel.EXIFOrientation switch
+            vm.GetOrientation = vm.ExifOrientation switch
             {
                 EXIFHelper.EXIFOrientation.Horizontal => TranslationHelper.Translation.Normal,
                 EXIFHelper.EXIFOrientation.MirrorHorizontal => TranslationHelper.Translation.Flipped,

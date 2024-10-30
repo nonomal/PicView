@@ -1,4 +1,5 @@
 ﻿using PicView.Core.Extensions;
+using PicView.Core.ImageDecoding;
 using PicView.Core.Localization;
 using ReactiveUI;
 
@@ -2135,6 +2136,14 @@ public class ViewModelBase : ReactiveObject
     {
         get => _dpiY;
         set => this.RaiseAndSetIfChanged(ref _dpiY, value);
+    }
+
+    private EXIFHelper.EXIFOrientation? _exifOrientation;
+    
+    public EXIFHelper.EXIFOrientation? ExifOrientation
+    {
+        get => _exifOrientation;
+        set => this.RaiseAndSetIfChanged(ref _exifOrientation, value);
     }
 
     #endregion Image

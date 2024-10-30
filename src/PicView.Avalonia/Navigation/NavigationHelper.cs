@@ -396,7 +396,7 @@ public static class NavigationHelper
         var imageModel = await GetImageModel.GetImageModelAsync(fileInfo).ConfigureAwait(false);
         UpdateImage.SetSingleImage(imageModel.Image, imageModel.ImageType, url, vm);
         vm.FileInfo = fileInfo;
-        ExifHandling.UpdateExifValues(imageModel, vm);
+        vm.ExifOrientation = imageModel.EXIFOrientation;
         FileHistoryNavigation.Add(url);
 
         vm.IsLoading = false;
@@ -434,7 +434,6 @@ public static class NavigationHelper
                     ImageType = ImageType.Bitmap
                 };
                 UpdateImage.SetSingleImage(imageModel.Image, imageModel.ImageType, TranslationHelper.Translation.Base64Image, vm);
-                ExifHandling.UpdateExifValues(imageModel, vm);
             }
             catch (Exception e)
             {

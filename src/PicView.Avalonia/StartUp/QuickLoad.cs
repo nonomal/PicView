@@ -27,8 +27,7 @@ public static class QuickLoad
             await NavigationHelper.LoadPicFromArchiveAsync(file, vm).ConfigureAwait(false);
             return;
         }
-        vm.CurrentView = vm.ImageViewer;
-        vm.FileInfo ??= fileInfo;
+        vm.FileInfo = fileInfo;
         
         var imageModel = await GetImageModel.GetImageModelAsync(fileInfo).ConfigureAwait(false);
         
@@ -60,8 +59,7 @@ public static class QuickLoad
         vm.ZoomValue = 1;
         vm.PixelWidth = imageModel.PixelWidth;
         vm.PixelHeight = imageModel.PixelHeight;
-            
-        ExifHandling.UpdateExifValues(imageModel, vm);
+        
         vm.ImageIterator ??= new ImageIterator(fileInfo, vm);
         vm.GetIndex = vm.ImageIterator.CurrentIndex + 1;
 
@@ -81,10 +79,7 @@ public static class QuickLoad
             SetTitleHelper.SetTitle(vm, imageModel);
         }
         
-        if (SettingsHelper.Settings.UIProperties.IsTaskbarProgressEnabled)
-        {
-            vm.PlatformService.SetTaskbarProgress((ulong)vm.ImageIterator.CurrentIndex, (ulong)vm.ImageIterator.ImagePaths.Count);
-        }
+        vm.ExifOrientation = imageModel.EXIFOrientation;
         
         // Add recent files, except when browsing archive
         if (string.IsNullOrWhiteSpace(TempFileHelper.TempFilePath))
@@ -94,9 +89,21 @@ public static class QuickLoad
         
         var tasks = new List<Task>
         {
-            vm.ImageIterator.AddAsync(vm.ImageIterator.CurrentIndex, imageModel),
-            vm.ImageIterator.Preload()
+            vm.ImageIterator.AddAsync(vm.ImageIterator.CurrentIndex, imageModel)
         };
+        
+        if (vm.ImageIterator.ImagePaths.Count > 1)
+        {
+            if (SettingsHelper.Settings.UIProperties.IsTaskbarProgressEnabled)
+            {
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    vm.PlatformService.SetTaskbarProgress((ulong)vm.ImageIterator.CurrentIndex, (ulong)vm.ImageIterator.ImagePaths.Count);
+                });
+            }
+
+            tasks.Add(vm.ImageIterator.Preload());
+        }
 
         if (SettingsHelper.Settings.Gallery.IsBottomGalleryShown)
         {

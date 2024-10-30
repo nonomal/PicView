@@ -1,13 +1,18 @@
-﻿using Avalonia.Controls;
+﻿using System.Reactive.Linq;
+using Avalonia.Controls;
 using Avalonia.Input;
 using PicView.Avalonia.Converters;
+using PicView.Avalonia.Navigation;
 using PicView.Avalonia.Resizing;
 using PicView.Avalonia.ViewModels;
+using ReactiveUI;
 
 namespace PicView.Avalonia.Views;
 
 public partial class ExifView : UserControl
 {
+    private IDisposable? _imageUpdateSubscription;
+    
     public ExifView()
     {
         InitializeComponent();
@@ -19,6 +24,17 @@ public partial class ExifView : UserControl
             PixelWidthTextBox.KeyUp += delegate { AdjustAspectRatio(PixelWidthTextBox); };
             PixelHeightTextBox.KeyUp += delegate { AdjustAspectRatio(PixelHeightTextBox); };
             
+            if (DataContext is not MainViewModel vm)
+            {
+                return;
+            }
+            
+            ExifHandling.UpdateExifValues(vm);
+            
+            _imageUpdateSubscription = vm.WhenAnyValue(x => x.FileInfo).Select(x => x is not null).Subscribe(_ =>
+            {
+                ExifHandling.UpdateExifValues(vm);
+            });
         };
     }
     
