@@ -42,6 +42,8 @@
                 </MenuItem.Icon>
             </MenuItem>
 
+            <Separator />
+
 
             <!--  Next 10  -->
             <MenuItem
