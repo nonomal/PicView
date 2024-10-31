@@ -1,5 +1,6 @@
 ﻿<UserControl
     Background="Transparent"
+    Focusable="False"
     Height="200"
     Width="100"
     d:DesignHeight="450"
