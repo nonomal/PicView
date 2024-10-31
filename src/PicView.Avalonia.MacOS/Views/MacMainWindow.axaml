@@ -13,6 +13,7 @@
     x:Class="PicView.Avalonia.MacOS.Views.MacMainWindow"
     x:DataType="viewModels:MainViewModel"
     xmlns="https://github.com/avaloniaui"
+    xmlns:converters1="clr-namespace:PicView.Avalonia.Converters;assembly=PicView.Avalonia"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:PicView.Avalonia.ViewModels;assembly=PicView.Avalonia"
@@ -20,6 +21,9 @@
     xmlns:views1="clr-namespace:PicView.Avalonia.MacOS.Views"
     xmlns:vm="using:PicView.Avalonia.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Window.Resources>
+        <converters1:SortFilesByToBoolConverter x:Key="EnumToBoolConverter" />
+    </Window.Resources>
     <Design.DataContext>
         <vm:MainViewModel />
     </Design.DataContext>
@@ -69,6 +73,7 @@
                     <NativeMenuItem Command="{CompiledBinding CutCommand}" Header="{CompiledBinding FileCut, Mode=OneWay}" />
                 </NativeMenu>
             </NativeMenuItem>
+
             <NativeMenuItem Header="{CompiledBinding ImageTxt, Mode=OneWay}">
                 <NativeMenu>
                     <NativeMenuItem Command="{CompiledBinding RotateLeftCommand}" Header="{CompiledBinding RotateLeft, Mode=OneWay}" />
@@ -90,19 +95,28 @@
                         Header="{CompiledBinding SetAsLockScreenImage,
                                                  Mode=OneWay}" />
                     <NativeMenuItemSeparator />
-                    <NativeMenuItem Command="{CompiledBinding ChangeBackgroundCommand}" Header="{CompiledBinding ChangeBackground, Mode=OneWay}" />
-                    <NativeMenuItemSeparator />
-                    <NativeMenuItem Header="{CompiledBinding Slideshow}" />
-                    <NativeMenuItemSeparator />
                     <NativeMenuItem Command="{CompiledBinding ShowExifWindowCommand}" Header="{CompiledBinding ImageInfo, Mode=OneWay}" />
                     <NativeMenuItem Header="{CompiledBinding FileProperties}" />
                     <NativeMenuItemSeparator />
-                    <NativeMenuItem Header="{CompiledBinding ResizeImage}" />
-                    <NativeMenuItem Header="{CompiledBinding BatchResize}" />
+                    <NativeMenuItem Command="{CompiledBinding ShowSingleImageResizeWindowCommand}" Header="{CompiledBinding ResizeImage}" />
+                    <NativeMenuItem Command="{CompiledBinding ShowBatchResizeWindowCommand}" Header="{CompiledBinding BatchResize}" />
                     <NativeMenuItemSeparator />
                     <NativeMenuItem Command="{CompiledBinding OptimizeImageCommand}" Header="{CompiledBinding OptimizeImage, Mode=OneWay}" />
                     <NativeMenuItemSeparator />
                     <NativeMenuItem Header="{CompiledBinding Effects}" />
+                </NativeMenu>
+            </NativeMenuItem>
+            <NativeMenuItem Header="{CompiledBinding Navigation}">
+                <NativeMenu>
+                    <NativeMenuItem Command="{CompiledBinding SlideshowCommand}" Header="{CompiledBinding Slideshow}" />
+                    <NativeMenuItemSeparator />
+                    <NativeMenuItem Command="{CompiledBinding Skip10Command}" Header="{CompiledBinding AdvanceBy10Images}" />
+                    <NativeMenuItem Command="{CompiledBinding Skip100Command}" Header="{CompiledBinding AdvanceBy100Images}" />
+                    <NativeMenuItem Command="{CompiledBinding Prev10Command}" Header="{CompiledBinding GoBackBy10Images}" />
+                    <NativeMenuItem Command="{CompiledBinding Prev100Command}" Header="{CompiledBinding GoBackBy100Images}" />
+                    <NativeMenuItemSeparator />
+                    <NativeMenuItem Command="{CompiledBinding NextFolderCommand}" Header="{CompiledBinding NextFolder}" />
+                    <NativeMenuItem Command="{CompiledBinding PreviousFolderCommand}" Header="{CompiledBinding PrevFolder}" />
                 </NativeMenu>
             </NativeMenuItem>
             <NativeMenuItem Header="{CompiledBinding InterfaceConfiguration}">
@@ -118,8 +132,64 @@
 
                 </NativeMenu>
             </NativeMenuItem>
+
+            <NativeMenuItem Header="{CompiledBinding SortFilesBy, Mode=OneWay}">
+                <NativeMenu>
+                    <NativeMenuItem
+                        Command="{CompiledBinding SortFilesByNameCommand}"
+                        Header="{CompiledBinding FileName,
+                                                 Mode=OneWay}"
+                        IsChecked="{CompiledBinding SortOrder,
+                                                    Converter={StaticResource EnumToBoolConverter},
+                                                    ConverterParameter=Name}"
+                        ToggleType="Radio" />
+                    <NativeMenuItem
+                        Command="{CompiledBinding SortFilesBySizeCommand}"
+                        Header="{CompiledBinding FileSize,
+                                                 Mode=OneWay}"
+                        IsChecked="{CompiledBinding SortOrder,
+                                                    Converter={StaticResource EnumToBoolConverter},
+                                                    ConverterParameter=FileSize}"
+                        ToggleType="Radio" />
+                    <NativeMenuItem
+                        Command="{CompiledBinding SortFilesByExtensionCommand}"
+                        Header="{CompiledBinding FileExtension,
+                                                 Mode=OneWay}"
+                        IsChecked="{CompiledBinding SortOrder,
+                                                    Converter={StaticResource EnumToBoolConverter},
+                                                    ConverterParameter=FileExtension}"
+                        ToggleType="Radio" />
+                    <NativeMenuItem
+                        Command="{CompiledBinding SortFilesByCreationTimeCommand}"
+                        Header="{CompiledBinding Created,
+                                                 Mode=OneWay}"
+                        IsChecked="{CompiledBinding SortOrder,
+                                                    Converter={StaticResource EnumToBoolConverter},
+                                                    ConverterParameter=Created}"
+                        ToggleType="Radio" />
+                    <NativeMenuItem
+                        Command="{CompiledBinding SortFilesByLastAccessTimeCommand}"
+                        Header="{CompiledBinding LastAccessTime,
+                                                 Mode=OneWay}"
+                        IsChecked="{CompiledBinding SortOrder,
+                                                    Converter={StaticResource EnumToBoolConverter},
+                                                    ConverterParameter=LastAccessTime}"
+                        ToggleType="Radio" />
+                    <NativeMenuItem
+                        Command="{CompiledBinding SortFilesRandomlyCommand}"
+                        Header="{CompiledBinding Random,
+                                                 Mode=OneWay}"
+                        IsChecked="{CompiledBinding SortOrder,
+                                                    Converter={StaticResource EnumToBoolConverter},
+                                                    ConverterParameter=Random}"
+                        ToggleType="Radio" />
+                </NativeMenu>
+            </NativeMenuItem>
+
             <NativeMenuItem Header="{CompiledBinding Settings}">
                 <NativeMenu>
+                    <NativeMenuItem Command="{CompiledBinding ChangeBackgroundCommand}" Header="{CompiledBinding ChangeBackground, Mode=OneWay}" />
+                    <NativeMenuItemSeparator />
                     <NativeMenuItem
                         Command="{CompiledBinding ToggleLoopingCommand}"
                         Header="{CompiledBinding GetIsLoopingTranslation}"
