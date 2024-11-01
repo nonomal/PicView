@@ -135,7 +135,7 @@ public static class GalleryNavigation
         var listBox = galleryView.GalleryListBox;
         for (var i = 0; i < listBox.Items.Count; i++)
         {
-            if (listBox.ItemContainerGenerator.ContainerFromIndex(i) is not { } container)
+            if (listBox.ContainerFromIndex(i) is not { } container)
             {
                 continue;
             }

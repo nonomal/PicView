@@ -2,6 +2,7 @@
 
     <ControlTheme TargetType="Button" x:Key="{x:Type Button}">
         <Setter Property="ClickMode" Value="Press" />
+        <Setter Property="Focusable" Value="False" />
 
         <Setter Property="Button.Template">
             <ControlTemplate TargetType="Button">

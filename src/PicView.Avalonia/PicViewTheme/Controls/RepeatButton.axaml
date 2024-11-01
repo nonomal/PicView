@@ -1,6 +1,7 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <ControlTheme TargetType="RepeatButton" x:Key="{x:Type RepeatButton}">
+        <Setter Property="Focusable" Value="False" />
 
         <Setter Property="RepeatButton.Template">
             <ControlTemplate TargetType="RepeatButton">
