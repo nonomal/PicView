@@ -311,11 +311,11 @@ public static class GalleryFunctions
 
         if (SettingsHelper.Settings.Gallery.IsBottomGalleryShown)
         {
-            SettingsHelper.Settings.Gallery.IsBottomGalleryShown = false;
-            IsFullGalleryOpen = false;
-            IsBottomGalleryOpen = false;
             vm.GalleryMode = GalleryMode.BottomToClosed;
             vm.GetIsShowingBottomGalleryTranslation = TranslationHelper.Translation.ShowBottomGallery;
+            SettingsHelper.Settings.Gallery.IsBottomGalleryShown = false;
+            // IsFullGalleryOpen = false;
+            // IsBottomGalleryOpen = false;
             await SettingsHelper.SaveSettingsAsync();
             return;
         }

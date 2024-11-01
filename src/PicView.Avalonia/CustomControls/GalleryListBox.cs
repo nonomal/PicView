@@ -20,7 +20,6 @@ public class GalleryListBox : ListBox
     
     public GalleryListBox()
     {
-        SelectionMode = SelectionMode.Single;
         AddHandler(PointerPressedEvent, PreviewPointerPressedEvent, RoutingStrategies.Tunnel);
     }
 
