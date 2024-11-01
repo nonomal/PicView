@@ -1,10 +1,12 @@
 ﻿using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
+using PicView.Avalonia.Gallery;
 using PicView.Avalonia.Input;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Config;
+using PicView.Core.Gallery;
 using PicView.Core.Navigation;
 using Timer = System.Timers.Timer;
 
@@ -49,6 +51,11 @@ public static class Slideshow
             {
                 WindowFunctions.CenterWindowOnScreen();
             }
+        }
+
+        if (SettingsHelper.Settings.Gallery.IsBottomGalleryShown)
+        {
+            vm.GalleryMode = GalleryMode.ClosedToBottom;
         }
         
         _timer.Stop();
@@ -102,6 +109,11 @@ public static class Slideshow
         if (!SettingsHelper.Settings.WindowProperties.Fullscreen)
         {
             await WindowFunctions.ToggleFullscreen(vm, false);
+        }
+
+        if (GalleryFunctions.IsFullGalleryOpen || SettingsHelper.Settings.Gallery.IsBottomGalleryShown)
+        {
+            vm.GalleryMode = GalleryMode.BottomToClosed;
         }
         
         await vm.ImageIterator.NextIteration(NavigateTo.Next);
