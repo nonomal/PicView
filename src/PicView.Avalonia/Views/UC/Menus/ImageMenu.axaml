@@ -115,7 +115,7 @@
                 <Button
                     Background="Transparent"
                     BorderBrush="{DynamicResource MainBorderColor}"
-                    BorderThickness="0,0,1,0"
+                    BorderThickness="1,0,1,0"
                     Canvas.Left="180"
                     Classes="noBorderHover"
                     Height="45"
