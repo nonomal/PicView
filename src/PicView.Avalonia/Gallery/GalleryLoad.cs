@@ -6,7 +6,6 @@ using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views.UC;
 using PicView.Core.Config;
 using PicView.Core.Gallery;
-using PicView.Core.Localization;
 
 namespace PicView.Avalonia.Gallery;
 
@@ -67,16 +66,14 @@ public static class GalleryLoad
         IsLoading = true;
         var index = vm.ImageIterator.CurrentIndex;
         var galleryItemSize = Math.Max(vm.GetBottomGalleryItemHeight, vm.GetFullGalleryItemHeight);
-        var loading = TranslationHelper.Translation.Loading;
+        
         var endIndex = vm.ImageIterator.ImagePaths.Count;
         // Set priority low when loading excess images to ensure app responsiveness
         var priority = endIndex switch
         {
-            >= 3000 => DispatcherPriority.ApplicationIdle,
             >= 2000 => DispatcherPriority.Background,
-            >= 1000 => DispatcherPriority.Input,
-            >= 500 => DispatcherPriority.Render,
-            _ => DispatcherPriority.Normal
+            >= 1000 => DispatcherPriority.Loaded,
+            _ => DispatcherPriority.Render
         };
 
         GalleryStretchMode.SetSquareFillStretch(vm);
@@ -93,14 +90,15 @@ public static class GalleryLoad
                 
                 _cancellationTokenSource.Token.ThrowIfCancellationRequested();
                 fileInfos[i] = new FileInfo(vm.ImageIterator.ImagePaths[i]);
+                var thumbData = GalleryThumbInfo.GalleryThumbHolder.GetThumbData(fileInfos[i]);
                 await Dispatcher.UIThread.InvokeAsync(() =>
                 {
                     var galleryItem = new GalleryItem
                     {
                         DataContext = vm,
-                        FileName = { Text = loading },
-                        FileSize = { Text = loading },
-                        FileDate = { Text = loading },
+                        FileName = { Text = thumbData.FileName },
+                        FileSize = { Text = thumbData.FileSize },
+                        FileDate = { Text = thumbData.FileDate },
                         FileLocation = { Text = fileInfos[i].FullName },
                     };
                     var i1 = i;
@@ -182,14 +180,9 @@ public static class GalleryLoad
                 }
 
                 var thumb = await GetThumbnails.GetThumbAsync(fileInfos[i].FullName, (uint)galleryItemSize, fileInfos[i]);
-                var thumbData = GalleryThumbInfo.GalleryThumbHolder.GetThumbData(fileInfos[i]);
+
                 var isSvg = fileInfos[i].Extension.Equals(".svg", StringComparison.OrdinalIgnoreCase) ||
                            fileInfos[i].Extension.Equals(".svgz", StringComparison.OrdinalIgnoreCase);
-
-                if (isSvg)
-                {
-                    Console.WriteLine($"{fileInfos[i].FullName} is svg");
-                }
 
                 await Dispatcher.UIThread.InvokeAsync(() =>
                 {
@@ -211,11 +204,6 @@ public static class GalleryLoad
                     {
                         galleryItem.GalleryImage.Source = thumb;
                     }
-
-                    galleryItem.FileLocation.Text = thumbData.FileLocation;
-                    galleryItem.FileDate.Text = thumbData.FileDate;
-                    galleryItem.FileSize.Text = thumbData.FileSize;
-                    galleryItem.FileName.Text = thumbData.FileName;
                     
                     if (vm.ImageIterator is null)
                     {

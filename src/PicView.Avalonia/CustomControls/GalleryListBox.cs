@@ -161,6 +161,12 @@ public class GalleryListBox : ListBox
         _autoScrollViewer.Offset = new Vector(double.PositiveInfinity, double.PositiveInfinity);
         _autoScrollViewer.ScrollToEnd();
     }
+    
+    public void ScrollToHome()
+    {
+        _autoScrollViewer.Offset = new Vector(double.NegativeInfinity, double.NegativeInfinity);
+        _autoScrollViewer.ScrollToHome();
+    }
 
     public void PageLeft()
     {

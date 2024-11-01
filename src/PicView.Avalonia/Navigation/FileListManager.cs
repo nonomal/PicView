@@ -80,7 +80,7 @@ public static class FileListManager
         }
         else return;
 
-        await GalleryFunctions.SortGalleryItems(files, vm);
+        await GalleryLoad.ReloadGalleryAsync(vm, vm.FileInfo.DirectoryName);
     }
 
     public static async Task UpdateFileList(IPlatformSpecificService? platformSpecificService, MainViewModel vm, bool ascending)
@@ -98,6 +98,6 @@ public static class FileListManager
         }
         else return;
 
-        await GalleryFunctions.SortGalleryItems(files, vm);
+        await GalleryLoad.ReloadGalleryAsync(vm, vm.FileInfo.DirectoryName);
     }
 }

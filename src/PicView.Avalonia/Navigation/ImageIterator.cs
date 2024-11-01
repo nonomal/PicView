@@ -305,9 +305,7 @@ public sealed class ImageIterator : IDisposable
 
         IsRunning = false;
         FileHistoryNavigation.Rename(e.OldFullPath, e.FullPath);
-        GalleryFunctions.RemoveGalleryItem(oldIndex, _vm);
-        await GalleryFunctions.AddGalleryItem(index, fileInfo, _vm);
-        await GalleryFunctions.SortGalleryItems(ImagePaths, _vm);
+        await Dispatcher.UIThread.InvokeAsync(() => GalleryFunctions.RenameGalleryItem(oldIndex, Path.GetFileNameWithoutExtension(e.Name), e.FullPath, _vm));
     }
 
     #endregion

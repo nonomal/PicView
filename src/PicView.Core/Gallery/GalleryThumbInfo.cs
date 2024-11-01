@@ -38,11 +38,8 @@ public static class GalleryThumbInfo
         /// <returns>The <see cref="GalleryThumbHolder"/> instance containing thumbnail data.</returns>
         public static GalleryThumbHolder GetThumbData(FileInfo? fileInfo)
         {
-            const int fileNameLength = 75;
             var fileLocation = fileInfo.FullName;
-            fileLocation = fileLocation.Length > fileNameLength ? $"{fileLocation.Shorten(fileNameLength)}{fileInfo.Extension}" : fileLocation;
             var fileName = Path.GetFileNameWithoutExtension(fileInfo.Name);
-            fileName = fileName.Length > fileNameLength ? fileName.Shorten(fileNameLength) : fileName;
             var fileSize = 
                 $"{TranslationHelper.Translation.FileSize}: {fileInfo.Length.GetReadableFileSize()}";
             var fileDate = 
