@@ -42,7 +42,7 @@ public static class StartUpHelper
                 return;
             }
         }
-        
+
         vm.IsLoading = true;
 
         if (SettingsHelper.Settings.WindowProperties.Fullscreen)
@@ -50,29 +50,31 @@ public static class StartUpHelper
             window.Show();
             WindowFunctions.Fullscreen(vm, desktop);
         }
-        
+
         ScreenHelper.UpdateScreenSize(window);
         vm.ImageViewer = new ImageViewer();
         HandleStartUpMenuOrImage(vm, args);
 
-        if (SettingsHelper.Settings.WindowProperties.Maximized)
+        if (settingsExists)
         {
-            WindowFunctions.Maximize();
-            window.Show();
+            if (SettingsHelper.Settings.WindowProperties.Maximized)
+            {
+                WindowFunctions.Maximize();
+            }
+            else if (SettingsHelper.Settings.WindowProperties.AutoFit)
+            {
+                HandleAutoFit(vm, desktop);
+            }
+            else if (!SettingsHelper.Settings.WindowProperties.Fullscreen)
+            {
+                HandleNormalWindow(vm, window);
+            }
         }
-        else if (SettingsHelper.Settings.WindowProperties.AutoFit)
-        {
-            HandleAutoFit(vm, desktop);
-            window.Show();
-        }
-        else if (!SettingsHelper.Settings.WindowProperties.Fullscreen)
-        {
-            HandleNormalWindow(vm, window);
-            window.Show();
-        }
+        window.Show();
+
 
         UIHelper.SetControls(desktop);
-        LanguageUpdater.UpdateLanguage(vm);
+        Task.Run(async () => await LanguageUpdater.UpdateLanguageAsync(vm, settingsExists));
 
         HandleWindowControlSettings(vm, desktop);
 
@@ -88,7 +90,7 @@ public static class StartUpHelper
         {
             Task.Run(() => KeybindingManager.SetDefaultKeybindings(vm.PlatformService));
         }
-        
+
         SetWindowEventHandlers(window);
 
         UIHelper.AddMenus();

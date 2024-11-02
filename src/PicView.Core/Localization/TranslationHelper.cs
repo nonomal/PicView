@@ -1,7 +1,8 @@
-﻿using PicView.Core.Config;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using PicView.Core.Config;
 
 namespace PicView.Core.Localization;
 
@@ -18,6 +19,11 @@ public static class TranslationHelper
     {
         get;
         private set;
+    }
+
+    public static void Init()
+    {
+        Translation = new LanguageModel();
     }
 
     public static string GetTranslation(string key)
@@ -60,6 +66,13 @@ public static class TranslationHelper
         }
     }
 
+    public static async Task DetermineAndLoadLanguage()
+    {
+        var isoLanguageCode = DetermineCorrectLanguage();
+        SettingsHelper.Settings.UIProperties.UserLanguage = isoLanguageCode;
+        await LoadLanguage(isoLanguageCode).ConfigureAwait(false);
+    }
+
     public static IEnumerable<string> GetLanguages()
     {
         var languagesDirectory = GetLanguagesDirectory();
@@ -100,5 +113,33 @@ public static class TranslationHelper
     private static string GetLanguagesDirectory()
     {
         return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Config/Languages/");
+    }
+    
+    public static string DetermineCorrectLanguage()
+    {
+        var userCulture = CultureInfo.CurrentUICulture;
+        var baseLanguageCode = userCulture.TwoLetterISOLanguageName; // Gets 'da' from 'da-DK'
+
+        // Handle special cases, e.g., Chinese or different regions.
+        switch (baseLanguageCode)
+        {
+            case "zh":
+                // Simplified Chinese vs Traditional Chinese
+                return userCulture.Name switch
+                {
+                    "zh-TW" => "zh-TW",  // Traditional Chinese
+                    "zh-HK" => "zh-TW",  // Treat Hong Kong as Traditional Chinese
+                    _ => "zh-CN"         // Default to Simplified Chinese
+                };
+            case "de":
+                // Handle German-speaking regions (Austria, Germany, Switzerland)
+                return "de";  // Map all 'de-*' to 'de'
+            default:
+                // Fall back to the base language if it's available in the translation files
+                return GetLanguages()
+                    .Any(lang => Path.GetFileNameWithoutExtension(lang) == baseLanguageCode)
+                    ? baseLanguageCode
+                    : "en"; // Default to English if not found
+        }
     }
 }

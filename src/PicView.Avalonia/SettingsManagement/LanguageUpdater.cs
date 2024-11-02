@@ -6,8 +6,17 @@ namespace PicView.Avalonia.SettingsManagement;
 
 public static class LanguageUpdater
 {
-    public static void UpdateLanguage(MainViewModel vm)
+    public static async Task UpdateLanguageAsync(MainViewModel vm, bool settingsExists)
     {
+        if (settingsExists)
+        {
+            await TranslationHelper.LoadLanguage(SettingsHelper.Settings.UIProperties.UserLanguage).ConfigureAwait(false);
+        }
+        else
+        {
+            await TranslationHelper.DetermineAndLoadLanguage().ConfigureAwait(false);
+        }
+
         vm.UpdateLanguage();
 
         vm.GetIsFlippedTranslation = vm.ScaleX == 1 ? vm.Flip : vm.UnFlip;
