@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -26,6 +25,7 @@ public partial class ImageViewer : UserControl
 
     private static Point _start;
     private static Point _origin;
+    private static Point _current;
 
     private bool _captured;
     private bool _isZoomed;
@@ -62,9 +62,9 @@ public partial class ImageViewer : UserControl
         if (DataContext is not MainViewModel mainViewModel)
             return;
 
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        if (SettingsHelper.Settings.Zoom.IsUsingTouchPad)
         {
-            // Use touch gestures for zooming on macOS
+            // Use touch gestures for zooming
             return;
         }
         var ctrl = e.KeyModifiers == KeyModifiers.Control;
@@ -213,14 +213,12 @@ public partial class ImageViewer : UserControl
 
     public void ZoomIn()
     {
-        var point = new Point(Bounds.Width / 2, Bounds.Height / 2);
-        ZoomTo(point, true);
+        ZoomTo(_current, true);
     }
 
     public void ZoomOut()
     {
-        var point = new Point(Bounds.Width / 2, Bounds.Height / 2);
-        ZoomTo(point, false);
+        ZoomTo(_current, false);
     }
 
     public void ZoomTo(Point point, bool isZoomIn)
@@ -666,6 +664,7 @@ public partial class ImageViewer : UserControl
 
     private void MainImage_OnPointerMoved(object? sender, PointerEventArgs e)
     {
+        _current = e.GetPosition(this);
         Pan(e);
     }
 
