@@ -5,6 +5,7 @@ using System.Text.Json.Serialization;
 using Microsoft.Win32;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
+using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Config;
 using PicView.Core.FileHandling;
 
@@ -141,6 +142,7 @@ public static class UpdateManager
             switch (architecture)
             {
                 case InstalledArchitecture.Arm64Install:
+                    // Launch the installer and close the window
                     var fileName = Path.GetFileName(updateInfo.X64Install);
                     var tempFileDownloadPath = Path.Combine(tempPath, fileName);
                     await StartFileDownloader(vm, updateInfo.Arm64Install, tempFileDownloadPath);
@@ -153,8 +155,10 @@ public static class UpdateManager
                         }
                     };
                     process.Start();
+                    await WindowFunctions.WindowClosingBehavior();
                     return;
                 case InstalledArchitecture.Arm64Portable:
+                    // Download the zip package in browser
                     process = new Process
                     {
                         StartInfo = new ProcessStartInfo(updateInfo.Arm64Portable)
@@ -167,6 +171,7 @@ public static class UpdateManager
                     await process.WaitForExitAsync();
                     return;
                 case InstalledArchitecture.X64Install:
+                    // Launch the installer and close the window
                     fileName = Path.GetFileName(updateInfo.X64Install);
                     tempFileDownloadPath = Path.Combine(tempPath, fileName);
                     await StartFileDownloader(vm, updateInfo.X64Install, tempFileDownloadPath);
@@ -179,8 +184,11 @@ public static class UpdateManager
                         }
                     };
                     process.Start();
+                    await WindowFunctions.WindowClosingBehavior();
                     return;
                 case InstalledArchitecture.X64Portable:
+                    
+                    // Download the zip package in browser
                     process = new Process
                     {
                         StartInfo = new ProcessStartInfo(updateInfo.X64Portable)

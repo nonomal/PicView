@@ -17,6 +17,14 @@ namespace PicView.Avalonia.WindowBehavior;
 
 public static class WindowFunctions
 {
+    public static async Task WindowClosingBehavior()
+    {
+        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            return;
+        }
+        await WindowClosingBehavior(desktop.MainWindow);
+    }
     public static async Task WindowClosingBehavior(Window window)
     {
         if (!SettingsHelper.Settings.WindowProperties.Maximized ||
