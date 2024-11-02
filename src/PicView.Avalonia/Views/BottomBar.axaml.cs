@@ -22,58 +22,56 @@ public partial class BottomBar : UserControl
                 DragAndDropHelper.RemoveDragDropView();
             };
 
-            if (!SettingsHelper.Settings.Theme.GlassTheme)
+            if (SettingsHelper.Settings.Theme.GlassTheme)
             {
-                return;
-            }
-
-            MainBottomBorder.Background = Brushes.Transparent;
-            MainBottomBorder.BorderThickness = new Thickness(0);
+                MainBottomBorder.Background = Brushes.Transparent;
+                MainBottomBorder.BorderThickness = new Thickness(0);
                 
-            FileMenuButton.Background = Brushes.Transparent;
-            FileMenuButton.Classes.Remove("noBorderHover");
-            FileMenuButton.Classes.Add("hover");
+                FileMenuButton.Background = Brushes.Transparent;
+                FileMenuButton.Classes.Remove("noBorderHover");
+                FileMenuButton.Classes.Add("hover");
                 
-            ImageMenuButton.Background = Brushes.Transparent;
-            ImageMenuButton.Classes.Remove("noBorderHover");
-            ImageMenuButton.Classes.Add("hover");
+                ImageMenuButton.Background = Brushes.Transparent;
+                ImageMenuButton.Classes.Remove("noBorderHover");
+                ImageMenuButton.Classes.Add("hover");
                 
-            ToolsMenuButton.Background = Brushes.Transparent;
-            ToolsMenuButton.Classes.Remove("noBorderHover");
-            ToolsMenuButton.Classes.Add("hover");
+                ToolsMenuButton.Background = Brushes.Transparent;
+                ToolsMenuButton.Classes.Remove("noBorderHover");
+                ToolsMenuButton.Classes.Add("hover");
                 
-            SettingsMenuButton.Background = Brushes.Transparent;
-            SettingsMenuButton.Classes.Remove("noBorderHover");
-            SettingsMenuButton.Classes.Add("hover");
+                SettingsMenuButton.Background = Brushes.Transparent;
+                SettingsMenuButton.Classes.Remove("noBorderHover");
+                SettingsMenuButton.Classes.Add("hover");
             
-            NextButton.Background = new SolidColorBrush(Color.FromArgb(15, 255, 255, 255));
+                NextButton.Background = new SolidColorBrush(Color.FromArgb(15, 255, 255, 255));
                 
-            PreviousButton.Background = new SolidColorBrush(Color.FromArgb(15, 255, 255, 255));
+                PreviousButton.Background = new SolidColorBrush(Color.FromArgb(15, 255, 255, 255));
 
-            if (!Application.Current.TryGetResource("SecondaryTextColor",
-                    Application.Current.RequestedThemeVariant, out var textColor))
-            {
-                return;
-            }
+                if (!Application.Current.TryGetResource("SecondaryTextColor",
+                        Application.Current.RequestedThemeVariant, out var textColor))
+                {
+                    return;
+                }
 
-            if (textColor is not Color color)
-            {
-                return;
-            }
+                if (textColor is not Color color)
+                {
+                    return;
+                }
 
-            FileMenuButton.Foreground = new SolidColorBrush(color);
-            ImageMenuButton.Foreground = new SolidColorBrush(color);
-            ToolsMenuButton.Foreground = new SolidColorBrush(color);
-            SettingsMenuButton.Foreground = new SolidColorBrush(color);
+                FileMenuButton.Foreground = new SolidColorBrush(color);
+                ImageMenuButton.Foreground = new SolidColorBrush(color);
+                ToolsMenuButton.Foreground = new SolidColorBrush(color);
+                SettingsMenuButton.Foreground = new SolidColorBrush(color);
             
-            NextButton.Foreground = new SolidColorBrush(color);
-            PreviousButton.Foreground = new SolidColorBrush(color);
-
-
-            NextButton.Delay =
+                NextButton.Foreground = new SolidColorBrush(color);
+                PreviousButton.Foreground = new SolidColorBrush(color);
+            }
+            
+            // TODO add interval to mainviewmodel
+            NextButton.Interval =
                 (int)TimeSpan.FromSeconds(SettingsHelper.Settings.UIProperties.NavSpeed).TotalMilliseconds;
 
-            PreviousButton.Delay =
+            PreviousButton.Interval =
                 (int)TimeSpan.FromSeconds(SettingsHelper.Settings.UIProperties.NavSpeed).TotalMilliseconds;
 
         };

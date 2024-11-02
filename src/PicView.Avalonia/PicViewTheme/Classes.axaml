@@ -50,7 +50,7 @@
         <Setter Property="CornerRadius" Value="2" />
     </Style>
 
-    <Style Selector="Button.mainBtn, ToggleButton.mainBtn">
+    <Style Selector="Button.mainBtn, ToggleButton.mainBtn, RepeatButton.mainBtn">
         <Setter Property="Width" Value="NaN" />
         <Setter Property="Height" Value="35" />
         <Setter Property="Padding" Value="10" />

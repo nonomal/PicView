@@ -43,9 +43,9 @@ public class IconButton : RepeatButton
         AvaloniaProperty.Register<IconButton, double>(nameof(IconHeight));
 
     /// <summary>
-    /// Overrides the default style key to <see cref="Button"/>.
+    /// Overrides the default style key to <see cref="RepeatButton"/>.
     /// </summary>
-    protected override Type StyleKeyOverride => typeof(Button);
+    protected override Type StyleKeyOverride => typeof(RepeatButton);
 
     /// <summary>
     /// Gets or sets the <see cref="DrawingImage"/> displayed as the icon of the button.
