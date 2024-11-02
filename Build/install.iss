@@ -13,7 +13,6 @@ DefaultDirName={pf64}\PicView
 DisableProgramGroupPage=yes
 LicenseFile={#LicenseFile}
 OutputDir={#MyAppOutputDir}
-PrivilegesRequired=lowest
 OutputBaseFilename={#MyAppOutputName}
 SetupIconFile={#AppIcon}
 Compression=lzma
