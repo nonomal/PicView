@@ -26,7 +26,11 @@
         <ContextMenu x:Name="MainContextMenu">
 
             <!--  Open  -->
-            <MenuItem Command="{CompiledBinding OpenFileCommand}" Header="{CompiledBinding Open, Mode=OneWay}">
+            <MenuItem
+                Command="{CompiledBinding OpenFileCommand}"
+                Header="{CompiledBinding Open,
+                                         Mode=OneWay}"
+                MinWidth="180">
                 <MenuItem.Icon>
                     <Path
                         Data="{StaticResource AltFolderGeometry}"
@@ -632,24 +636,28 @@
                     </MenuItem.Icon>
                 </MenuItem>
 
+                <Separator />
+
+                <!--  Set as lock screen  -->
+                <MenuItem
+                    Command="{CompiledBinding SetAsLockScreenCommand}"
+                    CommandParameter="{CompiledBinding FileInfo.FullName,
+                                                       FallbackValue=''}"
+                    Header="{CompiledBinding SetAsLockScreenImage,
+                                             Mode=OneWay}"
+                    IsEnabled="False">
+                    <MenuItem.Icon>
+                        <Path
+                            Data="{StaticResource PanoramaGeometry}"
+                            Fill="{StaticResource Brush0}"
+                            Height="10.40"
+                            Stretch="Fill"
+                            Width="13" />
+                    </MenuItem.Icon>
+                </MenuItem>
+
             </MenuItem>
 
-            <!--  Set as lock screen  -->
-            <MenuItem
-                Command="{CompiledBinding SetAsLockScreenCommand}"
-                CommandParameter="{CompiledBinding FileInfo.FullName,
-                                                   FallbackValue=''}"
-                Header="{CompiledBinding SetAsLockScreenImage,
-                                         Mode=OneWay}">
-                <MenuItem.Icon>
-                    <Path
-                        Data="{StaticResource PanoramaGeometry}"
-                        Fill="{StaticResource Brush0}"
-                        Height="10.40"
-                        Stretch="Fill"
-                        Width="13" />
-                </MenuItem.Icon>
-            </MenuItem>
             <Separator />
 
             <!--  Image  -->

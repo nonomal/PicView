@@ -13,10 +13,10 @@ public static partial class LockscreenHelper
     {
         const string personalizationcsp =
             @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP";
-        const string enforceLockScreenAndLogonImage =
-            @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\PolicyManager\default\DeviceLock\EnforceLockScreenAndLogonImage";
-        const string enforcelockscreenprovider =
-            @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\PolicyManager\default\DeviceLock\EnforceLockScreenProvider";
+        // const string enforceLockScreenAndLogonImage =
+        //     @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\PolicyManager\default\DeviceLock\EnforceLockScreenAndLogonImage";
+        // const string enforcelockscreenprovider =
+        //     @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\PolicyManager\default\DeviceLock\EnforceLockScreenProvider";
         var ptr = new IntPtr();
         Wow64DisableWow64FsRedirection(ref ptr);
 
@@ -26,8 +26,8 @@ public static partial class LockscreenHelper
             Registry.SetValue(personalizationcsp, "LockScreenImagePath", path, RegistryValueKind.String);
             Registry.SetValue(personalizationcsp, "LockScreenImageUrl", path, RegistryValueKind.String);
             
-            Registry.SetValue(enforceLockScreenAndLogonImage, "policytype", 0, RegistryValueKind.DWord);
-            Registry.SetValue(enforcelockscreenprovider, "policytype", 0, RegistryValueKind.DWord);
+            // Registry.SetValue(enforceLockScreenAndLogonImage, "policytype", 0, RegistryValueKind.DWord);
+            // Registry.SetValue(enforcelockscreenprovider, "policytype", 0, RegistryValueKind.DWord);
             
             // Seems to only work once, and then have to restart the machine to make it work again. 
             // It seems to disable setting the lock screen image in the settings app with the text:
