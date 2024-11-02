@@ -3,7 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using Avalonia.Styling;
+using PicView.Avalonia.ColorManagement;
 using PicView.Avalonia.Interfaces;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.StartUp;
@@ -66,18 +66,8 @@ public partial class App : Application, IPlatformSpecificService
 
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
-            if (SettingsHelper.Settings.Theme.GlassTheme)
-            {
-                Current.RequestedThemeVariant = ThemeVariant.Light;
-            }
-            else if (SettingsHelper.Settings.Theme.UseSystemTheme)
-            {
-                Current.RequestedThemeVariant = ThemeVariant.Dark; // TODO : Figure out how to get the system theme
-            }
-            else
-            {
-                Current.RequestedThemeVariant = SettingsHelper.Settings.Theme.Dark ? ThemeVariant.Dark : ThemeVariant.Light;
-            }
+            ThemeManager.DetermineTheme(Current, settingsExists);
+
             _mainWindow = new WinMainWindow();
             desktop.MainWindow = _mainWindow;
         });

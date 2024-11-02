@@ -71,4 +71,28 @@ public static class ThemeManager
         Application.Current.Resources["MenuButtonColor"] = Color.Parse("#76909090");
         
     }
+
+    public static void DetermineTheme(Application? application, bool settingsExists)
+    {
+        if (!settingsExists)
+        {
+            application.RequestedThemeVariant = application.ActualThemeVariant;
+            SettingsHelper.Settings.Theme.Dark = application.RequestedThemeVariant == ThemeVariant.Dark;
+        }
+        else
+        {
+            if (SettingsHelper.Settings.Theme.GlassTheme)
+            {
+                application.RequestedThemeVariant = ThemeVariant.Light;
+            }
+            else if (SettingsHelper.Settings.Theme.UseSystemTheme)
+            {
+                application.RequestedThemeVariant = ThemeVariant.Dark; // TODO : Figure out how to get the system theme
+            }
+            else
+            {
+                application.RequestedThemeVariant = SettingsHelper.Settings.Theme.Dark ? ThemeVariant.Dark : ThemeVariant.Light;
+            }
+        }
+    }
 }

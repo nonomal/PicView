@@ -3,15 +3,14 @@ using System.Runtime;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Styling;
 using Avalonia.Threading;
+using PicView.Avalonia.ColorManagement;
 using PicView.Avalonia.Interfaces;
 using PicView.Avalonia.MacOS.Views;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.StartUp;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
-using PicView.Avalonia.Views;
 using PicView.Core.Config;
 using PicView.Core.FileHandling;
 using PicView.Core.Localization;
@@ -57,18 +56,7 @@ public class App : Application, IPlatformSpecificService
         }
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
-            if (SettingsHelper.Settings.Theme.GlassTheme)
-            {
-                Current.RequestedThemeVariant = ThemeVariant.Light;
-            }
-            else if (SettingsHelper.Settings.Theme.UseSystemTheme)
-            {
-                Current.RequestedThemeVariant = ThemeVariant.Dark; // TODO : Figure out how to get the system theme
-            }
-            else
-            {
-                Current.RequestedThemeVariant = SettingsHelper.Settings.Theme.Dark ? ThemeVariant.Dark : ThemeVariant.Light;
-            }
+            ThemeManager.DetermineTheme(Current, settingsExists);
             
             _mainWindow = new MacMainWindow();
             desktop.MainWindow = _mainWindow;
