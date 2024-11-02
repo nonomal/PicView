@@ -74,6 +74,7 @@ public record Zoom
     public bool CtrlZoom { get; set; } = true;
     public bool HorizontalReverseScroll { get; set; } = true;
     public bool ScrollEnabled { get; set; } = false;
+    public bool IsUsingTouchPad { get; set; } = false;
 }
 
 public record Sorting

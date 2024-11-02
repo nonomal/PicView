@@ -463,6 +463,7 @@ public class MainViewModel : ViewModelBase
     public ReactiveCommand<Unit, Unit>? ChangeAutoFitCommand { get; }
     public ReactiveCommand<Unit, Unit>? ChangeTopMostCommand { get; }
     public ReactiveCommand<Unit, Unit>? ChangeCtrlZoomCommand { get; }
+    public ReactiveCommand<Unit, Unit>? ToggleUsingTouchpadCommand { get; }
     public ReactiveCommand<Unit, Unit>? ToggleUICommand { get; }
     public ReactiveCommand<Unit, Unit>? ChangeBackgroundCommand { get; }
     public ReactiveCommand<Unit, Unit>? ToggleBottomNavBarCommand { get; }
@@ -694,12 +695,16 @@ public class MainViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _isEditableTitlebarOpen, value);
     }
     
-    private bool _isShowingFadeButtons = SettingsHelper.Settings.UIProperties.ShowAltInterfaceButtons;
-    
-    public bool IsShowingFadeButtons
+    private bool _isUsingTouchpad = SettingsHelper.Settings.Zoom.IsUsingTouchPad;
+
+    public bool IsUsingTouchpad
     {
-        get => _isShowingFadeButtons;
-        set => this.RaiseAndSetIfChanged(ref _isShowingFadeButtons, value);
+        get => _isUsingTouchpad;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _isUsingTouchpad, value);
+            SettingsHelper.Settings.Zoom.IsUsingTouchPad = value;
+        }
     }
 
     #endregion Booleans
@@ -824,6 +829,14 @@ public class MainViewModel : ViewModelBase
     {
         get => _getIsShowingFadingUIButtonsTranslation;
         set => this.RaiseAndSetIfChanged(ref _getIsShowingFadingUIButtonsTranslation, value);
+    }
+    
+    private string? _getIsUsingTouchpadTranslation;
+    
+    public string? GetIsUsingTouchpadTranslation
+    {
+        get => _getIsUsingTouchpadTranslation;
+        set => this.RaiseAndSetIfChanged(ref _getIsUsingTouchpadTranslation, value);
     }
     
     private string? _getIsFlipped;
@@ -2002,6 +2015,8 @@ public class MainViewModel : ViewModelBase
         ResetSettingsCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.ResetSettings);
         
         RestartCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.Restart);
+        
+        ToggleUsingTouchpadCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.ToggleUsingTouchpad);
 
         #endregion Settings commands
     }

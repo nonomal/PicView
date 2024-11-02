@@ -10,6 +10,7 @@ using PicView.Avalonia.FileSystem;
 using PicView.Avalonia.Gallery;
 using PicView.Avalonia.ImageTransformations;
 using PicView.Avalonia.Navigation;
+using PicView.Avalonia.SettingsManagement;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Config;
@@ -1135,6 +1136,15 @@ public static class FunctionsHelper
             // TODO: Make it a setting to close the window
             desktop.MainWindow?.Close();
         });
+    }
+    
+    public static async Task ToggleUsingTouchpad()
+    {
+        if (Vm is null)
+        {
+            return;
+        }
+        await SettingsUpdater.ToggleUsingTouchpad(Vm);
     }
 
     #endregion

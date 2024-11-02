@@ -86,9 +86,11 @@ public record LanguageModel
     public string? SearchSubdirectory { get; set; }
     public string? StayTopMost { get; set; }
     public string? StayCentered { get; set; }
-    public string? ColoredWindowBorder { get; set; }
     public string? ShowFadeInButtonsOnHover { get; set; }
     public string? DisableFadeInButtonsOnHover { get; set; }
+    
+    public string? UsingTouchpad { get; set; }
+    public string? UsingMouse { get; set; }
     public string? Apply { get; set; }
     public string? AdjustTimingForSlideshow { get; set; }
     public string? AdjustTimingForZoom { get; set; }

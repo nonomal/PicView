@@ -1,6 +1,6 @@
-﻿using System.Runtime.InteropServices;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Input;
+using PicView.Core.Config;
 
 namespace PicView.Avalonia.CustomControls;
 public class CustomSlider : Slider
@@ -9,16 +9,16 @@ public class CustomSlider : Slider
 
     public CustomSlider()
     {
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-        {
-            // macOS scrolls unintentionally
-            return;
-        }
         PointerWheelChanged += CustomSlider_PointerWheelChanged;
     }
 
     private void CustomSlider_PointerWheelChanged(object? sender, PointerWheelEventArgs e)
     {
+        if (SettingsHelper.Settings.Zoom.IsUsingTouchPad)
+        {
+            // Don't scroll unintentionally
+            return;
+        }
         var indexChange = e.Delta.Y > 0 ? TickFrequency : -TickFrequency;
         Value += indexChange;
     }

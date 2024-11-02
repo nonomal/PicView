@@ -36,5 +36,9 @@ public static class LanguageUpdater
         vm.GetIsShowingFadingUIButtonsTranslation = SettingsHelper.Settings.UIProperties.ShowAltInterfaceButtons
             ? TranslationHelper.Translation.DisableFadeInButtonsOnHover
             : TranslationHelper.Translation.ShowFadeInButtonsOnHover;
+        
+        vm.GetIsUsingTouchpadTranslation = SettingsHelper.Settings.Zoom.IsUsingTouchPad
+            ? TranslationHelper.Translation.UsingTouchpad
+            : TranslationHelper.Translation.UsingMouse;
     }
 }
