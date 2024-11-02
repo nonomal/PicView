@@ -314,8 +314,8 @@ public static class GalleryFunctions
             vm.GalleryMode = GalleryMode.BottomToClosed;
             vm.GetIsShowingBottomGalleryTranslation = TranslationHelper.Translation.ShowBottomGallery;
             SettingsHelper.Settings.Gallery.IsBottomGalleryShown = false;
-            // IsFullGalleryOpen = false;
-            // IsBottomGalleryOpen = false;
+            IsFullGalleryOpen = false;
+            IsBottomGalleryOpen = false;
             await SettingsHelper.SaveSettingsAsync();
             return;
         }
