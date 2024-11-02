@@ -467,6 +467,8 @@ public class MainViewModel : ViewModelBase
     public ReactiveCommand<Unit, Unit>? ChangeBackgroundCommand { get; }
     public ReactiveCommand<Unit, Unit>? ToggleBottomNavBarCommand { get; }
     public ReactiveCommand<Unit, Unit>? ToggleBottomGalleryShownInHiddenUICommand { get; }
+    
+    public ReactiveCommand<Unit, Unit>? ToggleFadeInButtonsOnHoverCommand { get; }
     public ReactiveCommand<Unit, Unit>? ToggleTaskbarProgressCommand { get; }
     public ReactiveCommand<Unit, Unit>? ShowExifWindowCommand { get; }
     public ReactiveCommand<Unit, Unit>? ShowAboutWindowCommand { get; }
@@ -691,6 +693,14 @@ public class MainViewModel : ViewModelBase
         get => _isEditableTitlebarOpen;
         set => this.RaiseAndSetIfChanged(ref _isEditableTitlebarOpen, value);
     }
+    
+    private bool _isShowingFadeButtons = SettingsHelper.Settings.UIProperties.ShowAltInterfaceButtons;
+    
+    public bool IsShowingFadeButtons
+    {
+        get => _isShowingFadeButtons;
+        set => this.RaiseAndSetIfChanged(ref _isShowingFadeButtons, value);
+    }
 
     #endregion Booleans
 
@@ -806,6 +816,14 @@ public class MainViewModel : ViewModelBase
     {
         get => _getIsShowingBottomToolbarTranslation;
         set => this.RaiseAndSetIfChanged(ref _getIsShowingBottomToolbarTranslation, value);
+    }
+
+    private string? _getIsShowingFadingUIButtonsTranslation;
+    
+    public string? GetIsShowingFadingUIButtonsTranslation
+    {
+        get => _getIsShowingFadingUIButtonsTranslation;
+        set => this.RaiseAndSetIfChanged(ref _getIsShowingFadingUIButtonsTranslation, value);
     }
     
     private string? _getIsFlipped;
@@ -1954,6 +1972,11 @@ public class MainViewModel : ViewModelBase
         ToggleBottomGalleryShownInHiddenUICommand = ReactiveCommand.CreateFromTask(async() =>
         {
             await HideInterfaceLogic.ToggleBottomGalleryShownInHiddenUI(this);
+        });
+        
+        ToggleFadeInButtonsOnHoverCommand = ReactiveCommand.CreateFromTask(async() =>
+        {
+            await HideInterfaceLogic.ToggleFadeInButtonsOnHover(this);
         });
 
         ChangeCtrlZoomCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.ChangeCtrlZoom);

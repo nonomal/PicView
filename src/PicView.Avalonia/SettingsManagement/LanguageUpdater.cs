@@ -32,5 +32,9 @@ public static class LanguageUpdater
         vm.GetIsShowingBottomToolbarTranslation = SettingsHelper.Settings.UIProperties.ShowBottomNavBar
             ? TranslationHelper.Translation.HideBottomToolbar
             : TranslationHelper.Translation.ShowBottomToolbar;
+        
+        vm.GetIsShowingFadingUIButtonsTranslation = SettingsHelper.Settings.UIProperties.ShowAltInterfaceButtons
+            ? TranslationHelper.Translation.DisableFadeInButtonsOnHover
+            : TranslationHelper.Translation.ShowFadeInButtonsOnHover;
     }
 }

@@ -241,9 +241,27 @@ public class ViewModelBase : ReactiveObject
         AdvanceBy100Images = TranslationHelper.Translation.AdvanceBy100Images;
         GoBackBy10Images = TranslationHelper.Translation.GoBackBy10Images;
         GoBackBy100Images = TranslationHelper.Translation.GoBackBy100Images;
+        ShowFadeInButtonsOnHover = TranslationHelper.Translation.ShowFadeInButtonsOnHover;
+        DisableFadeInButtonsOnHover = TranslationHelper.Translation.DisableFadeInButtonsOnHover;
     }
 
     #region Strings
+    
+    private string? _showFadeInButtonsOnHover;
+    
+    public string? ShowFadeInButtonsOnHover
+    {
+        get => _showFadeInButtonsOnHover;
+        set => this.RaiseAndSetIfChanged(ref _showFadeInButtonsOnHover, value);
+    }
+    
+    private string? _disableFadeInButtonsOnHover;
+    
+    public string? DisableFadeInButtonsOnHover
+    {
+        get => _disableFadeInButtonsOnHover;
+        set => this.RaiseAndSetIfChanged(ref _disableFadeInButtonsOnHover, value);
+    }
     
     private string? _advanceBy10Images;
     

@@ -140,6 +140,11 @@ public static class HideInterfaceLogic
     {
         childControl.PointerEntered += delegate
         {
+            if (!SettingsHelper.Settings.UIProperties.ShowAltInterfaceButtons)
+            {
+                return;
+            }
+            
             if (vm.ImageIterator is null)
             {
                 parent.Opacity = 0;
@@ -162,6 +167,11 @@ public static class HideInterfaceLogic
         };
         parent.PointerEntered += async delegate
         {
+            if (!SettingsHelper.Settings.UIProperties.ShowAltInterfaceButtons)
+            {
+                return;
+            }
+            
             await DoHoverButtonAnimation(isShown:true, parent, childControl, vm);
         };
         parent.PointerExited += async delegate
@@ -197,7 +207,7 @@ public static class HideInterfaceLogic
     
     private static async Task DoHoverButtonAnimation(bool isShown, Control parent, MainViewModel vm)
     {
-        if (_isHoverButtonAnimationRunning)
+        if (_isHoverButtonAnimationRunning || !SettingsHelper.Settings.UIProperties.ShowAltInterfaceButtons)
         {
             return;
         }
@@ -223,7 +233,7 @@ public static class HideInterfaceLogic
     }
     private static async Task DoHoverButtonAnimation(bool isShown, Control parent, Control childControl, MainViewModel vm)
     {
-        if (_isHoverButtonAnimationRunning)
+        if (_isHoverButtonAnimationRunning || !SettingsHelper.Settings.UIProperties.ShowAltInterfaceButtons)
         {
             return;
         }
@@ -270,6 +280,18 @@ public static class HideInterfaceLogic
                 vm.IsGalleryShown = SettingsHelper.Settings.Gallery.IsBottomGalleryShown;
             }
         }
+        
+        await SettingsHelper.SaveSettingsAsync();
+    }
+
+    public static async Task ToggleFadeInButtonsOnHover(MainViewModel vm)
+    {
+        SettingsHelper.Settings.UIProperties.ShowAltInterfaceButtons = !SettingsHelper.Settings
+            .UIProperties.ShowAltInterfaceButtons;
+        
+        vm.GetIsShowingFadingUIButtonsTranslation = SettingsHelper.Settings.UIProperties.ShowAltInterfaceButtons
+            ? TranslationHelper.Translation.DisableFadeInButtonsOnHover
+            : TranslationHelper.Translation.ShowFadeInButtonsOnHover;
         
         await SettingsHelper.SaveSettingsAsync();
     }
