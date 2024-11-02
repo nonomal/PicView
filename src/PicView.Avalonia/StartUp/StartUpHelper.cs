@@ -11,6 +11,7 @@ using PicView.Avalonia.Update;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views;
 using PicView.Avalonia.WindowBehavior;
+using PicView.Core.Calculations;
 using PicView.Core.Config;
 using PicView.Core.Gallery;
 using PicView.Core.ProcessHandling;
@@ -186,8 +187,8 @@ public static class StartUpHelper
     private static void InitializeWindowForNoSettings(Window w, MainViewModel vm)
     {
         // Fixes incorrect window
-        w.Height = w.MinHeight;
-        w.Width = w.MinWidth;
+        w.Height = SizeDefaults.WindowMinSize;
+        w.Width = SizeDefaults.WindowMinSize;
 
         WindowFunctions.CenterWindowOnScreen();
         vm.CanResize = true;
