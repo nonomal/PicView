@@ -1,6 +1,7 @@
 ﻿<UserControl
     Height="{CompiledBinding TitlebarHeight,
                              Mode=OneWay}"
+    ToolTip.Tip="{Binding TitleTooltip, Mode=OneWay}"
     Width="{CompiledBinding TitleMaxWidth,
                             Mode=OneWay}"
     d:DesignHeight="450"
@@ -28,7 +29,6 @@
                                    Mode=OneWay}"
             TextAlignment="Center"
             TextTrimming="CharacterEllipsis"
-            ToolTip.Tip="{Binding TitleTooltip, Mode=OneWay}"
             VerticalAlignment="Center"
             x:Name="TextBlock" />
         <Border
