@@ -57,13 +57,13 @@ public partial class App : Application, IPlatformSpecificService
         try
         {
             settingsExists = await SettingsHelper.LoadSettingsAsync().ConfigureAwait(false);
-            TranslationHelper.Init();
-            //await TranslationHelper.LoadLanguage(SettingsHelper.Settings.UIProperties.UserLanguage);
         }
         catch (TaskCanceledException)
         {
             return;
         }
+        
+        TranslationHelper.Init();
 
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
@@ -72,7 +72,9 @@ public partial class App : Application, IPlatformSpecificService
             _mainWindow = new WinMainWindow();
             desktop.MainWindow = _mainWindow;
         });
+        
         _vm = new MainViewModel(this);
+        
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             _mainWindow.DataContext = _vm;

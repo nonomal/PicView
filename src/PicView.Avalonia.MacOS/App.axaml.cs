@@ -48,12 +48,14 @@ public class App : Application, IPlatformSpecificService
         try
         {
             settingsExists = await SettingsHelper.LoadSettingsAsync().ConfigureAwait(false);
-            await TranslationHelper.LoadLanguage(SettingsHelper.Settings.UIProperties.UserLanguage).ConfigureAwait(false);
         }
         catch (TaskCanceledException)
         {
             return;
         }
+        
+        TranslationHelper.Init();
+        
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             ThemeManager.DetermineTheme(Current, settingsExists);
@@ -61,7 +63,9 @@ public class App : Application, IPlatformSpecificService
             _mainWindow = new MacMainWindow();
             desktop.MainWindow = _mainWindow;
         });
+        
         _vm = new MainViewModel(this);
+        
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             _mainWindow.DataContext = _vm;
