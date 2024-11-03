@@ -1,13 +1,12 @@
-﻿using System.Diagnostics;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
-using ImageMagick;
 using PicView.Avalonia.Clipboard;
 using PicView.Avalonia.ColorManagement;
 using PicView.Avalonia.FileSystem;
 using PicView.Avalonia.Gallery;
+using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.ImageTransformations;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.SettingsManagement;
@@ -130,6 +129,7 @@ public static class FunctionsHelper
             "SetAsLockscreenCentered" => SetAsLockscreenCentered,
             "SetAsWallpaper" => SetAsWallpaper,
             "SetAsWallpaperFitted" => SetAsWallpaperFitted,
+            "SetAsWallpaperStretched" => SetAsWallpaperStretched,
             "SetAsWallpaperFilled" => SetAsWallpaperFilled,
             "SetAsWallpaperCentered" => SetAsWallpaperCentered,
             "SetAsWallpaperTiled" => SetAsWallpaperTiled,
@@ -339,50 +339,27 @@ public static class FunctionsHelper
 
     public static async Task ToggleScroll()
     {
-        if (Vm is null)
-        {
-            return;
-        }
-        
-        UIHelper.ToggleScroll(Vm);
-        await SettingsHelper.SaveSettingsAsync();
+        await SettingsUpdater.ToggleScroll(Vm).ConfigureAwait(false);
     }
 
     public static async Task ChangeCtrlZoom()
     {
-        if (Vm is null)
-        {
-            return;
-        }
-        await UIHelper.ChangeCtrlZoom(Vm);
+        await SettingsUpdater.ChangeCtrlZoom(Vm);
     }
 
     public static async Task ToggleLooping()
     {
-        if (Vm is null)
-        {
-            return;
-        }
-        await UIHelper.ToggleLooping(Vm);
+        await SettingsUpdater.ToggleLooping(Vm);
     }
     
     public static async Task ToggleInterface()
     {
-        if (Vm is null)
-        {
-            return;
-        }
         await HideInterfaceLogic.ToggleUI(Vm);
     }
     
     public static async Task ToggleSubdirectories()
     {
-        if (Vm is null)
-        {
-            return;
-        }
-
-        await UIHelper.ToggleSubdirectories(vm: Vm);
+        await SettingsUpdater.ToggleSubdirectories(vm: Vm);
     }
     
     public static async Task ToggleBottomToolbar()
@@ -396,11 +373,7 @@ public static class FunctionsHelper
     
     public static async Task ToggleTaskbarProgress()
     {
-        if (Vm is null)
-        {
-            return;
-        }
-        await UIHelper.ToggleTaskbarProgress(Vm);
+        await SettingsUpdater.ToggleTaskbarProgress(Vm);
     }
     
     #endregion
@@ -465,18 +438,6 @@ public static class FunctionsHelper
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             // TODO: Make it a setting to close the window
-            desktop.MainWindow?.Close();
-        });
-    }
-    
-    public static async Task Quit()
-    {
-        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            return;
-        }
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
             desktop.MainWindow?.Close();
         });
     }
@@ -766,7 +727,7 @@ public static class FunctionsHelper
     
     public static async Task SideBySide()
     {
-        await UIHelper.SideBySide(Vm);
+        await SettingsUpdater.ToggleSideBySide(Vm);
     }
     
     public static async Task Reload()
@@ -780,6 +741,7 @@ public static class FunctionsHelper
 
     public static Task ResizeImage()
     {
+        Vm?.PlatformService?.ShowSingleImageResizeWindow();
         return Task.CompletedTask;
     }
 
@@ -788,41 +750,15 @@ public static class FunctionsHelper
         return Task.CompletedTask;
     }
 
-    public static async Task Flip()
+    public static Task Flip()
     {
-        await UIHelper.Flip(Vm);
+        ImageControl.Flip(Vm);
+        return Task.CompletedTask;
     }
 
     public static async Task OptimizeImage()
     {
-        if (Vm is null)
-        {
-            return;
-        }
-        if (!NavigationHelper.CanNavigate(Vm))
-        {
-            return;
-        }
-        if (Vm.FileInfo is null)
-        {
-            return;
-        }
-        await Task.Run(() =>
-        {
-            try
-            {
-                ImageOptimizer imageOptimizer = new()
-                {
-                    OptimalCompression = true
-                };
-                imageOptimizer.LosslessCompress(Vm.FileInfo.FullName);
-            }
-            catch (Exception e)
-            {
-                Trace.WriteLine(e);
-            }
-        });
-        SetTitleHelper.RefreshTitle(Vm);
+        await ImageHelper.OptimizeImage(Vm);
     }
 
     public static async Task Slideshow()
@@ -1105,21 +1041,7 @@ public static class FunctionsHelper
 
     public static async Task ResetSettings()
     {
-        SettingsHelper.DeleteSettingFiles();
-        SettingsHelper.SetDefaults();
-        await SettingsHelper.SaveSettingsAsync();
-        string args;
-        if (!NavigationHelper.CanNavigate(Vm))
-        {
-            var argsList = Environment.GetCommandLineArgs();
-            args = argsList.Length > 1 ? argsList[1] : string.Empty;
-        }
-        else
-        {
-            args = Vm.FileInfo.FullName;
-        }
-        ProcessHelper.RestartApp(args);
-        await Quit();
+        await SettingsUpdater.ResetSettings(Vm);
     }
     
     public static async Task Restart()
@@ -1133,7 +1055,6 @@ public static class FunctionsHelper
         }
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
-            // TODO: Make it a setting to close the window
             desktop.MainWindow?.Close();
         });
     }

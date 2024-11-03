@@ -1,10 +1,14 @@
 ﻿using System.Diagnostics;
+using ImageMagick;
+using PicView.Avalonia.Navigation;
+using PicView.Avalonia.UI;
+using PicView.Avalonia.ViewModels;
 using PicView.Core.FileHandling;
 using PicView.Core.ImageDecoding;
 
 namespace PicView.Avalonia.ImageHandling;
 
-public static class ImageFunctions
+public static class ImageHelper
 {
     public static bool IsAnimated(FileInfo fileInfo)
     {
@@ -79,5 +83,37 @@ public static class ImageFunctions
         }
 
         return string.Empty;
+    }
+    
+    public static async Task OptimizeImage(MainViewModel vm)
+    {
+        if (vm is null)
+        {
+            return;
+        }
+        if (!NavigationHelper.CanNavigate(vm))
+        {
+            return;
+        }
+        if (vm.FileInfo is null)
+        {
+            return;
+        }
+        await Task.Run(() =>
+        {
+            try
+            {
+                ImageOptimizer imageOptimizer = new()
+                {
+                    OptimalCompression = true
+                };
+                imageOptimizer.LosslessCompress(vm.FileInfo.FullName);
+            }
+            catch (Exception e)
+            {
+                Trace.WriteLine(e);
+            }
+        });
+        SetTitleHelper.RefreshTitle(vm);
     }
 }

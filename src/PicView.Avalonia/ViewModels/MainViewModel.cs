@@ -1689,7 +1689,7 @@ public class MainViewModel : ViewModelBase
         
         IsLoading = true;
 
-        var file = await ImageFunctions.ConvertToCommonSupportedFormatAsync(path).ConfigureAwait(false);
+        var file = await ImageHelper.ConvertToCommonSupportedFormatAsync(path).ConfigureAwait(false);
 
         var process = new Process
         {

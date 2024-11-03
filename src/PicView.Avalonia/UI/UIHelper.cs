@@ -1,20 +1,14 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
-using Avalonia.Media;
 using Avalonia.Threading;
 using PicView.Avalonia.Gallery;
-using PicView.Avalonia.Navigation;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views;
 using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.Views.UC.Menus;
-using PicView.Avalonia.WindowBehavior;
-using PicView.Core.Config;
 using PicView.Core.Gallery;
-using PicView.Core.Localization;
 
 namespace PicView.Avalonia.UI
 {
@@ -135,161 +129,6 @@ namespace PicView.Avalonia.UI
         }
 
         #endregion Menus
-
-        #region Settings
-
-        public static async Task SideBySide(MainViewModel vm)
-        {
-            if (vm is null)
-            {
-                return;
-            }
-
-            if (SettingsHelper.Settings.ImageScaling.ShowImageSideBySide)
-            {
-                SettingsHelper.Settings.ImageScaling.ShowImageSideBySide = false;
-                vm.IsShowingSideBySide = false;
-                vm.SecondaryImageSource = null;
-                WindowResizing.SetSize(vm);
-            }
-            else
-            {
-                SettingsHelper.Settings.ImageScaling.ShowImageSideBySide = true;
-                vm.IsShowingSideBySide = true;
-                if (NavigationHelper.CanNavigate(vm))
-                {
-                    var preloadValue = await vm.ImageIterator?.GetNextPreLoadValueAsync();
-                    vm.SecondaryImageSource = preloadValue?.ImageModel.Image;
-                    Dispatcher.UIThread.InvokeAsync(() =>
-                    {
-                        WindowResizing.SetSize(vm.ImageWidth, vm.ImageHeight, preloadValue.ImageModel.PixelWidth,
-                                                preloadValue.ImageModel.PixelHeight, vm.RotationAngle, vm);
-                    });
-                }
-            }
-
-            await SettingsHelper.SaveSettingsAsync();
-        }
-
-        public static void ToggleScroll(MainViewModel vm)
-        {
-            if (SettingsHelper.Settings.Zoom.ScrollEnabled)
-            {
-                vm.ToggleScrollBarVisibility = ScrollBarVisibility.Disabled;
-                vm.GetIsScrollingTranslation = TranslationHelper.Translation.ScrollingDisabled;
-                vm.IsScrollingEnabled = false;
-                SettingsHelper.Settings.Zoom.ScrollEnabled = false;
-            }
-            else
-            {
-                vm.ToggleScrollBarVisibility = ScrollBarVisibility.Visible;
-                vm.GetIsScrollingTranslation = TranslationHelper.Translation.ScrollingEnabled;
-                vm.IsScrollingEnabled = true;
-                SettingsHelper.Settings.Zoom.ScrollEnabled = true;
-            }
-
-            WindowResizing.SetSize(vm);
-        }
-
-        public static async Task Flip(MainViewModel vm)
-        {
-            if (vm.ScaleX == 1)
-            {
-                vm.ScaleX = -1;
-                vm.GetIsFlippedTranslation = vm.UnFlip;
-            }
-            else
-            {
-                vm.ScaleX = 1;
-                vm.GetIsFlippedTranslation = vm.Flip;
-            }
-
-            await Dispatcher.UIThread.InvokeAsync(() => { vm.ImageViewer.Flip(true); });
-        }
-
-        public static async Task ToggleLooping(MainViewModel vm)
-        {
-            var value = !SettingsHelper.Settings.UIProperties.Looping;
-            SettingsHelper.Settings.UIProperties.Looping = value;
-            vm.GetIsLoopingTranslation = value
-                ? TranslationHelper.Translation.LoopingEnabled
-                : TranslationHelper.Translation.LoopingDisabled;
-            vm.IsLooping = value;
-
-            var msg = value
-                ? TranslationHelper.Translation.LoopingEnabled
-                : TranslationHelper.Translation.LoopingDisabled;
-            await TooltipHelper.ShowTooltipMessageAsync(msg);
-
-            await SettingsHelper.SaveSettingsAsync();
-        }
-
-        public static async Task ChangeCtrlZoom(MainViewModel vm)
-        {
-            SettingsHelper.Settings.Zoom.CtrlZoom = !SettingsHelper.Settings.Zoom.CtrlZoom;
-            vm.GetIsCtrlZoomTranslation = SettingsHelper.Settings.Zoom.CtrlZoom
-                ? TranslationHelper.Translation.CtrlToZoom
-                : TranslationHelper.Translation.ScrollToZoom;
-            
-            // Set source for ChangeCtrlZoomImage
-            if (!Application.Current.TryGetResource("ScanEyeImage", Application.Current.RequestedThemeVariant, out var scanEyeImage ))
-            {
-                return;
-            }
-            if (!Application.Current.TryGetResource("LeftRightArrowsImage", Application.Current.RequestedThemeVariant, out var leftRightArrowsImage ))
-            {
-                return;
-            }
-            var isNavigatingWithCtrl = SettingsHelper.Settings.Zoom.CtrlZoom;
-            vm.ChangeCtrlZoomImage = isNavigatingWithCtrl ? leftRightArrowsImage as DrawingImage : scanEyeImage as DrawingImage;
-            await SettingsHelper.SaveSettingsAsync().ConfigureAwait(false);
-        }
-
-        public static async Task ToggleSubdirectories(MainViewModel vm)
-        {
-            if (SettingsHelper.Settings.Sorting.IncludeSubDirectories)
-            {
-                vm.IsIncludingSubdirectories = false;
-                SettingsHelper.Settings.Sorting.IncludeSubDirectories = false;
-            }
-            else
-            {
-                vm.IsIncludingSubdirectories = true;
-                SettingsHelper.Settings.Sorting.IncludeSubDirectories = true;
-            }
-
-            await vm.ImageIterator.ReloadFileList();
-            SetTitleHelper.SetTitle(vm);
-            await SettingsHelper.SaveSettingsAsync();
-        }
-
-        public static async Task ToggleTaskbarProgress(MainViewModel vm)
-        {
-            if (SettingsHelper.Settings.UIProperties.IsTaskbarProgressEnabled)
-            {
-                SettingsHelper.Settings.UIProperties.IsTaskbarProgressEnabled = false;
-                await Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    vm.PlatformService.StopTaskbarProgress();
-                });
-            }
-            else
-            {
-                SettingsHelper.Settings.UIProperties.IsTaskbarProgressEnabled = true;
-                if (NavigationHelper.CanNavigate(vm))
-                {
-                    await Dispatcher.UIThread.InvokeAsync(() =>
-                    {
-                        vm.PlatformService.SetTaskbarProgress((ulong)vm.ImageIterator.CurrentIndex,
-                            (ulong)vm.ImageIterator.ImagePaths.Count);
-                    });
-                }
-            }
-
-            await SettingsHelper.SaveSettingsAsync();
-        }
-
-        #endregion
 
         #region Navigation
 
