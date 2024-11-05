@@ -245,6 +245,9 @@ public static class WindowResizing
 
     public static void SaveSize(Window window)
     {
+        if (SettingsHelper.Settings.WindowProperties.Maximized || SettingsHelper.Settings.WindowProperties.Fullscreen || SettingsHelper.Settings.WindowProperties.AutoFit)
+            return;
+            
         if (Dispatcher.UIThread.CheckAccess())
         {
             Set();

@@ -27,11 +27,7 @@ public static class WindowFunctions
     }
     public static async Task WindowClosingBehavior(Window window)
     {
-        if (!SettingsHelper.Settings.WindowProperties.Maximized ||
-            !SettingsHelper.Settings.WindowProperties.Fullscreen || SettingsHelper.Settings.WindowProperties.AutoFit)
-        {
-            WindowResizing.SaveSize(window);
-        }
+        WindowResizing.SaveSize(window);
 
         if (Dispatcher.UIThread.CheckAccess())
         {

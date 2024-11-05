@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Primitives;
+using Avalonia.Threading;
 using PicView.Avalonia.ColorManagement;
 using PicView.Avalonia.Input;
 using PicView.Avalonia.Navigation;
@@ -52,16 +53,31 @@ public static class StartUpHelper
         }
 
         ScreenHelper.UpdateScreenSize(window);
+        
+        window.Show();
         vm.ImageViewer = new ImageViewer();
         HandleStartUpMenuOrImage(vm, args);
-
+        Task.Run(async () =>
+        {
+            await LanguageUpdater.UpdateLanguageAsync(vm, settingsExists).ConfigureAwait(false);
+            if (settingsExists)
+            {
+                await KeybindingManager.LoadKeybindings(vm.PlatformService).ConfigureAwait(false);
+            }
+            else
+            {
+                await KeybindingManager.SetDefaultKeybindings(vm.PlatformService).ConfigureAwait(false);
+            }
+        });
+        HandleThemeUpdates(vm);
+        
         if (settingsExists)
         {
-            if (SettingsHelper.Settings.WindowProperties.Maximized)
+            if (SettingsHelper.Settings.WindowProperties.Maximized && !SettingsHelper.Settings.WindowProperties.Fullscreen)
             {
                 WindowFunctions.Maximize();
             }
-            else if (SettingsHelper.Settings.WindowProperties.AutoFit)
+            else if (SettingsHelper.Settings.WindowProperties.AutoFit && !SettingsHelper.Settings.WindowProperties.Fullscreen)
             {
                 HandleAutoFit(vm, desktop);
             }
@@ -70,26 +86,14 @@ public static class StartUpHelper
                 HandleNormalWindow(vm, window);
             }
         }
-        window.Show();
-
-
         UIHelper.SetControls(desktop);
-        Task.Run(async () => await LanguageUpdater.UpdateLanguageAsync(vm, settingsExists));
+        
 
         HandleWindowControlSettings(vm, desktop);
 
         ValidateGallerySettings(vm, settingsExists);
 
-        HandleThemeUpdates(vm);
 
-        if (settingsExists)
-        {
-            Task.Run(() => KeybindingManager.LoadKeybindings(vm.PlatformService));
-        }
-        else
-        {
-            Task.Run(() => KeybindingManager.SetDefaultKeybindings(vm.PlatformService));
-        }
 
         SetWindowEventHandlers(window);
 
@@ -101,6 +105,17 @@ public static class StartUpHelper
         {
             // No other instance is running, create named pipe server
             _ = IPC.StartListeningForArguments(vm);
+        }
+        
+        // Fixes incorrect fullscreen window
+        if (SettingsHelper.Settings.WindowProperties.Fullscreen)
+        {
+            Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                WindowFunctions.Fullscreen(vm, desktop);
+                
+            }, DispatcherPriority.ApplicationIdle).Wait();
+            WindowFunctions.Fullscreen(vm, desktop);
         }
     }
 
