@@ -325,7 +325,6 @@ public class PicBox : Control
         {
 #if DEBUG
             Console.WriteLine(e);
-            TooltipHelper.ShowTooltipMessage(e, true);
 #endif
         }
     }

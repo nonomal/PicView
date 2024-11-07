@@ -119,12 +119,17 @@ public sealed class PreLoader : IDisposable
         }
 
         var removed = _preLoadList.TryRemove(index, out var preLoadValue);
-        if (preLoadValue is not null)
+        if (preLoadValue is null)
+        {
+            return removed;
+        }
+
+        if (preLoadValue.ImageModel != null)
         {
             preLoadValue.ImageModel.FileInfo = null;
-            await AddAsync(index, list, preLoadValue.ImageModel).ConfigureAwait(false);
         }
-        
+
+        await AddAsync(index, list, preLoadValue.ImageModel).ConfigureAwait(false);
         return removed;
     }
     
@@ -134,7 +139,10 @@ public sealed class PreLoader : IDisposable
         {
             if (item.Value is null) continue;
             var fileInfo = new FileInfo(list[item.Key]);
-            item.Value.ImageModel.FileInfo = fileInfo;
+            if (item.Value.ImageModel != null)
+            {
+                item.Value.ImageModel.FileInfo = fileInfo;
+            }
         }
     }
 

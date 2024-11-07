@@ -100,6 +100,8 @@ public partial class EditableTitlebar : UserControl
 
     private async Task HandleRename()
     {
+        // TODO Add to a separate helper class
+        
         if (DataContext is not MainViewModel vm)
         {
             return;
@@ -120,7 +122,11 @@ public partial class EditableTitlebar : UserControl
 
         if (File.Exists(newPath))
         {
+            CloseTitlebar();
+            vm.IsLoading = false;
             // Show error message to user
+            // TODO Translate error message
+            await TooltipHelper.ShowTooltipMessageAsync(TranslationHelper.GetTranslation("FileAlreadyExistsError"), true);
             return;
         }
         

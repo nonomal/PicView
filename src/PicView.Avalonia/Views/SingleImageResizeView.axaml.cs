@@ -82,18 +82,27 @@ public partial class SingleImageResizeView : UserControl
             return;
         }
 
-        if (JpgItem.IsSelected)
+        try
         {
-            QualitySlider.IsEnabled = true;
+            if (JpgItem.IsSelected)
+            {
+                QualitySlider.IsEnabled = true;
+            }
+            else if (vm.FileInfo.Extension.Equals(".jpg", StringComparison.OrdinalIgnoreCase) ||
+                     vm.FileInfo.Extension.Equals(".jpeg", StringComparison.OrdinalIgnoreCase))
+            {
+                QualitySlider.IsEnabled = true;
+            }
+            else
+            {
+                QualitySlider.IsEnabled = false;
+            }
         }
-        else if (vm.FileInfo.Extension.Equals(".jpg", StringComparison.OrdinalIgnoreCase) ||
-                 vm.FileInfo.Extension.Equals(".jpeg", StringComparison.OrdinalIgnoreCase))
+        catch (Exception e)
         {
-            QualitySlider.IsEnabled = true;
-        }
-        else
-        {
-            QualitySlider.IsEnabled = false;
+#if DEBUG
+            Console.WriteLine(e);
+#endif
         }
     }
 
