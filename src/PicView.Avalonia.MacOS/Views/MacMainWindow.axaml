@@ -7,8 +7,8 @@
     MinHeight="{CompiledBinding WindowMinSize}"
     MinWidth="{CompiledBinding WindowMinSize}"
     SizeChanged="Control_OnSizeChanged"
-    SizeToContent="{Binding SizeToContent}"
-    Title="{Binding WindowTitle}"
+    SizeToContent="{CompiledBinding SizeToContent}"
+    Title="{CompiledBinding WindowTitle}"
     mc:Ignorable="d"
     x:Class="PicView.Avalonia.MacOS.Views.MacMainWindow"
     x:DataType="viewModels:MainViewModel"
@@ -82,18 +82,21 @@
                     <NativeMenuItemSeparator />
                     <NativeMenuItem Command="{CompiledBinding CropCommand}" Header="{CompiledBinding Crop, Mode=OneWay}" />
                     <NativeMenuItemSeparator />
+                    <!--  TODO Implement setting as wallpaper for macOS  -->
                     <NativeMenuItem
                         Command="{CompiledBinding SetAsWallpaperCommand}"
                         CommandParameter="{CompiledBinding FileInfo.FullName,
                                                            FallbackValue=''}"
                         Header="{CompiledBinding SetAsWallpaper,
-                                                 Mode=OneWay}" />
+                                                 Mode=OneWay}"
+                        IsEnabled="False" />
                     <NativeMenuItem
                         Command="{CompiledBinding SetAsLockScreenCommand}"
                         CommandParameter="{CompiledBinding FileInfo.FullName,
                                                            FallbackValue=''}"
                         Header="{CompiledBinding SetAsLockScreenImage,
-                                                 Mode=OneWay}" />
+                                                 Mode=OneWay}"
+                        IsEnabled="False" />
                     <NativeMenuItemSeparator />
                     <NativeMenuItem Command="{CompiledBinding ShowExifWindowCommand}" Header="{CompiledBinding ImageInfo, Mode=OneWay}" />
                     <NativeMenuItem Header="{CompiledBinding FileProperties}" />

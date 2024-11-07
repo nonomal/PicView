@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -32,6 +33,12 @@ public partial class MainView : UserControl
             PointerPressed += PointerPressedBehavior;
 
             MainContextMenu.Opened += OnMainContextMenuOpened;
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                // TODO Implement setting as wallpaper for macOS
+                WallpaperMenuItem.IsEnabled = false;
+            }
             
             if (DataContext is not MainViewModel vm)
             {
@@ -40,7 +47,6 @@ public partial class MainView : UserControl
             HideInterfaceLogic.AddHoverButtonEvents(AltButtonsPanel, vm);
             PointerWheelChanged += async (_, e) => await vm.ImageViewer.PreviewOnPointerWheelChanged(this, e);
         };
-
     }
 
     private void PointerPressedBehavior(object? sender, PointerPressedEventArgs e)

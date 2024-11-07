@@ -541,7 +541,11 @@
             <Separator />
 
             <!--  Set as wallpaper  -->
-            <MenuItem Header="{CompiledBinding SetAsWallpaper, Mode=OneWay}" PointerReleased="SetWallpaperClick">
+            <MenuItem
+                Header="{CompiledBinding SetAsWallpaper,
+                                         Mode=OneWay}"
+                PointerReleased="SetWallpaperClick"
+                x:Name="WallpaperMenuItem">
                 <MenuItem.Icon>
                     <Path
                         Data="{StaticResource PanoramaGeometry}"
