@@ -49,7 +49,17 @@ public static class UpdateManager
                         WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory
                     }
                 };
-                process.Start();
+                try
+                {
+                    process.Start();
+                }
+                catch (Exception e)
+                {
+                    #if DEBUG
+                    Console.WriteLine(e);
+                    #endif
+                    return;
+                }
                 Environment.Exit(0);
             }
         }

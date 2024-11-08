@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using System.Runtime.InteropServices;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Primitives;
@@ -210,6 +211,11 @@ public static class StartUpHelper
         WindowFunctions.CenterWindowOnScreen();
         vm.CanResize = true;
         vm.IsAutoFit = false;
+
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            SettingsHelper.Settings.Zoom.IsUsingTouchPad = true;
+        }
     }
 
     private static void HandleMultipleInstances(string[] args)

@@ -344,7 +344,7 @@ public static class FunctionsHelper
 
     public static async Task ChangeCtrlZoom()
     {
-        await SettingsUpdater.ChangeCtrlZoom(Vm);
+        await SettingsUpdater.ToggleCtrlZoom(Vm);
     }
 
     public static async Task ToggleLooping()
