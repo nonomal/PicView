@@ -73,24 +73,24 @@ public static class ErrorHandling
             return;
         }
         
-        vm.ImageIterator?.Clear();
-        
         if (!NavigationHelper.CanNavigate(vm))
         {
             await FileHistoryNavigation.OpenLastFileAsync(vm);
             return;
         }
         
-        if (File.Exists(vm.FileInfo.FullName))
-        {
-            await NavigationHelper.LoadPicFromStringAsync(vm.FileInfo.FullName, vm);
-        }
-        else
+        if (vm.ImageIterator is null)
         {
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 ShowStartUpMenu(vm);
             });
+            return;
         }
+        
+        vm.ImageIterator.Clear();
+        await vm.ImageIterator.ReloadFileList().ConfigureAwait(false);
+        var index = vm.ImageIterator.ImagePaths.IndexOf(vm.FileInfo.FullName);
+        await vm.ImageIterator.IterateToIndex(index).ConfigureAwait(false);
     }
 }
