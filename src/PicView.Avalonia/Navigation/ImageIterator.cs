@@ -167,9 +167,6 @@ public sealed class ImageIterator : IDisposable
                 }
             }
 
-            var indexOf = ImagePaths.IndexOf(_vm.FileInfo.FullName);
-            _vm.SelectedGalleryItemIndex = indexOf; // Fixes deselection bug
-            CurrentIndex = indexOf;
             GalleryNavigation.CenterScrollToSelectedItem(_vm);
         }
 
