@@ -45,7 +45,12 @@
                                                            FallbackValue=''}"
                         Header="{CompiledBinding Print,
                                                  Mode=OneWay}" />
-                    <NativeMenuItem Command="{CompiledBinding LocateOnDiskCommand}" Header="{CompiledBinding ShowInFolder, Mode=OneWay}" />
+                    <NativeMenuItem
+                        Command="{CompiledBinding LocateOnDiskCommand}"
+                        CommandParameter="{CompiledBinding FileInfo.FullName,
+                                                           FallbackValue=''}"
+                        Header="{CompiledBinding ShowInFolder,
+                                                 Mode=OneWay}" />
                     <NativeMenuItemSeparator />
                     <NativeMenuItem Command="{CompiledBinding DeleteFileCommand}" Header="{CompiledBinding DeleteFile, Mode=OneWay}" />
                     <NativeMenuItemSeparator />
@@ -206,7 +211,7 @@
                     <NativeMenuItem
                         Command="{CompiledBinding ToggleScrollCommand}"
                         Header="{CompiledBinding ToggleScroll}"
-                        IsChecked="{CompiledBinding GetIsScrollingTranslation}"
+                        IsChecked="{CompiledBinding IsScrollingEnabled}"
                         ToggleType="CheckBox" />
                     <NativeMenuItemSeparator />
                     <NativeMenuItem

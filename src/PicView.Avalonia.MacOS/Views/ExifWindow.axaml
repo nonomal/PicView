@@ -4,7 +4,7 @@
     ExtendClientAreaTitleBarHeightHint="-1"
     Height="385"
     Title="ExifWindow"
-    Width="890"
+    Width="900"
     mc:Ignorable="d"
     x:Class="PicView.Avalonia.MacOS.Views.ExifWindow"
     x:DataType="viewModels:MainViewModel"
@@ -36,7 +36,7 @@
                 CommandParameter="{CompiledBinding FileInfo.FullName,
                                                    FallbackValue=''}"
                 Height="28"
-                Width="130">
+                Width="135">
                 <TextBlock
                     Classes="txt"
                     HorizontalAlignment="Center"
@@ -64,7 +64,7 @@
                 Classes="noBorderHover"
                 Command="{CompiledBinding OptimizeImageCommand}"
                 Height="28"
-                Width="130">
+                Width="135">
                 <TextBlock
                     Classes="txt"
                     HorizontalAlignment="Center"

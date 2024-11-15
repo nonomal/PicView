@@ -2,12 +2,14 @@
 using Avalonia.Controls;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.Extensions;
+using PicView.Core.Localization;
 
 namespace PicView.Avalonia.Resizing;
 
 public static class AspectRatioHelper
 {
-    public static void SetAspectRatioForTextBox(TextBox widthTextBox, TextBox heightTextBox, bool isWidth, double aspectRatio, MainViewModel vm)
+    public static void SetAspectRatioForTextBox(TextBox widthTextBox, TextBox heightTextBox, bool isWidth,
+        double aspectRatio, MainViewModel vm)
     {
         var percentage = isWidth ? widthTextBox.Text.GetPercentage() : heightTextBox.Text.GetPercentage();
         if (percentage > 0)
@@ -17,7 +19,7 @@ public static class AspectRatioHelper
 
             widthTextBox.Text = newWidth.ToString("# ", CultureInfo.CurrentCulture);
             heightTextBox.Text = newHeight.ToString("# ", CultureInfo.CurrentCulture);
-            
+
             if (isWidth)
             {
                 heightTextBox.Text = newHeight.ToString(CultureInfo.CurrentCulture);
@@ -42,7 +44,7 @@ public static class AspectRatioHelper
                     {
                         heightTextBox.Text = heightTextBox.Text[..^1];
                     }
-                    
+
                 }
                 catch (Exception e)
                 {
@@ -50,8 +52,10 @@ public static class AspectRatioHelper
                     Console.WriteLine(e);
 #endif
                 }
+
                 return;
             }
+
             if (isWidth)
             {
                 var newHeight = Math.Round(width / aspectRatio);
@@ -63,5 +67,33 @@ public static class AspectRatioHelper
                 widthTextBox.Text = newWidth.ToString(CultureInfo.CurrentCulture);
             }
         }
+    }
+
+    public static PrintSizes GetPrintSizes(int pixelWidth, int pixelHeight, double dpiX, double dpiY)
+    {
+        var cm = TranslationHelper.Translation.Centimeters;
+        var mp = TranslationHelper.Translation.MegaPixels;
+        var inches = TranslationHelper.Translation.Inches;
+        var inchesWidth = pixelWidth / dpiX;
+        var inchesHeight = pixelHeight / dpiY;
+        var printSizeInch =
+            $"{inchesWidth.ToString("0.##", CultureInfo.CurrentCulture)} x {inchesHeight.ToString("0.##", CultureInfo.CurrentCulture)} {inches}";
+
+        var cmWidth = pixelWidth / dpiX * 2.54;
+        var cmHeight = pixelHeight / dpiY * 2.54;
+        var printSizeCm =
+            $"{cmWidth.ToString("0.##", CultureInfo.CurrentCulture)} x {cmHeight.ToString("0.##", CultureInfo.CurrentCulture)} {cm}";
+        var sizeMp =
+            $"{((float)pixelHeight *pixelWidth / 1000000).ToString("0.##", CultureInfo.CurrentCulture)} {mp}";
+
+        return new PrintSizes(printSizeCm, printSizeInch, sizeMp);
+        
+    }
+    
+    public readonly struct PrintSizes(string printSizeCm, string printSizeInch, string sizeMp)
+    {
+        public string PrintSizeCm { get; } = printSizeCm;
+        public string PrintSizeInch { get; } = printSizeInch;
+        public string SizeMp { get; } = sizeMp;
     }
 }

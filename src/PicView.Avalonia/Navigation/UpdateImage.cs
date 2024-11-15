@@ -98,12 +98,12 @@ public static class UpdateImage
             }
         }
 
+        vm.PixelWidth = preLoadValue.ImageModel.PixelWidth;
+        vm.PixelHeight = preLoadValue.ImageModel.PixelHeight;
         vm.GetIndex = index + 1;
         vm.ExifOrientation = preLoadValue.ImageModel.EXIFOrientation;
         vm.FileInfo = preLoadValue.ImageModel.FileInfo;
         vm.ZoomValue = 1;
-        vm.PixelWidth = preLoadValue.ImageModel.PixelWidth;
-        vm.PixelHeight = preLoadValue.ImageModel.PixelHeight;
         
         if (SettingsHelper.Settings.ImageScaling.ShowImageSideBySide)
         {

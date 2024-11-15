@@ -76,7 +76,8 @@ public static class SaveImageFileHelper
                 magickImage.Rotate(rotationAngle.Value);
             }
 
-            if (!string.IsNullOrEmpty(ext))
+            var keepExt = string.IsNullOrEmpty(ext); 
+            if (!keepExt)
             {
                 magickImage.Format = ext.ToLowerInvariant() switch
                 {
@@ -91,14 +92,15 @@ public static class SaveImageFileHelper
                 };
             }
 
+            
             if (destination is not null)
             {
-                await magickImage.WriteAsync(ext is not null ? Path.ChangeExtension(destination, ext) : destination)
+                await magickImage.WriteAsync(!keepExt ? Path.ChangeExtension(destination, ext) : destination)
                     .ConfigureAwait(false);
             }
             else if (path is not null)
             {
-                await magickImage.WriteAsync(ext is not null ? Path.ChangeExtension(path, ext) : path)
+                await magickImage.WriteAsync(!keepExt ? Path.ChangeExtension(path, ext) : path)
                     .ConfigureAwait(false);
             }
             else return false;

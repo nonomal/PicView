@@ -2,6 +2,7 @@
 using Avalonia.Media.Imaging;
 using ImageMagick;
 using PicView.Avalonia.ImageHandling;
+using PicView.Avalonia.Resizing;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.ImageDecoding;
@@ -71,9 +72,6 @@ public static class ExifHandling
             };
 
             var meter = TranslationHelper.Translation.Meter;
-            var cm = TranslationHelper.Translation.Centimeters;
-            var mp = TranslationHelper.Translation.MegaPixels;
-            var inches = TranslationHelper.Translation.Inches;
             var square = TranslationHelper.Translation.Square;
             var landscape = TranslationHelper.Translation.Landscape;
             var portrait = TranslationHelper.Translation.Portrait;
@@ -87,19 +85,13 @@ public static class ExifHandling
             {
                 vm.GetPrintSizeCm = vm.GetPrintSizeInch = vm.GetSizeMp = vm.GetResolution = string.Empty;
             }
-            else
+            else 
             {
-                var inchesWidth = vm.PixelWidth / vm.DpiX;
-                var inchesHeight = vm.PixelHeight / vm.DpiY;
-                vm.GetPrintSizeInch =
-                    $"{inchesWidth.ToString("0.##", CultureInfo.CurrentCulture)} x {inchesHeight.ToString("0.##", CultureInfo.CurrentCulture)} {inches}";
+                var printSizes = AspectRatioHelper.GetPrintSizes( vm.PixelWidth, vm.PixelHeight, vm.DpiX, vm.DpiY);
 
-                var cmWidth = vm.PixelWidth / vm.DpiX * 2.54;
-                var cmHeight = vm.PixelHeight / vm.DpiY * 2.54;
-                vm.GetPrintSizeCm =
-                    $"{cmWidth.ToString("0.##", CultureInfo.CurrentCulture)} x {cmHeight.ToString("0.##", CultureInfo.CurrentCulture)} {cm}";
-                vm.GetSizeMp =
-                    $"{((float)vm.PixelHeight * vm.PixelWidth / 1000000).ToString("0.##", CultureInfo.CurrentCulture)} {mp}";
+                vm.GetPrintSizeCm = printSizes.PrintSizeCm;
+                vm.GetPrintSizeInch = printSizes.PrintSizeInch;
+                vm.GetSizeMp = printSizes.SizeMp;
 
                 vm.GetResolution = $"{vm.DpiX} x {vm.DpiY} {TranslationHelper.Translation.Dpi}";
             }

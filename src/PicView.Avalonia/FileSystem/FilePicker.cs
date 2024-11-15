@@ -25,11 +25,21 @@ public static class FilePicker
             return;
         }
         
-        var path = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? file.Path.AbsolutePath : file.Path.LocalPath;
-        await Task.Run(() => NavigationHelper.LoadPicFromStringAsync(path, vm));
+        await Task.Run(() => NavigationHelper.LoadPicFromStringAsync(file, vm));
+    }
+
+    public static async Task<string?> SelectFile()
+    {
+        var file = await SelectIStorageFile();
+        if (file is null)
+        {
+            return null;
+        }
+        
+        return RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? file.Path.AbsolutePath : file.Path.LocalPath;
     }
     
-    public static async Task<IStorageFile?> SelectFile()
+    public static async Task<IStorageFile?> SelectIStorageFile()
     {
         try
         {
@@ -164,17 +174,16 @@ public static class FilePicker
 
     public static async Task PickAndSaveFileAsAsync(string? fileName, MainViewModel vm)
     {
-        var file = await PickFileForSavingAsync(fileName, vm);
+        var file = await PickFileForSavingAsync(fileName);
         if (file is null)
         {
             return;
         }
-
-        var destination = file.Path.LocalPath; // TODO: Handle macOS
-        await FileSaverHelper.SaveFileAsync(fileName, destination, vm);
+        
+        await FileSaverHelper.SaveFileAsync(fileName, file, vm);
     }
     
-    public static async Task<IStorageFile?> PickFileForSavingAsync(string? fileName, MainViewModel vm)
+    public static async Task<string?> PickFileForSavingAsync(string? fileName)
     {
         if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop ||
             desktop.MainWindow?.StorageProvider is not { } provider)
@@ -200,6 +209,8 @@ public static class FilePicker
             SuggestedStartLocation = await desktop.MainWindow.StorageProvider.TryGetFolderFromPathAsync(fileName)
             
         };
-        return await provider.SaveFilePickerAsync(options);
+        var file = await provider.SaveFilePickerAsync(options);
+        var destination = file.Path.LocalPath; // TODO: Handle macOS
+        return destination;
     }
 }
