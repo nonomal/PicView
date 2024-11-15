@@ -381,6 +381,7 @@ public record LanguageModel
     public string? GallerySettings { get; set; }
     public string? GalleryThumbnailStretch { get; set; }
     public string? BottomGalleryThumbnailStretch { get; set; }
+    public string? DeleteFilePermanently { get; set; }
     public string? SideBySide { get; set; }
     public string? SideBySideTooltip { get; set; }
     public string? GlassTheme { get; set; }
