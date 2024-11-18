@@ -193,7 +193,6 @@ public static class FilePicker
         {
             Title = $"{TranslationHelper.Translation.OpenFileDialog} - PicView",
             FileTypeChoices  = [
-                AllFileType,
                 FilePickerFileTypes.ImageAll,
                 JpegFileType,
                 PngFileType,
@@ -210,7 +209,7 @@ public static class FilePicker
             
         };
         var file = await provider.SaveFilePickerAsync(options);
-        var destination = file.Path.LocalPath; // TODO: Handle macOS
+        var destination = file?.Path.LocalPath; // TODO: Handle macOS
         return destination;
     }
 }
