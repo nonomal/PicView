@@ -115,7 +115,7 @@
     <Compile Update="Views\AboutView.axaml.cs">
       <DependentUpon>AboutView.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\ShortcutsView.axaml.cs">
+    <Compile Update="Views\KeybindingsView.axaml.cs">
       <DependentUpon>ShortcutsView.axaml</DependentUpon>
     </Compile>
     <Compile Update="Views\GeneralSettingsView.axaml.cs">

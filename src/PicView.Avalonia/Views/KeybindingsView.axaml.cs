@@ -9,9 +9,9 @@ using PicView.Core.Localization;
 
 namespace PicView.Avalonia.Views;
 
-public partial class ShortcutsView : UserControl
+public partial class KeybindingsView : UserControl
 {
-    public ShortcutsView()
+    public KeybindingsView()
     {
         InitializeComponent();
         DefaultButton.Click += async delegate { await SetDefault(); };

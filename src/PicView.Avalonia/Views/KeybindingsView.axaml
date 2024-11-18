@@ -3,7 +3,7 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d"
-    x:Class="PicView.Avalonia.Views.ShortcutsView"
+    x:Class="PicView.Avalonia.Views.KeybindingsView"
     x:DataType="viewModels:MainViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"

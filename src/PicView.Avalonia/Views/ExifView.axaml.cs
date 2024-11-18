@@ -91,7 +91,7 @@ public partial class ExifView : UserControl
         };
     }
 
-    private async Task SendToImageSaver(string? location, string destination, string? width, string? height, string ext)
+    private static async Task SendToImageSaver(string? location, string destination, string? width, string? height, string ext)
     {
         if (!uint.TryParse(width, out var widthValue) || !uint.TryParse(height, out var heightValue))
         {

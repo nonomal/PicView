@@ -14,7 +14,7 @@ public partial class KeybindingsWindow : Window
         if (!SettingsHelper.Settings.Theme.Dark || SettingsHelper.Settings.Theme.GlassTheme)
         {
             WindowBorder.Background = Brushes.Transparent;
-            XShortcutsView.Background = Brushes.Transparent;
+            XKeybindingsView.Background = Brushes.Transparent;
         }
         Loaded += (sender, e) =>
         {
