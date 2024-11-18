@@ -66,6 +66,7 @@
                     BorderBrush="{DynamicResource MainBorderColor}"
                     BorderThickness="1,0,1,1"
                     Classes="hover"
+                    Click="Minimize"
                     ClickMode="Release"
                     Data="{StaticResource MinimizeGeometry}"
                     DockPanel.Dock="Right"
@@ -98,7 +99,7 @@
                 Focusable="True"
                 Margin="0,28,0,0"
                 Padding="5,2,5,10">
-                <views:ShortcutsView Background="Transparent" PointerPressed="MoveWindow" />
+                <views:KeybindingsView Background="Transparent" PointerPressed="MoveWindow" />
             </customControls:AutoScrollViewer>
         </Panel>
     </Border>
