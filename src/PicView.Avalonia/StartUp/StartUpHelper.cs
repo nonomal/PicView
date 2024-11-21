@@ -55,6 +55,12 @@ public static class StartUpHelper
 
         ScreenHelper.UpdateScreenSize(window);
         
+        if (SettingsHelper.Settings.WindowProperties.AutoFit && !SettingsHelper.Settings.WindowProperties.Fullscreen)
+        {
+            window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            window.Width = SizeDefaults.WindowMinSize;
+            window.Height = SizeDefaults.WindowMinSize;
+        }
         window.Show();
         vm.ImageViewer = new ImageViewer();
         HandleStartUpMenuOrImage(vm, args);
@@ -80,7 +86,7 @@ public static class StartUpHelper
             }
             else if (SettingsHelper.Settings.WindowProperties.AutoFit && !SettingsHelper.Settings.WindowProperties.Fullscreen)
             {
-                HandleAutoFit(vm, desktop);
+                HandleAutoFit(vm);
             }
             else if (!SettingsHelper.Settings.WindowProperties.Fullscreen)
             {
@@ -189,9 +195,8 @@ public static class StartUpHelper
         }
     }
 
-    private static void HandleAutoFit(MainViewModel vm, IClassicDesktopStyleApplicationLifetime desktop)
+    private static void HandleAutoFit(MainViewModel vm)
     {
-        desktop.MainWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
         vm.SizeToContent = SizeToContent.WidthAndHeight;
         vm.CanResize = false;
         vm.IsAutoFit = true;
