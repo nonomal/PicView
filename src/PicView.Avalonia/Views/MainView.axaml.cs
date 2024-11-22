@@ -195,5 +195,6 @@ public partial class MainView : UserControl
     private void SetWallpaperClick(object? sender, RoutedEventArgs e)
     {
         Task.Run(FunctionsHelper.SetAsWallpaper);
+        MainContextMenu.Close();
     }
 }
