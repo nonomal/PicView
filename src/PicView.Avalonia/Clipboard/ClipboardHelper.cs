@@ -94,7 +94,7 @@ public static class ClipboardHelper
                     base64 = Convert.ToBase64String(stream.ToArray());
                     break;
                 case ImageType.Svg:
-                    throw new ArgumentOutOfRangeException();
+                    return;
                 default:
                     throw new ArgumentOutOfRangeException();
             }

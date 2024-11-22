@@ -21,9 +21,8 @@ public partial class SingleImageResizeView : UserControl
     private double _aspectRatio;
 
     private IDisposable? _imageUpdateSubscription;
-
-    // TODO: allow users to be able to disable aspect ratio locking if they want to stretch the image
-    private readonly bool _isKeepingAspectRatio = true;
+    
+    private bool _isKeepingAspectRatio = true;
 
     public SingleImageResizeView()
     {
@@ -51,16 +50,50 @@ public partial class SingleImageResizeView : UserControl
 
             _imageUpdateSubscription = vm.WhenAnyValue(x => x.FileInfo).Select(x => x is not null).Subscribe(_ =>
             {
-                Dispatcher.UIThread.Post(SetIsQualitySliderEnabled);
+                Dispatcher.UIThread.Invoke(SetIsQualitySliderEnabled);
             });
 
             ResetButton.Click += (_, _) =>
             {
                 PixelWidthTextBox.Text = vm.PixelWidth.ToString();
                 PixelHeightTextBox.Text = vm.PixelHeight.ToString();
-                QualitySlider.Value = 90;
+                if (vm.FileInfo.Extension.Equals(".jpg", StringComparison.OrdinalIgnoreCase) ||
+                    vm.FileInfo.Extension.Equals(".jpeg", StringComparison.OrdinalIgnoreCase) ||
+                    vm.FileInfo.Extension.Equals(".png", StringComparison.OrdinalIgnoreCase))
+                {
+                    QualitySlider.IsEnabled = true;
+                    var quality = ImageFunctionHelper.GetCompressionQuality(vm.FileInfo.FullName);
+                    QualitySlider.Value = quality;
+                }
+                else
+                {
+                   QualitySlider.IsEnabled = false; 
+                }
                 ConversionComboBox.SelectedItem = NoConversion;
             };
+
+            LinkChainButton.Click += (_, _) =>
+            {
+                if (_isKeepingAspectRatio)
+                {
+                    _isKeepingAspectRatio = false;
+                    LinkChainImage.IsVisible = false;
+                    UnlinkChainImage.IsVisible = true;
+                }
+                else
+                {
+                    _isKeepingAspectRatio = true;
+                    LinkChainImage.IsVisible = true;
+                    UnlinkChainImage.IsVisible = false;
+                    
+                    AdjustAspectRatio(PixelWidthTextBox);
+                }
+            };
+        };
+
+        Unloaded += delegate
+        {
+            _imageUpdateSubscription?.Dispose();
         };
     }
 
@@ -77,21 +110,22 @@ public partial class SingleImageResizeView : UserControl
 
     private void SetIsQualitySliderEnabled()
     {
-        if (DataContext is not MainViewModel vm)
-        {
-            return;
-        }
+        if (DataContext is not MainViewModel vm) return;
 
         try
         {
-            if (JpgItem.IsSelected)
+            if (JpgItem.IsSelected || PngItem.IsSelected)
             {
                 QualitySlider.IsEnabled = true;
+                QualitySlider.Value = 75;
             }
             else if (vm.FileInfo.Extension.Equals(".jpg", StringComparison.OrdinalIgnoreCase) ||
-                     vm.FileInfo.Extension.Equals(".jpeg", StringComparison.OrdinalIgnoreCase))
+                     vm.FileInfo.Extension.Equals(".jpeg", StringComparison.OrdinalIgnoreCase) ||
+                     vm.FileInfo.Extension.Equals(".png", StringComparison.OrdinalIgnoreCase))
             {
                 QualitySlider.IsEnabled = true;
+                var quality = ImageFunctionHelper.GetCompressionQuality(vm.FileInfo.FullName);
+                QualitySlider.Value = quality;
             }
             else
             {
@@ -187,9 +221,9 @@ public partial class SingleImageResizeView : UserControl
         var options = new FilePickerSaveOptions
         {
             Title = $"{TranslationHelper.Translation.OpenFileDialog} - PicView",
-            SuggestedFileName = Path.GetFileNameWithoutExtension(vm.FileInfo.Name),
+            SuggestedFileName = vm.FileInfo.Name,
             SuggestedStartLocation =
-                await desktop.MainWindow.StorageProvider.TryGetFolderFromPathAsync(vm.FileInfo.FullName)
+                await desktop.MainWindow.StorageProvider.TryGetFolderFromPathAsync(vm.FileInfo.FullName),
         };
         var file = await provider.SaveFilePickerAsync(options);
         if (file is null)
@@ -276,7 +310,8 @@ public partial class SingleImageResizeView : UserControl
             height,
             quality,
             ext,
-            rotationAngle).ConfigureAwait(false);
+            rotationAngle,
+            _isKeepingAspectRatio).ConfigureAwait(false);
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             SpinWaiter.IsVisible = false;

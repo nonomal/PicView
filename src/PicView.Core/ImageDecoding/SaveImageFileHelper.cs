@@ -6,19 +6,22 @@ namespace PicView.Core.ImageDecoding;
 public static class SaveImageFileHelper
 {
     /// <summary>
-    /// Saves an image from a stream or file path asynchronously with optional transformations.
+    /// Saves an image asynchronously from a stream or file path with optional resizing, rotation, and format conversion.
     /// </summary>
-    /// <param name="stream">The stream containing the image data.</param>
-    /// <param name="path">The path of the image file to read.</param>
-    /// <param name="destination">The path of the destination file to save the image.</param>
-    /// <param name="width">The target width of the image.</param>
-    /// <param name="height">The target height of the image.</param>
-    /// <param name="quality">The quality level of the image.</param>
-    /// <param name="ext">The file extension of the output image.</param>
-    /// <param name="rotationAngle">The angle to rotate the image, in degrees.</param>
+    /// <param name="stream">The stream containing the image data. If null, the image will be loaded from the specified file path.</param>
+    /// <param name="path">The path of the image file to load. If null, the image will be loaded from the stream.</param>
+    /// <param name="destination">The path to save the processed image. If null, the image will be saved to the original path.</param>
+    /// <param name="width">The target width of the image. If null, the image will not be resized based on width.</param>
+    /// <param name="height">The target height of the image. If null, the image will not be resized based on height.</param>
+    /// <param name="quality">The quality level of the saved image, as a percentage (0-100). If null, the default quality is used.</param>
+    /// <param name="ext">The file extension of the output image (e.g., ".jpg", ".png"). If null, the original extension is kept.</param>
+    /// <param name="rotationAngle">The angle to rotate the image, in degrees. If null, no rotation is applied.</param>
+    /// <param name="respectAspectRatio">Indicates whether to maintain the aspect ratio when resizing.</param>
     /// <returns>True if the image is saved successfully; otherwise, false.</returns>
-    public static async Task<bool> SaveImageAsync(Stream? stream, string? path, string? destination = null, uint? width = null,
-        uint? height = null, uint? quality = null, string? ext = null, double? rotationAngle = null)
+    public static async Task<bool> SaveImageAsync(Stream? stream, string? path, string? destination = null,
+        uint? width = null,
+        uint? height = null, uint? quality = null, string? ext = null, double? rotationAngle = null,
+        bool respectAspectRatio = true)
     {
         try
         {
@@ -48,7 +51,20 @@ public static class SaveImageFileHelper
                 {
                     if (height > 0)
                     {
-                        magickImage.Resize(width > 0 ? width.Value : 0, height.Value);
+                        if (!respectAspectRatio)
+                        {
+                            var geometry = new MagickGeometry(width > 0 ? width.Value : 0, height.Value)
+                                { IgnoreAspectRatio = true };
+                            magickImage.Resize(geometry);
+                        }
+                        else
+                        {
+                            magickImage.Resize(width > 0 ? width.Value : 0, height.Value);
+                        }
+                    }
+                    else
+                    {
+                        magickImage.Resize(width.Value, 0);
                     }
                 }
                 else
@@ -62,7 +78,20 @@ public static class SaveImageFileHelper
                 {
                     if (width > 0)
                     {
-                        magickImage.Resize(width.Value, height > 0 ? height.Value : 0);
+                        if (!respectAspectRatio)
+                        {
+                            var geometry = new MagickGeometry(width > 0 ? width.Value : 0, height.Value)
+                                { IgnoreAspectRatio = true };
+                            magickImage.Resize(geometry);
+                        }
+                        else
+                        {
+                            magickImage.Resize(width.Value, height > 0 ? height.Value : 0);
+                        }
+                    }
+                    else
+                    {
+                        magickImage.Resize(0, height.Value);
                     }
                 }
                 else
@@ -76,7 +105,7 @@ public static class SaveImageFileHelper
                 magickImage.Rotate(rotationAngle.Value);
             }
 
-            var keepExt = string.IsNullOrEmpty(ext); 
+            var keepExt = string.IsNullOrEmpty(ext);
             if (!keepExt)
             {
                 magickImage.Format = ext.ToLowerInvariant() switch
@@ -92,7 +121,7 @@ public static class SaveImageFileHelper
                 };
             }
 
-            
+
             if (destination is not null)
             {
                 await magickImage.WriteAsync(!keepExt ? Path.ChangeExtension(destination, ext) : destination)
@@ -103,13 +132,16 @@ public static class SaveImageFileHelper
                 await magickImage.WriteAsync(!keepExt ? Path.ChangeExtension(path, ext) : path)
                     .ConfigureAwait(false);
             }
-            else return false;
+            else
+            {
+                return false;
+            }
         }
         catch (Exception exception)
         {
-    #if DEBUG
+#if DEBUG
             Trace.WriteLine(exception);
-    #endif
+#endif
             return false;
         }
 
@@ -118,26 +150,21 @@ public static class SaveImageFileHelper
 
 
     /// <summary>
-    /// Resizes an image asynchronously with optional compression and format conversion.
+    /// Resizes and optionally compresses an image asynchronously, with optional format conversion.
     /// </summary>
-    /// <param name="fileInfo">The FileInfo of the image file to resize.</param>
-    /// <param name="width">The target width of the image.</param>
-    /// <param name="height">The target height of the image.</param>
-    /// <param name="quality">The quality level of the image.</param>
-    /// <param name="percentage">The percentage value to resize the image.</param>
-    /// <param name="destination">The path of the destination file to save the resized image.</param>
-    /// <param name="compress">Indicates whether to compress the image.</param>
-    /// <param name="ext">The file extension of the output image.</param>
+    /// <param name="fileInfo">The FileInfo object representing the image file to resize.</param>
+    /// <param name="width">The target width of the resized image. Ignored if percentage is specified.</param>
+    /// <param name="height">The target height of the resized image. Ignored if percentage is specified.</param>
+    /// <param name="quality">The quality level of the resized image, as a percentage (0-100). Defaults to 100.</param>
+    /// <param name="percentage">An optional percentage to resize the image by. If specified, width and height are ignored.</param>
+    /// <param name="destination">The path to save the resized image. If null, the original file will be overwritten.</param>
+    /// <param name="compress">Indicates whether to apply optimal compression to the image after resizing. If null, no compression is applied.</param>
+    /// <param name="ext">The file extension of the output image (e.g., ".jpg", ".png"). If null, the original extension is kept.</param>
     /// <returns>True if the image is resized and saved successfully; otherwise, false.</returns>
     public static async Task<bool> ResizeImageAsync(FileInfo fileInfo, uint width, uint height, uint quality = 100,
         Percentage? percentage = null, string? destination = null, bool? compress = null, string? ext = null)
     {
         if (fileInfo.Exists == false)
-        {
-            return false;
-        }
-
-        if (width < 0 && percentage is not null || height < 0 && percentage is not null)
         {
             return false;
         }
@@ -155,9 +182,14 @@ public static class SaveImageFileHelper
         try
         {
             if (fileInfo.Length < 2147483648)
+            {
                 await magick.ReadAsync(fileInfo).ConfigureAwait(false);
-            // ReSharper disable once MethodHasAsyncOverload
-            else magick.Read(fileInfo);
+            }
+            else
+            {
+                // ReSharper disable once MethodHasAsyncOverload
+                magick.Read(fileInfo);
+            }
         }
         catch (MagickException e)
         {
@@ -229,10 +261,14 @@ public static class SaveImageFileHelper
 
         magick.Dispose();
 
-        if (!compress.HasValue) return true;
+        if (!compress.HasValue)
+        {
+            return true;
+        }
+
         ImageOptimizer imageOptimizer = new()
         {
-            OptimalCompression = compress.Value,
+            OptimalCompression = compress.Value
         };
 
         var x = destination ?? fileInfo.FullName;

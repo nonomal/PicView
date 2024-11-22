@@ -30,5 +30,12 @@ namespace PicView.Core.ImageDecoding
                 return 0;
             }
         }
+        
+        public static uint GetCompressionQuality(string file)
+        {
+            using var magickImage = new MagickImage();
+            magickImage.Ping(file);
+            return magickImage.Quality;
+        }
     }
 }
