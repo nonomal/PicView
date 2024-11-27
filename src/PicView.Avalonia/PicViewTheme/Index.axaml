@@ -18,6 +18,7 @@
                 <ResourceInclude Source="Controls/Menu.axaml" />
                 <ResourceInclude Source="Controls/MenuFlyoutPresenter.axaml" />
                 <ResourceInclude Source="Controls/PathIcon.axaml" />
+                <ResourceInclude Source="Controls/ProgressBar.axaml" />
                 <ResourceInclude Source="Controls/RadioButton.axaml" />
                 <ResourceInclude Source="Controls/RepeatButton.axaml" />
                 <ResourceInclude Source="Controls/Scrollbar.axaml" />

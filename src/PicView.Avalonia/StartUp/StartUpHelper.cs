@@ -93,17 +93,11 @@ public static class StartUpHelper
                 HandleNormalWindow(vm, window);
             }
         }
-        UIHelper.SetControls(desktop);
         
-
+        UIHelper.SetControls(desktop);
         HandleWindowControlSettings(vm, desktop);
-
         ValidateGallerySettings(vm, settingsExists);
-
-
-
         SetWindowEventHandlers(window);
-
         UIHelper.AddMenus();
 
         Application.Current.Name = "PicView";
