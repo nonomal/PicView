@@ -140,6 +140,7 @@ public static class FunctionsHelper
             "GalleryClick" => GalleryClick,
             "Slideshow" => Slideshow,
             "ColorPicker" => ColorPicker,
+            "Restart" => Restart,
 
             _ => null
         });
@@ -1046,7 +1047,32 @@ public static class FunctionsHelper
     
     public static async Task Restart()
     {
-        ProcessHelper.RestartApp(Environment.GetCommandLineArgs()?.ToString());
+        var openFile = string.Empty;
+        var getFromArgs = false;
+        if (Vm?.FileInfo is not null)
+        {
+            if (Vm.FileInfo.Exists)
+            {
+                openFile = Vm.FileInfo.FullName;
+            }
+            else
+            {
+                getFromArgs = true;
+            }
+        }
+        else
+        {
+            getFromArgs = true;
+        }
+        if (getFromArgs)
+        {
+            var args = Environment.GetCommandLineArgs();
+            if (args is not null && args.Length > 0)
+            {
+                openFile = args[1];
+            }
+        }
+        ProcessHelper.RestartApp(openFile);
 
         if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
         {
