@@ -18,8 +18,8 @@
                   Height="18"
                   VerticalAlignment="Center"
                   Background="{TemplateBinding Background}"
-                  BorderBrush="{TemplateBinding BorderBrush}"
-                  BorderThickness="{TemplateBinding BorderThickness}"
+                  BorderBrush="{DynamicResource MainBorderColor}"
+                  BorderThickness="1"
                   CornerRadius="{TemplateBinding CornerRadius}">
             <Panel>
               <Path Name="checkMark"
@@ -65,6 +65,9 @@
     </Style>
     <Style Selector="^:checked /template/ Path#checkMark">
       <Setter Property="IsVisible" Value="True" />
+    </Style>
+    <Style Selector="^:checked /template/ Border#border">
+      <Setter Property="BorderBrush" Value="{DynamicResource TertiaryBorderColor}" />
     </Style>
     <Style Selector="^:indeterminate /template/ Rectangle#indeterminateMark">
       <Setter Property="IsVisible" Value="True" />

@@ -46,40 +46,49 @@ public partial class App : Application, IPlatformSpecificService
 
     public override async void OnFrameworkInitializationCompleted()
     {
-        base.OnFrameworkInitializationCompleted();
-
-        if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            return;
-        }
-
-        bool settingsExists;
         try
         {
-            settingsExists = await SettingsHelper.LoadSettingsAsync().ConfigureAwait(false);
-        }
-        catch (TaskCanceledException)
-        {
-            return;
-        }
-        
-        TranslationHelper.Init();
+            base.OnFrameworkInitializationCompleted();
 
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            ThemeManager.DetermineTheme(Current, settingsExists);
+            if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                return;
+            }
 
-            _mainWindow = new WinMainWindow();
-            desktop.MainWindow = _mainWindow;
-        });
+            bool settingsExists;
+            try
+            {
+                settingsExists = await SettingsHelper.LoadSettingsAsync().ConfigureAwait(false);
+            }
+            catch (TaskCanceledException)
+            {
+                return;
+            }
         
-        _vm = new MainViewModel(this);
+            TranslationHelper.Init();
+
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                ThemeManager.DetermineTheme(Current, settingsExists);
+
+                _mainWindow = new WinMainWindow();
+                desktop.MainWindow = _mainWindow;
+            });
         
-        await Dispatcher.UIThread.InvokeAsync(() =>
+            _vm = new MainViewModel(this);
+        
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                _mainWindow.DataContext = _vm;
+                StartUpHelper.Start(_vm, settingsExists, desktop, _mainWindow);
+            });
+        }
+        catch (Exception e)
         {
-            _mainWindow.DataContext = _vm;
-            StartUpHelper.Start(_vm, settingsExists, desktop, _mainWindow);
-        });
+            #if DEBUG
+            Console.WriteLine(e);
+            #endif
+        }
     }
     
     #region Interface Implementations
@@ -366,7 +375,7 @@ public partial class App : Application, IPlatformSpecificService
             }
             else
             {
-                _batchResizeWindow.Activate();
+                _batchResizeWindow.Show();
             }
             _= FunctionsHelper.CloseMenus();
         }   
