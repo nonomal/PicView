@@ -391,4 +391,6 @@ public record LanguageModel
     public string? AdvanceBy100Images { get; set; }
     public string? GoBackBy10Images { get; set; }
     public string? GoBackBy100Images { get; set; }
+    
+    public string? WidthAndHeight { get; set; }
 }

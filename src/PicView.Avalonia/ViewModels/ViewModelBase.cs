@@ -252,9 +252,16 @@ public class ViewModelBase : ReactiveObject
         Lossy = TranslationHelper.Translation.Lossy;
         Start = TranslationHelper.Translation.Start;
         Thumbnail = TranslationHelper.Translation.Thumbnail;
+        WidthAndHeight = TranslationHelper.Translation.WidthAndHeight;
     }
 
     #region Strings
+    
+    public string? WidthAndHeight
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
     
     public string? Thumbnail
     {
