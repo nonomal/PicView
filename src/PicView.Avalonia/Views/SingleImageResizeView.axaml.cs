@@ -40,8 +40,8 @@ public partial class SingleImageResizeView : UserControl
             SaveButton.Click += async (_, _) => await SaveImage(vm).ConfigureAwait(false);
             SaveAsButton.Click += async (_, _) => await SaveImageAs(vm).ConfigureAwait(false);
 
-            PixelWidthTextBox.KeyDown += async (_, e) => await OnKeyDownVerifyInput(e);
-            PixelHeightTextBox.KeyDown += async (_, e) => await OnKeyDownVerifyInput(e);
+            PixelWidthTextBox.KeyDown += async (_, e) => await SaveImageOnEnter(e);
+            PixelHeightTextBox.KeyDown += async (_, e) => await SaveImageOnEnter(e);
 
             PixelWidthTextBox.KeyUp += delegate { AdjustAspectRatio(PixelWidthTextBox); };
             PixelHeightTextBox.KeyUp += delegate { AdjustAspectRatio(PixelHeightTextBox); };
@@ -140,73 +140,16 @@ public partial class SingleImageResizeView : UserControl
         }
     }
 
-    private async Task OnKeyDownVerifyInput(KeyEventArgs e)
+    private async Task SaveImageOnEnter(KeyEventArgs e)
     {
-        switch (e.Key)
+        if (e.Key == Key.Enter)
         {
-            case Key.D0:
-            case Key.D1:
-            case Key.D2:
-            case Key.D3:
-            case Key.D4:
-            case Key.D5:
-            case Key.D6:
-            case Key.D7:
-            case Key.D8:
-            case Key.D9:
-            case Key.NumPad0:
-            case Key.NumPad1:
-            case Key.NumPad2:
-            case Key.NumPad3:
-            case Key.NumPad4:
-            case Key.NumPad5:
-            case Key.NumPad6:
-            case Key.NumPad7:
-            case Key.NumPad8:
-            case Key.NumPad9:
-            case Key.Back:
-            case Key.Delete:
-                break; // Allow numbers and basic operations
-
-            case Key.Left:
-            case Key.Right:
-            case Key.Tab:
-            case Key.OemBackTab:
-                break; // Allow navigation keys
-
-            case Key.A:
-            case Key.C:
-            case Key.X:
-            case Key.V:
-                if (e.KeyModifiers == KeyModifiers.Control)
-                {
-                    // Allow Ctrl + A, Ctrl + C, Ctrl + X, and Ctrl + V (paste)
-                    break;
-                }
-
-                e.Handled = true; // Only allow with Ctrl
+            if (DataContext is not MainViewModel vm)
+            {
                 return;
+            }
 
-            case Key.Oem5: // Key for `%` symbol (may vary based on layout)
-                break; // Allow the percentage symbol (%)
-
-            case Key.Escape: // Handle Escape key
-                Focus();
-                e.Handled = true;
-                return;
-
-            case Key.Enter: // Handle Enter key for saving
-                if (DataContext is not MainViewModel vm)
-                {
-                    return;
-                }
-
-                await SaveImage(vm).ConfigureAwait(false);
-                return;
-
-            default:
-                e.Handled = true; // Block all other inputs
-                return;
+            await SaveImage(vm).ConfigureAwait(false);
         }
     }
 

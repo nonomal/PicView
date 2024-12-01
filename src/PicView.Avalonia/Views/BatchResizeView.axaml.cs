@@ -48,7 +48,6 @@ public partial class BatchResizeView : UserControl
             SourceFolderTextBox.Text = vm.FileInfo?.DirectoryName ?? string.Empty;
             
             StartButton.Click += async (_, _) => await StartBatchResize();
-
         };
     }
 
