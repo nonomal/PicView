@@ -426,36 +426,44 @@
                     <ComboBoxItem Content="7" />
                 </ComboBox>
             </StackPanel>
-            <customControls:AutoScrollViewer MaxHeight="350" x:Name="AutoScrollViewer">
+
+            <customControls:AutoScrollViewer
+                Margin="5,2,0,0"
+                MaxHeight="350"
+                x:Name="AutoScrollViewer">
                 <StackPanel>
 
                     <!--  Thumb 1  -->
-                    <StackPanel IsVisible="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=1, Converter={StaticResource IndexBiggerThanBooleanConverter}}" Orientation="Horizontal">
+                    <StackPanel
+                        IsVisible="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=1, Converter={StaticResource IndexBiggerThanBooleanConverter}}"
+                        Margin="0,5,0,0"
+                        Orientation="Horizontal">
                         <TextBlock
                             Classes="txt"
-                            Margin="5,0,0,0"
+                            Margin="8,0,0,0"
                             Width="130">
                             <Run Text="{CompiledBinding Thumbnail}" />
                             <Run Text=" 1" />
+                            <LineBreak />
+                            <Run Text="{CompiledBinding OutputFolder}" />
                         </TextBlock>
                         <customControls:FuncTextBox
                             Classes="hover TStyle"
-                            Margin="11,0,10,0"
+                            Margin="4,0,10,0"
                             Text="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=1, Converter={StaticResource IndexToStringSizeConverter}}"
-                            Width="415" />
+                            Width="410" />
                     </StackPanel>
-
 
                     <StackPanel
                         IsVisible="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=1, Converter={StaticResource IndexBiggerThanBooleanConverter}}"
-                        Margin="0,10"
+                        Margin="4,10,0,15"
                         Orientation="Horizontal">
 
                         <TextBlock
                             Classes="txt"
-                            Margin="5,0,0,0"
+                            Margin="8,0,0,0"
                             Text="{CompiledBinding Resize}"
-                            Width="130"
+                            Width="125"
                             x:Name="PercentageThumb1TextBlock" />
 
                         <ComboBox
@@ -465,7 +473,7 @@
                             CornerRadius="2"
                             FontFamily="/Assets/Fonts/Roboto-Medium.ttf#Roboto"
                             Height="30"
-                            Margin="11,0,10,0"
+                            Margin="6,0,10,0"
                             Padding="5,7,0,7"
                             SelectedIndex="0"
                             Width="195"
@@ -478,7 +486,7 @@
                         <customControls:FuncTextBox
                             Classes="hover TStyle"
                             Text="80"
-                            Width="205"
+                            Width="200"
                             x:Name="Thumb1ValueBox" />
 
                         <Image
@@ -491,32 +499,36 @@
 
 
                     <!--  Thumb 2  -->
-                    <StackPanel IsVisible="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=2, Converter={StaticResource IndexBiggerThanBooleanConverter}}" Orientation="Horizontal">
+                    <StackPanel
+                        IsVisible="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=2, Converter={StaticResource IndexBiggerThanBooleanConverter}}"
+                        Margin="0,5,0,0"
+                        Orientation="Horizontal">
                         <TextBlock
                             Classes="txt"
-                            Margin="5,0,0,0"
+                            Margin="8,0,0,0"
                             Width="130">
                             <Run Text="{CompiledBinding Thumbnail}" />
                             <Run Text=" 2" />
+                            <LineBreak />
+                            <Run Text="{CompiledBinding OutputFolder}" />
                         </TextBlock>
                         <customControls:FuncTextBox
                             Classes="hover TStyle"
-                            Margin="11,0,10,0"
+                            Margin="4,0,10,0"
                             Text="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=2, Converter={StaticResource IndexToStringSizeConverter}}"
-                            Width="415" />
+                            Width="410" />
                     </StackPanel>
-
 
                     <StackPanel
                         IsVisible="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=2, Converter={StaticResource IndexBiggerThanBooleanConverter}}"
-                        Margin="0,10"
+                        Margin="4,10,0,15"
                         Orientation="Horizontal">
 
                         <TextBlock
                             Classes="txt"
-                            Margin="5,0,0,0"
+                            Margin="8,0,0,0"
                             Text="{CompiledBinding Resize}"
-                            Width="130"
+                            Width="125"
                             x:Name="PercentageThumb2TextBlock" />
 
                         <ComboBox
@@ -526,7 +538,7 @@
                             CornerRadius="2"
                             FontFamily="/Assets/Fonts/Roboto-Medium.ttf#Roboto"
                             Height="30"
-                            Margin="11,0,10,0"
+                            Margin="6,0,10,0"
                             Padding="5,7,0,7"
                             SelectedIndex="0"
                             Width="195"
@@ -539,7 +551,7 @@
                         <customControls:FuncTextBox
                             Classes="hover TStyle"
                             Text="80"
-                            Width="205"
+                            Width="200"
                             x:Name="Thumb2ValueBox" />
 
                         <Image
@@ -552,32 +564,36 @@
 
 
                     <!--  Thumb 3  -->
-                    <StackPanel IsVisible="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=3, Converter={StaticResource IndexBiggerThanBooleanConverter}}" Orientation="Horizontal">
+                    <StackPanel
+                        IsVisible="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=3, Converter={StaticResource IndexBiggerThanBooleanConverter}}"
+                        Margin="0,5,0,0"
+                        Orientation="Horizontal">
                         <TextBlock
                             Classes="txt"
-                            Margin="5,0,0,0"
+                            Margin="8,0,0,0"
                             Width="130">
                             <Run Text="{CompiledBinding Thumbnail}" />
                             <Run Text=" 3" />
+                            <LineBreak />
+                            <Run Text="{CompiledBinding OutputFolder}" />
                         </TextBlock>
                         <customControls:FuncTextBox
                             Classes="hover TStyle"
-                            Margin="11,0,10,0"
+                            Margin="4,0,10,0"
                             Text="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=3, Converter={StaticResource IndexToStringSizeConverter}}"
-                            Width="415" />
+                            Width="410" />
                     </StackPanel>
-
 
                     <StackPanel
                         IsVisible="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=3, Converter={StaticResource IndexBiggerThanBooleanConverter}}"
-                        Margin="0,10"
+                        Margin="4,10,0,15"
                         Orientation="Horizontal">
 
                         <TextBlock
                             Classes="txt"
-                            Margin="5,0,0,0"
+                            Margin="8,0,0,0"
                             Text="{CompiledBinding Resize}"
-                            Width="130"
+                            Width="125"
                             x:Name="PercentageThumb3TextBlock" />
 
                         <ComboBox
@@ -587,7 +603,7 @@
                             CornerRadius="2"
                             FontFamily="/Assets/Fonts/Roboto-Medium.ttf#Roboto"
                             Height="30"
-                            Margin="11,0,10,0"
+                            Margin="6,0,10,0"
                             Padding="5,7,0,7"
                             SelectedIndex="0"
                             Width="195"
@@ -600,7 +616,7 @@
                         <customControls:FuncTextBox
                             Classes="hover TStyle"
                             Text="80"
-                            Width="205"
+                            Width="200"
                             x:Name="Thumb3ValueBox" />
 
                         <Image
@@ -613,32 +629,36 @@
 
 
                     <!--  Thumb 4  -->
-                    <StackPanel IsVisible="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=4, Converter={StaticResource IndexBiggerThanBooleanConverter}}" Orientation="Horizontal">
+                    <StackPanel
+                        IsVisible="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=4, Converter={StaticResource IndexBiggerThanBooleanConverter}}"
+                        Margin="0,5,0,0"
+                        Orientation="Horizontal">
                         <TextBlock
                             Classes="txt"
-                            Margin="5,0,0,0"
+                            Margin="8,0,0,0"
                             Width="130">
                             <Run Text="{CompiledBinding Thumbnail}" />
                             <Run Text=" 4" />
+                            <LineBreak />
+                            <Run Text="{CompiledBinding OutputFolder}" />
                         </TextBlock>
                         <customControls:FuncTextBox
                             Classes="hover TStyle"
-                            Margin="11,0,10,0"
+                            Margin="4,0,10,0"
                             Text="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=4, Converter={StaticResource IndexToStringSizeConverter}}"
-                            Width="415" />
+                            Width="410" />
                     </StackPanel>
-
 
                     <StackPanel
                         IsVisible="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=4, Converter={StaticResource IndexBiggerThanBooleanConverter}}"
-                        Margin="0,10"
+                        Margin="4,10,0,15"
                         Orientation="Horizontal">
 
                         <TextBlock
                             Classes="txt"
-                            Margin="5,0,0,0"
+                            Margin="8,0,0,0"
                             Text="{CompiledBinding Resize}"
-                            Width="130"
+                            Width="125"
                             x:Name="PercentageThumb4TextBlock" />
 
                         <ComboBox
@@ -648,7 +668,7 @@
                             CornerRadius="2"
                             FontFamily="/Assets/Fonts/Roboto-Medium.ttf#Roboto"
                             Height="30"
-                            Margin="11,0,10,0"
+                            Margin="6,0,10,0"
                             Padding="5,7,0,7"
                             SelectedIndex="0"
                             Width="195"
@@ -661,7 +681,7 @@
                         <customControls:FuncTextBox
                             Classes="hover TStyle"
                             Text="80"
-                            Width="205"
+                            Width="200"
                             x:Name="Thumb4ValueBox" />
 
                         <Image
@@ -673,32 +693,36 @@
                     </StackPanel>
 
                     <!--  Thumb 5  -->
-                    <StackPanel IsVisible="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=5, Converter={StaticResource IndexBiggerThanBooleanConverter}}" Orientation="Horizontal">
+                    <StackPanel
+                        IsVisible="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=5, Converter={StaticResource IndexBiggerThanBooleanConverter}}"
+                        Margin="0,5,0,0"
+                        Orientation="Horizontal">
                         <TextBlock
                             Classes="txt"
-                            Margin="5,0,0,0"
+                            Margin="8,0,0,0"
                             Width="130">
                             <Run Text="{CompiledBinding Thumbnail}" />
                             <Run Text=" 5" />
+                            <LineBreak />
+                            <Run Text="{CompiledBinding OutputFolder}" />
                         </TextBlock>
                         <customControls:FuncTextBox
                             Classes="hover TStyle"
-                            Margin="11,0,10,0"
+                            Margin="4,0,10,0"
                             Text="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=5, Converter={StaticResource IndexToStringSizeConverter}}"
-                            Width="415" />
+                            Width="410" />
                     </StackPanel>
-
 
                     <StackPanel
                         IsVisible="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=5, Converter={StaticResource IndexBiggerThanBooleanConverter}}"
-                        Margin="0,10"
+                        Margin="4,10,0,15"
                         Orientation="Horizontal">
 
                         <TextBlock
                             Classes="txt"
-                            Margin="5,0,0,0"
+                            Margin="8,0,0,0"
                             Text="{CompiledBinding Resize}"
-                            Width="130"
+                            Width="125"
                             x:Name="PercentageThumb5TextBlock" />
 
                         <ComboBox
@@ -708,7 +732,7 @@
                             CornerRadius="2"
                             FontFamily="/Assets/Fonts/Roboto-Medium.ttf#Roboto"
                             Height="30"
-                            Margin="11,0,10,0"
+                            Margin="6,0,10,0"
                             Padding="5,7,0,7"
                             SelectedIndex="0"
                             Width="195"
@@ -721,7 +745,7 @@
                         <customControls:FuncTextBox
                             Classes="hover TStyle"
                             Text="80"
-                            Width="205"
+                            Width="200"
                             x:Name="Thumb5ValueBox" />
 
                         <Image
@@ -733,32 +757,36 @@
                     </StackPanel>
 
                     <!--  Thumb 6  -->
-                    <StackPanel IsVisible="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=6, Converter={StaticResource IndexBiggerThanBooleanConverter}}" Orientation="Horizontal">
+                    <StackPanel
+                        IsVisible="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=6, Converter={StaticResource IndexBiggerThanBooleanConverter}}"
+                        Margin="0,5,0,0"
+                        Orientation="Horizontal">
                         <TextBlock
                             Classes="txt"
-                            Margin="5,0,0,0"
+                            Margin="8,0,0,0"
                             Width="130">
                             <Run Text="{CompiledBinding Thumbnail}" />
                             <Run Text=" 6" />
+                            <LineBreak />
+                            <Run Text="{CompiledBinding OutputFolder}" />
                         </TextBlock>
                         <customControls:FuncTextBox
                             Classes="hover TStyle"
-                            Margin="11,0,10,0"
+                            Margin="4,0,10,0"
                             Text="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=6, Converter={StaticResource IndexToStringSizeConverter}}"
-                            Width="415" />
+                            Width="410" />
                     </StackPanel>
-
 
                     <StackPanel
                         IsVisible="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=6, Converter={StaticResource IndexBiggerThanBooleanConverter}}"
-                        Margin="0,10"
+                        Margin="4,10,0,15"
                         Orientation="Horizontal">
 
                         <TextBlock
                             Classes="txt"
-                            Margin="5,0,0,0"
+                            Margin="8,0,0,0"
                             Text="{CompiledBinding Resize}"
-                            Width="130"
+                            Width="125"
                             x:Name="PercentageThumb6TextBlock" />
 
                         <ComboBox
@@ -768,20 +796,20 @@
                             CornerRadius="2"
                             FontFamily="/Assets/Fonts/Roboto-Medium.ttf#Roboto"
                             Height="30"
-                            Margin="11,0,10,0"
+                            Margin="6,0,10,0"
                             Padding="5,7,0,7"
                             SelectedIndex="0"
                             Width="195"
                             x:Name="Thumb6ComboBox">
                             <ComboBoxItem Content="{CompiledBinding Percentage}" x:Name="Thumb6PercentageItem" />
-                            <ComboBoxItem Content="{CompiledBinding Width}" x:Name="Thumb6WidthItem" />
+                            <ComboBoxItem Content="{CompiledBinding Width}" x:Name="Thumb61WidthItem" />
                             <ComboBoxItem Content="{CompiledBinding Height}" x:Name="Thumb6HeightItem" />
                         </ComboBox>
 
                         <customControls:FuncTextBox
                             Classes="hover TStyle"
                             Text="80"
-                            Width="205"
+                            Width="200"
                             x:Name="Thumb6ValueBox" />
 
                         <Image
@@ -794,32 +822,36 @@
 
 
                     <!--  Thumb 7  -->
-                    <StackPanel IsVisible="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=7, Converter={StaticResource IndexBiggerThanBooleanConverter}}" Orientation="Horizontal">
+                    <StackPanel
+                        IsVisible="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=7, Converter={StaticResource IndexBiggerThanBooleanConverter}}"
+                        Margin="0,5,0,0"
+                        Orientation="Horizontal">
                         <TextBlock
                             Classes="txt"
-                            Margin="5,0,0,0"
+                            Margin="8,0,0,0"
                             Width="130">
                             <Run Text="{CompiledBinding Thumbnail}" />
                             <Run Text=" 7" />
+                            <LineBreak />
+                            <Run Text="{CompiledBinding OutputFolder}" />
                         </TextBlock>
                         <customControls:FuncTextBox
                             Classes="hover TStyle"
-                            Margin="11,0,10,0"
+                            Margin="4,0,10,0"
                             Text="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=7, Converter={StaticResource IndexToStringSizeConverter}}"
-                            Width="415" />
+                            Width="410" />
                     </StackPanel>
-
 
                     <StackPanel
                         IsVisible="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=7, Converter={StaticResource IndexBiggerThanBooleanConverter}}"
-                        Margin="0,10"
+                        Margin="4,10,0,15"
                         Orientation="Horizontal">
 
                         <TextBlock
                             Classes="txt"
-                            Margin="5,0,0,0"
+                            Margin="8,0,0,0"
                             Text="{CompiledBinding Resize}"
-                            Width="130"
+                            Width="125"
                             x:Name="PercentageThumb7TextBlock" />
 
                         <ComboBox
@@ -829,7 +861,7 @@
                             CornerRadius="2"
                             FontFamily="/Assets/Fonts/Roboto-Medium.ttf#Roboto"
                             Height="30"
-                            Margin="11,0,10,0"
+                            Margin="6,0,10,0"
                             Padding="5,7,0,7"
                             SelectedIndex="0"
                             Width="195"
@@ -842,7 +874,7 @@
                         <customControls:FuncTextBox
                             Classes="hover TStyle"
                             Text="80"
-                            Width="205"
+                            Width="200"
                             x:Name="Thumb7ValueBox" />
 
                         <Image
@@ -854,11 +886,9 @@
                     </StackPanel>
 
 
-
                 </StackPanel>
             </customControls:AutoScrollViewer>
         </StackPanel>
-
 
 
         <Border
