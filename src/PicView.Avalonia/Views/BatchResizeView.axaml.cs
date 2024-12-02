@@ -1,6 +1,7 @@
 ﻿using Avalonia.Controls;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.ViewModels;
+using PicView.Core.ImageDecoding;
 using PicView.Core.Localization;
 
 namespace PicView.Avalonia.Views;
@@ -104,15 +105,16 @@ public partial class BatchResizeView : UserControl
             }
         }
 
-        // var success = await SaveImageFileHelper.SaveImageAsync(null,
-        //     file,
-        //     destination,
-        //     width,
-        //     height,
-        //     quality,
-        //     ext,
-        //     null,
-        //     _isKeepingAspectRatio).ConfigureAwait(false);
+        return;
+        var success = await SaveImageFileHelper.SaveImageAsync(null,
+            file,
+            destination,
+            width,
+            height,
+            quality,
+            ext,
+            null,
+            _isKeepingAspectRatio).ConfigureAwait(false);
     }
 
     private void CheckIfValidDirectory(string path)

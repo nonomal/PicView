@@ -13,6 +13,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <UserControl.Resources>
         <converters:IndexBiggerThanBooleanConverter x:Key="IndexBiggerThanBooleanConverter" />
+        <converters:IndexToStringSizeConverter x:Key="IndexToStringSizeConverter" />
     </UserControl.Resources>
     <StackPanel>
 
@@ -440,15 +441,8 @@
                         <customControls:FuncTextBox
                             Classes="hover TStyle"
                             Margin="11,0,10,0"
-                            Text="/small"
+                            Text="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=1, Converter={StaticResource IndexToStringSizeConverter}}"
                             Width="415" />
-                        <customControls:IconButton
-                            Classes="altHover"
-                            Data="{StaticResource AltFolderGeometry}"
-                            IconHeight="20"
-                            IconWidth="20"
-                            Margin="5,0,5,0"
-                            Width="30" />
                     </StackPanel>
 
 
@@ -508,15 +502,8 @@
                         <customControls:FuncTextBox
                             Classes="hover TStyle"
                             Margin="11,0,10,0"
-                            Text="/small"
+                            Text="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=2, Converter={StaticResource IndexToStringSizeConverter}}"
                             Width="415" />
-                        <customControls:IconButton
-                            Classes="altHover"
-                            Data="{StaticResource AltFolderGeometry}"
-                            IconHeight="20"
-                            IconWidth="20"
-                            Margin="5,0,5,0"
-                            Width="30" />
                     </StackPanel>
 
 
@@ -576,15 +563,8 @@
                         <customControls:FuncTextBox
                             Classes="hover TStyle"
                             Margin="11,0,10,0"
-                            Text="/small"
+                            Text="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=3, Converter={StaticResource IndexToStringSizeConverter}}"
                             Width="415" />
-                        <customControls:IconButton
-                            Classes="altHover"
-                            Data="{StaticResource AltFolderGeometry}"
-                            IconHeight="20"
-                            IconWidth="20"
-                            Margin="5,0,5,0"
-                            Width="30" />
                     </StackPanel>
 
 
@@ -644,15 +624,8 @@
                         <customControls:FuncTextBox
                             Classes="hover TStyle"
                             Margin="11,0,10,0"
-                            Text="/small"
+                            Text="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=4, Converter={StaticResource IndexToStringSizeConverter}}"
                             Width="415" />
-                        <customControls:IconButton
-                            Classes="altHover"
-                            Data="{StaticResource AltFolderGeometry}"
-                            IconHeight="20"
-                            IconWidth="20"
-                            Margin="5,0,5,0"
-                            Width="30" />
                     </StackPanel>
 
 
@@ -711,15 +684,8 @@
                         <customControls:FuncTextBox
                             Classes="hover TStyle"
                             Margin="11,0,10,0"
-                            Text="/small"
+                            Text="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=5, Converter={StaticResource IndexToStringSizeConverter}}"
                             Width="415" />
-                        <customControls:IconButton
-                            Classes="altHover"
-                            Data="{StaticResource AltFolderGeometry}"
-                            IconHeight="20"
-                            IconWidth="20"
-                            Margin="5,0,5,0"
-                            Width="30" />
                     </StackPanel>
 
 
@@ -778,15 +744,8 @@
                         <customControls:FuncTextBox
                             Classes="hover TStyle"
                             Margin="11,0,10,0"
-                            Text="/small"
+                            Text="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=6, Converter={StaticResource IndexToStringSizeConverter}}"
                             Width="415" />
-                        <customControls:IconButton
-                            Classes="altHover"
-                            Data="{StaticResource AltFolderGeometry}"
-                            IconHeight="20"
-                            IconWidth="20"
-                            Margin="5,0,5,0"
-                            Width="30" />
                     </StackPanel>
 
 
@@ -846,15 +805,8 @@
                         <customControls:FuncTextBox
                             Classes="hover TStyle"
                             Margin="11,0,10,0"
-                            Text="/small"
+                            Text="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=7, Converter={StaticResource IndexToStringSizeConverter}}"
                             Width="415" />
-                        <customControls:IconButton
-                            Classes="altHover"
-                            Data="{StaticResource AltFolderGeometry}"
-                            IconHeight="20"
-                            IconWidth="20"
-                            Margin="5,0,5,0"
-                            Width="30" />
                     </StackPanel>
 
 
