@@ -16,68 +16,68 @@ public class IndexToStringSizeConverter: IValueConverter
         switch (index)
         {
             case 1:
-                return index.ToString("/small", CultureInfo.InvariantCulture);
+                return "/small";
             
             case 2 when parameterIndex is 1:
-                return index.ToString("/medium", CultureInfo.InvariantCulture);
+                return "/medium";
             case 2:
-                return index.ToString("/small", CultureInfo.InvariantCulture);
+                return "/small";
             
             case 3 when parameterIndex is 1:
-                return index.ToString("/large", CultureInfo.InvariantCulture);
+                return "/large";
             case 3 when parameterIndex is 2:
-                return index.ToString("/medium", CultureInfo.InvariantCulture);
+                return "/medium";
             case 3:
-                return index.ToString("/small", CultureInfo.InvariantCulture);
+                return "/small";
             
             case 4 when parameterIndex is 1:
-                return index.ToString("/large", CultureInfo.InvariantCulture);
+                return "/large";
             case 4 when parameterIndex is 2:
-                return index.ToString("/medium", CultureInfo.InvariantCulture);
+                return "/medium";
             case 4 when parameterIndex is 3:
-                return index.ToString("/small", CultureInfo.InvariantCulture);
+                return "/small";
             case 4:
-                return index.ToString("/xs", CultureInfo.InvariantCulture);
+                return "/xs";
             
             case 5 when parameterIndex is 1:
-                return index.ToString("/xl", CultureInfo.InvariantCulture);
+                return "/xl";
             case 5 when parameterIndex is 2:
-                return index.ToString("/large", CultureInfo.InvariantCulture);
+                return "/large";
             case 5 when parameterIndex is 3:
-                return index.ToString("/medium", CultureInfo.InvariantCulture);
+                return "/medium";
             case 5when parameterIndex is 4:
-                return index.ToString("/small", CultureInfo.InvariantCulture);
+                return "/small";
             case 5:
-                return index.ToString("/xs", CultureInfo.InvariantCulture);
+                return "/xs";
             
             
             case 6 when parameterIndex is 1:
-                return index.ToString("/xl", CultureInfo.InvariantCulture);
+                return "/xl";
             case 6 when parameterIndex is 2:
-                return index.ToString("/large", CultureInfo.InvariantCulture);
+                return "/large";
             case 6 when parameterIndex is 3:
-                return index.ToString("/medium", CultureInfo.InvariantCulture);
+                return "/medium";
             case 6 when parameterIndex is 4:
-                return index.ToString("/small", CultureInfo.InvariantCulture);
+                return "/small";
             case 6 when parameterIndex is 5:
-                return index.ToString("/xs", CultureInfo.InvariantCulture);
+                return "/xs";
             case 6:
-                return index.ToString("/xxs", CultureInfo.InvariantCulture);
+                return "/xxs";
             
             case 7 when parameterIndex is 1:
-                return index.ToString("/xxl", CultureInfo.InvariantCulture);
+                return "/xxl";
             case 7 when parameterIndex is 2:
-                return index.ToString("/xl", CultureInfo.InvariantCulture);
+                return "/xl";
             case 7 when parameterIndex is 3:
-                return index.ToString("/large", CultureInfo.InvariantCulture);
+                return "/large";
             case 7 when parameterIndex is 4:
-                return index.ToString("/medium", CultureInfo.InvariantCulture);
+                return "/medium";
             case 7 when parameterIndex is 5:
-                return index.ToString("/small", CultureInfo.InvariantCulture);
+                return "/small";
             case 7 when parameterIndex is 6:
-                return index.ToString("/xs", CultureInfo.InvariantCulture);
+                return "/xs";
             case 7:
-                return index.ToString("/xxs", CultureInfo.InvariantCulture);
+                return "/xxs";
             default:
                 return BindingOperations.DoNothing;
         }
