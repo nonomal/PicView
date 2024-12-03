@@ -14,6 +14,7 @@
     <UserControl.Resources>
         <converters:IndexBiggerThanBooleanConverter x:Key="IndexBiggerThanBooleanConverter" />
         <converters:IndexToStringSizeConverter x:Key="IndexToStringSizeConverter" />
+        <converters:IndexToPercentageSizeConverter x:Key="IndexToPercentageSizeConverter" />
     </UserControl.Resources>
     <StackPanel>
 
@@ -487,7 +488,7 @@
 
                         <customControls:FuncTextBox
                             Classes="hover TStyle"
-                            Text="80"
+                            Text="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=1, Converter={StaticResource IndexToPercentageSizeConverter}}"
                             Width="200"
                             x:Name="Thumb1ValueBox" />
 
@@ -552,7 +553,7 @@
 
                         <customControls:FuncTextBox
                             Classes="hover TStyle"
-                            Text="80"
+                            Text="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=2, Converter={StaticResource IndexToPercentageSizeConverter}}"
                             Width="200"
                             x:Name="Thumb2ValueBox" />
 
@@ -617,7 +618,7 @@
 
                         <customControls:FuncTextBox
                             Classes="hover TStyle"
-                            Text="80"
+                            Text="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=3, Converter={StaticResource IndexToPercentageSizeConverter}}"
                             Width="200"
                             x:Name="Thumb3ValueBox" />
 
@@ -682,7 +683,7 @@
 
                         <customControls:FuncTextBox
                             Classes="hover TStyle"
-                            Text="80"
+                            Text="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=4, Converter={StaticResource IndexToPercentageSizeConverter}}"
                             Width="200"
                             x:Name="Thumb4ValueBox" />
 
@@ -746,7 +747,7 @@
 
                         <customControls:FuncTextBox
                             Classes="hover TStyle"
-                            Text="80"
+                            Text="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=5, Converter={StaticResource IndexToPercentageSizeConverter}}"
                             Width="200"
                             x:Name="Thumb5ValueBox" />
 
@@ -810,7 +811,7 @@
 
                         <customControls:FuncTextBox
                             Classes="hover TStyle"
-                            Text="80"
+                            Text="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=6, Converter={StaticResource IndexToPercentageSizeConverter}}"
                             Width="200"
                             x:Name="Thumb6ValueBox" />
 
@@ -875,7 +876,7 @@
 
                         <customControls:FuncTextBox
                             Classes="hover TStyle"
-                            Text="80"
+                            Text="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=7, Converter={StaticResource IndexToPercentageSizeConverter}}"
                             Width="200"
                             x:Name="Thumb7ValueBox" />
 

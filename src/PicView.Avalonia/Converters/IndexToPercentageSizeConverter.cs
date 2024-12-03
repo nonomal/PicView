@@ -1,11 +1,10 @@
 ﻿using System.Globalization;
 using Avalonia.Data;
 using Avalonia.Data.Converters;
-using PicView.Core.Localization;
 
 namespace PicView.Avalonia.Converters;
 
-public class IndexToStringSizeConverter: IValueConverter
+public class IndexToPercentageSizeConverter: IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
@@ -17,68 +16,68 @@ public class IndexToStringSizeConverter: IValueConverter
         switch (index)
         {
             case 1:
-                return TranslationHelper.Translation.Thumbnail ?? "Thumb";
+                return 30;
             
             case 2 when parameterIndex is 1:
-                return "/medium";
+                return 30;
             case 2:
-                return "/small";
+                return 50;
             
             case 3 when parameterIndex is 1:
-                return "/large";
+                return 70;
             case 3 when parameterIndex is 2:
-                return "/medium";
+                return 50;
             case 3:
-                return "/small";
+                return 30;
             
             case 4 when parameterIndex is 1:
-                return "/large";
+                return 70;
             case 4 when parameterIndex is 2:
-                return "/medium";
+                return 50;
             case 4 when parameterIndex is 3:
-                return "/small";
+                return 30;
             case 4:
-                return "/xs";
+                return 15;
             
             case 5 when parameterIndex is 1:
-                return "/xl";
+                return 80;
             case 5 when parameterIndex is 2:
-                return "/large";
+                return 70;
             case 5 when parameterIndex is 3:
-                return "/medium";
+                return 50;
             case 5when parameterIndex is 4:
-                return "/small";
+                return 30;
             case 5:
-                return "/xs";
+                return 15;
             
             
             case 6 when parameterIndex is 1:
-                return "/xl";
+                return 80;
             case 6 when parameterIndex is 2:
-                return "/large";
+                return 70;
             case 6 when parameterIndex is 3:
-                return "/medium";
+                return 60;
             case 6 when parameterIndex is 4:
-                return "/small";
+                return 50;
             case 6 when parameterIndex is 5:
-                return "/xs";
+                return 40;
             case 6:
-                return "/xxs";
+                return 30;
             
             case 7 when parameterIndex is 1:
-                return "/xxl";
+                return 85;
             case 7 when parameterIndex is 2:
-                return "/xl";
+                return 75;
             case 7 when parameterIndex is 3:
-                return "/large";
+                return 65;
             case 7 when parameterIndex is 4:
-                return "/medium";
+                return 50;
             case 7 when parameterIndex is 5:
-                return "/small";
+                return 40;
             case 7 when parameterIndex is 6:
-                return "/xs";
+                return 30;
             case 7:
-                return "/xxs";
+                return 20;
             default:
                 return BindingOperations.DoNothing;
         }
