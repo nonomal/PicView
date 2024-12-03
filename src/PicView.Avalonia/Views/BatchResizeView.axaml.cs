@@ -1,4 +1,5 @@
 ﻿using Avalonia.Controls;
+using PicView.Avalonia.FileSystem;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.ImageDecoding;
@@ -25,6 +26,28 @@ public partial class BatchResizeView : UserControl
                 OutputFolderTextBox.Text = Path.Combine(SourceFolderTextBox.Text ?? string.Empty, TranslationHelper.Translation.BatchResize);
             };
 
+            SourceFolderButton.Click += async delegate
+            {
+                var directory = await FilePicker.SelectDirectory();
+                if (string.IsNullOrWhiteSpace(directory))
+                {
+                    return;
+                }
+
+                SourceFolderTextBox.Text = directory;
+            };
+            
+            OutputFolderButton.Click += async delegate
+            {
+                var directory = await FilePicker.SelectDirectory();
+                if (string.IsNullOrWhiteSpace(directory))
+                {
+                    return;
+                }
+
+                OutputFolderTextBox.Text = directory;
+            };
+
             LinkChainButton.Click += delegate
             {
                 if (_isKeepingAspectRatio)
@@ -41,6 +64,8 @@ public partial class BatchResizeView : UserControl
                 }
             };
             
+            StartButton.Click += async (_, _) => await StartBatchResize();
+            
             if (!NavigationHelper.CanNavigate(vm))
             {
                 return;
@@ -48,7 +73,7 @@ public partial class BatchResizeView : UserControl
             
             SourceFolderTextBox.Text = vm.FileInfo?.DirectoryName ?? string.Empty;
             
-            StartButton.Click += async (_, _) => await StartBatchResize();
+
         };
     }
 
