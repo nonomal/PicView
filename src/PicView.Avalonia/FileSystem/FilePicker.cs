@@ -219,14 +219,18 @@ public static class FilePicker
             desktop.MainWindow?.StorageProvider is not { } provider)
             throw new NullReferenceException("Missing StorageProvider instance.");
 
-        var options = new FolderPickerOpenOptions()
+        var options = new FolderPickerOpenOptions
         {
             Title = TranslationHelper.Translation.Folder + " - PicView",
             AllowMultiple = false
         };
         
         var directory = await provider.OpenFolderPickerAsync(options);
-        if (directory.Count < 0)
+        if (directory is null)
+        {
+            return "";
+        }
+        if (directory.Count <= 0)
         {
             return "";
         }
