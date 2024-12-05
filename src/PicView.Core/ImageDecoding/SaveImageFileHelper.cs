@@ -21,11 +21,12 @@ public static class SaveImageFileHelper
     public static async Task<bool> SaveImageAsync(Stream? stream, string? path, string? destination = null,
         uint? width = null,
         uint? height = null, uint? quality = null, string? ext = null, double? rotationAngle = null,
-        bool respectAspectRatio = true)
+        Percentage? percentage = null, bool losslessCompress = false, bool lossyCompress = false, bool respectAspectRatio = true)
     {
         try
         {
             using MagickImage magickImage = new();
+            string writtenFile;
 
             if (stream is not null)
             {
@@ -45,7 +46,11 @@ public static class SaveImageFileHelper
                 magickImage.Quality = quality.Value;
             }
 
-            if (width is not null)
+            if (percentage.HasValue)
+            {
+                magickImage.Resize(percentage.Value);
+            }
+            else if (width is not null)
             {
                 if (height is not null)
                 {
@@ -61,10 +66,6 @@ public static class SaveImageFileHelper
                         {
                             magickImage.Resize(width > 0 ? width.Value : 0, height.Value);
                         }
-                    }
-                    else
-                    {
-                        magickImage.Resize(width.Value, 0);
                     }
                 }
                 else
@@ -88,10 +89,6 @@ public static class SaveImageFileHelper
                         {
                             magickImage.Resize(width.Value, height > 0 ? height.Value : 0);
                         }
-                    }
-                    else
-                    {
-                        magickImage.Resize(0, height.Value);
                     }
                 }
                 else
@@ -120,21 +117,34 @@ public static class SaveImageFileHelper
                     _ => magickImage.Format
                 };
             }
-
-
+            
             if (destination is not null)
             {
                 await magickImage.WriteAsync(!keepExt ? Path.ChangeExtension(destination, ext) : destination)
                     .ConfigureAwait(false);
+                writtenFile = destination;
             }
             else if (path is not null)
             {
                 await magickImage.WriteAsync(!keepExt ? Path.ChangeExtension(path, ext) : path)
                     .ConfigureAwait(false);
+                writtenFile = path;
             }
             else
             {
                 return false;
+            }
+            
+            if (lossyCompress || losslessCompress)
+            {
+                ImageOptimizer imageOptimizer = new()
+                {
+                    OptimalCompression = losslessCompress
+                };
+                if (imageOptimizer.IsSupported(writtenFile))
+                {
+                    imageOptimizer.Compress(writtenFile);
+                }
             }
         }
         catch (Exception exception)
@@ -161,7 +171,7 @@ public static class SaveImageFileHelper
     /// <param name="compress">Indicates whether to apply optimal compression to the image after resizing. If null, no compression is applied.</param>
     /// <param name="ext">The file extension of the output image (e.g., ".jpg", ".png"). If null, the original extension is kept.</param>
     /// <returns>True if the image is resized and saved successfully; otherwise, false.</returns>
-    public static async Task<bool> ResizeImageAsync(FileInfo fileInfo, uint width, uint height, uint quality = 100,
+    public static async Task<bool> ResizeImageAsync(FileInfo fileInfo, uint width, uint height, uint? quality = 100,
         Percentage? percentage = null, string? destination = null, bool? compress = null, string? ext = null)
     {
         if (fileInfo.Exists == false)
@@ -174,9 +184,9 @@ public static class SaveImageFileHelper
             ColorSpace = ColorSpace.Transparent
         };
 
-        if (quality > 0) // not inputting quality results in lower file size
+        if (quality.HasValue) // not inputting quality results in lower file size
         {
-            magick.Quality = quality;
+            magick.Quality = quality.Value;
         }
 
         try

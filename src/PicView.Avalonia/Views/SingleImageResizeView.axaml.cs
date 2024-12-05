@@ -254,6 +254,7 @@ public partial class SingleImageResizeView : UserControl
             quality,
             ext,
             rotationAngle,
+            null,
             _isKeepingAspectRatio).ConfigureAwait(false);
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
