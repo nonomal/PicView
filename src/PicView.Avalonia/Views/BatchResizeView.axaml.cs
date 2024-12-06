@@ -12,7 +12,7 @@ namespace PicView.Avalonia.Views;
 
 public partial class BatchResizeView : UserControl
 {
-    private bool _isKeepingAspectRatio;
+    private bool _isKeepingAspectRatio = true;
 
     public BatchResizeView()
     {
@@ -58,14 +58,14 @@ public partial class BatchResizeView : UserControl
                 if (_isKeepingAspectRatio)
                 {
                     _isKeepingAspectRatio = false;
-                    LinkChainImage.IsVisible = true;
-                    UnlinkChainImage.IsVisible = false;
+                    LinkChainImage.IsVisible = false;
+                    UnlinkChainImage.IsVisible = true;
                 }
                 else
                 {
                     _isKeepingAspectRatio = true;
-                    LinkChainImage.IsVisible = false;
-                    UnlinkChainImage.IsVisible = true;
+                    LinkChainImage.IsVisible = true;
+                    UnlinkChainImage.IsVisible = false;
                 }
             };
 
@@ -88,16 +88,16 @@ public partial class BatchResizeView : UserControl
         }
 
         var files = await Task.FromResult(FileListHelper.RetrieveFiles(new FileInfo(SourceFolderTextBox.Text)));
-        
+
         if (!Directory.Exists(OutputFolderTextBox.Text))
         {
             Directory.CreateDirectory(OutputFolderTextBox.Text);
         }
-        
+
         var outputFolder = string.IsNullOrWhiteSpace(OutputFolderTextBox.Text)
             ? SourceFolderTextBox.Text
             : OutputFolderTextBox.Text;
-        
+
         var toConvert = !NoConversion.IsSelected;
         var pngSelected = PngItem.IsSelected;
         var jpgSelected = JpgItem.IsSelected;
@@ -105,13 +105,13 @@ public partial class BatchResizeView : UserControl
         var avifSelected = AvifItem.IsSelected;
         var heicSelected = HeicItem.IsSelected;
         var jxlSelected = JxlItem.IsSelected;
-        
+
         var qualityEnabled = IsQualityEnabledBox.IsChecked.HasValue && IsQualityEnabledBox.IsChecked.Value;
         var qualityValue = (uint)QualitySlider.Value;
-        
+
         var losslessCompress = Lossless.IsSelected;
         var lossyCompress = Lossy.IsSelected;
-        
+
         Percentage? percentage = null;
         if (PercentageResizeBox.IsSelected)
         {
@@ -120,15 +120,43 @@ public partial class BatchResizeView : UserControl
                 percentage = new Percentage(percentageValue);
             }
         }
-        
+
+        uint width = 0, height = 0;
+        if (WidthResizeBox.IsSelected)
+        {
+            if (uint.TryParse(WidthValueBox.Text, out var widthValue))
+            {
+                width = widthValue;
+            }
+        }
+        else if (HeightResizeBox.IsSelected)
+        {
+            if (uint.TryParse(HeightValueBox.Text, out var heightValue))
+            {
+                height = heightValue;
+            }
+        }
+        else if (WidthAndHeightResizeBox.IsSelected)
+        {
+            if (uint.TryParse(WidthAndHeightWidthValueBox.Text, out var widthValue))
+            {
+                width = widthValue;
+            }
+
+            if (uint.TryParse(WidthAndHeightHeightValueBox.Text, out var heightValue))
+            {
+                height = heightValue;
+            }
+        }
+
         ProgressBar.Maximum = files.Count();
-        
+
         await Parallel.ForEachAsync(files, async (file, token) =>
         {
             var ext = Path.GetExtension(file);
 
             var destination = Path.Combine(outputFolder, Path.GetFileName(file));
-            uint width = 0, height = 0;
+
             if (toConvert)
             {
                 if (pngSelected)
@@ -166,13 +194,16 @@ public partial class BatchResizeView : UserControl
             uint? quality = null;
             if (qualityEnabled)
             {
-                if (ext.Equals(".jpg", StringComparison.OrdinalIgnoreCase) || Path.GetExtension(destination).Equals(".jpg", StringComparison.OrdinalIgnoreCase) ||
+                if (ext.Equals(".jpg", StringComparison.OrdinalIgnoreCase) || Path.GetExtension(destination)
+                        .Equals(".jpg", StringComparison.OrdinalIgnoreCase) ||
                     Path.GetExtension(destination).Equals(".jpeg", StringComparison.OrdinalIgnoreCase) ||
-                    ext.Equals(".png", StringComparison.OrdinalIgnoreCase) || Path.GetExtension(destination).Equals(".png", StringComparison.OrdinalIgnoreCase))
+                    ext.Equals(".png", StringComparison.OrdinalIgnoreCase) || Path.GetExtension(destination)
+                        .Equals(".png", StringComparison.OrdinalIgnoreCase))
                 {
                     quality = qualityValue;
                 }
             }
+
             var success = await SaveImageFileHelper.SaveImageAsync(null,
                 file,
                 destination,
@@ -189,12 +220,9 @@ public partial class BatchResizeView : UserControl
             if (success)
             {
 #if DEBUG
-         Console.WriteLine($"Saved {file} to {destination}");       
+                Console.WriteLine($"Saved {file} to {destination}");
 #endif
-                await Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    ProgressBar.Value++;
-                });
+                await Dispatcher.UIThread.InvokeAsync(() => { ProgressBar.Value++; });
             }
         });
     }
