@@ -135,14 +135,23 @@ public sealed class PreLoader : IDisposable
     
     public void RefreshAllFileInfo(List<string> list)
     {
-        foreach (var item in _preLoadList)
+        try
         {
-            if (item.Value is null) continue;
-            var fileInfo = new FileInfo(list[item.Key]);
-            if (item.Value.ImageModel != null)
+            foreach (var item in _preLoadList)
             {
-                item.Value.ImageModel.FileInfo = fileInfo;
+                if (item.Value is null) continue;
+                var fileInfo = new FileInfo(list[item.Key]);
+                if (item.Value.ImageModel != null)
+                {
+                    item.Value.ImageModel.FileInfo = fileInfo;
+                }
             }
+        }
+        catch (Exception e)
+        {
+#if DEBUG
+            Trace.WriteLine($"{nameof(PreLoader)}.{nameof(RefreshAllFileInfo)} \n{e.Message}");
+#endif
         }
     }
 

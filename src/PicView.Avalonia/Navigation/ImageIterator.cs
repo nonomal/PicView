@@ -107,8 +107,10 @@ public sealed class ImageIterator : IDisposable
         }
 
         IsRunning = true;
+        
+        var sourceFileInfo = SettingsHelper.Settings.Sorting.IncludeSubDirectories ? new FileInfo(_watcher.Path) : fileInfo;
 
-        var newList = await Task.FromResult(_vm.PlatformService.GetFiles(fileInfo));
+        var newList = await Task.FromResult(_vm.PlatformService.GetFiles(sourceFileInfo));
         if (newList.Count == 0)
         {
             return;
@@ -268,7 +270,8 @@ public sealed class ImageIterator : IDisposable
             return;
         }
 
-        var newList = FileListHelper.RetrieveFiles(fileInfo).ToList();
+        var sourceFileInfo = SettingsHelper.Settings.Sorting.IncludeSubDirectories ? new FileInfo(_watcher.Path) : fileInfo;
+        var newList = FileListHelper.RetrieveFiles(sourceFileInfo).ToList();
         if (newList.Count == 0)
         {
             return;
