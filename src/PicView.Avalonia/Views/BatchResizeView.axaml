@@ -950,14 +950,14 @@
             <Button
                 Classes="BorderStyle altHover mainBtn"
                 CornerRadius="4"
-                IsEnabled="False"
                 x:Name="CancelButton">
                 <TextBlock
                     Classes="txt"
                     Padding="15,0"
-                    Text="{CompiledBinding Cancel,
+                    Text="{CompiledBinding Reset,
                                            Mode=OneWay}"
-                    TextAlignment="Center" />
+                    TextAlignment="Center"
+                    x:Name="CancelButtonTextBlock" />
             </Button>
 
             <Button
