@@ -453,7 +453,8 @@
                             Classes="hover TStyle"
                             Margin="4,0,10,0"
                             Text="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=1, Converter={StaticResource IndexToStringSizeConverter}}"
-                            Width="410" />
+                            Width="410"
+                            x:Name="Thumb1OutputBox" />
                     </StackPanel>
 
                     <StackPanel
@@ -465,8 +466,7 @@
                             Classes="txt"
                             Margin="8,0,0,0"
                             Text="{CompiledBinding Resize}"
-                            Width="125"
-                            x:Name="PercentageThumb1TextBlock" />
+                            Width="125" />
 
                         <ComboBox
                             Background="{DynamicResource SecondaryBackgroundColor}"
@@ -478,9 +478,13 @@
                             Margin="6,0,10,0"
                             Padding="5,7,0,7"
                             SelectedIndex="0"
+                            SelectedItem="Thumb1PercentageItem"
                             Width="195"
                             x:Name="Thumb1ComboBox">
-                            <ComboBoxItem Content="{CompiledBinding Percentage}" x:Name="Thumb1PercentageItem" />
+                            <ComboBoxItem
+                                Content="{CompiledBinding Percentage}"
+                                IsSelected="True"
+                                x:Name="Thumb1PercentageItem" />
                             <ComboBoxItem Content="{CompiledBinding Width}" x:Name="Thumb1WidthItem" />
                             <ComboBoxItem Content="{CompiledBinding Height}" x:Name="Thumb1HeightItem" />
                         </ComboBox>
@@ -518,7 +522,8 @@
                             Classes="hover TStyle"
                             Margin="4,0,10,0"
                             Text="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=2, Converter={StaticResource IndexToStringSizeConverter}}"
-                            Width="410" />
+                            Width="410"
+                            x:Name="Thumb2OutputBox" />
                     </StackPanel>
 
                     <StackPanel
@@ -530,8 +535,7 @@
                             Classes="txt"
                             Margin="8,0,0,0"
                             Text="{CompiledBinding Resize}"
-                            Width="125"
-                            x:Name="PercentageThumb2TextBlock" />
+                            Width="125" />
 
                         <ComboBox
                             Background="{DynamicResource SecondaryBackgroundColor}"
@@ -543,9 +547,13 @@
                             Margin="6,0,10,0"
                             Padding="5,7,0,7"
                             SelectedIndex="0"
+                            SelectedItem="Thumb2PercentageItem"
                             Width="195"
                             x:Name="Thumb2ComboBox">
-                            <ComboBoxItem Content="{CompiledBinding Percentage}" x:Name="Thumb2PercentageItem" />
+                            <ComboBoxItem
+                                Content="{CompiledBinding Percentage}"
+                                IsSelected="True"
+                                x:Name="Thumb2PercentageItem" />
                             <ComboBoxItem Content="{CompiledBinding Width}" x:Name="Thumb2WidthItem" />
                             <ComboBoxItem Content="{CompiledBinding Height}" x:Name="Thumb2HeightItem" />
                         </ComboBox>
@@ -583,7 +591,8 @@
                             Classes="hover TStyle"
                             Margin="4,0,10,0"
                             Text="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=3, Converter={StaticResource IndexToStringSizeConverter}}"
-                            Width="410" />
+                            Width="410"
+                            x:Name="Thumb3OutputBox" />
                     </StackPanel>
 
                     <StackPanel
@@ -595,8 +604,7 @@
                             Classes="txt"
                             Margin="8,0,0,0"
                             Text="{CompiledBinding Resize}"
-                            Width="125"
-                            x:Name="PercentageThumb3TextBlock" />
+                            Width="125" />
 
                         <ComboBox
                             Background="{DynamicResource SecondaryBackgroundColor}"
@@ -608,9 +616,13 @@
                             Margin="6,0,10,0"
                             Padding="5,7,0,7"
                             SelectedIndex="0"
+                            SelectedItem="Thumb3PercentageItem"
                             Width="195"
                             x:Name="Thumb3ComboBox">
-                            <ComboBoxItem Content="{CompiledBinding Percentage}" x:Name="Thumb3PercentageItem" />
+                            <ComboBoxItem
+                                Content="{CompiledBinding Percentage}"
+                                IsSelected="True"
+                                x:Name="Thumb3PercentageItem" />
                             <ComboBoxItem Content="{CompiledBinding Width}" x:Name="Thumb3WidthItem" />
                             <ComboBoxItem Content="{CompiledBinding Height}" x:Name="Thumb3HeightItem" />
                         </ComboBox>
@@ -648,7 +660,8 @@
                             Classes="hover TStyle"
                             Margin="4,0,10,0"
                             Text="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=4, Converter={StaticResource IndexToStringSizeConverter}}"
-                            Width="410" />
+                            Width="410"
+                            x:Name="Thumb4OutputBox" />
                     </StackPanel>
 
                     <StackPanel
@@ -660,8 +673,7 @@
                             Classes="txt"
                             Margin="8,0,0,0"
                             Text="{CompiledBinding Resize}"
-                            Width="125"
-                            x:Name="PercentageThumb4TextBlock" />
+                            Width="125" />
 
                         <ComboBox
                             Background="{DynamicResource SecondaryBackgroundColor}"
@@ -673,9 +685,13 @@
                             Margin="6,0,10,0"
                             Padding="5,7,0,7"
                             SelectedIndex="0"
+                            SelectedItem="Thumb4PercentageItem"
                             Width="195"
                             x:Name="Thumb4ComboBox">
-                            <ComboBoxItem Content="{CompiledBinding Percentage}" x:Name="Thumb4PercentageItem" />
+                            <ComboBoxItem
+                                Content="{CompiledBinding Percentage}"
+                                IsSelected="True"
+                                x:Name="Thumb4PercentageItem" />
                             <ComboBoxItem Content="{CompiledBinding Width}" x:Name="Thumb4WidthItem" />
                             <ComboBoxItem Content="{CompiledBinding Height}" x:Name="Thumb4HeightItem" />
                         </ComboBox>
@@ -712,7 +728,8 @@
                             Classes="hover TStyle"
                             Margin="4,0,10,0"
                             Text="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=5, Converter={StaticResource IndexToStringSizeConverter}}"
-                            Width="410" />
+                            Width="410"
+                            x:Name="Thumb5OutputBox" />
                     </StackPanel>
 
                     <StackPanel
@@ -724,8 +741,7 @@
                             Classes="txt"
                             Margin="8,0,0,0"
                             Text="{CompiledBinding Resize}"
-                            Width="125"
-                            x:Name="PercentageThumb5TextBlock" />
+                            Width="125" />
 
                         <ComboBox
                             Background="{DynamicResource SecondaryBackgroundColor}"
@@ -737,9 +753,13 @@
                             Margin="6,0,10,0"
                             Padding="5,7,0,7"
                             SelectedIndex="0"
+                            SelectedItem="Thumb5PercentageItem"
                             Width="195"
                             x:Name="Thumb5ComboBox">
-                            <ComboBoxItem Content="{CompiledBinding Percentage}" x:Name="Thumb5PercentageItem" />
+                            <ComboBoxItem
+                                Content="{CompiledBinding Percentage}"
+                                IsSelected="True"
+                                x:Name="Thumb5PercentageItem" />
                             <ComboBoxItem Content="{CompiledBinding Width}" x:Name="Thumb5WidthItem" />
                             <ComboBoxItem Content="{CompiledBinding Height}" x:Name="Thumb5HeightItem" />
                         </ComboBox>
@@ -776,7 +796,8 @@
                             Classes="hover TStyle"
                             Margin="4,0,10,0"
                             Text="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=6, Converter={StaticResource IndexToStringSizeConverter}}"
-                            Width="410" />
+                            Width="410"
+                            x:Name="Thumb6OutputBox" />
                     </StackPanel>
 
                     <StackPanel
@@ -788,8 +809,7 @@
                             Classes="txt"
                             Margin="8,0,0,0"
                             Text="{CompiledBinding Resize}"
-                            Width="125"
-                            x:Name="PercentageThumb6TextBlock" />
+                            Width="125" />
 
                         <ComboBox
                             Background="{DynamicResource SecondaryBackgroundColor}"
@@ -801,9 +821,13 @@
                             Margin="6,0,10,0"
                             Padding="5,7,0,7"
                             SelectedIndex="0"
+                            SelectedItem="Thumb6PercentageItem"
                             Width="195"
                             x:Name="Thumb6ComboBox">
-                            <ComboBoxItem Content="{CompiledBinding Percentage}" x:Name="Thumb6PercentageItem" />
+                            <ComboBoxItem
+                                Content="{CompiledBinding Percentage}"
+                                IsSelected="True"
+                                x:Name="Thumb6PercentageItem" />
                             <ComboBoxItem Content="{CompiledBinding Width}" x:Name="Thumb61WidthItem" />
                             <ComboBoxItem Content="{CompiledBinding Height}" x:Name="Thumb6HeightItem" />
                         </ComboBox>
@@ -841,7 +865,8 @@
                             Classes="hover TStyle"
                             Margin="4,0,10,0"
                             Text="{Binding SelectedIndex, ElementName=ThumbnailsComboBox, ConverterParameter=7, Converter={StaticResource IndexToStringSizeConverter}}"
-                            Width="410" />
+                            Width="410"
+                            x:Name="Thumb7OutputBox" />
                     </StackPanel>
 
                     <StackPanel
@@ -853,8 +878,7 @@
                             Classes="txt"
                             Margin="8,0,0,0"
                             Text="{CompiledBinding Resize}"
-                            Width="125"
-                            x:Name="PercentageThumb7TextBlock" />
+                            Width="125" />
 
                         <ComboBox
                             Background="{DynamicResource SecondaryBackgroundColor}"
@@ -866,9 +890,13 @@
                             Margin="6,0,10,0"
                             Padding="5,7,0,7"
                             SelectedIndex="0"
+                            SelectedItem="Thumb7PercentageItem"
                             Width="195"
                             x:Name="Thumb7ComboBox">
-                            <ComboBoxItem Content="{CompiledBinding Percentage}" x:Name="Thumb7PercentageItem" />
+                            <ComboBoxItem
+                                Content="{CompiledBinding Percentage}"
+                                IsSelected="True"
+                                x:Name="Thumb7PercentageItem" />
                             <ComboBoxItem Content="{CompiledBinding Width}" x:Name="Thumb7WidthItem" />
                             <ComboBoxItem Content="{CompiledBinding Height}" x:Name="Thumb7HeightItem" />
                         </ComboBox>

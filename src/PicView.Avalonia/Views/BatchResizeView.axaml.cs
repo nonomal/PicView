@@ -222,9 +222,124 @@ public partial class BatchResizeView : UserControl
 #if DEBUG
                 Console.WriteLine($"Saved {file} to {destination}");
 #endif
+                try
+                {
+                    await ProcessThumbs(file, Path.GetDirectoryName(destination), quality, ext);
+                }
+                catch (Exception e)
+                {
+                    #if DEBUG
+                    Console.WriteLine(e);
+                    #endif
+                }
                 await Dispatcher.UIThread.InvokeAsync(() => { ProgressBar.Value++; });
             }
         });
+        
+        return;
+
+        async Task ProcessThumbs(string? file, string? destinationDirectory, uint? quality, string? ext)
+        {
+            var toProcess = true;
+            
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                if (ThumbnailsComboBox.SelectedIndex <= 0)
+                {
+                    toProcess = false;
+                }
+            });
+            
+            if (!toProcess)
+            {
+                return;
+            }
+
+            string destination = string.Empty;
+             
+            for (var i = 1; i <= 7; i++)
+            {
+                bool thumbIsPercentageResized;
+                bool thumbIsWidthResized;
+                bool thumbIsHeightResized;
+            
+                uint thumbWidth = 0, thumbHeight = 0;
+                Percentage? thumbPercentage = null;
+            
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    // Dynamically construct the control names
+                    var percentageItemName = $"Thumb{i}PercentageItem";
+                    var widthItemName = $"Thumb{i}WidthItem";
+                    var heightItemName = $"Thumb{i}HeightItem";
+                    var valueBoxName = $"Thumb{i}ValueBox";
+                    var outputBoxName = $"Thumb{i}OutputBox";
+
+                    // Find controls based on their names
+                    var percentageItem = this.FindControl<ComboBoxItem>(percentageItemName);
+                    var widthItem = this.FindControl<ComboBoxItem>(widthItemName);
+                    var heightItem = this.FindControl<ComboBoxItem>(heightItemName);
+                    var valueBox = this.FindControl<TextBox>(valueBoxName);
+                    var outputBox = this.FindControl<TextBox>(outputBoxName);
+
+                    // Check which resizing option is selected
+                    thumbIsPercentageResized = percentageItem?.IsSelected ?? false;
+                    thumbIsWidthResized = widthItem?.IsSelected ?? false;
+                    thumbIsHeightResized = heightItem?.IsSelected ?? false;
+
+                    // Parse the value from the TextBox
+                    if (uint.TryParse(valueBox?.Text, out var thumbValue))
+                    {
+                        if (thumbIsPercentageResized)
+                        {
+                            thumbPercentage = new Percentage(thumbValue);
+                        }
+                        if (thumbIsWidthResized)
+                        {
+                            thumbWidth = thumbValue;
+                        }
+                        if (thumbIsHeightResized)
+                        {
+                            thumbHeight = thumbValue;
+                        }
+                    }
+                    
+                    if (!Directory.Exists(destinationDirectory))
+                    {
+                        Directory.CreateDirectory(destinationDirectory);
+                    }
+                    
+                    destination = Path.Combine(destinationDirectory, outputBox.Text, Path.GetFileName(file));
+                    
+                    if (!Directory.Exists(Path.GetDirectoryName(destination)))
+                    {
+                        Directory.CreateDirectory(Path.GetDirectoryName(destination));
+                    }
+                    
+                });
+            
+                var success = await SaveImageFileHelper.SaveImageAsync(
+                    null,
+                    file,
+                    destination,
+                    thumbWidth,
+                    thumbHeight,
+                    quality,
+                    ext,
+                    null,
+                    thumbPercentage,
+                    losslessCompress,
+                    lossyCompress,
+                    _isKeepingAspectRatio).ConfigureAwait(false);
+            
+                if (success)
+                {
+#if DEBUG
+                    Console.WriteLine($"Saved {file} to {destination}");
+#endif
+                }
+            }
+        }
     }
 
     private void CheckIfValidDirectory(string path)

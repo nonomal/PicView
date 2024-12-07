@@ -20,65 +20,65 @@ public class IndexToStringSizeConverter: IValueConverter
                 return TranslationHelper.Translation.Thumbnail ?? "Thumb";
             
             case 2 when parameterIndex is 1:
-                return "/medium";
+                return "medium";
             case 2:
-                return "/small";
+                return "small";
             
             case 3 when parameterIndex is 1:
-                return "/large";
+                return "large";
             case 3 when parameterIndex is 2:
-                return "/medium";
+                return "medium";
             case 3:
-                return "/small";
+                return "small";
             
             case 4 when parameterIndex is 1:
-                return "/large";
+                return "large";
             case 4 when parameterIndex is 2:
-                return "/medium";
+                return "medium";
             case 4 when parameterIndex is 3:
-                return "/small";
+                return "small";
             case 4:
-                return "/xs";
+                return "xs";
             
             case 5 when parameterIndex is 1:
-                return "/xl";
+                return "xl";
             case 5 when parameterIndex is 2:
-                return "/large";
+                return "large";
             case 5 when parameterIndex is 3:
-                return "/medium";
+                return "medium";
             case 5when parameterIndex is 4:
-                return "/small";
+                return "small";
             case 5:
-                return "/xs";
+                return "xs";
             
             
             case 6 when parameterIndex is 1:
-                return "/xl";
+                return "xl";
             case 6 when parameterIndex is 2:
-                return "/large";
+                return "large";
             case 6 when parameterIndex is 3:
-                return "/medium";
+                return "medium";
             case 6 when parameterIndex is 4:
-                return "/small";
+                return "small";
             case 6 when parameterIndex is 5:
-                return "/xs";
+                return "xs";
             case 6:
-                return "/xxs";
+                return "xxs";
             
             case 7 when parameterIndex is 1:
-                return "/xxl";
+                return "xxl";
             case 7 when parameterIndex is 2:
-                return "/xl";
+                return "xl";
             case 7 when parameterIndex is 3:
-                return "/large";
+                return "large";
             case 7 when parameterIndex is 4:
-                return "/medium";
+                return "medium";
             case 7 when parameterIndex is 5:
-                return "/small";
+                return "small";
             case 7 when parameterIndex is 6:
-                return "/xs";
+                return "xs";
             case 7:
-                return "/xxs";
+                return "xxs";
             default:
                 return BindingOperations.DoNothing;
         }
