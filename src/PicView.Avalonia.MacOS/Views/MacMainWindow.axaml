@@ -39,6 +39,7 @@
                         Header="{CompiledBinding OpenWith,
                                                  Mode=OneWay}" />
                     <NativeMenuItem Command="{CompiledBinding SaveFileCommand}" Header="{CompiledBinding Save, Mode=OneWay}" />
+                    <NativeMenuItem Command="{CompiledBinding SaveFileAsCommand}" Header="{CompiledBinding SaveAs, Mode=OneWay}" />
                     <NativeMenuItem
                         Command="{CompiledBinding PrintCommand}"
                         CommandParameter="{CompiledBinding FileInfo.FullName,
