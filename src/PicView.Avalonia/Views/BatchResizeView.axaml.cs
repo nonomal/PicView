@@ -1,12 +1,17 @@
-﻿using Avalonia.Controls;
+﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.Documents;
+using Avalonia.Media;
 using Avalonia.Threading;
 using ImageMagick;
 using PicView.Avalonia.FileSystem;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.ViewModels;
+using PicView.Core.Extensions;
 using PicView.Core.FileHandling;
 using PicView.Core.ImageDecoding;
 using PicView.Core.Localization;
+using PicView.Core.Navigation;
 
 namespace PicView.Avalonia.Views;
 
@@ -14,7 +19,7 @@ public partial class BatchResizeView : UserControl
 {
     private bool _isKeepingAspectRatio = true;
     private bool _isRunning;
-    
+
     private CancellationTokenSource? _cancellationTokenSource;
 
     public BatchResizeView()
@@ -93,7 +98,7 @@ public partial class BatchResizeView : UserControl
             SourceFolderTextBox.Text = vm.FileInfo?.DirectoryName ?? string.Empty;
         };
     }
-    
+
     private void ToggleAspectRatio()
     {
         _isKeepingAspectRatio = !_isKeepingAspectRatio;
@@ -103,9 +108,57 @@ public partial class BatchResizeView : UserControl
 
     private void Reset()
     {
+        _isKeepingAspectRatio = true;
+        LinkChainImage.IsVisible = true;
+        UnlinkChainImage.IsVisible = false;
+
+        ResetProgress();
+
+        ConversionComboBox.SelectedIndex = 0;
+        ConversionComboBox.SelectedItem = NoConversion;
+
+        CompressionComboBox.SelectedIndex = 0;
+        CompressionComboBox.SelectedItem = Lossless;
+
+        IsQualityEnabledBox.IsChecked = false;
+        QualitySlider.Value = 75;
+
+        ResizeComboBox.SelectedIndex = 0;
+        ResizeComboBox.SelectedItem = NoResizeBox;
         
+        ThumbnailsComboBox.SelectedIndex = 0;
+        ThumbnailsComboBox.SelectedItem = NoThumbnailsItem;
+        
+        BatchLogContainer.Children.Clear();
+
+        if (DataContext is not MainViewModel vm)
+        {
+            return;
+        }
+
+        if (!NavigationHelper.CanNavigate(vm))
+        {
+            return;
+        }
+
+        SourceFolderTextBox.Text = vm.FileInfo?.DirectoryName ?? string.Empty;
     }
-    
+
+    private void ResetProgress()
+    {
+        ProgressBar.Value = 0;
+        _isRunning = false;
+
+        StartButton.IsEnabled = true;
+
+        CancelButtonTextBlock.Text = TranslationHelper.Translation.Reset;
+        CancelButton.Classes.Remove("errorHover");
+        CancelButton.Classes.Add("altHover");
+        
+        InputStackPanel.Opacity = 1;
+        InputStackPanel.IsHitTestVisible = true;
+    }
+
     private async Task CancelBatchResize()
     {
         await _cancellationTokenSource?.CancelAsync();
@@ -113,7 +166,6 @@ public partial class BatchResizeView : UserControl
         StartButton.IsEnabled = true;
         _isRunning = false;
         ProgressBar.Value = 0;
-        await Task.CompletedTask;
     }
 
     private async Task StartBatchResize()
@@ -121,11 +173,14 @@ public partial class BatchResizeView : UserControl
         try
         {
             _cancellationTokenSource = new CancellationTokenSource();
-            
+
             CancelButtonTextBlock.Text = TranslationHelper.Translation.Cancel;
             CancelButton.Classes.Remove("altHover");
             CancelButton.Classes.Add("errorHover");
             StartButton.IsEnabled = false;
+            
+            InputStackPanel.Opacity = 0.5;
+            InputStackPanel.IsHitTestVisible = false;
 
             _isRunning = true;
 
@@ -193,15 +248,29 @@ public partial class BatchResizeView : UserControl
                 }
             }
 
-            ProgressBar.Maximum = files.Count();
+            var enumerable = files as string[] ?? files.ToArray();
+            ProgressBar.Maximum = enumerable.Length;
             ProgressBar.Value = 0;
 
-            await Parallel.ForEachAsync(files, _cancellationTokenSource.Token, async (file, token) =>
+            var options = new ParallelOptions
+            {
+                CancellationToken = _cancellationTokenSource.Token,
+                MaxDegreeOfParallelism = Environment.ProcessorCount - 1
+            };
+
+            await Parallel.ForEachAsync(enumerable, options, async (file, token) =>
             {
                 token.ThrowIfCancellationRequested();
-                
+
                 var ext = Path.GetExtension(file);
                 var destination = Path.Combine(outputFolder, Path.GetFileName(file));
+                
+                var fileInfo = new FileInfo(file);
+                
+                using var magick = new MagickImage();
+                magick.Ping(file);
+                
+                var oldSize = $" ({magick.Width} x {magick.Height}{ImageTitleFormatter.FormatAspectRatio((int)magick.Width, (int)magick.Height)}{fileInfo.Length.GetReadableFileSize()}";
 
                 if (toConvert)
                 {
@@ -233,8 +302,11 @@ public partial class BatchResizeView : UserControl
                     }
                 }
 
-                var success = await SaveImageFileHelper.SaveImageAsync(null,
-                    file,
+                await using var stream = FileHelper.GetOptimizedFileStream(fileInfo);
+
+                var success = await SaveImageFileHelper.SaveImageAsync(
+                    stream,
+                    null,
                     destination,
                     width,
                     height,
@@ -248,9 +320,22 @@ public partial class BatchResizeView : UserControl
 
                 if (success)
                 {
-                    await ProcessThumbs(file, Path.GetDirectoryName(destination), quality, ext).ConfigureAwait(false);
+                    using var newMagick = new MagickImage();
+                    newMagick.Ping(destination);
+                    var newFileInfo = new FileInfo(destination);
+                    
+                    var newSize = $" ({newMagick.Width} x {newMagick.Height}{ImageTitleFormatter.FormatAspectRatio((int)newMagick.Width, (int)newMagick.Height)}{newFileInfo.Length.GetReadableFileSize()}";
 
-                    await Dispatcher.UIThread.InvokeAsync(() => { ProgressBar.Value++; });
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        BatchLogContainer.Children.Add(CreateTextBlockLog(Path.GetFileName(file), oldSize,
+                            newSize));
+                    });
+                    await ProcessThumbs(file, Path.GetDirectoryName(destination), quality, ext).ConfigureAwait(false);
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        ProgressBar.Value++;
+                    });
                 }
             }).ConfigureAwait(false);
 
@@ -337,8 +422,19 @@ public partial class BatchResizeView : UserControl
                         }
                     });
 
-                    var success = await SaveImageFileHelper.SaveImageAsync(null,
-                        file,
+                    var fileInfo = new FileInfo(file);
+                
+                    using var magick = new MagickImage();
+                    magick.Ping(file);
+                
+                    var oldSize = $" ({magick.Width} x {magick.Height}{ImageTitleFormatter.FormatAspectRatio((int)magick.Width, (int)magick.Height)}{fileInfo.Length.GetReadableFileSize()}";
+
+                    await using var stream = FileHelper.GetOptimizedFileStream(fileInfo);
+
+                    _cancellationTokenSource.Token.ThrowIfCancellationRequested();
+                    
+                    var success = await SaveImageFileHelper.SaveImageAsync(stream,
+                        null,
                         destination,
                         thumbWidth,
                         thumbHeight,
@@ -352,6 +448,18 @@ public partial class BatchResizeView : UserControl
 
                     if (success)
                     {
+                        using var newMagick = new MagickImage();
+                        newMagick.Ping(destination);
+                        var newFileInfo = new FileInfo(destination);
+                    
+                        var newSize = $" ({newMagick.Width} x {newMagick.Height}{ImageTitleFormatter.FormatAspectRatio((int)newMagick.Width, (int)newMagick.Height)}{newFileInfo.Length.GetReadableFileSize()}";
+
+                        await Dispatcher.UIThread.InvokeAsync(() =>
+                        {
+                            _cancellationTokenSource.Token.ThrowIfCancellationRequested();
+                            BatchLogContainer.Children.Add(CreateTextBlockLog(Path.GetFileName(file), oldSize,
+                                newSize));
+                        });
                     }
                 }
             }
@@ -364,18 +472,8 @@ public partial class BatchResizeView : UserControl
         }
         finally
         {
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                ProgressBar.Value = 0;
-                _isRunning = false;
-                
-                StartButton.IsEnabled = true;
-                
-                CancelButtonTextBlock.Text = TranslationHelper.Translation.Reset;
-                CancelButton.Classes.Remove("errorHover");
-                CancelButton.Classes.Add("altHover");
-            });
-            
+            await Dispatcher.UIThread.InvokeAsync(ResetProgress);
+
         }
     }
 
@@ -389,4 +487,46 @@ public partial class BatchResizeView : UserControl
 
         StartButton.IsEnabled = true;
     }
+
+    private TextBlock CreateTextBlockLog(string fileName, string oldSize, string newSize)
+    {
+        var textBlock = new TextBlock
+        {
+            Classes = { "txt" },
+            Padding = new Thickness(0, 0, 0, 5),
+            MaxWidth = 580
+        };
+
+        var fileNameRun = new Run
+        {
+            Text = fileName
+        };
+
+        var oldSizeRun = new Run
+        {
+            Text = oldSize,
+            Foreground = Brushes.Red,
+            TextDecorations = TextDecorations.Strikethrough
+        };
+
+        var newSizeRun = new Run
+        {
+            Text = newSize,
+            Foreground = Brushes.Green,
+            FontFamily = new FontFamily("avares://PicView.Avalonia/Assets/Fonts/Roboto-Bold.ttf#Roboto")
+        };
+
+        textBlock.Inlines.Add(fileNameRun);
+        textBlock.Inlines.Add(oldSizeRun);
+        textBlock.Inlines.Add(newSizeRun);
+
+        return textBlock;
+    }
+
+    ~BatchResizeView()
+    {
+        _cancellationTokenSource?.Cancel();
+        _cancellationTokenSource?.Dispose();
+    }
+
 }

@@ -5,32 +5,33 @@ namespace PicView.Core.ImageDecoding;
 
 public static class SaveImageFileHelper
 {
-/// <summary>
-/// Saves an image asynchronously from a stream or file path with optional resizing, rotation, format conversion, 
-/// and compression settings (lossy or lossless).
-/// </summary>
-/// <param name="stream">The stream containing the image data. If null, the image will be loaded from the specified file path.</param>
-/// <param name="path">The path of the image file to load. If null, the image will be loaded from the stream.</param>
-/// <param name="destination">The path to save the processed image. If null, the image will be saved to the original path.</param>
-/// <param name="width">The target width of the image. If null, the image will not be resized based on width.</param>
-/// <param name="height">The target height of the image. If null, the image will not be resized based on height.</param>
-/// <param name="quality">The quality level of the saved image, as a percentage (0-100). If null, the default quality is used.</param>
-/// <param name="ext">The file extension of the output image (e.g., ".jpg", ".png"). If null, the original extension is kept.</param>
-/// <param name="rotationAngle">The angle to rotate the image, in degrees. If null, no rotation is applied.</param>
-/// <param name="percentage">The percentage by which to resize the image. If specified, both width and height are ignored.</param>
-/// <param name="losslessCompress">Indicates whether to apply lossless compression to the image.</param>
-/// <param name="lossyCompress">Indicates whether to apply lossy compression to the image.</param>
-/// <param name="respectAspectRatio">Indicates whether to maintain the aspect ratio when resizing.</param>
-/// <returns>A task representing the asynchronous operation, with a result of <c>true</c> if the image is saved successfully; otherwise, <c>false</c>.</returns>
-/// <remarks>
-/// If both width and height are null or zero, the image will not be resized.
-/// If the percentage is specified, it takes precedence over width and height for resizing.
-/// If both lossy and lossless compression are enabled, only one will be applied based on supported formats.
-/// </remarks>
-public static async Task<bool> SaveImageAsync(Stream? stream, string? path, string? destination = null,
-    uint? width = null, uint? height = null, uint? quality = null, string? ext = null, double? rotationAngle = null,
-    Percentage? percentage = null, bool losslessCompress = false, bool lossyCompress = false, bool respectAspectRatio = true)
-{
+    /// <summary>
+    /// Saves an image asynchronously from a stream or file path with optional resizing, rotation, format conversion, 
+    /// and compression settings (lossy or lossless).
+    /// </summary>
+    /// <param name="stream">The stream containing the image data. If null, the image will be loaded from the specified file path.</param>
+    /// <param name="path">The path of the image file to load. If null, the image will be loaded from the stream.</param>
+    /// <param name="destination">The path to save the processed image. If null, the image will be saved to the original path.</param>
+    /// <param name="width">The target width of the image. If null, the image will not be resized based on width.</param>
+    /// <param name="height">The target height of the image. If null, the image will not be resized based on height.</param>
+    /// <param name="quality">The quality level of the saved image, as a percentage (0-100). If null, the default quality is used.</param>
+    /// <param name="ext">The file extension of the output image (e.g., ".jpg", ".png"). If null, the original extension is kept.</param>
+    /// <param name="rotationAngle">The angle to rotate the image, in degrees. If null, no rotation is applied.</param>
+    /// <param name="percentage">The percentage by which to resize the image. If specified, both width and height are ignored.</param>
+    /// <param name="losslessCompress">Indicates whether to apply lossless compression to the image.</param>
+    /// <param name="lossyCompress">Indicates whether to apply lossy compression to the image.</param>
+    /// <param name="respectAspectRatio">Indicates whether to maintain the aspect ratio when resizing.</param>
+    /// <returns>A task representing the asynchronous operation, with a result of <c>true</c> if the image is saved successfully; otherwise, <c>false</c>.</returns>
+    /// <remarks>
+    /// If both width and height are null or zero, the image will not be resized.
+    /// If the percentage is specified, it takes precedence over width and height for resizing.
+    /// If both lossy and lossless compression are enabled, only one will be applied based on supported formats.
+    /// </remarks>
+    public static async Task<bool> SaveImageAsync(Stream? stream, string? path, string? destination = null,
+        uint? width = null, uint? height = null, uint? quality = null, string? ext = null, double? rotationAngle = null,
+        Percentage? percentage = null, bool losslessCompress = false, bool lossyCompress = false,
+        bool respectAspectRatio = true)
+    {
         try
         {
             using MagickImage magickImage = new();
@@ -125,7 +126,7 @@ public static async Task<bool> SaveImageAsync(Stream? stream, string? path, stri
                     _ => magickImage.Format
                 };
             }
-            
+
             if (destination is not null)
             {
                 await magickImage.WriteAsync(!keepExt ? Path.ChangeExtension(destination, ext) : destination)
@@ -142,7 +143,7 @@ public static async Task<bool> SaveImageAsync(Stream? stream, string? path, stri
             {
                 return false;
             }
-            
+
             if (lossyCompress || losslessCompress)
             {
                 ImageOptimizer imageOptimizer = new()
@@ -167,25 +168,25 @@ public static async Task<bool> SaveImageAsync(Stream? stream, string? path, stri
     }
 
 
-/// <summary>
-/// Resizes and optionally compresses an image asynchronously, with optional format conversion.
-/// </summary>
-/// <param name="fileInfo">The FileInfo object representing the image file to resize.</param>
-/// <param name="width">The target width of the resized image. Ignored if percentage is specified.</param>
-/// <param name="height">The target height of the resized image. Ignored if percentage is specified.</param>
-/// <param name="quality">The quality level of the resized image, as a percentage (0-100). Defaults to 100.</param>
-/// <param name="percentage">An optional percentage to resize the image by. If specified, width and height are ignored.</param>
-/// <param name="destination">The path to save the resized image. If null, the original file will be overwritten.</param>
-/// <param name="compress">Indicates whether to apply compression to the image after resizing. If null, no compression is applied.</param>
-/// <param name="ext">The file extension of the output image (e.g., ".jpg", ".png"). If null, the original extension is kept.</param>
-/// <returns>A task representing the asynchronous operation, with a result of <c>true</c> if the image is resized and saved successfully; otherwise, <c>false</c>.</returns>
-/// <remarks>
-/// If both width and height are provided, they will be used for resizing unless a percentage is specified.
-/// Compression is only applied if the specified format supports it.
-/// </remarks>
-public static async Task<bool> ResizeImageAsync(FileInfo fileInfo, uint width, uint height, uint? quality = 100,
-    Percentage? percentage = null, string? destination = null, bool? compress = null, string? ext = null)
-{
+    /// <summary>
+    /// Resizes and optionally compresses an image asynchronously, with optional format conversion.
+    /// </summary>
+    /// <param name="fileInfo">The FileInfo object representing the image file to resize.</param>
+    /// <param name="width">The target width of the resized image. Ignored if percentage is specified.</param>
+    /// <param name="height">The target height of the resized image. Ignored if percentage is specified.</param>
+    /// <param name="quality">The quality level of the resized image, as a percentage (0-100). Defaults to 100.</param>
+    /// <param name="percentage">An optional percentage to resize the image by. If specified, width and height are ignored.</param>
+    /// <param name="destination">The path to save the resized image. If null, the original file will be overwritten.</param>
+    /// <param name="compress">Indicates whether to apply compression to the image after resizing. If null, no compression is applied.</param>
+    /// <param name="ext">The file extension of the output image (e.g., ".jpg", ".png"). If null, the original extension is kept.</param>
+    /// <returns>A task representing the asynchronous operation, with a result of <c>true</c> if the image is resized and saved successfully; otherwise, <c>false</c>.</returns>
+    /// <remarks>
+    /// If both width and height are provided, they will be used for resizing unless a percentage is specified.
+    /// Compression is only applied if the specified format supports it.
+    /// </remarks>
+    public static async Task<bool> ResizeImageAsync(FileInfo fileInfo, uint width, uint height, uint? quality = 100,
+        Percentage? percentage = null, string? destination = null, bool? compress = null, string? ext = null)
+    {
         if (fileInfo.Exists == false)
         {
             return false;
