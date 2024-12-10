@@ -19,7 +19,7 @@
                                 Grid.Column="0"
                                 Grid.Row="0"
                                 Height="16"
-                                Interval="200"
+                                Interval="55"
                                 MinWidth="30"
                                 Name="PART_LineUpButton"
                                 VerticalAlignment="Center"
@@ -48,7 +48,7 @@
                                         Background="Transparent"
                                         Classes="repeattrack"
                                         Focusable="False"
-                                        Interval="200"
+                                        Interval="55"
                                         Name="PART_PageUpButton" />
                                 </Track.DecreaseButton>
                                 <Track.IncreaseButton>
@@ -56,7 +56,7 @@
                                         Background="Transparent"
                                         Classes="repeattrack"
                                         Focusable="False"
-                                        Interval="200"
+                                        Interval="55"
                                         Name="PART_PageDownButton" />
                                 </Track.IncreaseButton>
                                 <Thumb Name="thumb" />
@@ -67,7 +67,7 @@
                                 Focusable="False"
                                 Grid.Column="2"
                                 Height="16"
-                                Interval="200"
+                                Interval="55"
                                 MinWidth="30"
                                 Name="PART_LineDownButton"
                                 VerticalAlignment="Center"
@@ -99,7 +99,7 @@
                                 Focusable="False"
                                 Grid.Row="0"
                                 HorizontalAlignment="Center"
-                                Interval="200"
+                                Interval="55"
                                 MinHeight="{StaticResource ScrollBarThickness}"
                                 Name="PART_LineUpButton">
                                 <Path
@@ -127,7 +127,7 @@
                                         Background="Transparent"
                                         Classes="repeattrack"
                                         Focusable="False"
-                                        Interval="200"
+                                        Interval="55"
                                         Name="PART_PageUpButton" />
                                 </Track.DecreaseButton>
                                 <Track.IncreaseButton>
@@ -135,7 +135,7 @@
                                         Background="Transparent"
                                         Classes="repeattrack"
                                         Focusable="False"
-                                        Interval="200"
+                                        Interval="55"
                                         Name="PART_PageDownButton" />
                                 </Track.IncreaseButton>
                                 <Thumb Name="thumb" />
@@ -147,7 +147,7 @@
                                 Grid.Column="2"
                                 Grid.Row="2"
                                 HorizontalAlignment="Center"
-                                Interval="200"
+                                Interval="55"
                                 MinHeight="{StaticResource ScrollBarThickness}"
                                 Name="PART_LineDownButton">
                                 <Path
