@@ -343,6 +343,8 @@ public partial class BatchResizeView : UserControl
 
             async Task ProcessThumbs(string? file, string? destinationDirectory, uint? quality, string? ext)
             {
+                _cancellationTokenSource.Token.ThrowIfCancellationRequested();
+                
                 var toProcess = true;
 
                 await Dispatcher.UIThread.InvokeAsync(() =>

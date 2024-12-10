@@ -485,10 +485,7 @@
                             SelectedItem="Thumb1PercentageItem"
                             Width="195"
                             x:Name="Thumb1ComboBox">
-                            <ComboBoxItem
-                                Content="{CompiledBinding Percentage}"
-                                IsSelected="True"
-                                x:Name="Thumb1PercentageItem" />
+                            <ComboBoxItem Content="{CompiledBinding Percentage}" x:Name="Thumb1PercentageItem" />
                             <ComboBoxItem Content="{CompiledBinding Width}" x:Name="Thumb1WidthItem" />
                             <ComboBoxItem Content="{CompiledBinding Height}" x:Name="Thumb1HeightItem" />
                         </ComboBox>
@@ -554,10 +551,7 @@
                             SelectedItem="Thumb2PercentageItem"
                             Width="195"
                             x:Name="Thumb2ComboBox">
-                            <ComboBoxItem
-                                Content="{CompiledBinding Percentage}"
-                                IsSelected="True"
-                                x:Name="Thumb2PercentageItem" />
+                            <ComboBoxItem Content="{CompiledBinding Percentage}" x:Name="Thumb2PercentageItem" />
                             <ComboBoxItem Content="{CompiledBinding Width}" x:Name="Thumb2WidthItem" />
                             <ComboBoxItem Content="{CompiledBinding Height}" x:Name="Thumb2HeightItem" />
                         </ComboBox>
@@ -623,10 +617,7 @@
                             SelectedItem="Thumb3PercentageItem"
                             Width="195"
                             x:Name="Thumb3ComboBox">
-                            <ComboBoxItem
-                                Content="{CompiledBinding Percentage}"
-                                IsSelected="True"
-                                x:Name="Thumb3PercentageItem" />
+                            <ComboBoxItem Content="{CompiledBinding Percentage}" x:Name="Thumb3PercentageItem" />
                             <ComboBoxItem Content="{CompiledBinding Width}" x:Name="Thumb3WidthItem" />
                             <ComboBoxItem Content="{CompiledBinding Height}" x:Name="Thumb3HeightItem" />
                         </ComboBox>
@@ -692,10 +683,7 @@
                             SelectedItem="Thumb4PercentageItem"
                             Width="195"
                             x:Name="Thumb4ComboBox">
-                            <ComboBoxItem
-                                Content="{CompiledBinding Percentage}"
-                                IsSelected="True"
-                                x:Name="Thumb4PercentageItem" />
+                            <ComboBoxItem Content="{CompiledBinding Percentage}" x:Name="Thumb4PercentageItem" />
                             <ComboBoxItem Content="{CompiledBinding Width}" x:Name="Thumb4WidthItem" />
                             <ComboBoxItem Content="{CompiledBinding Height}" x:Name="Thumb4HeightItem" />
                         </ComboBox>
@@ -760,10 +748,7 @@
                             SelectedItem="Thumb5PercentageItem"
                             Width="195"
                             x:Name="Thumb5ComboBox">
-                            <ComboBoxItem
-                                Content="{CompiledBinding Percentage}"
-                                IsSelected="True"
-                                x:Name="Thumb5PercentageItem" />
+                            <ComboBoxItem Content="{CompiledBinding Percentage}" x:Name="Thumb5PercentageItem" />
                             <ComboBoxItem Content="{CompiledBinding Width}" x:Name="Thumb5WidthItem" />
                             <ComboBoxItem Content="{CompiledBinding Height}" x:Name="Thumb5HeightItem" />
                         </ComboBox>
@@ -828,10 +813,7 @@
                             SelectedItem="Thumb6PercentageItem"
                             Width="195"
                             x:Name="Thumb6ComboBox">
-                            <ComboBoxItem
-                                Content="{CompiledBinding Percentage}"
-                                IsSelected="True"
-                                x:Name="Thumb6PercentageItem" />
+                            <ComboBoxItem Content="{CompiledBinding Percentage}" x:Name="Thumb6PercentageItem" />
                             <ComboBoxItem Content="{CompiledBinding Width}" x:Name="Thumb61WidthItem" />
                             <ComboBoxItem Content="{CompiledBinding Height}" x:Name="Thumb6HeightItem" />
                         </ComboBox>
@@ -897,10 +879,7 @@
                             SelectedItem="Thumb7PercentageItem"
                             Width="195"
                             x:Name="Thumb7ComboBox">
-                            <ComboBoxItem
-                                Content="{CompiledBinding Percentage}"
-                                IsSelected="True"
-                                x:Name="Thumb7PercentageItem" />
+                            <ComboBoxItem Content="{CompiledBinding Percentage}" x:Name="Thumb7PercentageItem" />
                             <ComboBoxItem Content="{CompiledBinding Width}" x:Name="Thumb7WidthItem" />
                             <ComboBoxItem Content="{CompiledBinding Height}" x:Name="Thumb7HeightItem" />
                         </ComboBox>
