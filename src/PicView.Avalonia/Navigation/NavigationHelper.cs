@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using ImageMagick;
+using PicView.Avalonia.Crop;
 using PicView.Avalonia.Gallery;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Input;
@@ -34,7 +35,7 @@ public static class NavigationHelper
     public static bool CanNavigate(MainViewModel vm)
     {
         return vm?.ImageIterator?.ImagePaths is not null &&
-               vm.ImageIterator.ImagePaths.Count > 0;
+               vm.ImageIterator.ImagePaths.Count > 0 && !CropFunctions.IsCropping;
         // TODO: should probably turn this into CanExecute observable for ReactiveUI
     }
     

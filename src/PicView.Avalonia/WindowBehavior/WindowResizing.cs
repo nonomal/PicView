@@ -239,7 +239,6 @@ public static class WindowResizing
         else
         {
             vm.GalleryWidth = double.NaN;
-            ;
         }
     }
 

@@ -46,6 +46,7 @@ public partial class MainView : UserControl
             }
             HideInterfaceLogic.AddHoverButtonEvents(AltButtonsPanel, vm);
             PointerWheelChanged += async (_, e) => await vm.ImageViewer.PreviewOnPointerWheelChanged(this, e);
+            
         };
     }
 

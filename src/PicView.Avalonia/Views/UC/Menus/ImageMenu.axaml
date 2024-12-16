@@ -232,10 +232,12 @@
                     Canvas.Left="160"
                     Canvas.Top="53"
                     Classes="ButtonBorder altHover"
+                    Command="{CompiledBinding CropCommand}"
                     Height="46"
                     IsEnabled="False"
                     ToolTip.Tip="{CompiledBinding Crop,
-                                                  Mode=OneWay}">
+                                                  Mode=OneWay}"
+                    x:Name="CropButton">
                     <StackPanel Orientation="Horizontal">
                         <Path
                             Data="{StaticResource CropGeometry}"

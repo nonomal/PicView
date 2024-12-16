@@ -4,6 +4,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using PicView.Avalonia.Clipboard;
 using PicView.Avalonia.ColorManagement;
+using PicView.Avalonia.Crop;
 using PicView.Avalonia.FileSystem;
 using PicView.Avalonia.Gallery;
 using PicView.Avalonia.ImageHandling;
@@ -421,6 +422,12 @@ public static class FunctionsHelper
             return;
         }
 
+        if (CropFunctions.IsCropping)
+        {
+            CropFunctions.CloseCropControl(Vm);
+            return;
+        }
+
         if (Navigation.Slideshow.IsRunning)
         {
             Navigation.Slideshow.StopSlideshow(Vm);
@@ -746,9 +753,9 @@ public static class FunctionsHelper
         return Task.CompletedTask;
     }
 
-    public static Task Crop()
+    public static async Task Crop()
     {
-        return Task.CompletedTask;
+        await Dispatcher.UIThread.InvokeAsync(() => CropFunctions.Init(Vm));
     }
 
     public static Task Flip()
