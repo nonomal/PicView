@@ -1,16 +1,43 @@
-﻿using Avalonia;
+﻿using System.Reactive;
+using Avalonia;
 using Avalonia.Media.Imaging;
+using PicView.Avalonia.Crop;
+using PicView.Avalonia.UI;
+using PicView.Core.Localization;
 using ReactiveUI;
 
 namespace PicView.Avalonia.ViewModels;
 
-public class ImageCropperViewModel(Bitmap bitmap) : ViewModelBase
+public class ImageCropperViewModel : ViewModelBase
 {
+    public ImageCropperViewModel(Bitmap bitmap)
+    {
+        Bitmap = bitmap;
+        CropImageCommand  = ReactiveCommand.CreateFromTask(async () =>
+        {
+        
+        });
+        CloseCropCommand  = ReactiveCommand.Create(() =>
+        {
+            if (UIHelper.GetMainView.DataContext is not MainViewModel vm)
+            {
+                return;
+            }
+            CropFunctions.CloseCropControl(vm);
+        });
+        Crop = TranslationHelper.Translation.CropPicture;
+        Close = TranslationHelper.Translation.Close;
+    }
+    
+    public ReactiveCommand<Unit, Unit>? CropImageCommand { get; }
+    
+    public ReactiveCommand<Unit, Unit>? CloseCropCommand { get; }
+    
     public Bitmap Bitmap
     {
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);
-    } = bitmap;
+    }
 
     public double SelectionX
     {
@@ -45,16 +72,6 @@ public class ImageCropperViewModel(Bitmap bitmap) : ViewModelBase
     {
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-    
-    public double BottomOverlayHeight
-    {
-        get => ImageHeight - (SelectionY + SelectionHeight);
-    }
-
-    public double RightOverlayWidth
-    {
-        get => ImageWidth - (SelectionX + SelectionWidth);
     }
 
     // Call this method when the user completes the selection
