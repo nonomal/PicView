@@ -1,7 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
-using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 
 namespace PicView.Avalonia.Views.UC;
@@ -33,14 +32,14 @@ public partial class CropControl : UserControl
             TopMiddleButton.PointerPressed += OnResizePointerPressed;
             BottomMiddleButton.PointerPressed += OnResizePointerPressed;
             
-            TopLeftButton.PointerMoved += OnResizePointerMoved;
-            TopRightButton.PointerMoved += OnResizePointerMoved;
-            BottomLeftButton.PointerMoved += OnResizePointerMoved;
-            BottomRightButton.PointerMoved += OnResizePointerMoved;
-            LeftMiddleButton.PointerMoved += OnResizePointerMoved;
-            RightMiddleButton.PointerMoved += OnResizePointerMoved;
-            TopMiddleButton.PointerMoved += OnResizePointerMoved;
-            BottomMiddleButton.PointerMoved += OnResizePointerMoved;
+            TopLeftButton.PointerMoved += (_, e) =>  ResizeTopLeft(e);
+            TopRightButton.PointerMoved +=  (_, e) =>  ResizeTopRight(e);
+            BottomLeftButton.PointerMoved +=  (_, e) =>  ResizeBottomLeft(e);
+            BottomRightButton.PointerMoved +=  (_, e) =>  ResizeBottomRight(e);
+            LeftMiddleButton.PointerMoved +=  (_, e) =>  ResizeLeftMiddle(e);
+            RightMiddleButton.PointerMoved +=  (_, e) =>  ResizeRightMiddle(e);
+            TopMiddleButton.PointerMoved +=  (_, e) =>  ResizeTopMiddle(e);
+            BottomMiddleButton.PointerMoved +=  (_, e) =>  ResizeBottomMiddle(e);
             
             TopLeftButton.PointerReleased += OnResizePointerReleased;
             TopRightButton.PointerReleased += OnResizePointerReleased;
@@ -105,97 +104,92 @@ public partial class CropControl : UserControl
         _originalRect = new Rect(Canvas.GetLeft(MainRectangle), Canvas.GetTop(MainRectangle), vm.SelectionWidth, vm.SelectionHeight);
 
         _isResizing = true;
-
-        // Determine which button is being dragged
-        if (sender is Border border)
-        {
-            // Store the button being used for resizing (you can check button name later in OnResizePointerMoved)
-            border.Tag = border;
-        }
-    }
-    
-    private void OnResizePointerMoved(object? sender, PointerEventArgs e)
-    {
-        if (!_isResizing || DataContext is not ImageCropperViewModel vm)
-        {
-            return;
-        }
-
-        var currentPos = e.GetPosition(RootCanvas);
-        var delta = currentPos - _resizeStart;
-
-        // Adjust based on the button
-        if (sender is Border border)
-        {
-            var buttonName = border.Name;
-            switch (buttonName)
-            {
-                case "TopLeftButton":
-                    ResizeTopLeft(delta, ref vm);
-                    break;
-                case "TopRightButton":
-                    ResizeTopRight(delta, ref vm);
-                    break;
-                case "BottomLeftButton":
-                    ResizeBottomLeft(delta, ref vm);
-                    break;
-                case "BottomRightButton":
-                    ResizeBottomRight(delta, ref vm);
-                    break;
-                case "LeftMiddleButton":
-                    ResizeLeftMiddle(delta, ref vm);
-                    break;
-                case "RightMiddleButton":
-                    ResizeRightMiddle(delta, ref vm);
-                    break;
-                case "TopMiddleButton":
-                    ResizeTopMiddle(delta, ref vm);
-                    break;
-                case "BottomMiddleButton":
-                    ResizeBottomMiddle(delta, ref vm);
-                    break;
-            }
-
-            UpdateButtonPositions(vm.SelectionX, vm.SelectionY, vm.SelectionWidth, vm.SelectionHeight);
-            UpdateSurroundingRectangles();
-        }
     }
     
     private void UpdateButtonPositions(double selectionX, double selectionY, double selectionWidth, double selectionHeight)
     {
         try
         {
-            // Top Left Button
-            Canvas.SetLeft(TopLeftButton, Convert.ToInt32(selectionX - TopLeftButton.Width / 2));
-            Canvas.SetTop(TopLeftButton, Convert.ToInt32(selectionY - TopLeftButton.Height / 2));
+ // Get the bounds of the RootCanvas (the control container)
+    var rootCanvasLeft = 0;
+    var rootCanvasTop = 0;
+    var rootCanvasRight = RootCanvas.Bounds.Width;
+    var rootCanvasBottom = RootCanvas.Bounds.Height;
 
-            // Top Right Button
-            Canvas.SetLeft(TopRightButton, Convert.ToInt32(selectionX + selectionWidth - TopRightButton.Width / 2));
-            Canvas.SetTop(TopRightButton, Convert.ToInt32(selectionY - TopRightButton.Height / 2));
+    // Calculate the positions for each button
+    var topLeftX = selectionX - TopLeftButton.Width / 2;
+    var topLeftY = selectionY - TopLeftButton.Height / 2;
 
-            // Top Middle Button
-            Canvas.SetLeft(TopMiddleButton, Convert.ToInt32(selectionX + (selectionWidth / 2) - TopMiddleButton.Width / 2));
-            Canvas.SetTop(TopMiddleButton, Convert.ToInt32(selectionY - TopMiddleButton.Height / 2));
+    var topRightX = selectionX + selectionWidth - TopRightButton.Width / 2;
+    var topRightY = selectionY - TopRightButton.Height / 2;
 
-            // Bottom Left Button
-            Canvas.SetLeft(BottomLeftButton, Convert.ToInt32(selectionX - BottomLeftButton.Width / 2));
-            Canvas.SetTop(BottomLeftButton, Convert.ToInt32(selectionY + selectionHeight - BottomLeftButton.Height / 2));
+    var topMiddleX = selectionX + selectionWidth / 2 - TopMiddleButton.Width / 2;
+    var topMiddleY = selectionY - TopMiddleButton.Height / 2;
 
-            // Bottom Right Button
-            Canvas.SetLeft(BottomRightButton, Convert.ToInt32(selectionX + selectionWidth - BottomRightButton.Width / 2));
-            Canvas.SetTop(BottomRightButton, Convert.ToInt32(selectionY + selectionHeight - BottomRightButton.Height / 2));
+    var bottomLeftX = selectionX - BottomLeftButton.Width / 2;
+    var bottomLeftY = selectionY + selectionHeight - BottomLeftButton.Height / 2;
 
-            // Bottom Middle Button
-            Canvas.SetLeft(BottomMiddleButton, Convert.ToInt32(selectionX + (selectionWidth / 2) - BottomMiddleButton.Width / 2));
-            Canvas.SetTop(BottomMiddleButton, Convert.ToInt32(selectionY + selectionHeight - BottomMiddleButton.Height / 2));
+    var bottomRightX = selectionX + selectionWidth - BottomRightButton.Width / 2;
+    var bottomRightY = selectionY + selectionHeight - BottomRightButton.Height / 2;
 
-            // Left Middle Button
-            Canvas.SetLeft(LeftMiddleButton, Convert.ToInt32(selectionX - LeftMiddleButton.Width / 2));
-            Canvas.SetTop(LeftMiddleButton, Convert.ToInt32(selectionY + (selectionHeight / 2) - LeftMiddleButton.Height / 2));
+    var bottomMiddleX = selectionX + selectionWidth / 2 - BottomMiddleButton.Width / 2;
+    var bottomMiddleY = selectionY + selectionHeight - BottomMiddleButton.Height / 2;
 
-            // Right Middle Button
-            Canvas.SetLeft(RightMiddleButton, Convert.ToInt32(selectionX + selectionWidth - RightMiddleButton.Width / 2));
-            Canvas.SetTop(RightMiddleButton, Convert.ToInt32(selectionY + (selectionHeight / 2) - RightMiddleButton.Height / 2));
+    var leftMiddleX = selectionX - LeftMiddleButton.Width / 2;
+    var leftMiddleY = selectionY + selectionHeight / 2 - LeftMiddleButton.Height / 2;
+
+    var rightMiddleX = selectionX + selectionWidth - RightMiddleButton.Width / 2;
+    var rightMiddleY = selectionY + selectionHeight / 2 - RightMiddleButton.Height / 2;
+
+    // Ensure buttons stay within RootCanvas bounds (by clamping positions)
+    topLeftX = Math.Max(rootCanvasLeft, Math.Min(rootCanvasRight - TopLeftButton.Width, topLeftX));
+    topLeftY = Math.Max(rootCanvasTop, Math.Min(rootCanvasBottom - TopLeftButton.Height, topLeftY));
+
+    topRightX = Math.Max(rootCanvasLeft, Math.Min(rootCanvasRight - TopRightButton.Width, topRightX));
+    topRightY = Math.Max(rootCanvasTop, Math.Min(rootCanvasBottom - TopRightButton.Height, topRightY));
+
+    topMiddleX = Math.Max(rootCanvasLeft, Math.Min(rootCanvasRight - TopMiddleButton.Width, topMiddleX));
+    topMiddleY = Math.Max(rootCanvasTop, Math.Min(rootCanvasBottom - TopMiddleButton.Height, topMiddleY));
+
+    bottomLeftX = Math.Max(rootCanvasLeft, Math.Min(rootCanvasRight - BottomLeftButton.Width, bottomLeftX));
+    bottomLeftY = Math.Max(rootCanvasTop, Math.Min(rootCanvasBottom - BottomLeftButton.Height, bottomLeftY));
+
+    bottomRightX = Math.Max(rootCanvasLeft, Math.Min(rootCanvasRight - BottomRightButton.Width, bottomRightX));
+    bottomRightY = Math.Max(rootCanvasTop, Math.Min(rootCanvasBottom - BottomRightButton.Height, bottomRightY));
+
+    bottomMiddleX = Math.Max(rootCanvasLeft, Math.Min(rootCanvasRight - BottomMiddleButton.Width, bottomMiddleX));
+    bottomMiddleY = Math.Max(rootCanvasTop, Math.Min(rootCanvasBottom - BottomMiddleButton.Height, bottomMiddleY));
+
+    leftMiddleX = Math.Max(rootCanvasLeft, Math.Min(rootCanvasRight - LeftMiddleButton.Width, leftMiddleX));
+    leftMiddleY = Math.Max(rootCanvasTop, Math.Min(rootCanvasBottom - LeftMiddleButton.Height, leftMiddleY));
+
+    rightMiddleX = Math.Max(rootCanvasLeft, Math.Min(rootCanvasRight - RightMiddleButton.Width, rightMiddleX));
+    rightMiddleY = Math.Max(rootCanvasTop, Math.Min(rootCanvasBottom - RightMiddleButton.Height, rightMiddleY));
+
+    // Set the final button positions
+    Canvas.SetLeft(TopLeftButton, topLeftX);
+    Canvas.SetTop(TopLeftButton, topLeftY);
+
+    Canvas.SetLeft(TopRightButton, topRightX);
+    Canvas.SetTop(TopRightButton, topRightY);
+
+    Canvas.SetLeft(TopMiddleButton, topMiddleX);
+    Canvas.SetTop(TopMiddleButton, topMiddleY);
+
+    Canvas.SetLeft(BottomLeftButton, bottomLeftX);
+    Canvas.SetTop(BottomLeftButton, bottomLeftY);
+
+    Canvas.SetLeft(BottomRightButton, bottomRightX);
+    Canvas.SetTop(BottomRightButton, bottomRightY);
+
+    Canvas.SetLeft(BottomMiddleButton, bottomMiddleX);
+    Canvas.SetTop(BottomMiddleButton, bottomMiddleY);
+
+    Canvas.SetLeft(LeftMiddleButton, leftMiddleX);
+    Canvas.SetTop(LeftMiddleButton, leftMiddleY);
+
+    Canvas.SetLeft(RightMiddleButton, rightMiddleX);
+    Canvas.SetTop(RightMiddleButton, rightMiddleY);
         }
         catch (Exception e)
         {
@@ -204,8 +198,6 @@ public partial class CropControl : UserControl
             #endif
         }
     }
-
-
 
     private void UpdateSurroundingRectangles()
     {
@@ -336,15 +328,16 @@ public partial class CropControl : UserControl
         _isDragging = false;
     }
     
-    private void ResizeTopLeft(Vector delta, ref ImageCropperViewModel vm)
+    private void ResizeTopLeft(PointerEventArgs e)
     {
-        if (vm.SelectionX is 0 && vm.SelectionY is 0)
+        if (!_isResizing || DataContext is not ImageCropperViewModel vm)
         {
-            Cursor = new Cursor(StandardCursorType.Arrow);
-            _isDragging = false;
-            _isResizing = false;
             return;
         }
+        
+        var currentPos = e.GetPosition(RootCanvas);
+        var delta = currentPos - _resizeStart;
+        
         // Calculate the new width and height based on the drag delta
         var newWidth = _originalRect.Width - delta.X;
         var newHeight = _originalRect.Height - delta.Y;
@@ -366,6 +359,11 @@ public partial class CropControl : UserControl
         {
             newHeight = vm.ImageHeight - newTop;
         }
+        
+        if (vm.SelectionX is 0 && vm.SelectionY is 0 && newLeft is 0 && newTop is 0)
+        {
+            return;
+        }
 
         // Apply the new size and position
         vm.SelectionX = newLeft;
@@ -374,55 +372,107 @@ public partial class CropControl : UserControl
         vm.SelectionHeight = newHeight;
         Canvas.SetLeft(MainRectangle, newLeft);
         Canvas.SetTop(MainRectangle, newTop);
+        
+        UpdateButtonPositions(vm.SelectionX, vm.SelectionY, vm.SelectionWidth, vm.SelectionHeight);
+        UpdateSurroundingRectangles();
     }
 
-    private void ResizeTopRight(Vector delta, ref ImageCropperViewModel vm)
+    private void ResizeTopRight(PointerEventArgs e)
     {
+        if (!_isResizing || DataContext is not ImageCropperViewModel vm)
+        {
+            return;
+        }
+
+        var currentPos = e.GetPosition(RootCanvas);
+        var delta = currentPos - _resizeStart;
+
+        // Calculate new width and height
         var newWidth = _originalRect.Width + delta.X;
         var newHeight = _originalRect.Height - delta.Y;
         var newY = _originalRect.Y + delta.Y;
 
-        if (!(newWidth > 0) || !(newHeight > 0))
+        // Ensure the width doesn't exceed the canvas' right edge
+        if (_originalRect.X + newWidth > vm.ImageWidth)
         {
-            Cursor = new Cursor(StandardCursorType.Arrow);
-            _isDragging = false;
-            _isResizing = false;
+            newWidth = vm.ImageWidth - _originalRect.X;
+        }
+
+        // Ensure the top doesn't move above the top edge of the canvas
+        if (newY < 0)
+        {
+            newHeight = _originalRect.Height + _originalRect.Y;  // Shrink height by the amount moved up
+            newY = 0;
+        }
+
+        // Prevent the height from becoming too small
+        newHeight = Math.Max(newHeight, 1);
+
+        // Apply the new size and position
+        vm.SelectionY = newY;
+        vm.SelectionWidth = newWidth;
+        vm.SelectionHeight = newHeight;
+        Canvas.SetLeft(MainRectangle, _originalRect.X);
+        Canvas.SetTop(MainRectangle, newY);
+
+        UpdateButtonPositions(_originalRect.X, newY, newWidth, newHeight);
+        UpdateSurroundingRectangles();
+    }
+
+
+    private void ResizeBottomLeft(PointerEventArgs e)
+    {
+        if (!_isResizing || DataContext is not ImageCropperViewModel vm)
+        {
             return;
         }
 
-        vm.SelectionWidth = newWidth;
-        vm.SelectionHeight = newHeight;
-        vm.SelectionY = newY;
-        Canvas.SetTop(MainRectangle, newY);
-    }
+        var currentPos = e.GetPosition(RootCanvas);
+        var delta = currentPos - _resizeStart;
 
-    private void ResizeBottomLeft(Vector delta, ref ImageCropperViewModel vm)
-    {
         var newWidth = _originalRect.Width - delta.X;
         var newHeight = _originalRect.Height + delta.Y;
         var newX = _originalRect.X + delta.X;
 
-        if (newWidth < 0 || newHeight < 0 || newX < 0)
+        // Ensure the left doesn't move beyond the left edge
+        if (newX < 0)
         {
-            Cursor = new Cursor(StandardCursorType.Arrow);
-            _isDragging = false;
-            _isResizing = false;
-            return;
+            newWidth = _originalRect.Width + _originalRect.X;  // Shrink width by the amount moved left
+            newX = 0;
         }
 
-        newWidth = Math.Max(newWidth, 7);
-        newHeight = Math.Max(newHeight, 7);
+        // Ensure the height doesn't exceed the canvas' bottom edge
+        if (_originalRect.Y + newHeight > vm.ImageHeight)
+        {
+            newHeight = vm.ImageHeight - _originalRect.Y;
+        }
 
+        // Prevent the width and height from becoming too small
+        newWidth = Math.Max(newWidth, 1);
+        newHeight = Math.Max(newHeight, 1);
+
+        // Apply the new size and position
+        vm.SelectionX = newX;
         vm.SelectionWidth = newWidth;
         vm.SelectionHeight = newHeight;
-        vm.SelectionX = newX;
         Canvas.SetLeft(MainRectangle, newX);
-        
-        TooltipHelper.ShowTooltipMessage($"Width: {vm.SelectionWidth}, Height: {vm.SelectionHeight}, x: {vm.SelectionX}, y: {vm.SelectionY}");
+        Canvas.SetTop(MainRectangle, _originalRect.Y);
+
+        UpdateButtonPositions(newX, _originalRect.Y, newWidth, newHeight);
+        UpdateSurroundingRectangles();
     }
 
-    private void ResizeBottomRight(Vector delta, ref ImageCropperViewModel vm)
+
+    private void ResizeBottomRight(PointerEventArgs e)
     {
+        if (!_isResizing || DataContext is not ImageCropperViewModel vm)
+        {
+            return;
+        }
+        
+        var currentPos = e.GetPosition(RootCanvas);
+        var delta = currentPos - _resizeStart;
+        
         // Calculate the new width and height based on the drag delta
         var newWidth = _originalRect.Width + delta.X;
         var newHeight = _originalRect.Height + delta.Y;
@@ -447,51 +497,163 @@ public partial class CropControl : UserControl
         // Apply the new width and height
         vm.SelectionWidth = newWidth;
         vm.SelectionHeight = newHeight;
+        
+        UpdateButtonPositions(vm.SelectionX, vm.SelectionY, vm.SelectionWidth, vm.SelectionHeight);
+        UpdateSurroundingRectangles();
     }
 
-    private void ResizeLeftMiddle(Vector delta, ref ImageCropperViewModel vm)
+    private void ResizeLeftMiddle(PointerEventArgs e)
     {
-        var newWidth = _originalRect.Width - delta.X;
-        var newX = _originalRect.X + delta.X;
-
-        if (!(newWidth > 0))
+        if (!_isResizing || DataContext is not ImageCropperViewModel vm)
         {
             return;
         }
 
-        vm.SelectionWidth = newWidth;
-        vm.SelectionX = newX;
-        Canvas.SetLeft(MainRectangle, newX);
-    }
+        // Get the current mouse position relative to RootCanvas
+        var currentPos = e.GetPosition(RootCanvas);
+        var delta = currentPos - _resizeStart;
 
-    private void ResizeRightMiddle(Vector delta, ref ImageCropperViewModel vm)
-    {
-        var newWidth = _originalRect.Width + delta.X;
+        // Calculate the new X position
+        var newX = _originalRect.X + delta.X;
 
-        if (newWidth > 0)
+        // Calculate the new width based on horizontal movement
+        var newWidth = _originalRect.Width - delta.X;
+
+        // Ensure that the rectangle doesn't go beyond the right boundary
+        if (newX < 0)
         {
-            vm.SelectionWidth = newWidth;
+            newWidth = _originalRect.Width + _originalRect.X;
+            newX = 0;
         }
+
+        // Ensure the new width doesn't go negative or too small
+        newWidth = Math.Max(newWidth, 1);
+
+        // Update the view model with the new X position and width
+        vm.SelectionX = newX;
+        vm.SelectionWidth = newWidth;
+
+        // Update the rectangle on the canvas
+        Canvas.SetLeft(MainRectangle, newX);
+        Canvas.SetTop(MainRectangle, _originalRect.Y);
+
+        // Update buttons and surrounding rectangles
+        UpdateButtonPositions(newX, _originalRect.Y, vm.SelectionWidth, vm.SelectionHeight);
+        UpdateSurroundingRectangles();
     }
 
-    private void ResizeTopMiddle(Vector delta, ref ImageCropperViewModel vm)
+
+    private void ResizeRightMiddle(PointerEventArgs e)
     {
+        if (!_isResizing || DataContext is not ImageCropperViewModel vm)
+        {
+            return;
+        }
+    
+        // Get the current mouse position relative to RootCanvas
+        var currentPos = e.GetPosition(RootCanvas);
+        var delta = currentPos - _resizeStart;
+    
+        // Calculate the new width based on horizontal movement
+        var newWidth = _originalRect.Width + delta.X;
+    
+        // Ensure the new width doesn't go beyond the bounds of the RootCanvas
+        if (_originalRect.X + newWidth > vm.ImageWidth)
+        {
+            newWidth = vm.ImageWidth - _originalRect.X;
+        }
+    
+        // Constrain the width to a minimum value (e.g., 1 to prevent zero or negative width)
+        newWidth = Math.Max(newWidth, 1);
+
+        // Update the view model with the new width
+        vm.SelectionWidth = newWidth;
+
+        // Update the rectangle on the canvas
+        Canvas.SetLeft(MainRectangle, _originalRect.X);
+        Canvas.SetTop(MainRectangle, _originalRect.Y);
+
+        // Update buttons and surrounding rectangles
+        UpdateButtonPositions(_originalRect.X, _originalRect.Y, vm.SelectionWidth, vm.SelectionHeight);
+        UpdateSurroundingRectangles();
+    }
+
+    private void ResizeTopMiddle(PointerEventArgs e)
+    {
+        if (!_isResizing || DataContext is not ImageCropperViewModel vm)
+        {
+            return;
+        }
+
+        // Get the current mouse position relative to RootCanvas
+        var currentPos = e.GetPosition(RootCanvas);
+        var delta = currentPos - _resizeStart;
+
+        // Calculate the new top position and height
+        var newTop = _originalRect.Y + delta.Y;
         var newHeight = _originalRect.Height - delta.Y;
-        var newY = _originalRect.Y + delta.Y;
 
-        vm.SelectionHeight = newHeight < 0 ? 0 : newHeight;
-        vm.SelectionY = newY < 0 ? 0 : newY;
-        Canvas.SetTop(MainRectangle, newY);
+        // Ensure the new height doesn't go negative or too small
+        if (newHeight < 1)
+        {
+            newHeight = 1;
+            newTop = _originalRect.Y + (_originalRect.Height - 1); // Adjust top to preserve min height
+        }
+
+        // Ensure the top edge doesn't go beyond the canvas bounds
+        if (newTop < 0)
+        {
+            newTop = 0;
+            newHeight = _originalRect.Height + _originalRect.Y; // Adjust height to compensate
+        }
+
+        // Update the view model with the new top and height
+        vm.SelectionHeight = newHeight;
+        vm.SelectionY = newTop;
+
+        // Update the rectangle on the canvas
+        Canvas.SetLeft(MainRectangle, _originalRect.X);
+        Canvas.SetTop(MainRectangle, newTop);
+
+        // Update buttons and surrounding rectangles
+        UpdateButtonPositions(_originalRect.X, newTop, vm.SelectionWidth, newHeight);
+        UpdateSurroundingRectangles();
     }
 
-    private void ResizeBottomMiddle(Vector delta, ref ImageCropperViewModel vm)
+
+    private void ResizeBottomMiddle(PointerEventArgs e)
     {
+        if (!_isResizing || DataContext is not ImageCropperViewModel vm)
+        {
+            return;
+        }
+
+        // Get the current mouse position relative to RootCanvas
+        var currentPos = e.GetPosition(RootCanvas);
+        var delta = currentPos - _resizeStart;
+
+        // Calculate the new height based on vertical movement
         var newHeight = _originalRect.Height + delta.Y;
 
-        if (newHeight > 0)
+        // Ensure the new height doesn't go negative or too small
+        newHeight = Math.Max(newHeight, 1);
+
+        // Ensure the bottom edge doesn't go beyond the canvas bounds
+        if (_originalRect.Y + newHeight > RootCanvas.Bounds.Height)
         {
-            vm.SelectionHeight = newHeight;
+            newHeight = RootCanvas.Bounds.Height - _originalRect.Y;
         }
+
+        // Update the view model with the new height
+        vm.SelectionHeight = newHeight;
+
+        // Update the rectangle on the canvas
+        Canvas.SetLeft(MainRectangle, _originalRect.X);
+        Canvas.SetTop(MainRectangle, _originalRect.Y);
+
+        // Update buttons and surrounding rectangles
+        UpdateButtonPositions(_originalRect.X, _originalRect.Y, vm.SelectionWidth, newHeight);
+        UpdateSurroundingRectangles();
     }
     
     private void OnResizePointerReleased(object? sender, PointerReleasedEventArgs e)
