@@ -22,7 +22,11 @@
     </UserControl.Styles>
     <UserControl.ContextMenu>
         <ContextMenu x:Name="CropContextMenu">
-            <MenuItem Command="{CompiledBinding CropImageCommand}" Header="{CompiledBinding Crop, Mode=OneWay}">
+            <MenuItem
+                Command="{CompiledBinding CropImageCommand}"
+                Header="{CompiledBinding Crop,
+                                         Mode=OneWay}"
+                HotKey="Enter">
                 <MenuItem.Icon>
                     <Path
                         Data="{StaticResource CropGeometry}"

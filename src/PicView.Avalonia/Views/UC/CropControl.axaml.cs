@@ -49,6 +49,12 @@ public partial class CropControl : UserControl
             RightMiddleButton.PointerReleased += OnResizePointerReleased;
             TopMiddleButton.PointerReleased += OnResizePointerReleased;
             BottomMiddleButton.PointerReleased += OnResizePointerReleased;
+
+            LostFocus += delegate
+            {
+                _isResizing = false;
+                _isDragging = false;
+            };
         };
     }
 

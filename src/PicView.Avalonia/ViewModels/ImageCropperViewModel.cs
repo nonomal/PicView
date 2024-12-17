@@ -15,7 +15,7 @@ public class ImageCropperViewModel : ViewModelBase
         Bitmap = bitmap;
         CropImageCommand  = ReactiveCommand.CreateFromTask(async () =>
         {
-        
+            
         });
         CloseCropCommand  = ReactiveCommand.Create(() =>
         {
