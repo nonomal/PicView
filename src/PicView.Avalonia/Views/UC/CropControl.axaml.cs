@@ -9,9 +9,9 @@ public partial class CropControl : UserControl
 {
     private Point _dragStart;
     private bool _isDragging;
+    private bool _isResizing;
     private Rect _originalRect;
     private Point _resizeStart;
-    private bool _isResizing;
 
     public CropControl()
     {
@@ -22,7 +22,7 @@ public partial class CropControl : UserControl
             MainRectangle.PointerPressed += OnPointerPressed;
             MainRectangle.PointerReleased += OnPointerReleased;
             MainRectangle.PointerMoved += OnPointerMoved;
-            
+
             TopLeftButton.PointerPressed += OnResizePointerPressed;
             TopRightButton.PointerPressed += OnResizePointerPressed;
             BottomLeftButton.PointerPressed += OnResizePointerPressed;
@@ -31,16 +31,16 @@ public partial class CropControl : UserControl
             RightMiddleButton.PointerPressed += OnResizePointerPressed;
             TopMiddleButton.PointerPressed += OnResizePointerPressed;
             BottomMiddleButton.PointerPressed += OnResizePointerPressed;
-            
-            TopLeftButton.PointerMoved += (_, e) =>  ResizeTopLeft(e);
-            TopRightButton.PointerMoved +=  (_, e) =>  ResizeTopRight(e);
-            BottomLeftButton.PointerMoved +=  (_, e) =>  ResizeBottomLeft(e);
-            BottomRightButton.PointerMoved +=  (_, e) =>  ResizeBottomRight(e);
-            LeftMiddleButton.PointerMoved +=  (_, e) =>  ResizeLeftMiddle(e);
-            RightMiddleButton.PointerMoved +=  (_, e) =>  ResizeRightMiddle(e);
-            TopMiddleButton.PointerMoved +=  (_, e) =>  ResizeTopMiddle(e);
-            BottomMiddleButton.PointerMoved +=  (_, e) =>  ResizeBottomMiddle(e);
-            
+
+            TopLeftButton.PointerMoved += (_, e) => ResizeTopLeft(e);
+            TopRightButton.PointerMoved += (_, e) => ResizeTopRight(e);
+            BottomLeftButton.PointerMoved += (_, e) => ResizeBottomLeft(e);
+            BottomRightButton.PointerMoved += (_, e) => ResizeBottomRight(e);
+            LeftMiddleButton.PointerMoved += (_, e) => ResizeLeftMiddle(e);
+            RightMiddleButton.PointerMoved += (_, e) => ResizeRightMiddle(e);
+            TopMiddleButton.PointerMoved += (_, e) => ResizeTopMiddle(e);
+            BottomMiddleButton.PointerMoved += (_, e) => ResizeBottomMiddle(e);
+
             TopLeftButton.PointerReleased += OnResizePointerReleased;
             TopRightButton.PointerReleased += OnResizePointerReleased;
             BottomLeftButton.PointerReleased += OnResizePointerReleased;
@@ -91,7 +91,7 @@ public partial class CropControl : UserControl
 #endif
         }
     }
-    
+
     private void OnResizePointerPressed(object? sender, PointerPressedEventArgs e)
     {
         if (DataContext is not ImageCropperViewModel vm || !e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
@@ -101,101 +101,105 @@ public partial class CropControl : UserControl
 
         // Capture the start position of the mouse and the initial size/position of the rectangle
         _resizeStart = e.GetPosition(RootCanvas);
-        _originalRect = new Rect(Canvas.GetLeft(MainRectangle), Canvas.GetTop(MainRectangle), vm.SelectionWidth, vm.SelectionHeight);
+        _originalRect = new Rect(Canvas.GetLeft(MainRectangle), Canvas.GetTop(MainRectangle), vm.SelectionWidth,
+            vm.SelectionHeight);
 
         _isResizing = true;
     }
-    
-    private void UpdateButtonPositions(double selectionX, double selectionY, double selectionWidth, double selectionHeight)
+
+    private void UpdateButtonPositions(double selectionX, double selectionY, double selectionWidth,
+        double selectionHeight)
     {
         try
         {
- // Get the bounds of the RootCanvas (the control container)
-    var rootCanvasLeft = 0;
-    var rootCanvasTop = 0;
-    var rootCanvasRight = RootCanvas.Bounds.Width;
-    var rootCanvasBottom = RootCanvas.Bounds.Height;
+            // Get the bounds of the RootCanvas (the control container)
+            const int rootCanvasLeft = 0;
+            const int rootCanvasTop = 0;
+            var rootCanvasRight = RootCanvas.Bounds.Width;
+            var rootCanvasBottom = RootCanvas.Bounds.Height;
 
-    // Calculate the positions for each button
-    var topLeftX = selectionX - TopLeftButton.Width / 2;
-    var topLeftY = selectionY - TopLeftButton.Height / 2;
+            // Calculate the positions for each button
+            var topLeftX = selectionX - TopLeftButton.Width / 2;
+            var topLeftY = selectionY - TopLeftButton.Height / 2;
 
-    var topRightX = selectionX + selectionWidth - TopRightButton.Width / 2;
-    var topRightY = selectionY - TopRightButton.Height / 2;
+            var topRightX = selectionX + selectionWidth - TopRightButton.Width / 2;
+            var topRightY = selectionY - TopRightButton.Height / 2;
 
-    var topMiddleX = selectionX + selectionWidth / 2 - TopMiddleButton.Width / 2;
-    var topMiddleY = selectionY - TopMiddleButton.Height / 2;
+            var topMiddleX = selectionX + selectionWidth / 2 - TopMiddleButton.Width / 2;
+            var topMiddleY = selectionY - TopMiddleButton.Height / 2;
 
-    var bottomLeftX = selectionX - BottomLeftButton.Width / 2;
-    var bottomLeftY = selectionY + selectionHeight - BottomLeftButton.Height / 2;
+            var bottomLeftX = selectionX - BottomLeftButton.Width / 2;
+            var bottomLeftY = selectionY + selectionHeight - BottomLeftButton.Height / 2;
 
-    var bottomRightX = selectionX + selectionWidth - BottomRightButton.Width / 2;
-    var bottomRightY = selectionY + selectionHeight - BottomRightButton.Height / 2;
+            var bottomRightX = selectionX + selectionWidth - BottomRightButton.Width / 2;
+            var bottomRightY = selectionY + selectionHeight - BottomRightButton.Height / 2;
 
-    var bottomMiddleX = selectionX + selectionWidth / 2 - BottomMiddleButton.Width / 2;
-    var bottomMiddleY = selectionY + selectionHeight - BottomMiddleButton.Height / 2;
+            var bottomMiddleX = selectionX + selectionWidth / 2 - BottomMiddleButton.Width / 2;
+            var bottomMiddleY = selectionY + selectionHeight - BottomMiddleButton.Height / 2;
 
-    var leftMiddleX = selectionX - LeftMiddleButton.Width / 2;
-    var leftMiddleY = selectionY + selectionHeight / 2 - LeftMiddleButton.Height / 2;
+            var leftMiddleX = selectionX - LeftMiddleButton.Width / 2;
+            var leftMiddleY = selectionY + selectionHeight / 2 - LeftMiddleButton.Height / 2;
 
-    var rightMiddleX = selectionX + selectionWidth - RightMiddleButton.Width / 2;
-    var rightMiddleY = selectionY + selectionHeight / 2 - RightMiddleButton.Height / 2;
+            var rightMiddleX = selectionX + selectionWidth - RightMiddleButton.Width / 2;
+            var rightMiddleY = selectionY + selectionHeight / 2 - RightMiddleButton.Height / 2;
 
-    // Ensure buttons stay within RootCanvas bounds (by clamping positions)
-    topLeftX = Math.Max(rootCanvasLeft, Math.Min(rootCanvasRight - TopLeftButton.Width, topLeftX));
-    topLeftY = Math.Max(rootCanvasTop, Math.Min(rootCanvasBottom - TopLeftButton.Height, topLeftY));
+            // Ensure buttons stay within RootCanvas bounds (by clamping positions)
+            topLeftX = Math.Max(rootCanvasLeft, Math.Min(rootCanvasRight - TopLeftButton.Width, topLeftX));
+            topLeftY = Math.Max(rootCanvasTop, Math.Min(rootCanvasBottom - TopLeftButton.Height, topLeftY));
 
-    topRightX = Math.Max(rootCanvasLeft, Math.Min(rootCanvasRight - TopRightButton.Width, topRightX));
-    topRightY = Math.Max(rootCanvasTop, Math.Min(rootCanvasBottom - TopRightButton.Height, topRightY));
+            topRightX = Math.Max(rootCanvasLeft, Math.Min(rootCanvasRight - TopRightButton.Width, topRightX));
+            topRightY = Math.Max(rootCanvasTop, Math.Min(rootCanvasBottom - TopRightButton.Height, topRightY));
 
-    topMiddleX = Math.Max(rootCanvasLeft, Math.Min(rootCanvasRight - TopMiddleButton.Width, topMiddleX));
-    topMiddleY = Math.Max(rootCanvasTop, Math.Min(rootCanvasBottom - TopMiddleButton.Height, topMiddleY));
+            topMiddleX = Math.Max(rootCanvasLeft, Math.Min(rootCanvasRight - TopMiddleButton.Width, topMiddleX));
+            topMiddleY = Math.Max(rootCanvasTop, Math.Min(rootCanvasBottom - TopMiddleButton.Height, topMiddleY));
 
-    bottomLeftX = Math.Max(rootCanvasLeft, Math.Min(rootCanvasRight - BottomLeftButton.Width, bottomLeftX));
-    bottomLeftY = Math.Max(rootCanvasTop, Math.Min(rootCanvasBottom - BottomLeftButton.Height, bottomLeftY));
+            bottomLeftX = Math.Max(rootCanvasLeft, Math.Min(rootCanvasRight - BottomLeftButton.Width, bottomLeftX));
+            bottomLeftY = Math.Max(rootCanvasTop, Math.Min(rootCanvasBottom - BottomLeftButton.Height, bottomLeftY));
 
-    bottomRightX = Math.Max(rootCanvasLeft, Math.Min(rootCanvasRight - BottomRightButton.Width, bottomRightX));
-    bottomRightY = Math.Max(rootCanvasTop, Math.Min(rootCanvasBottom - BottomRightButton.Height, bottomRightY));
+            bottomRightX = Math.Max(rootCanvasLeft, Math.Min(rootCanvasRight - BottomRightButton.Width, bottomRightX));
+            bottomRightY = Math.Max(rootCanvasTop, Math.Min(rootCanvasBottom - BottomRightButton.Height, bottomRightY));
 
-    bottomMiddleX = Math.Max(rootCanvasLeft, Math.Min(rootCanvasRight - BottomMiddleButton.Width, bottomMiddleX));
-    bottomMiddleY = Math.Max(rootCanvasTop, Math.Min(rootCanvasBottom - BottomMiddleButton.Height, bottomMiddleY));
+            bottomMiddleX = Math.Max(rootCanvasLeft,
+                Math.Min(rootCanvasRight - BottomMiddleButton.Width, bottomMiddleX));
+            bottomMiddleY = Math.Max(rootCanvasTop,
+                Math.Min(rootCanvasBottom - BottomMiddleButton.Height, bottomMiddleY));
 
-    leftMiddleX = Math.Max(rootCanvasLeft, Math.Min(rootCanvasRight - LeftMiddleButton.Width, leftMiddleX));
-    leftMiddleY = Math.Max(rootCanvasTop, Math.Min(rootCanvasBottom - LeftMiddleButton.Height, leftMiddleY));
+            leftMiddleX = Math.Max(rootCanvasLeft, Math.Min(rootCanvasRight - LeftMiddleButton.Width, leftMiddleX));
+            leftMiddleY = Math.Max(rootCanvasTop, Math.Min(rootCanvasBottom - LeftMiddleButton.Height, leftMiddleY));
 
-    rightMiddleX = Math.Max(rootCanvasLeft, Math.Min(rootCanvasRight - RightMiddleButton.Width, rightMiddleX));
-    rightMiddleY = Math.Max(rootCanvasTop, Math.Min(rootCanvasBottom - RightMiddleButton.Height, rightMiddleY));
+            rightMiddleX = Math.Max(rootCanvasLeft, Math.Min(rootCanvasRight - RightMiddleButton.Width, rightMiddleX));
+            rightMiddleY = Math.Max(rootCanvasTop, Math.Min(rootCanvasBottom - RightMiddleButton.Height, rightMiddleY));
 
-    // Set the final button positions
-    Canvas.SetLeft(TopLeftButton, topLeftX);
-    Canvas.SetTop(TopLeftButton, topLeftY);
+            // Set the final button positions
+            Canvas.SetLeft(TopLeftButton, topLeftX);
+            Canvas.SetTop(TopLeftButton, topLeftY);
 
-    Canvas.SetLeft(TopRightButton, topRightX);
-    Canvas.SetTop(TopRightButton, topRightY);
+            Canvas.SetLeft(TopRightButton, topRightX);
+            Canvas.SetTop(TopRightButton, topRightY);
 
-    Canvas.SetLeft(TopMiddleButton, topMiddleX);
-    Canvas.SetTop(TopMiddleButton, topMiddleY);
+            Canvas.SetLeft(TopMiddleButton, topMiddleX);
+            Canvas.SetTop(TopMiddleButton, topMiddleY);
 
-    Canvas.SetLeft(BottomLeftButton, bottomLeftX);
-    Canvas.SetTop(BottomLeftButton, bottomLeftY);
+            Canvas.SetLeft(BottomLeftButton, bottomLeftX);
+            Canvas.SetTop(BottomLeftButton, bottomLeftY);
 
-    Canvas.SetLeft(BottomRightButton, bottomRightX);
-    Canvas.SetTop(BottomRightButton, bottomRightY);
+            Canvas.SetLeft(BottomRightButton, bottomRightX);
+            Canvas.SetTop(BottomRightButton, bottomRightY);
 
-    Canvas.SetLeft(BottomMiddleButton, bottomMiddleX);
-    Canvas.SetTop(BottomMiddleButton, bottomMiddleY);
+            Canvas.SetLeft(BottomMiddleButton, bottomMiddleX);
+            Canvas.SetTop(BottomMiddleButton, bottomMiddleY);
 
-    Canvas.SetLeft(LeftMiddleButton, leftMiddleX);
-    Canvas.SetTop(LeftMiddleButton, leftMiddleY);
+            Canvas.SetLeft(LeftMiddleButton, leftMiddleX);
+            Canvas.SetTop(LeftMiddleButton, leftMiddleY);
 
-    Canvas.SetLeft(RightMiddleButton, rightMiddleX);
-    Canvas.SetTop(RightMiddleButton, rightMiddleY);
+            Canvas.SetLeft(RightMiddleButton, rightMiddleX);
+            Canvas.SetTop(RightMiddleButton, rightMiddleY);
         }
         catch (Exception e)
         {
-            #if DEBUG
+#if DEBUG
             Console.WriteLine(e);
-            #endif
+#endif
         }
     }
 
@@ -210,7 +214,7 @@ public partial class CropControl : UserControl
         var left = Convert.ToInt32(Canvas.GetLeft(MainRectangle));
         var top = Convert.ToInt32(Canvas.GetTop(MainRectangle));
         var right = Convert.ToInt32(left + vm.SelectionWidth);
-        var bottom= Convert.ToInt32(top + vm.SelectionHeight);
+        var bottom = Convert.ToInt32(top + vm.SelectionHeight);
 
         // Calculate the positions and sizes for the surrounding rectangles
         // Top Rectangle (above MainRectangle)
@@ -327,17 +331,17 @@ public partial class CropControl : UserControl
     {
         _isDragging = false;
     }
-    
+
     private void ResizeTopLeft(PointerEventArgs e)
     {
         if (!_isResizing || DataContext is not ImageCropperViewModel vm)
         {
             return;
         }
-        
+
         var currentPos = e.GetPosition(RootCanvas);
         var delta = currentPos - _resizeStart;
-        
+
         // Calculate the new width and height based on the drag delta
         var newWidth = _originalRect.Width - delta.X;
         var newHeight = _originalRect.Height - delta.Y;
@@ -355,11 +359,12 @@ public partial class CropControl : UserControl
         {
             newWidth = vm.ImageWidth - newLeft;
         }
+
         if (newTop + newHeight > vm.ImageHeight)
         {
             newHeight = vm.ImageHeight - newTop;
         }
-        
+
         if (vm.SelectionX is 0 && vm.SelectionY is 0 && newLeft is 0 && newTop is 0)
         {
             return;
@@ -372,7 +377,7 @@ public partial class CropControl : UserControl
         vm.SelectionHeight = newHeight;
         Canvas.SetLeft(MainRectangle, newLeft);
         Canvas.SetTop(MainRectangle, newTop);
-        
+
         UpdateButtonPositions(vm.SelectionX, vm.SelectionY, vm.SelectionWidth, vm.SelectionHeight);
         UpdateSurroundingRectangles();
     }
@@ -401,7 +406,7 @@ public partial class CropControl : UserControl
         // Ensure the top doesn't move above the top edge of the canvas
         if (newY < 0)
         {
-            newHeight = _originalRect.Height + _originalRect.Y;  // Shrink height by the amount moved up
+            newHeight = _originalRect.Height + _originalRect.Y; // Shrink height by the amount moved up
             newY = 0;
         }
 
@@ -437,7 +442,7 @@ public partial class CropControl : UserControl
         // Ensure the left doesn't move beyond the left edge
         if (newX < 0)
         {
-            newWidth = _originalRect.Width + _originalRect.X;  // Shrink width by the amount moved left
+            newWidth = _originalRect.Width + _originalRect.X; // Shrink width by the amount moved left
             newX = 0;
         }
 
@@ -469,10 +474,10 @@ public partial class CropControl : UserControl
         {
             return;
         }
-        
+
         var currentPos = e.GetPosition(RootCanvas);
         var delta = currentPos - _resizeStart;
-        
+
         // Calculate the new width and height based on the drag delta
         var newWidth = _originalRect.Width + delta.X;
         var newHeight = _originalRect.Height + delta.Y;
@@ -485,6 +490,7 @@ public partial class CropControl : UserControl
         {
             newWidth = vm.ImageWidth - _originalRect.X;
         }
+
         if (newBottom > vm.ImageHeight)
         {
             newHeight = vm.ImageHeight - _originalRect.Y;
@@ -497,7 +503,7 @@ public partial class CropControl : UserControl
         // Apply the new width and height
         vm.SelectionWidth = newWidth;
         vm.SelectionHeight = newHeight;
-        
+
         UpdateButtonPositions(vm.SelectionX, vm.SelectionY, vm.SelectionWidth, vm.SelectionHeight);
         UpdateSurroundingRectangles();
     }
@@ -549,20 +555,20 @@ public partial class CropControl : UserControl
         {
             return;
         }
-    
+
         // Get the current mouse position relative to RootCanvas
         var currentPos = e.GetPosition(RootCanvas);
         var delta = currentPos - _resizeStart;
-    
+
         // Calculate the new width based on horizontal movement
         var newWidth = _originalRect.Width + delta.X;
-    
+
         // Ensure the new width doesn't go beyond the bounds of the RootCanvas
         if (_originalRect.X + newWidth > vm.ImageWidth)
         {
             newWidth = vm.ImageWidth - _originalRect.X;
         }
-    
+
         // Constrain the width to a minimum value (e.g., 1 to prevent zero or negative width)
         newWidth = Math.Max(newWidth, 1);
 
@@ -655,7 +661,7 @@ public partial class CropControl : UserControl
         UpdateButtonPositions(_originalRect.X, _originalRect.Y, vm.SelectionWidth, newHeight);
         UpdateSurroundingRectangles();
     }
-    
+
     private void OnResizePointerReleased(object? sender, PointerReleasedEventArgs e)
     {
         _isResizing = false;

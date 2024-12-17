@@ -3,6 +3,7 @@ using Avalonia.Media.Imaging;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views.UC;
+using PicView.Core.Config;
 using PicView.Core.Localization;
 
 namespace PicView.Avalonia.Crop;
@@ -13,7 +14,7 @@ public static class CropFunctions
     
     public static void Init(MainViewModel vm)
     {
-        if (IsCropping)
+        if (!DetermineIfShouldBeEnabled(vm))
         {
             return;
         }
@@ -49,7 +50,16 @@ public static class CropFunctions
 
     public static bool DetermineIfShouldBeEnabled(MainViewModel vm)
     {
-        if (vm?.ImageSource is not Bitmap bitmap)
+        if (IsCropping)
+        {
+            return false;
+        }
+        if (vm?.ImageSource is not Bitmap)
+        {
+            return false;
+        }
+
+        if (SettingsHelper.Settings.ImageScaling.ShowImageSideBySide)
         {
             return false;
         }
