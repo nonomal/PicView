@@ -34,7 +34,7 @@ public static class SetTitleHelper
             return;
         }
 
-        var windowTitles = ImageTitleFormatter.GenerateTitleStrings(vm.ImageWidth, vm.ImageHeight, vm.ImageIterator.CurrentIndex,
+        var windowTitles = ImageTitleFormatter.GenerateTitleStrings(vm.PixelWidth, vm.PixelHeight, vm.ImageIterator.CurrentIndex,
             vm.FileInfo, vm.ZoomValue, vm.ImageIterator.ImagePaths);
         vm.WindowTitle = windowTitles.TitleWithAppName;
         vm.Title = windowTitles.BaseTitle;
