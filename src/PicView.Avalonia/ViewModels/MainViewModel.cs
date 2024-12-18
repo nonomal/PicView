@@ -91,6 +91,12 @@ public class MainViewModel : ViewModelBase
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);
     } = double.NaN;
+    
+    public double AspectRatio
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
 
     #endregion
 

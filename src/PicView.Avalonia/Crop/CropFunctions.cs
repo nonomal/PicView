@@ -26,7 +26,8 @@ public static class CropFunctions
         var cropperViewModel = new ImageCropperViewModel(bitmap)
         {
             ImageWidth = size.Width,
-            ImageHeight = size.Height
+            ImageHeight = size.Height,
+            AspectRatio = vm.AspectRatio
         };
         var cropControl = new CropControl
         {

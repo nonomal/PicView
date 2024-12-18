@@ -159,11 +159,10 @@ public static class WindowResizing
 
         const int padding = 45;
         var screenSize = ScreenHelper.ScreenSize;
-        double desktopMinWidth = 0, desktopMinHeight = 0, containerWidth = 0, containerHeight = 0;
-        desktopMinWidth = desktop.MainWindow.MinWidth;
-        desktopMinHeight = desktop.MainWindow.MinHeight;
-        containerWidth = mainView.Bounds.Width;
-        containerHeight = mainView.Bounds.Height;
+        var desktopMinWidth = desktop.MainWindow.MinWidth;
+        var desktopMinHeight = desktop.MainWindow.MinHeight;
+        var containerWidth = mainView.Bounds.Width;
+        var containerHeight = mainView.Bounds.Height;
 
         if (double.IsNaN(containerWidth) || double.IsNaN(containerHeight) || double.IsNaN(width) ||
             double.IsNaN(height))
@@ -240,6 +239,8 @@ public static class WindowResizing
         {
             vm.GalleryWidth = double.NaN;
         }
+        
+        vm.AspectRatio = size.AspectRatio;
     }
 
     public static void SaveSize(Window window)

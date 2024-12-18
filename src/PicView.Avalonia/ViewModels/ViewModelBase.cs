@@ -76,7 +76,7 @@ public class ViewModelBase : ReactiveObject
         Apply = TranslationHelper.Translation.Apply;
         Cancel = TranslationHelper.Translation.Cancel;
         BitDepth = TranslationHelper.Translation.BitDepth;
-        AspectRatio = TranslationHelper.Translation.AspectRatio;
+        ReadAbleAspectRatio = TranslationHelper.Translation.AspectRatio;
         Width = TranslationHelper.Translation.Width;
         Height = TranslationHelper.Translation.Height;
         SizeMp = TranslationHelper.Translation.SizeMp;
@@ -1583,7 +1583,7 @@ public class ViewModelBase : ReactiveObject
         set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    public string? AspectRatio
+    public string? ReadAbleAspectRatio
     {
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);
