@@ -30,6 +30,8 @@ public class ImageCropperViewModel : ViewModelBase
     {
         Crop = TranslationHelper.Translation.CropPicture;
         Close = TranslationHelper.Translation.Close;
+        Width = TranslationHelper.Translation.Width;
+        Height = TranslationHelper.Translation.Height;
     }
     
     public ReactiveCommand<Unit, Unit>? CropImageCommand { get; private set; }

@@ -294,6 +294,17 @@ public partial class CropControl : UserControl
 
             Canvas.SetLeft(RightMiddleButton, rightMiddleX);
             Canvas.SetTop(RightMiddleButton, rightMiddleY);
+            
+            Canvas.SetLeft(SizeBorder, topLeftX + TopLeftButton .Bounds.Width + 2);
+            if (topLeftY != 0)
+            {
+                Canvas.SetTop(SizeBorder, topLeftY - TopLeftButton.Bounds.Height);
+            }
+            else
+            {
+                Canvas.SetTop(SizeBorder, topLeftY);
+            }
+            
         }
         catch (Exception e)
         {
@@ -407,6 +418,9 @@ public partial class CropControl : UserControl
         // Update the main rectangle's position
         Canvas.SetLeft(MainRectangle, newLeft);
         Canvas.SetTop(MainRectangle, newTop);
+        
+        Canvas.SetLeft(SizeBorder, newLeft + 11);
+        Canvas.SetTop(SizeBorder, newTop - SizeBorder.Bounds.Height - 3);
 
         // Update view model values
         vm.SelectionX = Convert.ToInt32(newLeft);

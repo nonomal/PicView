@@ -51,6 +51,28 @@
 
 
         <Canvas Background="Transparent" x:Name="RootCanvas">
+
+            <!--  Size Border  -->
+            <Border
+                Background="{DynamicResource SecondaryButtonBackgroundColor}"
+                BorderBrush="{DynamicResource MainBorderColor}"
+                BorderThickness="1"
+                CornerRadius="4"
+                IsHitTestVisible="False"
+                Padding="8,5"
+                ZIndex="2"
+                x:Name="SizeBorder">
+                <TextBlock Classes="txt" FontSize="14">
+                    <Run Text="{CompiledBinding Width, Mode=OneWay}" />
+                    <Run Text=": " />
+                    <Run Text="{CompiledBinding SelectionWidth, Mode=OneWay}" />
+                    <Run Text=" x " />
+                    <Run Text="{CompiledBinding Height, Mode=OneWay}" />
+                    <Run Text=": " />
+                    <Run Text="{CompiledBinding SelectionHeight, Mode=OneWay}" />
+                </TextBlock>
+            </Border>
+
             <!--  Main Rectangle  -->
             <Border
                 Background="Transparent"
