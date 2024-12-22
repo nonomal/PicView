@@ -1,8 +1,10 @@
 ﻿using System.Reactive;
+using Avalonia;
 using Avalonia.Media.Imaging;
 using ImageMagick;
 using PicView.Avalonia.Crop;
 using PicView.Avalonia.FileSystem;
+using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Core.Localization;
 using ReactiveUI;
@@ -14,27 +16,25 @@ public class ImageCropperViewModel : ViewModelBase
     public ImageCropperViewModel(Bitmap bitmap)
     {
         Bitmap = bitmap;
-        CropImageCommand  = ReactiveCommand.CreateFromTask(async () =>
-        {
-            await SaveCroppedImageAsync();
-            
-        });
-        CloseCropCommand  = ReactiveCommand.Create(() =>
-        {
-            if (UIHelper.GetMainView.DataContext is not MainViewModel vm)
-            {
-                return;
-            }
-            CropFunctions.CloseCropControl(vm);
-        });
+        InitializeCommands();
+        InitializeTranslations();
+    }
+
+    private void InitializeCommands()
+    {
+        CropImageCommand = ReactiveCommand.CreateFromTask(SaveCroppedImageAsync);
+        CloseCropCommand = ReactiveCommand.Create(HandleCloseCrop);
+    }
+
+    private void InitializeTranslations()
+    {
         Crop = TranslationHelper.Translation.CropPicture;
         Close = TranslationHelper.Translation.Close;
     }
     
-    public ReactiveCommand<Unit, Unit>? CropImageCommand { get; }
-    
-    public ReactiveCommand<Unit, Unit>? CloseCropCommand { get; }
-    
+    public ReactiveCommand<Unit, Unit>? CropImageCommand { get; private set; }
+    public ReactiveCommand<Unit, Unit>? CloseCropCommand { get; private set; }
+
     public Bitmap Bitmap
     {
         get;
@@ -82,43 +82,84 @@ public class ImageCropperViewModel : ViewModelBase
         init => this.RaiseAndSetIfChanged(ref field, value);
     }
 
+    private static void HandleCloseCrop()
+    {
+        if (UIHelper.GetMainView.DataContext is MainViewModel vm)
+        {
+            CropFunctions.CloseCropControl(vm);
+        }
+    }
+
     private async Task SaveCroppedImageAsync()
     {
-        if (UIHelper.GetMainView.DataContext is not MainViewModel vm)
-        {
-            return;
-        }
+        if (UIHelper.GetMainView.DataContext is not MainViewModel vm) return;
 
-        string fileName;
-        FileInfo fileInfo;
-        if (vm.ImageIterator?.ImagePaths is null ||
-            vm.ImageIterator?.ImagePaths.Count < 0)
-        {
-            var random = new Random();
-            fileName = $"{TranslationHelper.Translation.Crop} {random.Next(9999)}.png";
-            fileInfo = new FileInfo(fileName);
-        }
-        else
-        {
-            fileName = vm.FileInfo.FullName;
-            fileInfo = vm.FileInfo;
-        }
-
+        var (fileName, fileInfo, bitmap) = PrepareCropData(vm);
+        
         var saveFileDialog = await FilePicker.PickFileForSavingAsync(fileName);
-        if (saveFileDialog is null)
+        if (saveFileDialog == null) return;
+
+        await SaveImage(saveFileDialog, fileInfo, bitmap);
+        
+        CropFunctions.CloseCropControl(vm);
+
+        if (vm.FileInfo.FullName == saveFileDialog)
         {
-            return;
+            await ErrorHandling.ReloadAsync(vm);
+        }
+    }
+
+    private (string fileName, FileInfo fileInfo, Bitmap? bitmap) PrepareCropData(MainViewModel vm)
+    {
+        if (vm.ImageIterator?.ImagePaths is null || vm.ImageIterator.ImagePaths.Count < 0)
+        {
+            return CreateNewCroppedImage();
         }
         
-        var image = new MagickImage(fileInfo.FullName);
-        // Apply aspect ratio
+        return (vm.FileInfo.FullName, vm.FileInfo, null);
+    }
+
+    private (string fileName, FileInfo fileInfo, Bitmap bitmap) CreateNewCroppedImage()
+    {
+        var fileName = $"{TranslationHelper.Translation.Crop} {new Random().Next(9999)}.png";
+        var croppedBitmap = new CroppedBitmap(Bitmap, new PixelRect(SelectionX, SelectionY, 
+            (int)SelectionWidth, (int)SelectionHeight));
+        var bitmap = ConvertCroppedBitmapToBitmap(croppedBitmap);
+        return (fileName, new FileInfo(fileName), bitmap);
+    }
+
+    private async Task SaveImage(string saveFilePath, FileInfo fileInfo, Bitmap? bitmap)
+    {
+        if (bitmap != null)
+        {
+            bitmap.Save(saveFilePath);
+            return;
+        }
+
+        await SaveWithMagickImage(saveFilePath, fileInfo);
+    }
+
+    private async Task SaveWithMagickImage(string saveFilePath, FileInfo fileInfo)
+    {
+        using var image = new MagickImage(fileInfo.FullName);
         var x = Convert.ToInt32(SelectionX / AspectRatio);
         var y = Convert.ToInt32(SelectionY / AspectRatio);
+        var geometry = new MagickGeometry(x, y, (uint)SelectionWidth, (uint)SelectionHeight);
+        
+        image.Crop(geometry);
+        await image.WriteAsync(saveFilePath);
+    }
 
-        var crop = new MagickGeometry(x, y, (uint)SelectionWidth, (uint)SelectionHeight);
-        image.Crop(crop);
-        await image.WriteAsync(saveFileDialog);
-        //await NavigationHelper.LoadPicFromFile(fileInfo.FullName, vm);
-        CropFunctions.CloseCropControl(vm);
+    private static RenderTargetBitmap ConvertCroppedBitmapToBitmap(CroppedBitmap croppedBitmap)
+    {
+        var renderTargetBitmap = new RenderTargetBitmap(new PixelSize(
+            croppedBitmap.SourceRect.Width,
+            croppedBitmap.SourceRect.Height));
+
+        using var context = renderTargetBitmap.CreateDrawingContext();
+        context.DrawImage(croppedBitmap,
+            new Rect(0, 0, croppedBitmap.SourceRect.Width, croppedBitmap.SourceRect.Height));
+
+        return renderTargetBitmap;
     }
 }
