@@ -1,9 +1,8 @@
 ﻿using System.Reactive;
-using Avalonia;
 using Avalonia.Media.Imaging;
+using ImageMagick;
 using PicView.Avalonia.Crop;
 using PicView.Avalonia.FileSystem;
-using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Core.Localization;
 using ReactiveUI;
@@ -17,8 +16,7 @@ public class ImageCropperViewModel : ViewModelBase
         Bitmap = bitmap;
         CropImageCommand  = ReactiveCommand.CreateFromTask(async () =>
         {
-            var croppedBitmap = GetCroppedBitmap();
-            await SaveCroppedImageAsync(croppedBitmap);
+            await SaveCroppedImageAsync();
             
         });
         CloseCropCommand  = ReactiveCommand.Create(() =>
@@ -43,13 +41,13 @@ public class ImageCropperViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    public double SelectionX
+    public int SelectionX
     {
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    public double SelectionY
+    public int SelectionY
     {
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);
@@ -84,14 +82,7 @@ public class ImageCropperViewModel : ViewModelBase
         init => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    public CroppedBitmap GetCroppedBitmap()
-    {
-        var sourceRect = new PixelRect((int)SelectionX, (int)SelectionY, (int)SelectionWidth, (int)SelectionHeight);
-        var croppedBitmap = new CroppedBitmap(Bitmap, sourceRect);
-        return croppedBitmap;
-    }
-
-    private async Task SaveCroppedImageAsync(CroppedBitmap croppedBitmap)
+    private async Task SaveCroppedImageAsync()
     {
         if (UIHelper.GetMainView.DataContext is not MainViewModel vm)
         {
@@ -100,7 +91,8 @@ public class ImageCropperViewModel : ViewModelBase
 
         string fileName;
         FileInfo fileInfo;
-        if (!NavigationHelper.CanNavigate(vm))
+        if (vm.ImageIterator?.ImagePaths is null ||
+            vm.ImageIterator?.ImagePaths.Count < 0)
         {
             var random = new Random();
             fileName = $"{TranslationHelper.Translation.Crop} {random.Next(9999)}.png";
@@ -117,5 +109,16 @@ public class ImageCropperViewModel : ViewModelBase
         {
             return;
         }
+        
+        var image = new MagickImage(fileInfo.FullName);
+        // Apply aspect ratio
+        var x = Convert.ToInt32(SelectionX / AspectRatio);
+        var y = Convert.ToInt32(SelectionY / AspectRatio);
+
+        var crop = new MagickGeometry(x, y, (uint)SelectionWidth, (uint)SelectionHeight);
+        image.Crop(crop);
+        await image.WriteAsync(saveFileDialog);
+        //await NavigationHelper.LoadPicFromFile(fileInfo.FullName, vm);
+        CropFunctions.CloseCropControl(vm);
     }
 }

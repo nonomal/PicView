@@ -1,6 +1,12 @@
-﻿using Avalonia;
+﻿using System.Reactive.Linq;
+using System.Runtime.InteropServices;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Interactivity;
+using PicView.Avalonia.Crop;
+using PicView.Avalonia.Input;
+using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 
 namespace PicView.Avalonia.Views.UC;
@@ -55,7 +61,95 @@ public partial class CropControl : UserControl
                 _isResizing = false;
                 _isDragging = false;
             };
+            
         };
+        AddHandler(KeyDownEvent, KeyDownHandler, RoutingStrategies.Tunnel);
+    }
+    
+    public async Task KeyDownHandler(object? sender, KeyEventArgs e)
+    {
+        if (DataContext is not ImageCropperViewModel vm)
+        {
+            return;
+        }
+        
+        switch (e.Key)
+        {
+            case Key.Enter:
+                await vm.CropImageCommand.Execute();
+                return;
+            case Key.Escape:
+                CropFunctions.CloseCropControl(UIHelper.GetMainView.DataContext as MainViewModel);
+                return;
+        }
+        
+        KeyGesture currentKeys;
+        if (MainKeyboardShortcuts.CtrlDown || MainKeyboardShortcuts.AltOrOptionDown || MainKeyboardShortcuts.ShiftDown || MainKeyboardShortcuts.CommandDown)
+        {
+            var modifiers = KeyModifiers.None;
+
+            if (MainKeyboardShortcuts.CtrlDown) modifiers |= KeyModifiers.Control;
+            if (MainKeyboardShortcuts.AltOrOptionDown) modifiers |= KeyModifiers.Alt;
+            if (MainKeyboardShortcuts.ShiftDown) modifiers |= KeyModifiers.Shift;
+            if (MainKeyboardShortcuts.CommandDown && RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) modifiers |= KeyModifiers.Meta;
+
+            currentKeys = new KeyGesture(e.Key, modifiers);
+        }
+        else
+        {
+            currentKeys = new KeyGesture(e.Key);
+        }
+
+        if (KeybindingManager.CustomShortcuts.TryGetValue(currentKeys, out var func))
+        {
+            var function = await FunctionsHelper.GetFunctionByName(func.Method.Name);
+            switch (function.Method.Name)
+            {
+                case "Up":
+                case "RotateLeft":
+                    Rotate(false);
+                    return;
+                case "Down":
+                case "RotateRight":
+                    Rotate(true);
+                    return;   
+                case "ZoomIn":
+                    ZoomIn();
+                    return;
+                case "ZoomOut":
+                    ZoomOut();
+                    return;
+                case "ResetZoom":
+                    ResetZoom();
+                    return;
+                case "Save":
+                case "SaveAs":
+                case "GalleryClick":
+                    await vm.CropImageCommand.Execute();
+                return;
+            }
+        }
+    }
+    
+
+    private void ZoomIn()
+    {
+        
+    }
+    
+    private void ZoomOut()
+    {
+        
+    }
+    
+    private void ResetZoom()
+    {
+        
+    }
+
+    private void Rotate(bool clockwise)
+    {
+        
     }
 
     private void InitializeLayout()
@@ -76,8 +170,8 @@ public partial class CropControl : UserControl
         vm.SelectionHeight = 200;
 
         // Calculate centered position
-        vm.SelectionX = (vm.ImageWidth - vm.SelectionWidth) / 2;
-        vm.SelectionY = (vm.ImageHeight - vm.SelectionHeight) / 2;
+        vm.SelectionX = Convert.ToInt32((vm.ImageWidth - vm.SelectionWidth) / 2);
+        vm.SelectionY = Convert.ToInt32((vm.ImageHeight - vm.SelectionHeight) / 2);
 
         // Apply the calculated position to the MainRectangle
         Canvas.SetLeft(MainRectangle, vm.SelectionX);
@@ -315,14 +409,14 @@ public partial class CropControl : UserControl
         Canvas.SetTop(MainRectangle, newTop);
 
         // Update view model values
-        vm.SelectionX = newLeft;
-        vm.SelectionY = newTop;
+        vm.SelectionX = Convert.ToInt32(newLeft);
+        vm.SelectionY = Convert.ToInt32(newTop);
 
         // Update the surrounding rectangles to fill the space
         try
         {
             UpdateSurroundingRectangles();
-            UpdateButtonPositions(newLeft, newTop, vm.SelectionWidth, vm.SelectionHeight);
+            UpdateButtonPositions(vm.SelectionX, vm.SelectionY, vm.SelectionWidth, vm.SelectionHeight);
         }
         catch (Exception exception)
         {
@@ -377,8 +471,8 @@ public partial class CropControl : UserControl
         }
 
         // Apply the new size and position
-        vm.SelectionX = newLeft;
-        vm.SelectionY = newTop;
+        vm.SelectionX = Convert.ToInt32(newLeft);
+        vm.SelectionY = Convert.ToInt32(newTop);
         vm.SelectionWidth = newWidth;
         vm.SelectionHeight = newHeight;
         Canvas.SetLeft(MainRectangle, newLeft);
@@ -420,7 +514,7 @@ public partial class CropControl : UserControl
         newHeight = Math.Max(newHeight, 1);
 
         // Apply the new size and position
-        vm.SelectionY = newY;
+        vm.SelectionY = Convert.ToInt32(newY);
         vm.SelectionWidth = newWidth;
         vm.SelectionHeight = newHeight;
         Canvas.SetLeft(MainRectangle, _originalRect.X);
@@ -463,7 +557,7 @@ public partial class CropControl : UserControl
         newHeight = Math.Max(newHeight, 1);
 
         // Apply the new size and position
-        vm.SelectionX = newX;
+        vm.SelectionX = Convert.ToInt32(newX);
         vm.SelectionWidth = newWidth;
         vm.SelectionHeight = newHeight;
         Canvas.SetLeft(MainRectangle, newX);
@@ -542,7 +636,7 @@ public partial class CropControl : UserControl
         newWidth = Math.Max(newWidth, 1);
 
         // Update the view model with the new X position and width
-        vm.SelectionX = newX;
+        vm.SelectionX = Convert.ToInt32(newX);
         vm.SelectionWidth = newWidth;
 
         // Update the rectangle on the canvas
@@ -621,7 +715,7 @@ public partial class CropControl : UserControl
 
         // Update the view model with the new top and height
         vm.SelectionHeight = newHeight;
-        vm.SelectionY = newTop;
+        vm.SelectionY = Convert.ToInt32(newTop);
 
         // Update the rectangle on the canvas
         Canvas.SetLeft(MainRectangle, _originalRect.X);

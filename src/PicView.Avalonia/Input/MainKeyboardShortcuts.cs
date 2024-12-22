@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Avalonia.Input;
+using PicView.Avalonia.Crop;
 using PicView.Avalonia.UI;
+using PicView.Avalonia.Views.UC;
 
 namespace PicView.Avalonia.Input;
 
@@ -55,6 +57,12 @@ public static class MainKeyboardShortcuts
     {
         if (KeybindingManager.CustomShortcuts is null || !IsKeysEnabled)
         {
+            return;
+        }
+
+        if (CropFunctions.IsCropping)
+        {
+            await UIHelper.GetMainView.MainGrid.Children.OfType<CropControl>().First().KeyDownHandler(null,e);
             return;
         }
         

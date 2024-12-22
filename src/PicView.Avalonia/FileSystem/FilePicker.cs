@@ -204,7 +204,7 @@ public static class FilePicker
                 HeicFileType,
                 HeifFileType,
                 SvgFileType],
-            SuggestedFileName = string.IsNullOrWhiteSpace(fileName) ? Path.GetRandomFileName() : fileName,
+            SuggestedFileName = string.IsNullOrWhiteSpace(fileName) ? Path.GetRandomFileName() : Path.GetFileName(fileName),
             SuggestedStartLocation = await desktop.MainWindow.StorageProvider.TryGetFolderFromPathAsync(fileName)
             
         };
