@@ -124,8 +124,11 @@ public class ImageCropperViewModel : ViewModelBase
     private (string fileName, FileInfo fileInfo, Bitmap bitmap) CreateNewCroppedImage()
     {
         var fileName = $"{TranslationHelper.Translation.Crop} {new Random().Next(9999)}.png";
-        var croppedBitmap = new CroppedBitmap(Bitmap, new PixelRect(SelectionX, SelectionY, 
-            (int)SelectionWidth, (int)SelectionHeight));
+        var x = Convert.ToInt32(SelectionX / AspectRatio);
+        var y = Convert.ToInt32(SelectionY / AspectRatio);
+        var width = Convert.ToInt32(SelectionWidth / AspectRatio);
+        var height = Convert.ToInt32(SelectionHeight / AspectRatio);
+        var croppedBitmap = new CroppedBitmap(Bitmap, new PixelRect(x, y, width, height));
         var bitmap = ConvertCroppedBitmapToBitmap(croppedBitmap);
         return (fileName, new FileInfo(fileName), bitmap);
     }
@@ -146,7 +149,9 @@ public class ImageCropperViewModel : ViewModelBase
         using var image = new MagickImage(fileInfo.FullName);
         var x = Convert.ToInt32(SelectionX / AspectRatio);
         var y = Convert.ToInt32(SelectionY / AspectRatio);
-        var geometry = new MagickGeometry(x, y, (uint)SelectionWidth, (uint)SelectionHeight);
+        var width = Convert.ToUInt32(SelectionWidth / AspectRatio);
+        var height = Convert.ToUInt32(SelectionHeight / AspectRatio);
+        var geometry = new MagickGeometry(x, y, width, height);
         
         image.Crop(geometry);
         await image.WriteAsync(saveFilePath);
