@@ -65,11 +65,11 @@
                 <TextBlock Classes="txt" FontSize="14">
                     <Run Text="{CompiledBinding Width, Mode=OneWay}" />
                     <Run Text=": " />
-                    <Run Text="{CompiledBinding SelectionWidth, Mode=OneWay}" />
+                    <Run Text="{CompiledBinding PixelSelectionWidth}" />
                     <Run Text=" x " />
                     <Run Text="{CompiledBinding Height, Mode=OneWay}" />
                     <Run Text=": " />
-                    <Run Text="{CompiledBinding SelectionHeight, Mode=OneWay}" />
+                    <Run Text="{CompiledBinding PixelSelectionHeight}" />
                 </TextBlock>
             </Border>
 

@@ -58,24 +58,50 @@ public class ImageCropperViewModel : ViewModelBase
     public double SelectionWidth
     {
         get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
+        set
+        {
+            this.RaiseAndSetIfChanged(ref field, value);
+            PixelSelectionWidth = Convert.ToUInt32(SelectionWidth / AspectRatio);
+        }
     } = 100;
+    
+    public uint PixelSelectionWidth
+    {
+        get
+        {
+            return Convert.ToUInt32(SelectionWidth / AspectRatio);
+        }
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
 
     public double SelectionHeight
     {
         get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
+        set
+        {
+            this.RaiseAndSetIfChanged(ref field, value);
+            PixelSelectionHeight = Convert.ToUInt32(SelectionHeight / AspectRatio);
+        } 
     } = 100;
+
+    public uint PixelSelectionHeight
+    {
+        get
+        {
+            return Convert.ToUInt32(SelectionHeight / AspectRatio);
+        }
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
     
     public double ImageWidth
     {
         get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
+        init => this.RaiseAndSetIfChanged(ref field, value);
     }
     public double ImageHeight
     {
         get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
+        init => this.RaiseAndSetIfChanged(ref field, value);
     }
     
     public double AspectRatio
@@ -126,8 +152,8 @@ public class ImageCropperViewModel : ViewModelBase
         var fileName = $"{TranslationHelper.Translation.Crop} {new Random().Next(9999)}.png";
         var x = Convert.ToInt32(SelectionX / AspectRatio);
         var y = Convert.ToInt32(SelectionY / AspectRatio);
-        var width = Convert.ToInt32(SelectionWidth / AspectRatio);
-        var height = Convert.ToInt32(SelectionHeight / AspectRatio);
+        var width = (int)PixelSelectionWidth;
+        var height = (int)PixelSelectionHeight;
         var croppedBitmap = new CroppedBitmap(Bitmap, new PixelRect(x, y, width, height));
         var bitmap = ConvertCroppedBitmapToBitmap(croppedBitmap);
         return (fileName, new FileInfo(fileName), bitmap);
@@ -149,9 +175,7 @@ public class ImageCropperViewModel : ViewModelBase
         using var image = new MagickImage(fileInfo.FullName);
         var x = Convert.ToInt32(SelectionX / AspectRatio);
         var y = Convert.ToInt32(SelectionY / AspectRatio);
-        var width = Convert.ToUInt32(SelectionWidth / AspectRatio);
-        var height = Convert.ToUInt32(SelectionHeight / AspectRatio);
-        var geometry = new MagickGeometry(x, y, width, height);
+        var geometry = new MagickGeometry(x, y, PixelSelectionWidth, PixelSelectionHeight);
         
         image.Crop(geometry);
         await image.WriteAsync(saveFilePath);
