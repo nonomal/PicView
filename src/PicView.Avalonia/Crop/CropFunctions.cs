@@ -64,6 +64,8 @@ public static class CropFunctions
         {
             return false;
         }
-        return true;
+        
+        
+        return vm is { ScaleX: 1, RotationAngle: 0 };
     }
 }
