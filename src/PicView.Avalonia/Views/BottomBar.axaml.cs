@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -14,6 +15,12 @@ public partial class BottomBar : UserControl
     {
         InitializeComponent();
 
+        // Set corner radius on macOS
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            MainBottomBorder.CornerRadius = new CornerRadius(0, 0, 8, 8);
+        }
+        
         Loaded += delegate
         {
             PointerPressed += (_, e) => MoveWindow(e);
