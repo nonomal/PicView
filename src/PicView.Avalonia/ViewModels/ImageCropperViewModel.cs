@@ -63,7 +63,7 @@ public class ImageCropperViewModel : ViewModelBase
             this.RaiseAndSetIfChanged(ref field, value);
             PixelSelectionWidth = Convert.ToUInt32(SelectionWidth / AspectRatio);
         }
-    } = 100;
+    }
     
     public uint PixelSelectionWidth
     {
@@ -82,7 +82,7 @@ public class ImageCropperViewModel : ViewModelBase
             this.RaiseAndSetIfChanged(ref field, value);
             PixelSelectionHeight = Convert.ToUInt32(SelectionHeight / AspectRatio);
         } 
-    } = 100;
+    }
 
     public uint PixelSelectionHeight
     {

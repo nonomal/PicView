@@ -166,8 +166,20 @@ public partial class CropControl : UserControl
         }
 
         // Set initial width and height for the crop rectangle
-        vm.SelectionWidth = 200;
-        vm.SelectionHeight = 200;
+        var pixelWidth = vm.ImageWidth / vm.AspectRatio;
+        var pixelHeight = vm.ImageHeight / vm.AspectRatio;
+
+        if (pixelWidth >= 400 || pixelHeight >= 400)
+        {
+            vm.SelectionWidth = 200;
+            vm.SelectionHeight = 200;
+        }
+        else if (pixelWidth <= 200 || pixelHeight <= 200)
+        {
+            vm.SelectionWidth = pixelWidth / 2;
+            vm.SelectionHeight = pixelHeight / 2;
+        }
+
 
         // Calculate centered position
         vm.SelectionX = Convert.ToInt32((vm.ImageWidth - vm.SelectionWidth) / 2);
@@ -478,11 +490,10 @@ public partial class CropControl : UserControl
         {
             newHeight = vm.ImageHeight - newTop;
         }
-
-        if (vm.SelectionX is 0 && vm.SelectionY is 0 && newLeft is 0 && newTop is 0)
-        {
-            return;
-        }
+        
+        // Prevent the size from becoming too small
+        newHeight = Math.Max(newHeight, 1);
+        newWidth = Math.Max(newWidth, 1);
 
         // Apply the new size and position
         vm.SelectionX = Convert.ToInt32(newLeft);
@@ -524,8 +535,9 @@ public partial class CropControl : UserControl
             newY = 0;
         }
 
-        // Prevent the height from becoming too small
+        // Prevent the size from becoming too small
         newHeight = Math.Max(newHeight, 1);
+        newWidth = Math.Max(newWidth, 1);
 
         // Apply the new size and position
         vm.SelectionY = Convert.ToInt32(newY);
@@ -726,6 +738,9 @@ public partial class CropControl : UserControl
             newTop = 0;
             newHeight = _originalRect.Height + _originalRect.Y; // Adjust height to compensate
         }
+        
+        // Prevent the size from becoming too small
+        newHeight = Math.Max(newHeight, 1);
 
         // Update the view model with the new top and height
         vm.SelectionHeight = newHeight;
@@ -763,6 +778,9 @@ public partial class CropControl : UserControl
         {
             newHeight = RootCanvas.Bounds.Height - _originalRect.Y;
         }
+        
+        // Prevent the size from becoming too small
+        newHeight = Math.Max(newHeight, 1);
 
         // Update the view model with the new height
         vm.SelectionHeight = newHeight;
