@@ -31,7 +31,7 @@ jobs:
       # Step 4: Build arm64 version
       - name: Build arm64 version
         run: |
-          pwsh -File "${{ github.workspace }}/Build/Build\ Avalonia.MacOS\ arm64.ps1" `
+          pwsh -File "${{ github.workspace }}/Build/Build Avalonia.MacOS.ps1" `
             -Platform "arm64" `
             -outputPath "${{ github.workspace }}/Build/PicView-v${{steps.get-version.outputs.version}}-osx-arm64"
         shell: pwsh
@@ -47,7 +47,7 @@ jobs:
       # Step 6: Build x64 version
       - name: Build x64 version
         run: |
-          pwsh -File "${{ github.workspace }}/Build/Build\ Avalonia.MacOS\ arm64.ps1" `
+          pwsh -File "${{ github.workspace }}/Build/Build Avalonia.MacOS.ps1" `
             -Platform "x64" `
             -outputPath "${{ github.workspace }}/Build/PicView-v${{steps.get-version.outputs.version}}-osx-x64"
         shell: pwsh
