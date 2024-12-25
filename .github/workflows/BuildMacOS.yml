@@ -28,10 +28,10 @@ jobs:
         id: get-version
         run: pwsh -File "${{ github.workspace }}/Build/Get-VersionInfo.ps1"
 
-      # Step 4: Build arm64 version using the existing script
+       # Step 4 (x64): Publish arm64 version
       - name: Build arm64 version
         run: |
-          pwsh -File "${{ github.workspace }}/Build/Build Avalonia.MacOS arm64.ps1"
+          pwsh -File "${{ github.workspace }}\Build\Build Avalonia.MacOS.ps1" -Platform "arm64" -outputPath "${{ github.workspace }}\Build\PicView-v${{steps.get-version.outputs.version}}-osx-arm64"
         shell: pwsh
 
       # Step 5: Upload arm64 artifact
@@ -45,13 +45,7 @@ jobs:
       # Step 6: Build x64 version by modifying the platform parameter
       - name: Build x64 version
         run: |
-          # Create a copy of the arm64 build script and modify it for x64
-          $scriptContent = Get-Content "${{ github.workspace }}/Build/Build Avalonia.MacOS arm64.ps1"
-          $scriptContent = $scriptContent -replace '\$platform = "arm64"', '$platform = "x64"'
-          $scriptContent | Set-Content "${{ github.workspace }}/Build/Build Avalonia.MacOS x64.ps1"
-          
-          # Run the x64 build script
-          pwsh -File "${{ github.workspace }}/Build/Build Avalonia.MacOS x64.ps1"
+          pwsh -File "${{ github.workspace }}\Build\Build Avalonia.MacOS.ps1" -Platform "x64" -outputPath "${{ github.workspace }}\Build\PicView-v${{steps.get-version.outputs.version}}-osx-x64"
         shell: pwsh
 
       # Step 7: Upload x64 artifact
