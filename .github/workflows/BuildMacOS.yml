@@ -28,52 +28,36 @@ jobs:
         id: get-version
         run: pwsh -File "${{ github.workspace }}/Build/Get-VersionInfo.ps1"
 
-      # Step 4 (x64): Publish x64 version
-      - name: Publish x64 version
+      # Step 4: Build arm64 version using the existing script
+      - name: Build arm64 version
         run: |
-          dotnet publish src/PicView.MacOS/PicView.MacOS.csproj \
-            -c Release \
-            -r osx-x64 \
-            --self-contained true \
-            -p:PublishSingleFile=true \
-            -o "${{ github.workspace }}/Build/PicView-v${{steps.get-version.outputs.version}}-osx-x64"
+          pwsh -File "${{ github.workspace }}/Build/Build Avalonia.MacOS arm64.ps1"
+        shell: pwsh
 
-      # Step 5 (x64): Create MacOS app bundle for x64
-      - name: Create MacOS app bundle (x64)
-        run: |
-          mkdir -p "${{ github.workspace }}/Build/PicView-v${{steps.get-version.outputs.version}}-osx-x64/PicView.app/Contents/MacOS"
-          cp -r "${{ github.workspace }}/Build/PicView-v${{steps.get-version.outputs.version}}-osx-x64/*" \
-            "${{ github.workspace }}/Build/PicView-v${{steps.get-version.outputs.version}}-osx-x64/PicView.app/Contents/MacOS/"
-
-      # Step 6 (x64): Upload x64 artifact
-      - name: Upload x64 artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: PicView-v${{steps.get-version.outputs.version}}-osx-x64
-          path: ${{ github.workspace }}/Build/PicView-v${{steps.get-version.outputs.version}}-osx-x64
-          retention-days: 14
-
-      # Step 7 (arm64): Publish arm64 version
-      - name: Publish arm64 version
-        run: |
-          dotnet publish src/PicView.MacOS/PicView.MacOS.csproj \
-            -c Release \
-            -r osx-arm64 \
-            --self-contained true \
-            -p:PublishSingleFile=true \
-            -o "${{ github.workspace }}/Build/PicView-v${{steps.get-version.outputs.version}}-osx-arm64"
-
-      # Step 8 (arm64): Create MacOS app bundle for arm64
-      - name: Create MacOS app bundle (arm64)
-        run: |
-          mkdir -p "${{ github.workspace }}/Build/PicView-v${{steps.get-version.outputs.version}}-osx-arm64/PicView.app/Contents/MacOS"
-          cp -r "${{ github.workspace }}/Build/PicView-v${{steps.get-version.outputs.version}}-osx-arm64/*" \
-            "${{ github.workspace }}/Build/PicView-v${{steps.get-version.outputs.version}}-osx-arm64/PicView.app/Contents/MacOS/"
-
-      # Step 9 (arm64): Upload arm64 artifact
+      # Step 5: Upload arm64 artifact
       - name: Upload arm64 artifact
         uses: actions/upload-artifact@v4
         with:
-          name: PicView-v${{steps.get-version.outputs.version}}-osx-arm64
-          path: ${{ github.workspace }}/Build/PicView-v${{steps.get-version.outputs.version}}-osx-arm64
+          name: PicView-v${{steps.get-version.outputs.version}}-macOS-arm64
+          path: ${{ github.workspace }}/Build/PicView-v${{steps.get-version.outputs.version}}-macOS-arm64/
+          retention-days: 14
+
+      # Step 6: Build x64 version by modifying the platform parameter
+      - name: Build x64 version
+        run: |
+          # Create a copy of the arm64 build script and modify it for x64
+          $scriptContent = Get-Content "${{ github.workspace }}/Build/Build Avalonia.MacOS arm64.ps1"
+          $scriptContent = $scriptContent -replace '\$platform = "arm64"', '$platform = "x64"'
+          $scriptContent | Set-Content "${{ github.workspace }}/Build/Build Avalonia.MacOS x64.ps1"
+          
+          # Run the x64 build script
+          pwsh -File "${{ github.workspace }}/Build/Build Avalonia.MacOS x64.ps1"
+        shell: pwsh
+
+      # Step 7: Upload x64 artifact
+      - name: Upload x64 artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PicView-v${{steps.get-version.outputs.version}}-macOS-x64
+          path: ${{ github.workspace }}/Build/PicView-v${{steps.get-version.outputs.version}}-macOS-x64/
           retention-days: 14
