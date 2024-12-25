@@ -20,40 +20,43 @@ public partial class CropControl : UserControl
         _resizeHandler = new CropResizeHandler(this);
         _layoutManager = new CropLayoutManager(this);
 
-        Loaded += delegate
-        {
-            MainRectangle.PointerPressed += _dragHandler.OnDragStart;
-            MainRectangle.PointerReleased += _dragHandler.OnDragEnd;
-            MainRectangle.PointerMoved += _dragHandler.OnDragMove;
-            MainRectangle.PointerMoved += (_, _) => _layoutManager.UpdateLayout();
-
-            TopLeftButton.PointerPressed += (_, e) => _resizeHandler.OnResizeStart(e);
-            TopRightButton.PointerPressed += (_, e) => _resizeHandler.OnResizeStart(e);
-            BottomLeftButton.PointerPressed += (_, e) => _resizeHandler.OnResizeStart(e);
-            BottomRightButton.PointerPressed += (_, e) => _resizeHandler.OnResizeStart(e);
-            LeftMiddleButton.PointerPressed += (_, e) => _resizeHandler.OnResizeStart(e);
-            RightMiddleButton.PointerPressed += (_, e) => _resizeHandler.OnResizeStart(e);
-            TopMiddleButton.PointerPressed += (_, e) => _resizeHandler.OnResizeStart(e);
-            BottomMiddleButton.PointerPressed += (_, e) => _resizeHandler.OnResizeStart(e);
-
-            TopLeftButton.PointerReleased += _resizeHandler.OnResizeEnd;
-            TopRightButton.PointerReleased += _resizeHandler.OnResizeEnd;
-            BottomLeftButton.PointerReleased += _resizeHandler.OnResizeEnd;
-            BottomRightButton.PointerReleased += _resizeHandler.OnResizeEnd;
-            LeftMiddleButton.PointerReleased += _resizeHandler.OnResizeEnd;
-            RightMiddleButton.PointerReleased += _resizeHandler.OnResizeEnd;
-            TopMiddleButton.PointerReleased += _resizeHandler.OnResizeEnd;
-            BottomMiddleButton.PointerReleased += _resizeHandler.OnResizeEnd;
-        };
-
         Loaded += OnControlLoaded;
-        LostFocus += OnControlLostFocus;
     }
 
     private void OnControlLoaded(object? sender, RoutedEventArgs e)
     {
+        InitLoaded();
+    }
+
+    private void InitLoaded()
+    {
         InitializeResizeHandlers();
         _layoutManager.InitializeLayout();
+            
+        MainRectangle.PointerPressed += _dragHandler.OnDragStart;
+        MainRectangle.PointerReleased += _dragHandler.OnDragEnd;
+        MainRectangle.PointerMoved += _dragHandler.OnDragMove;
+        MainRectangle.PointerMoved += (_, _) => _layoutManager.UpdateLayout();
+
+        TopLeftButton.PointerPressed += (_, e) => _resizeHandler.OnResizeStart(e);
+        TopRightButton.PointerPressed += (_, e) => _resizeHandler.OnResizeStart(e);
+        BottomLeftButton.PointerPressed += (_, e) => _resizeHandler.OnResizeStart(e);
+        BottomRightButton.PointerPressed += (_, e) => _resizeHandler.OnResizeStart(e);
+        LeftMiddleButton.PointerPressed += (_, e) => _resizeHandler.OnResizeStart(e);
+        RightMiddleButton.PointerPressed += (_, e) => _resizeHandler.OnResizeStart(e);
+        TopMiddleButton.PointerPressed += (_, e) => _resizeHandler.OnResizeStart(e);
+        BottomMiddleButton.PointerPressed += (_, e) => _resizeHandler.OnResizeStart(e);
+
+        TopLeftButton.PointerReleased += _resizeHandler.OnResizeEnd;
+        TopRightButton.PointerReleased += _resizeHandler.OnResizeEnd;
+        BottomLeftButton.PointerReleased += _resizeHandler.OnResizeEnd;
+        BottomRightButton.PointerReleased += _resizeHandler.OnResizeEnd;
+        LeftMiddleButton.PointerReleased += _resizeHandler.OnResizeEnd;
+        RightMiddleButton.PointerReleased += _resizeHandler.OnResizeEnd;
+        TopMiddleButton.PointerReleased += _resizeHandler.OnResizeEnd;
+        BottomMiddleButton.PointerReleased += _resizeHandler.OnResizeEnd;
+            
+        LostFocus += OnControlLostFocus;
     }
 
     private void OnControlLostFocus(object? sender, RoutedEventArgs e)

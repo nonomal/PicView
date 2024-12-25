@@ -4,6 +4,7 @@ using Avalonia.Media.Imaging;
 using ImageMagick;
 using PicView.Avalonia.Crop;
 using PicView.Avalonia.FileSystem;
+using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Core.Localization;
@@ -155,7 +156,7 @@ public class ImageCropperViewModel : ViewModelBase
         var width = (int)PixelSelectionWidth;
         var height = (int)PixelSelectionHeight;
         var croppedBitmap = new CroppedBitmap(Bitmap, new PixelRect(x, y, width, height));
-        var bitmap = ConvertCroppedBitmapToBitmap(croppedBitmap);
+        var bitmap = ImageHelper.ConvertCroppedBitmapToBitmap(croppedBitmap);
         return (fileName, new FileInfo(fileName), bitmap);
     }
 
@@ -179,18 +180,5 @@ public class ImageCropperViewModel : ViewModelBase
         
         image.Crop(geometry);
         await image.WriteAsync(saveFilePath);
-    }
-
-    private static RenderTargetBitmap ConvertCroppedBitmapToBitmap(CroppedBitmap croppedBitmap)
-    {
-        var renderTargetBitmap = new RenderTargetBitmap(new PixelSize(
-            croppedBitmap.SourceRect.Width,
-            croppedBitmap.SourceRect.Height));
-
-        using var context = renderTargetBitmap.CreateDrawingContext();
-        context.DrawImage(croppedBitmap,
-            new Rect(0, 0, croppedBitmap.SourceRect.Width, croppedBitmap.SourceRect.Height));
-
-        return renderTargetBitmap;
     }
 }

@@ -6,45 +6,45 @@ namespace PicView.Avalonia.Crop;
 
 public class CropLayoutManager(CropControl control)
 {
+    private const int DefaultSelectionSize = 200;
+    
     public void InitializeLayout()
     {
+        if (control.DataContext is not ImageCropperViewModel vm)
+        {
+            return;
+        }
 
-            if (control.DataContext is not ImageCropperViewModel vm)
-            {
-                return;
-            }
+        // Ensure image dimensions are valid before proceeding
+        if (vm.ImageWidth <= 0 || vm.ImageHeight <= 0)
+        {
+            return;
+        }
 
-            // Ensure image dimensions are valid before proceeding
-            if (vm.ImageWidth <= 0 || vm.ImageHeight <= 0)
-            {
-                return;
-            }
+        // Set initial width and height for the crop rectangle
+        var pixelWidth = vm.ImageWidth / vm.AspectRatio;
+        var pixelHeight = vm.ImageHeight / vm.AspectRatio;
 
-            // Set initial width and height for the crop rectangle
-            var pixelWidth = vm.ImageWidth / vm.AspectRatio;
-            var pixelHeight = vm.ImageHeight / vm.AspectRatio;
+        if (pixelWidth >= DefaultSelectionSize * 2 || pixelHeight >= DefaultSelectionSize * 2)
+        {
+            vm.SelectionWidth = DefaultSelectionSize;
+            vm.SelectionHeight = DefaultSelectionSize;
+        }
+        else if (pixelWidth <= DefaultSelectionSize || pixelHeight <= DefaultSelectionSize)
+        {
+            vm.SelectionWidth = pixelWidth / 2;
+            vm.SelectionHeight = pixelHeight / 2;
+        }
 
-            if (pixelWidth >= 400 || pixelHeight >= 400)
-            {
-                vm.SelectionWidth = 200;
-                vm.SelectionHeight = 200;
-            }
-            else if (pixelWidth <= 200 || pixelHeight <= 200)
-            {
-                vm.SelectionWidth = pixelWidth / 2;
-                vm.SelectionHeight = pixelHeight / 2;
-            }
+        // Calculate centered position
+        vm.SelectionX = Convert.ToInt32((vm.ImageWidth - vm.SelectionWidth) / 2);
+        vm.SelectionY = Convert.ToInt32((vm.ImageHeight - vm.SelectionHeight) / 2);
 
+        // Apply the calculated position to the MainRectangle
+        Canvas.SetLeft(control.MainRectangle, vm.SelectionX);
+        Canvas.SetTop(control.MainRectangle, vm.SelectionY);
 
-            // Calculate centered position
-            vm.SelectionX = Convert.ToInt32((vm.ImageWidth - vm.SelectionWidth) / 2);
-            vm.SelectionY = Convert.ToInt32((vm.ImageHeight - vm.SelectionHeight) / 2);
-
-            // Apply the calculated position to the MainRectangle
-            Canvas.SetLeft(control.MainRectangle, vm.SelectionX);
-            Canvas.SetTop(control.MainRectangle, vm.SelectionY);
-
-            UpdateLayout();
+        UpdateLayout();
     }
 
     public void UpdateLayout()
@@ -201,7 +201,7 @@ public class CropLayoutManager(CropControl control)
         Canvas.SetTop(control.RightMiddleButton, rightMiddleY);
 
         Canvas.SetLeft(control.SizeBorder, topLeftX + control.TopLeftButton.Bounds.Width + 2);
-        
+
         if (topLeftY != 0)
         {
             Canvas.SetTop(control.SizeBorder, topLeftY - control.TopLeftButton.Bounds.Height);

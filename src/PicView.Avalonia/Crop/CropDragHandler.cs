@@ -10,6 +10,9 @@ public class CropDragHandler(CropControl control)
     private Point _dragStart;
     private bool _isDragging;
     private Rect _originalRect;
+    
+    private const double ButtonLeftOffset = 11;
+    private const double ButtonTopOffset = 3;
 
     public void OnDragStart(object? sender, PointerPressedEventArgs e)
     {
@@ -78,8 +81,8 @@ public class CropDragHandler(CropControl control)
         Canvas.SetLeft(control.MainRectangle, newLeft);
         Canvas.SetTop(control.MainRectangle, newTop);
         
-        Canvas.SetLeft(control.SizeBorder, newLeft + 11);
-        Canvas.SetTop(control.SizeBorder, newTop - control.SizeBorder.Bounds.Height - 3);
+        Canvas.SetLeft(control.SizeBorder, newLeft + ButtonLeftOffset);
+        Canvas.SetTop(control.SizeBorder, newTop - control.SizeBorder.Bounds.Height - ButtonTopOffset);
 
         // Update view model values
         vm.SelectionX = Convert.ToInt32(newLeft);
