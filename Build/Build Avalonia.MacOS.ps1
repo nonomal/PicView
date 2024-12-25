@@ -76,7 +76,7 @@ $infoPlistContent = @"
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleSignature</key>
-    <string>picview.org</string>
+    <string>????</string>
     <key>CFBundleExecutable</key>
     <string>PicView.Avalonia.MacOS</string>
     <key>CFBundleIconFile</key>
@@ -87,18 +87,28 @@ $infoPlistContent = @"
     <string>10.15</string>
     <key>NSHighResolutionCapable</key>
     <true/>
+    <key>LSArchitecturePriority</key>
+    <array>
+        <string>$Platform</string>
+    </array>
+    <key>CFBundleSupportedPlatforms</key>
+    <array>
+        <string>MacOSX</string>
+    </array>
+    <key>NSRequiresAquaSystemAppearance</key>
+    <false/>
 </dict>
 </plist>
 "@
 
-# Save Info.plist
-$infoPlistPath = Join-Path -Path $contentsPath -ChildPath "Info.plist"
-$infoPlistContent | Out-File -FilePath $infoPlistPath -Encoding UTF8
+# Save Info.plist with UTF-8 encoding without BOM
+$utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $false
+[System.IO.File]::WriteAllText($infoPlistPath, $infoPlistContent, $utf8NoBomEncoding)
 
 # Copy build output to MacOS directory
 Copy-Item -Path "$tempBuildPath/*" -Destination $macOSPath -Recurse
 
-# Copy icon if it exists (you'll need to create this)
+# Copy icon if it exists
 $iconSource = Join-Path -Path $PSScriptRoot -ChildPath "../src/PicView.Avalonia.MacOS/Assets/AppIcon.icns"
 if (Test-Path $iconSource) {
     Copy-Item -Path $iconSource -Destination $resourcesPath
@@ -110,8 +120,15 @@ Get-ChildItem -Path $macOSPath -Filter "*.pdb" -Recurse | Remove-Item -Force
 # Remove temporary build directory
 Remove-Item -Path $tempBuildPath -Recurse -Force
 
-# Set executable permissions on the main binary
+# Set proper permissions for the entire .app bundle
 if ($IsLinux -or $IsMacOS) {
-    $mainBinary = Join-Path -Path $macOSPath -ChildPath "PicView.Avalonia.MacOS"
-    chmod +x $mainBinary
+    # Set executable permissions on all binaries and dylibs
+    Get-ChildItem -Path $macOSPath -Recurse | ForEach-Object {
+        if ($_.Extension -in @('.dylib', '') -or $_.Name -eq 'PicView.Avalonia.MacOS') {
+            chmod +x $_.FullName
+        }
+    }
+    
+    # Set proper ownership and permissions for the entire .app bundle
+    chmod -R 755 $appBundlePath
 }
