@@ -59,12 +59,6 @@ public static class MainKeyboardShortcuts
         {
             return;
         }
-
-        if (CropFunctions.IsCropping)
-        {
-            await UIHelper.GetMainView.MainGrid.Children.OfType<CropControl>().First().KeyDownHandler(null,e);
-            return;
-        }
         
         switch (e.Key)
         {
@@ -129,6 +123,12 @@ public static class MainKeyboardShortcuts
         }
         _x++;
         IsKeyHeldDown = _x > 1;
+        
+        if (CropFunctions.IsCropping)
+        {
+            await UIHelper.GetMainView.MainGrid.Children.OfType<CropControl>().First().KeyDownHandler(null,e);
+            return;
+        }
 
         if (KeybindingManager.CustomShortcuts.TryGetValue(CurrentKeys, out var func))
         {

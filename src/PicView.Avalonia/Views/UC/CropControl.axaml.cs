@@ -459,53 +459,74 @@ public partial class CropControl : UserControl
     }
 
     private void ResizeTopLeft(PointerEventArgs e)
+{
+    if (!_isResizing || DataContext is not ImageCropperViewModel vm)
     {
-        if (!_isResizing || DataContext is not ImageCropperViewModel vm)
-        {
-            return;
-        }
-
-        var currentPos = e.GetPosition(RootCanvas);
-        var delta = currentPos - _resizeStart;
-
-        // Calculate the new width and height based on the drag delta
-        var newWidth = _originalRect.Width - delta.X;
-        var newHeight = _originalRect.Height - delta.Y;
-
-        // Ensure the rectangle stays within the canvas bounds
-        var newLeft = Math.Max(_originalRect.X + delta.X, 0);
-        var newTop = Math.Max(_originalRect.Y + delta.Y, 0);
-
-        // Constrain the new width and height to not exceed the bounds
-        newWidth = Math.Max(newWidth, 1); // Prevent width from becoming 0 or negative
-        newHeight = Math.Max(newHeight, 1); // Prevent height from becoming 0 or negative
-
-        // Ensure the right and bottom edges don't go beyond the canvas
-        if (newLeft + newWidth > vm.ImageWidth)
-        {
-            newWidth = vm.ImageWidth - newLeft;
-        }
-
-        if (newTop + newHeight > vm.ImageHeight)
-        {
-            newHeight = vm.ImageHeight - newTop;
-        }
-        
-        // Prevent the size from becoming too small
-        newHeight = Math.Max(newHeight, 1);
-        newWidth = Math.Max(newWidth, 1);
-
-        // Apply the new size and position
-        vm.SelectionX = Convert.ToInt32(newLeft);
-        vm.SelectionY = Convert.ToInt32(newTop);
-        vm.SelectionWidth = newWidth;
-        vm.SelectionHeight = newHeight;
-        Canvas.SetLeft(MainRectangle, newLeft);
-        Canvas.SetTop(MainRectangle, newTop);
-
-        UpdateButtonPositions(vm.SelectionX, vm.SelectionY, vm.SelectionWidth, vm.SelectionHeight);
-        UpdateSurroundingRectangles();
+        return;
     }
+
+    var currentPos = e.GetPosition(RootCanvas);
+    var delta = currentPos - _resizeStart;
+
+    var newWidth = _originalRect.Width - delta.X;
+    var newHeight = _originalRect.Height - delta.Y;
+    var newLeft = _originalRect.X + delta.X;
+    var newTop = _originalRect.Y + delta.Y;
+
+    // If shift is pressed, maintain square aspect ratio
+    if (MainKeyboardShortcuts.ShiftDown)
+    {
+        // Use the larger dimension to determine the square size
+        var size = Math.Max(newWidth, newHeight);
+        // Calculate adjustments needed to maintain right and bottom edges
+        var widthDiff = size - newWidth;
+        var heightDiff = size - newHeight;
+        newLeft -= widthDiff;
+        newTop -= heightDiff;
+        newWidth = size;
+        newHeight = size;
+    }
+
+    // Ensure we don't go beyond boundaries
+    if (newLeft < 0)
+    {
+        var adjustment = -newLeft;
+        newLeft = 0;
+        newWidth -= adjustment;
+        if (MainKeyboardShortcuts.ShiftDown)
+        {
+            newHeight = newWidth;
+            newTop = _originalRect.Y + (_originalRect.Height - newHeight);
+        }
+    }
+
+    if (newTop < 0)
+    {
+        var adjustment = -newTop;
+        newTop = 0;
+        newHeight -= adjustment;
+        if (MainKeyboardShortcuts.ShiftDown)
+        {
+            newWidth = newHeight;
+            newLeft = _originalRect.X + (_originalRect.Width - newWidth);
+        }
+    }
+
+    // Prevent the size from becoming too small
+    newHeight = Math.Max(newHeight, 1);
+    newWidth = Math.Max(newWidth, 1);
+
+    // Apply the new size and position
+    vm.SelectionX = Convert.ToInt32(newLeft);
+    vm.SelectionY = Convert.ToInt32(newTop);
+    vm.SelectionWidth = newWidth;
+    vm.SelectionHeight = newHeight;
+    Canvas.SetLeft(MainRectangle, newLeft);
+    Canvas.SetTop(MainRectangle, newTop);
+
+    UpdateButtonPositions(vm.SelectionX, vm.SelectionY, vm.SelectionWidth, vm.SelectionHeight);
+    UpdateSurroundingRectangles();
+}
 
     private void ResizeTopRight(PointerEventArgs e)
     {
@@ -517,22 +538,43 @@ public partial class CropControl : UserControl
         var currentPos = e.GetPosition(RootCanvas);
         var delta = currentPos - _resizeStart;
 
-        // Calculate new width and height
         var newWidth = _originalRect.Width + delta.X;
         var newHeight = _originalRect.Height - delta.Y;
         var newY = _originalRect.Y + delta.Y;
+
+        // If shift is pressed, maintain square aspect ratio
+        if (MainKeyboardShortcuts.ShiftDown)
+        {
+            // Use the larger dimension to determine the square size
+            var size = Math.Max(newWidth, newHeight);
+            // Calculate how much to adjust Y to maintain the bottom edge
+            var heightDiff = size - newHeight;
+            newY -= heightDiff;
+            newWidth = size;
+            newHeight = size;
+        }
 
         // Ensure the width doesn't exceed the canvas' right edge
         if (_originalRect.X + newWidth > vm.ImageWidth)
         {
             newWidth = vm.ImageWidth - _originalRect.X;
+            if (MainKeyboardShortcuts.ShiftDown)
+            {
+                newHeight = newWidth;
+                newY = _originalRect.Y + (_originalRect.Height - newHeight);
+            }
         }
 
         // Ensure the top doesn't move above the top edge of the canvas
         if (newY < 0)
         {
-            newHeight = _originalRect.Height + _originalRect.Y; // Shrink height by the amount moved up
+            var adjustment = -newY;
             newY = 0;
+            newHeight = _originalRect.Height + adjustment;
+            if (MainKeyboardShortcuts.ShiftDown)
+            {
+                newWidth = newHeight;
+            }
         }
 
         // Prevent the size from becoming too small
@@ -565,17 +607,39 @@ public partial class CropControl : UserControl
         var newHeight = _originalRect.Height + delta.Y;
         var newX = _originalRect.X + delta.X;
 
+        // If shift is pressed, maintain square aspect ratio
+        if (MainKeyboardShortcuts.ShiftDown)
+        {
+            // Use the larger dimension to determine the square size
+            var size = Math.Max(newWidth, newHeight);
+            // Calculate how much to adjust X to maintain the right edge
+            var widthDiff = size - newWidth;
+            newX -= widthDiff;
+            newWidth = size;
+            newHeight = size;
+        }
+
         // Ensure the left doesn't move beyond the left edge
         if (newX < 0)
         {
-            newWidth = _originalRect.Width + _originalRect.X; // Shrink width by the amount moved left
+            var adjustment = -newX;
             newX = 0;
+            newWidth -= adjustment;
+            if (MainKeyboardShortcuts.ShiftDown)
+            {
+                newHeight = newWidth;
+            }
         }
 
         // Ensure the height doesn't exceed the canvas' bottom edge
         if (_originalRect.Y + newHeight > vm.ImageHeight)
         {
             newHeight = vm.ImageHeight - _originalRect.Y;
+            if (MainKeyboardShortcuts.ShiftDown)
+            {
+                newWidth = newHeight;
+                newX = _originalRect.X + (_originalRect.Width - newWidth);
+            }
         }
 
         // Prevent the width and height from becoming too small
@@ -608,6 +672,15 @@ public partial class CropControl : UserControl
         var newWidth = _originalRect.Width + delta.X;
         var newHeight = _originalRect.Height + delta.Y;
 
+        // If shift is pressed, maintain square aspect ratio
+        if (MainKeyboardShortcuts.ShiftDown)
+        {
+            // Use the larger of the two dimensions to maintain square shape
+            var size = Math.Max(newWidth, newHeight);
+            newWidth = size;
+            newHeight = size;
+        }
+
         // Ensure the new width and height do not exceed the image bounds
         var newRight = _originalRect.X + newWidth;
         var newBottom = _originalRect.Y + newHeight;
@@ -615,11 +688,19 @@ public partial class CropControl : UserControl
         if (newRight > vm.ImageWidth)
         {
             newWidth = vm.ImageWidth - _originalRect.X;
+            if (MainKeyboardShortcuts.ShiftDown)
+            {
+                newHeight = newWidth;
+            }
         }
 
         if (newBottom > vm.ImageHeight)
         {
             newHeight = vm.ImageHeight - _originalRect.Y;
+            if (MainKeyboardShortcuts.ShiftDown)
+            {
+                newWidth = newHeight;
+            }
         }
 
         // Constrain the minimum size
@@ -781,7 +862,7 @@ public partial class CropControl : UserControl
         
         // Prevent the size from becoming too small
         newHeight = Math.Max(newHeight, 1);
-
+        
         // Update the view model with the new height
         vm.SelectionHeight = newHeight;
 

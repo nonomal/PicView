@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using PicView.Avalonia.Crop;
 using PicView.Avalonia.DragAndDrop;
 using PicView.Avalonia.Input;
 using PicView.Avalonia.Navigation;
@@ -53,7 +54,7 @@ public partial class MainView : UserControl
     private void PointerPressedBehavior(object? sender, PointerPressedEventArgs e)
     {
         CloseTitlebarIfOpen(sender, e);
-        if (MainKeyboardShortcuts.ShiftDown)
+        if (MainKeyboardShortcuts.ShiftDown && !CropFunctions.IsCropping)
         {
             var hostWindow = (Window)VisualRoot!;
             WindowFunctions.WindowDragBehavior(hostWindow, e);
