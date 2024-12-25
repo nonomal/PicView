@@ -20,7 +20,6 @@
     <Copyright>© Ruben Hyldgaard Negendahl</Copyright>
     <ImplicitUsings>enable</ImplicitUsings>
     <Product>PicView</Product>
-    <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DebugType>none</DebugType>
