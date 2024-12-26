@@ -10,6 +10,7 @@
     <Product>PicView</Product>
     <UseAppHost>true</UseAppHost>
     <PublishAot>true</PublishAot>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <Trimming>full</Trimming>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <LangVersion>preview</LangVersion>
