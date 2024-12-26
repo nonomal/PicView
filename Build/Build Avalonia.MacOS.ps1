@@ -60,6 +60,7 @@ New-Item -ItemType Directory -Force -Path $macOSPath
 New-Item -ItemType Directory -Force -Path $resourcesPath
 
 # Create Info.plist
+$infoPlistPath = Join-Path -Path $contentsPath -ChildPath "Info.plist"  # Add this line to specify the correct path
 $infoPlistContent = @"
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -78,7 +79,7 @@ $infoPlistContent = @"
     <key>CFBundleSignature</key>
     <string>????</string>
     <key>CFBundleExecutable</key>
-    <string>PicView.Avalonia.MacOS</string>
+    <string>PicView</string>
     <key>CFBundleIconFile</key>
     <string>AppIcon.icns</string>
     <key>CFBundleShortVersionString</key>
@@ -97,6 +98,8 @@ $infoPlistContent = @"
     </array>
     <key>NSRequiresAquaSystemAppearance</key>
     <false/>
+	<key>LSApplicationCategoryType</key>
+    <string>public.app-category.graphics-design</string>
 </dict>
 </plist>
 "@
