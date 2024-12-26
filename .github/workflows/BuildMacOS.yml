@@ -37,45 +37,6 @@ jobs:
             -appVersion "${{steps.get-version.outputs.version}}"
         shell: pwsh
         
-      - name: Prepare and Sign arm64 App Bundle
-        run: |
-            # Create entitlements file
-            cat > entitlements.plist << EOF
-            <?xml version="1.0" encoding="UTF-8"?>
-            <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-            <plist version="1.0">
-            <dict>
-                <key>com.apple.security.cs.allow-jit</key>
-                <true/>
-                <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
-                <true/>
-                <key>com.apple.security.cs.disable-library-validation</key>
-                <true/>
-            </dict>
-            </plist>
-            EOF
-            
-            APP_PATH="${{ github.workspace }}/Build/PicView-v${{steps.get-version.outputs.version}}-osx-arm64/PicView.app"
-            
-            # Verify bundle structure
-            if [ ! -f "$APP_PATH/Contents/Info.plist" ]; then
-              echo "Error: Info.plist not found in the expected location"
-              exit 1
-            fi
-            
-            # Sign all dylibs and binaries
-            find "$APP_PATH/Contents/MacOS" -type f \( -name "*.dylib" -o -name "PicView.Avalonia.MacOS" \) | while read file; do
-              codesign --force --options runtime --sign - --entitlements entitlements.plist "$file"
-            done
-            
-            # Sign the app bundle
-            codesign --force --options runtime --sign - --entitlements entitlements.plist "$APP_PATH"
-              # Step 5: Create DMG for arm64
-              - name: Create DMG for arm64
-                run: |
-                  hdiutil create -volname "PicView" -srcfolder "${{ github.workspace }}/Build/PicView-v${{steps.get-version.outputs.version}}-osx-arm64/PicView.app" -ov -format UDZO "${{ github.workspace }}/Build/PicView-v${{steps.get-version.outputs.version}}-osx-arm64.dmg"
-
-
       # Step 6: Upload arm64 artifacts
       - name: Upload arm64 artifacts
         uses: actions/upload-artifact@v4
@@ -95,21 +56,10 @@ jobs:
             -appVersion "${{steps.get-version.outputs.version}}"
         shell: pwsh
         
-        
-      - name: Prepare and Sign x64 App Bundle
-        run: |
-          find "${{ github.workspace }}/Build/PicView-v${{steps.get-version.outputs.version}}-osx-x64/PicView.app" -type f -name "*.dylib" -o -name "PicView.Avalonia.MacOS" | while read file; do
-            codesign --force --options runtime --sign - --entitlements entitlements.plist "$file"
-          done
-          
-          codesign --force --options runtime --sign - --entitlements entitlements.plist "${{ github.workspace }}/Build/PicView-v${{steps.get-version.outputs.version}}-osx-x64/PicView.app"
-
-        
       # Step 8: Create DMG for x64
       - name: Create DMG for x64
         run: |
           hdiutil create -volname "PicView" -srcfolder "${{ github.workspace }}/Build/PicView-v${{steps.get-version.outputs.version}}-osx-x64/PicView.app" -ov -format UDZO "${{ github.workspace }}/Build/PicView-v${{steps.get-version.outputs.version}}-osx-x64.dmg"
-
 
 
       # Step 9: Upload x64 artifacts
