@@ -5,12 +5,11 @@
     [Parameter()]
     [string]$outputPath,
 	
-	[Parameter()]
+    [Parameter()]
     [string]$appVersion
 )
-
 # Define the core project path relative to the script's location
-$coreProjectPath = Join-Path -Path $PSScriptRoot -ChildPath "../src/PicView.Core/PicView.Core.csproj"
+$coreProjectPath = Join-Path -Path $PSScriptRoot -ChildPath "..\src\PicView.Core\PicView.Core.csproj"
 
 # Load the .csproj file as XML
 [xml]$coreCsproj = Get-Content $coreProjectPath
