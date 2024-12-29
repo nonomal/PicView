@@ -3,6 +3,7 @@ using Avalonia.Threading;
 using PicView.Avalonia.Gallery;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Input;
+using PicView.Avalonia.Preloading;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.Config;
@@ -327,33 +328,33 @@ public sealed class ImageIterator : IDisposable
         await PreLoader.AddAsync(index, ImagePaths, imageModel).ConfigureAwait(false);
     }
 
-    public PreLoader.PreLoadValue? GetPreLoadValue(int index)
+    public PreLoadValue? GetPreLoadValue(int index)
     {
         return PreLoader.Get(index, ImagePaths);
     }
 
-    public async Task<PreLoader.PreLoadValue?> GetPreLoadValueAsync(int index)
+    public async Task<PreLoadValue?> GetPreLoadValueAsync(int index)
     {
         return await PreLoader.GetAsync(index, ImagePaths);
     }
 
-    public PreLoader.PreLoadValue? GetCurrentPreLoadValue()
+    public PreLoadValue? GetCurrentPreLoadValue()
     {
         return PreLoader.Get(CurrentIndex, ImagePaths);
     }
 
-    public async Task<PreLoader.PreLoadValue?> GetCurrentPreLoadValueAsync()
+    public async Task<PreLoadValue?> GetCurrentPreLoadValueAsync()
     {
         return await PreLoader.GetAsync(CurrentIndex, ImagePaths);
     }
 
-    public PreLoader.PreLoadValue? GetNextPreLoadValue()
+    public PreLoadValue? GetNextPreLoadValue()
     {
         var nextIndex = GetIteration(CurrentIndex, IsReversed ? NavigateTo.Previous : NavigateTo.Next);
         return PreLoader.Get(nextIndex, ImagePaths);
     }
 
-    public async Task<PreLoader.PreLoadValue?>? GetNextPreLoadValueAsync()
+    public async Task<PreLoadValue?>? GetNextPreLoadValueAsync()
     {
         var nextIndex = GetIteration(CurrentIndex, NavigateTo.Next);
         return await PreLoader.GetAsync(nextIndex, ImagePaths);
@@ -578,7 +579,7 @@ public sealed class ImageIterator : IDisposable
 
             return;
 
-            void TryShowPreview(PreLoader.PreLoadValue preloadValue)
+            void TryShowPreview(PreLoadValue preloadValue)
             {
                 if (preloadValue is null)
                 {
@@ -657,6 +658,7 @@ public sealed class ImageIterator : IDisposable
             _watcher?.Dispose();
             Clear();
             _timer?.Dispose();
+            PreLoader.Dispose();
         }
 
         _disposed = true;

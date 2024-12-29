@@ -4,7 +4,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using ImageMagick;
-using PicView.Avalonia.Navigation;
+using PicView.Avalonia.Preloading;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.Calculations;
@@ -130,12 +130,12 @@ public static class WindowResizing
 
         return;
 
-        double GetWidth(PreLoader.PreLoadValue preloadValue)
+        double GetWidth(PreLoadValue preloadValue)
         {
             return preloadValue?.ImageModel?.PixelWidth ?? vm.ImageWidth;
         }
 
-        double GetHeight(PreLoader.PreLoadValue preloadValue)
+        double GetHeight(PreLoadValue preloadValue)
         {
             return preloadValue?.ImageModel?.PixelHeight ?? vm.ImageHeight;
         }
