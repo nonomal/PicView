@@ -59,18 +59,8 @@ public static class NavigationHelper
         }
         else
         {
-            await Task.Run(async () =>
-            {
-                var navigateTo = next ? NavigateTo.Next : NavigateTo.Previous;
-
-                if (_cancellationTokenSource is not null)
-                {
-                    await _cancellationTokenSource.CancelAsync().ConfigureAwait(false);
-                }
-
-                _cancellationTokenSource = new CancellationTokenSource();
-                await vm.ImageIterator.NextIteration(navigateTo, _cancellationTokenSource).ConfigureAwait(false);
-            }).ConfigureAwait(false);
+            var navigateTo = next ? NavigateTo.Next : NavigateTo.Previous;
+            await CheckCancellationAndStartNextIteration(navigateTo, vm).ConfigureAwait(false);
         }
     }
 
@@ -80,58 +70,52 @@ public static class NavigationHelper
         {
             return;
         }
-
-        if (_cancellationTokenSource is not null)
-        {
-            await _cancellationTokenSource.CancelAsync().ConfigureAwait(false);
-        }
-
-        _cancellationTokenSource = new CancellationTokenSource();
-        await vm.ImageIterator.IterateToIndex(index, _cancellationTokenSource).ConfigureAwait(false);
+        
+        await CheckCancellationAndStartIterateToIndex(index, vm).ConfigureAwait(false);
     }
 
     public static async Task Next10(MainViewModel vm)
     {
-        if (_cancellationTokenSource is not null)
+        if (!CanNavigate(vm))
         {
-            await _cancellationTokenSource.CancelAsync().ConfigureAwait(false);
+            return;
         }
-
-        _cancellationTokenSource = new CancellationTokenSource();
-        await vm.ImageIterator.Next10Iteration(true, _cancellationTokenSource).ConfigureAwait(false);
+        var currentIndex = vm.ImageIterator.CurrentIndex;
+        var index = vm.ImageIterator.GetIteration(currentIndex, NavigateTo.Next, false, true);
+        await CheckCancellationAndStartIterateToIndex(index, vm).ConfigureAwait(false);
     }
 
     public static async Task Next100(MainViewModel vm)
     {
-        if (_cancellationTokenSource is not null)
+        if (!CanNavigate(vm))
         {
-            await _cancellationTokenSource.CancelAsync().ConfigureAwait(false);
+            return;
         }
-
-        _cancellationTokenSource = new CancellationTokenSource();
-        await vm.ImageIterator.Next100Iteration(true, _cancellationTokenSource).ConfigureAwait(false);
+        var currentIndex = vm.ImageIterator.CurrentIndex;
+        var index = vm.ImageIterator.GetIteration(currentIndex, NavigateTo.Next, false, false, true);
+        await CheckCancellationAndStartIterateToIndex(index, vm).ConfigureAwait(false);
     }
 
     public static async Task Prev10(MainViewModel vm)
     {
-        if (_cancellationTokenSource is not null)
+        if (!CanNavigate(vm))
         {
-            await _cancellationTokenSource.CancelAsync().ConfigureAwait(false);
+            return;
         }
-
-        _cancellationTokenSource = new CancellationTokenSource();
-        await vm.ImageIterator.Next10Iteration(false, _cancellationTokenSource).ConfigureAwait(false);
+        var currentIndex = vm.ImageIterator.CurrentIndex;
+        var index = vm.ImageIterator.GetIteration(currentIndex, NavigateTo.Previous, false, true);
+        await CheckCancellationAndStartIterateToIndex(index, vm).ConfigureAwait(false);
     }
 
     public static async Task Prev100(MainViewModel vm)
     {
-        if (_cancellationTokenSource is not null)
+        if (!CanNavigate(vm))
         {
-            await _cancellationTokenSource.CancelAsync().ConfigureAwait(false);
+            return;
         }
-
-        _cancellationTokenSource = new CancellationTokenSource();
-        await vm.ImageIterator.Next100Iteration(false, _cancellationTokenSource).ConfigureAwait(false);
+        var currentIndex = vm.ImageIterator.CurrentIndex;
+        var index = vm.ImageIterator.GetIteration(currentIndex, NavigateTo.Previous, false, false, true);
+        await CheckCancellationAndStartIterateToIndex(index, vm).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -628,6 +612,36 @@ public static class NavigationHelper
     #endregion
 
     #region Private helpers
+    
+    private static async Task CheckCancellationAndStartNextIteration(NavigateTo navigateTo, MainViewModel vm)
+    {
+        await Task.Run(async () =>
+        {
+            if (_cancellationTokenSource is not null)
+            {
+                await _cancellationTokenSource.CancelAsync().ConfigureAwait(false);
+            }
+
+            _cancellationTokenSource = new CancellationTokenSource();
+            await vm.ImageIterator.NextIteration(navigateTo, _cancellationTokenSource).ConfigureAwait(false);
+            _cancellationTokenSource.CancelAfter(TimeSpan.FromMinutes(5));
+        }).ConfigureAwait(false);
+    }
+    
+    private static async Task CheckCancellationAndStartIterateToIndex(int index, MainViewModel vm)
+    {
+        await Task.Run(async () =>
+        {
+            if (_cancellationTokenSource is not null)
+            {
+                await _cancellationTokenSource.CancelAsync().ConfigureAwait(false);
+            }
+
+            _cancellationTokenSource = new CancellationTokenSource();
+            await vm.ImageIterator.IterateToIndex(index, _cancellationTokenSource).ConfigureAwait(false);
+            _cancellationTokenSource.CancelAfter(TimeSpan.FromMinutes(5));
+        }).ConfigureAwait(false);
+    }
 
     /// <summary>
     /// Gets the list of files in the next or previous folder.

@@ -297,15 +297,14 @@ public sealed class PreLoader : IAsyncDisposable
         }
     }
 
-    public async Task PreLoadAsync(int currentIndex, int count, bool reverse, List<string> list,
-        CancellationToken cancellationToken = default)
+    public async Task PreLoadAsync(int currentIndex, int count, bool reverse, List<string> list)
     {
-        using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        using var cts = new CancellationTokenSource();
         cts.CancelAfter(TimeSpan.FromMinutes(5));
 
         try
         {
-            await PreLoadInternalAsync(currentIndex, count, reverse, list);
+            await PreLoadInternalAsync(currentIndex, count, reverse, list, cts.Token);
         }
         catch (OperationCanceledException)
         {
@@ -319,7 +318,7 @@ public sealed class PreLoader : IAsyncDisposable
         }
     }
 
-    private async Task PreLoadInternalAsync(int currentIndex, int count, bool reverse, List<string> list)
+    private async Task PreLoadInternalAsync(int currentIndex, int count, bool reverse, List<string> list, CancellationToken token)
     {
         if (list == null)
         {
@@ -359,7 +358,8 @@ public sealed class PreLoader : IAsyncDisposable
 
         var options = new ParallelOptions
         {
-            MaxDegreeOfParallelism = _config.MaxParallelism
+            MaxDegreeOfParallelism = _config.MaxParallelism,
+            CancellationToken = token
         };
 
         try

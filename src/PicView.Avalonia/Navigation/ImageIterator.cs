@@ -459,18 +459,6 @@ public sealed class ImageIterator : IDisposable
             await TimerIteration(index, cts).ConfigureAwait(false);
         }
     }
-    
-    public async Task Next10Iteration(bool forwards, CancellationTokenSource cts)
-    {
-        var index = GetIteration(CurrentIndex, forwards ? NavigateTo.Next : NavigateTo.Previous, false, true);
-        await IterateToIndex(index, cts).ConfigureAwait(false);
-    }
-    
-    public async Task Next100Iteration(bool forwards, CancellationTokenSource cts)
-    {
-        var index = GetIteration(CurrentIndex, forwards ? NavigateTo.Next : NavigateTo.Previous, false, false, true);
-        await IterateToIndex(index, cts).ConfigureAwait(false);
-    }
 
     public async Task IterateToIndex(int index, CancellationTokenSource cts)
     {
@@ -568,7 +556,7 @@ public sealed class ImageIterator : IDisposable
                         });
                     }
 
-                    await PreLoader.PreLoadAsync(CurrentIndex, ImagePaths.Count, IsReversed, ImagePaths, cts.Token)
+                    await PreLoader.PreLoadAsync(CurrentIndex, ImagePaths.Count, IsReversed, ImagePaths)
                         .ConfigureAwait(false);
                 }
 
@@ -583,6 +571,9 @@ public sealed class ImageIterator : IDisposable
             catch (OperationCanceledException)
             {
                 // Ignore
+#if DEBUG
+                Trace.WriteLine($"{nameof(IterateToIndex)} canceled");
+#endif
             }
             catch (Exception e)
             {
