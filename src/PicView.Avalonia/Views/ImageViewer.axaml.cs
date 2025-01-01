@@ -5,6 +5,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
@@ -33,6 +34,7 @@ public partial class ImageViewer : UserControl
     public ImageViewer()
     {
         InitializeComponent();
+        TriggerScalingModeUpdate(false);
         AddHandler(PointerWheelChangedEvent, PreviewOnPointerWheelChanged, RoutingStrategies.Tunnel);
         AddHandler(Gestures.PointerTouchPadGestureMagnifyEvent, TouchMagnifyEvent, RoutingStrategies.Bubble);
 
@@ -44,6 +46,19 @@ public partial class ImageViewer : UserControl
                 _captured = false;
             };
         };
+    }
+    
+    public void TriggerScalingModeUpdate(bool invalidate)
+    {
+        var scalingMode = SettingsHelper.Settings.ImageScaling.IsScalingSetToNearestNeighbor 
+            ? BitmapInterpolationMode.LowQuality 
+            : BitmapInterpolationMode.HighQuality;
+
+        RenderOptions.SetBitmapInterpolationMode(MainImage,scalingMode);
+        if (invalidate)
+        {
+            MainImage.InvalidateVisual();
+        }
     }
 
     private void TouchMagnifyEvent(object? sender, PointerDeltaEventArgs e)
@@ -256,6 +271,7 @@ public partial class ImageViewer : UserControl
 
         currentZoom += zoomSpeed;
         currentZoom = Math.Max(0.09, currentZoom); // Fix for zooming out too much
+        TriggerScalingModeUpdate(false);
         if (SettingsHelper.Settings.Zoom.AvoidZoomingOut && currentZoom < 1.0)
         {
             ResetZoom(true);

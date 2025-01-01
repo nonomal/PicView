@@ -256,9 +256,23 @@ public class ViewModelBase : ReactiveObject
         WidthAndHeight = TranslationHelper.Translation.WidthAndHeight;
         CloseWindowPrompt = TranslationHelper.Translation.CloseWindowPrompt;
         ShowConfirmationOnEsc = TranslationHelper.Translation.ShowConfirmationOnEsc;
+        ImageAliasing = TranslationHelper.Translation.ImageAliasing;
+        HighQuality = TranslationHelper.Translation.HighQuality;
     }
 
     #region Strings
+    
+    public string? HighQuality
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
+    
+    public string? ImageAliasing
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
     
     public string? CloseWindowPrompt
     {
