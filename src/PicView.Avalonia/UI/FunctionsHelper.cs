@@ -107,6 +107,7 @@ public static class FunctionsHelper
 
             // File functions
             "DeleteFile" => DeleteFile,
+            "DeleteFilePermanently" => DeleteFilePermanently,
             "Rename" => Rename,
             "ShowFileProperties" => ShowFileProperties,
 
@@ -416,38 +417,11 @@ public static class FunctionsHelper
     
     public static async Task Close()
     {
-        if (UIHelper.IsAnyMenuOpen(Vm))
-        {
-            UIHelper.CloseMenus(Vm);
-            return;
-        }
-
-        if (CropFunctions.IsCropping)
-        {
-            CropFunctions.CloseCropControl(Vm);
-            return;
-        }
-
-        if (Navigation.Slideshow.IsRunning)
-        {
-            Navigation.Slideshow.StopSlideshow(Vm);
-            return;
-        }
-
-        if (SettingsHelper.Settings.WindowProperties.Fullscreen)
-        {
-            await WindowFunctions.MaximizeRestore();
-            return;
-        }
-        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+        if (Vm is null)
         {
             return;
         }
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            // TODO: Make it a setting to close the window
-            desktop.MainWindow?.Close();
-        });
+        await UIHelper.Close(Vm);
     }
     
     public static async Task Center()
@@ -633,12 +607,18 @@ public static class FunctionsHelper
         {
             return;
         }
-        var errorMsg = await Task.FromResult(FileDeletionHelper.DeleteFileWithErrorMsg(Vm.FileInfo?.FullName, true));
 
-        if (!string.IsNullOrEmpty(errorMsg))
+        await FileManager.DeleteFile(true, Vm);
+    }
+    
+    public static async Task DeleteFilePermanently()
+    {
+        if (Vm is null)
         {
-            await TooltipHelper.ShowTooltipMessageAsync(errorMsg, true);
+            return;
         }
+
+        await FileManager.DeleteFile(false, Vm);
     }
 
     public static async Task Rename()

@@ -593,6 +593,16 @@ public class MainViewModel : ViewModelBase
             SettingsHelper.Settings.UIProperties.OpenInSameWindow = value;
         }
     } = SettingsHelper.Settings.UIProperties.OpenInSameWindow;
+    
+    public bool IsShowingConfirmationOnEsc
+    {
+        get;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref field, value);
+            SettingsHelper.Settings.UIProperties.ShowConfirmationOnEsc = value;
+        }
+    } = SettingsHelper.Settings.UIProperties.ShowConfirmationOnEsc;
 
     public bool IsEditableTitlebarOpen
     {

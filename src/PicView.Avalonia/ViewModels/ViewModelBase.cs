@@ -19,6 +19,7 @@ public class ViewModelBase : ReactiveObject
         Reload = TranslationHelper.Translation.Reload;
         Print = TranslationHelper.Translation.Print;
         DeleteFile = TranslationHelper.Translation.DeleteFile;
+        PermanentlyDelete = TranslationHelper.Translation.PermanentlyDelete;
         Save = TranslationHelper.Translation.Save;
         CopyFile = TranslationHelper.Translation.CopyFile;
         NewWindow = TranslationHelper.Translation.NewWindow;
@@ -253,9 +254,23 @@ public class ViewModelBase : ReactiveObject
         Start = TranslationHelper.Translation.Start;
         Thumbnail = TranslationHelper.Translation.Thumbnail;
         WidthAndHeight = TranslationHelper.Translation.WidthAndHeight;
+        CloseWindowPrompt = TranslationHelper.Translation.CloseWindowPrompt;
+        ShowConfirmationOnEsc = TranslationHelper.Translation.ShowConfirmationOnEsc;
     }
 
     #region Strings
+    
+    public string? CloseWindowPrompt
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
+    
+    public string? ShowConfirmationOnEsc
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
     
     public string? WidthAndHeight
     {
@@ -1302,6 +1317,12 @@ public class ViewModelBase : ReactiveObject
     }
 
     public string? DeleteFile
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
+    
+    public string? PermanentlyDelete
     {
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);

@@ -393,4 +393,10 @@ public record LanguageModel
     public string? GoBackBy100Images { get; set; }
     
     public string? WidthAndHeight { get; set; }
+    
+    public string? CloseWindowPrompt { get; set; }
+    
+    public string? ShowConfirmationOnEsc { get; set; }
+    
+    public string? PermanentlyDelete { get; set; }
 }

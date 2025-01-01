@@ -3,17 +3,24 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Layout;
 using Avalonia.Threading;
+using PicView.Avalonia.Crop;
 using PicView.Avalonia.Gallery;
+using PicView.Avalonia.Navigation;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views;
 using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.Views.UC.Menus;
+using PicView.Avalonia.Views.UC.PopUps;
+using PicView.Avalonia.WindowBehavior;
+using PicView.Core.Config;
 using PicView.Core.Gallery;
 
 namespace PicView.Avalonia.UI;
 public static class UIHelper
 {
     #region GetControls
+    
+    public static bool IsDialogOpen { get; set; }
 
     public static MainView? GetMainView { get; private set; }
     public static Control? GetTitlebar { get; private set; }
@@ -180,6 +187,53 @@ public static class UIHelper
 
 
     #endregion Navigation
+    
+    #region Dialogs
+    
+    public static async Task Close(MainViewModel vm)
+    {
+        if (IsAnyMenuOpen(vm))
+        {
+            CloseMenus(vm);
+            return;
+        }
+
+        if (CropFunctions.IsCropping)
+        {
+            CropFunctions.CloseCropControl(vm);
+            return;
+        }
+
+        if (Slideshow.IsRunning)
+        {
+            Slideshow.StopSlideshow(vm);
+            return;
+        }
+
+        if (SettingsHelper.Settings.WindowProperties.Fullscreen)
+        {
+            await WindowFunctions.MaximizeRestore();
+            return;
+        }
+        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            return;
+        }
+
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            if (SettingsHelper.Settings.UIProperties.ShowConfirmationOnEsc)
+            {
+                GetMainView.MainGrid.Children.Add(new CloseDialog());
+            }
+            else
+            {
+                desktop.MainWindow?.Close();
+            }
+        });
+    } 
+
+    #endregion
 
 
 }

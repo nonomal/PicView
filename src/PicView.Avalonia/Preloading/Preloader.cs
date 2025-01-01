@@ -9,13 +9,13 @@ namespace PicView.Avalonia.Preloading;
 
 public sealed class PreLoader : IAsyncDisposable
 {
+    
 #if DEBUG
 
     // ReSharper disable once ConvertToConstant.Local
     private static readonly bool ShowAddRemove = true;
-
-
 #endif
+    
     private readonly PreLoaderConfig _config = new();
 
     private readonly ConcurrentDictionary<int, PreLoadValue> _preLoadList = new();

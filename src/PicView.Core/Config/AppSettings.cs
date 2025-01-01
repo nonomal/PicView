@@ -2,7 +2,7 @@
 
 public record AppSettings
 {
-    public double Version { get; set; } = 1.2;
+    public double Version { get; set; } = 1.3;
     public WindowProperties? WindowProperties { get; set; }
     public UIProperties? UIProperties { get; set; }
     public Theme? Theme { get; set; }
@@ -38,6 +38,7 @@ public record UIProperties
     public int BgColorChoice { get; set; } = 0;
     public double SlideShowTimer { get; set; } = 5000;
     public bool OpenInSameWindow { get; set; } = false;
+    public bool ShowConfirmationOnEsc { get; set; } = false;
 }
 
 public record Theme

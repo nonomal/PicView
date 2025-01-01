@@ -7,6 +7,7 @@
                 <ResourceInclude Source="ResourceDictionaries/Variables.axaml" />
                 <ResourceInclude Source="Icons.axaml" />
 
+                <ResourceInclude Source="Controls/AnimatedPopUp.axaml" />
                 <ResourceInclude Source="Controls/AutoScrollViewer.axaml" />
                 <ResourceInclude Source="Controls/Border.axaml" />
                 <ResourceInclude Source="Controls/Button.axaml" />
