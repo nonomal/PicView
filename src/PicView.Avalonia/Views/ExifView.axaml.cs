@@ -177,7 +177,7 @@ public partial class ExifView : UserControl
                 if (success)
                 {
                     vm.ImageIterator?.RemoveCurrentItemFromPreLoader();
-                    await vm.ImageIterator?.IterateToIndex(vm.ImageIterator.CurrentIndex);
+                    await NavigationHelper.Navigate(vm.ImageIterator.CurrentIndex, vm).ConfigureAwait(false);
                 }
             }
         }

@@ -76,7 +76,7 @@ public partial class ImageMenu  : AnimatedMenu
                 number--;
             }
 
-            await vm.ImageIterator.IterateToIndex(number).ConfigureAwait(false);
+            await NavigationHelper.Navigate(number, vm).ConfigureAwait(false);
         }
     }
 }

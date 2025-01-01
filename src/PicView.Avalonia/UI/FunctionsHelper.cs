@@ -238,22 +238,22 @@ public static class FunctionsHelper
     
     public static async Task Next10()
     {
-        await Vm?.ImageIterator.Next10Iteration(true);
+        await NavigationHelper.Next10(Vm).ConfigureAwait(false);
     }
     
     public static async Task Next100()
     {
-        await Vm?.ImageIterator.Next100Iteration(true);
+        await NavigationHelper.Next100(Vm).ConfigureAwait(false);
     }
     
     public static async Task Prev10()
     {
-        await Vm?.ImageIterator.Next10Iteration(false);
+        await NavigationHelper.Prev10(Vm).ConfigureAwait(false);
     }
     
     public static async Task Prev100()
     {
-        await Vm?.ImageIterator.Next100Iteration(false);
+        await NavigationHelper.Prev100(Vm).ConfigureAwait(false);
     }
     
 

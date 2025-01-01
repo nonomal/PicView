@@ -9,7 +9,6 @@ using PicView.Avalonia.ViewModels;
 using PicView.Core.FileHandling;
 using PicView.Core.ImageDecoding;
 using PicView.Core.Localization;
-using PicView.Core.Navigation;
 
 namespace PicView.Avalonia.Views.UC;
 
@@ -134,7 +133,7 @@ public partial class EditableTitlebar : UserControl
         if (Path.GetDirectoryName(oldPath) != Path.GetDirectoryName(newPath))
         {
             vm.ImageIterator?.RemoveCurrentItemFromPreLoader();
-            await vm.ImageIterator?.NextIteration(NavigateTo.Next);
+            await NavigationHelper.Navigate(true, vm);
             FileHelper.RenameFile(oldPath, newPath);
             return;
         }
