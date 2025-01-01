@@ -14,7 +14,6 @@ using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Config;
 using PicView.Core.ImageDecoding;
 using PicView.Core.ImageTransformations;
-using PicView.Core.Navigation;
 using Point = Avalonia.Point;
 
 namespace PicView.Avalonia.Views;
@@ -185,13 +184,18 @@ public partial class ImageViewer : UserControl
             {
                 return;
             }
-            var navigateTo = SettingsHelper.Settings.Zoom.HorizontalReverseScroll ? NavigateTo.Previous : NavigateTo.Next;
+
+            bool next;
             if (reverse)
             {
-                navigateTo = SettingsHelper.Settings.Zoom.HorizontalReverseScroll ? NavigateTo.Next : NavigateTo.Previous;
+                next = SettingsHelper.Settings.Zoom.HorizontalReverseScroll;
+            }
+            else
+            {
+                next = !SettingsHelper.Settings.Zoom.HorizontalReverseScroll;
             }
 
-            await mainViewModel.ImageIterator.NextIteration(navigateTo).ConfigureAwait(false);
+            await NavigationHelper.Navigate(next, mainViewModel).ConfigureAwait(false);
         }
     }
 

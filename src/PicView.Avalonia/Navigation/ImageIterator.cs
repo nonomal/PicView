@@ -442,7 +442,7 @@ public sealed class ImageIterator : IDisposable
         return next;
     }
 
-    public async Task NextIteration(NavigateTo navigateTo)
+    public async Task NextIteration(NavigateTo navigateTo, CancellationToken cancellationToken = default)
     {
         var index = GetIteration(CurrentIndex, navigateTo, SettingsHelper.Settings.ImageScaling.ShowImageSideBySide);
         if (index < 0)
@@ -452,11 +452,11 @@ public sealed class ImageIterator : IDisposable
 
         if (!MainKeyboardShortcuts.IsKeyHeldDown)
         {
-            await IterateToIndex(index);
+            await IterateToIndex(index, cancellationToken).ConfigureAwait(false);
         }
         else
         {
-            await TimerIteration(index);
+            await TimerIteration(index).ConfigureAwait(false);
         }
     }
     
@@ -472,16 +472,15 @@ public sealed class ImageIterator : IDisposable
         await IterateToIndex(index).ConfigureAwait(false);
     }
 
-    public async Task IterateToIndex(int index)
+    public async Task IterateToIndex(int index, CancellationToken cancellationToken = default)
     {
-        SetTitleHelper.SetLoadingTitle(_vm);
-        
         if (index < 0 || index >= ImagePaths.Count)
         {
             ErrorHandling.ShowStartUpMenu(_vm);
             return;
         }
         
+        using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         // UI is more responsive when started in new thread
         await Task.Run(async () =>
         {
@@ -500,10 +499,11 @@ public sealed class ImageIterator : IDisposable
 
                     while (preloadValue.IsLoading)
                     {
-                        await Task.Delay(20).ConfigureAwait(false);
+                        await Task.Delay(20, cancellationToken).ConfigureAwait(false);
                         if (CurrentIndex != index)
                         {
                             // Skip loading if user went to next value
+                            await cts.CancelAsync();
                             return;
                         }
                     }
@@ -517,6 +517,7 @@ public sealed class ImageIterator : IDisposable
                 if (CurrentIndex != index)
                 {
                     // Skip loading if user went to next value
+                    await cts.CancelAsync();
                     return;
                 }
 
@@ -527,6 +528,7 @@ public sealed class ImageIterator : IDisposable
                     if (CurrentIndex != index)
                     {
                         // Skip loading if user went to next value
+                        await cts.CancelAsync();
                         return;
                     }
 
@@ -534,11 +536,13 @@ public sealed class ImageIterator : IDisposable
                     {
                         _vm.SecondaryImageSource = nextPreloadValue.ImageModel?.Image;
                     }
+                    cancellationToken.ThrowIfCancellationRequested();
                     await UpdateImage.UpdateSource(_vm, index, ImagePaths, IsReversed, preloadValue, nextPreloadValue)
                         .ConfigureAwait(false);
                 }
                 else
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
                     await UpdateImage.UpdateSource(_vm, index, ImagePaths, IsReversed, preloadValue)
                         .ConfigureAwait(false);
                 }
@@ -553,7 +557,7 @@ public sealed class ImageIterator : IDisposable
                         });
                     }
 
-                    await PreLoader.PreLoadAsync(CurrentIndex, ImagePaths.Count, IsReversed, ImagePaths)
+                    await PreLoader.PreLoadAsync(CurrentIndex, ImagePaths.Count, IsReversed, ImagePaths, cancellationToken)
                         .ConfigureAwait(false);
                 }
 
@@ -581,6 +585,8 @@ public sealed class ImageIterator : IDisposable
 
             void TryShowPreview(PreLoadValue preloadValue)
             {
+                SetTitleHelper.SetLoadingTitle(_vm);
+                
                 if (preloadValue is null)
                 {
                     return;
@@ -600,7 +606,7 @@ public sealed class ImageIterator : IDisposable
                 _vm.ImageSource = null;
                 _vm.SecondaryImageSource = null;
             }
-        });
+        }, cancellationToken);
     }
 
     private static Timer? _timer;
@@ -627,7 +633,7 @@ public sealed class ImageIterator : IDisposable
 
         _timer.Interval = TimeSpan.FromSeconds(SettingsHelper.Settings.UIProperties.NavSpeed).TotalMilliseconds;
         _timer.Start();
-        await IterateToIndex(index);
+        await IterateToIndex(index).ConfigureAwait(false);
     }
 
     public void UpdateFileListAndIndex(List<string> fileList, int index)

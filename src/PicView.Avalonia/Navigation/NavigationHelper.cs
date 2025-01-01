@@ -24,6 +24,7 @@ namespace PicView.Avalonia.Navigation;
 /// </summary>
 public static class NavigationHelper
 {
+    private static CancellationTokenSource? _cancellationTokenSource;
 
     #region Navigation
     
@@ -59,7 +60,8 @@ public static class NavigationHelper
         else
         {
             var navigateTo = next ? NavigateTo.Next : NavigateTo.Previous;
-            await vm.ImageIterator.NextIteration(navigateTo).ConfigureAwait(false);
+            _cancellationTokenSource = new CancellationTokenSource();
+            await vm.ImageIterator.NextIteration(navigateTo, _cancellationTokenSource.Token).ConfigureAwait(false);
         }
     }
 
@@ -147,6 +149,10 @@ public static class NavigationHelper
             return;
         }
         SetTitleHelper.SetLoadingTitle(vm);
+        if (_cancellationTokenSource is not null)
+        {
+            await _cancellationTokenSource.CancelAsync();
+        }
         var fileList = await GetNextFolderFileList(next, vm).ConfigureAwait(false);
 
         if (fileList is null)
@@ -180,6 +186,11 @@ public static class NavigationHelper
         UIHelper.CloseMenus(vm);
         vm.IsLoading = true;
         SetTitleHelper.SetLoadingTitle(vm);
+        
+        if (_cancellationTokenSource is not null)
+        {
+            await _cancellationTokenSource.CancelAsync();
+        }
 
         // Starting in new task makes it more responsive and works better
         await Task.Run(async () =>
@@ -263,6 +274,11 @@ public static class NavigationHelper
         {
             vm.PlatformService.StopTaskbarProgress();
         }
+        
+        if (_cancellationTokenSource is not null)
+        {
+            await _cancellationTokenSource.CancelAsync();
+        }
 
         if (vm.ImageIterator is not null)
         {
@@ -313,6 +329,11 @@ public static class NavigationHelper
     /// </returns>
     public static async Task LoadPicFromArchiveAsync(string path, MainViewModel vm)
     {
+        if (_cancellationTokenSource is not null)
+        {
+            await _cancellationTokenSource.CancelAsync();
+        }
+        
         var extraction = await ArchiveExtraction.ExtractArchiveAsync(path, vm.PlatformService.ExtractWithLocalSoftwareAsync).ConfigureAwait(false);
         if (!extraction)
         {
@@ -349,6 +370,11 @@ public static class NavigationHelper
     /// <returns>A task representing the asynchronous operation.</returns>
     public static async Task LoadPicFromUrlAsync(string url, MainViewModel vm)
     {
+        if (_cancellationTokenSource is not null)
+        {
+            await _cancellationTokenSource.CancelAsync();
+        }
+        
         string destination;
 
         try
@@ -465,6 +491,11 @@ public static class NavigationHelper
     {
         vm.IsLoading = true;
         SetTitleHelper.SetLoadingTitle(vm);
+        
+        if (_cancellationTokenSource is not null)
+        {
+            await _cancellationTokenSource.CancelAsync();
+        }
         
         if (SettingsHelper.Settings.UIProperties.IsTaskbarProgressEnabled)
         {
