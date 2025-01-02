@@ -20,6 +20,7 @@ public partial class EditableTitlebar : UserControl
         LostFocus += OnLostFocus;
         PointerEntered += OnPointerEntered;
         PointerPressed += OnPointerPressed;
+        TextBox.LostFocus += OnLostFocus;
     }
 
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
@@ -78,6 +79,20 @@ public partial class EditableTitlebar : UserControl
     
     protected override void OnKeyDown(KeyEventArgs e)
     {
+        if (DataContext is not MainViewModel vm)
+        {
+            return;
+        }
+
+        if (!vm.IsEditableTitlebarOpen)
+        {
+            return;
+        }
+
+        if (e.Key is Key.Escape)
+        {
+            CloseTitlebar();
+        }
         MainKeyboardShortcuts.IsKeysEnabled = false;
         base.OnKeyDown(e);
     }

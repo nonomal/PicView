@@ -69,13 +69,18 @@ public partial class MainView : UserControl
         {
             return;
         }
-        if (vm.IsEditableTitlebarOpen)
+
+        if (!vm.IsEditableTitlebarOpen)
         {
-            vm.IsEditableTitlebarOpen = false;
+            return;
         }
+
+        vm.IsEditableTitlebarOpen = false;
+        MainKeyboardShortcuts.IsKeysEnabled = true;
+        Focus();
     }
     
-    private void HandleLostFocus(object? sender, EventArgs e)
+    private static void HandleLostFocus(object? sender, EventArgs e)
     {
         DragAndDropHelper.RemoveDragDropView();
     }
