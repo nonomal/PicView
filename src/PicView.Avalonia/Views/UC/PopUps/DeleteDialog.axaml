@@ -17,10 +17,12 @@
             Classes="txt"
             FontFamily="/Assets/Fonts/Roboto-Medium.ttf#Roboto"
             FontSize="14"
+            Foreground="{DynamicResource MainTextColor}"
             MaxWidth="200"
             x:Name="PromptText" />
         <TextBlock
             Classes="txt"
+            Foreground="{DynamicResource MainTextColor}"
             Margin="0,6,0,0"
             MaxWidth="200"
             x:Name="PromptFileName" />
@@ -34,7 +36,10 @@
                 Margin="0,0,10,0"
                 Padding="30,0"
                 x:Name="CancelButton">
-                <TextBlock Classes="txt" Text="{CompiledBinding Cancel}" />
+                <TextBlock
+                    Classes="txt"
+                    Foreground="{DynamicResource MainTextColor}"
+                    Text="{CompiledBinding Cancel}" />
             </Button>
             <Button
                 Background="{DynamicResource AccentColor}"
