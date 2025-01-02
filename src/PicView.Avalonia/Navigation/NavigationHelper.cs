@@ -36,7 +36,7 @@ public static class NavigationHelper
     public static bool CanNavigate(MainViewModel vm)
     {
         return vm?.ImageIterator?.ImagePaths is not null &&
-               vm.ImageIterator.ImagePaths.Count > 0 && !CropFunctions.IsCropping;
+               vm.ImageIterator.ImagePaths.Count > 0 && !CropFunctions.IsCropping && !UIHelper.IsDialogOpen;
         // TODO: should probably turn this into CanExecute observable for ReactiveUI
     }
 

@@ -104,6 +104,10 @@ public static class UIHelper
 
     public static void ToggleFileMenu(MainViewModel vm)
     {
+        if (IsDialogOpen)
+        {
+            return;
+        }
         vm.IsFileMenuVisible = !vm.IsFileMenuVisible;
         vm.IsImageMenuVisible = false;
         vm.IsSettingsMenuVisible = false;
@@ -112,6 +116,10 @@ public static class UIHelper
 
     public static void ToggleImageMenu(MainViewModel vm)
     {
+        if (IsDialogOpen)
+        {
+            return;
+        }
         vm.IsFileMenuVisible = false;
         vm.IsImageMenuVisible = !vm.IsImageMenuVisible;
         vm.IsSettingsMenuVisible = false;
@@ -120,6 +128,10 @@ public static class UIHelper
 
     public static void ToggleSettingsMenu(MainViewModel vm)
     {
+        if (IsDialogOpen)
+        {
+            return;
+        }
         vm.IsFileMenuVisible = false;
         vm.IsImageMenuVisible = false;
         vm.IsSettingsMenuVisible = !vm.IsSettingsMenuVisible;
@@ -128,6 +140,10 @@ public static class UIHelper
 
     public static void ToggleToolsMenu(MainViewModel vm)
     {
+        if (IsDialogOpen)
+        {
+            return;
+        }
         vm.IsFileMenuVisible = false;
         vm.IsImageMenuVisible = false;
         vm.IsSettingsMenuVisible = false;

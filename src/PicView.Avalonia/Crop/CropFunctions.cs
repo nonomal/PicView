@@ -64,6 +64,11 @@ public static class CropFunctions
         {
             return false;
         }
+
+        if (UIHelper.IsDialogOpen)
+        {
+            return false;
+        }
         
         
         return vm is { ScaleX: 1, RotationAngle: 0 };
