@@ -237,21 +237,21 @@
 
             <!--  Dark Gray  -->
             <Button
-                Background="#969696"
+                Background="#9B9B9B"
                 Classes="colorBtn"
                 Click="BgButton_OnClick"
                 x:Name="DarkGrayBgButton" />
 
             <!--  Dark Gray Semi Transparent  -->
             <Button
-                Background="#5A232323"
+                Background="#C8646464"
                 Classes="colorBtn"
                 Click="BgButton_OnClick"
                 x:Name="DarkGraySemiTransparentBgButton" />
 
             <!--  Dark Gray Semi Transparent Alt  -->
             <Button
-                Background="#5A0F0F0F"
+                Background="#C8323232"
                 Classes="colorBtn"
                 Click="BgButton_OnClick"
                 x:Name="DarkGraySemiTransparentAltBgButton" />

@@ -24,8 +24,8 @@ public static class BackgroundManager
         4 => new SolidColorBrush(Colors.White),
         5 => new SolidColorBrush(Color.FromRgb(200, 200, 200)),
         6 => new SolidColorBrush(Color.FromRgb(155, 155, 155)),
-        7 => new SolidColorBrush(Color.FromArgb(90, 35, 35, 35)),
-        8 => new SolidColorBrush(Color.FromArgb(90, 15, 15, 15)),
+        7 => new SolidColorBrush(Color.FromArgb(200, 100, 100, 100)),
+        8 => new SolidColorBrush(Color.FromArgb(200, 50, 50, 50)),
         9 => new SolidColorBrush(Color.FromRgb(5, 5, 5)),
         _ => new SolidColorBrush(Colors.Transparent)
     };
