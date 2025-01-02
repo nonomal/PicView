@@ -29,7 +29,7 @@ public static class StartUpHelper
 
         if (!settingsExists)
         {
-            InitializeWindowForNoSettings(window, vm);
+            InitializeWindowForNoSettings(vm);
         }
         else
         {
@@ -201,15 +201,9 @@ public static class StartUpHelper
         }
     }
 
-    private static void InitializeWindowForNoSettings(Window w, MainViewModel vm)
+    private static void InitializeWindowForNoSettings(MainViewModel vm)
     {
-        // Fixes incorrect window
-        w.Height = SizeDefaults.WindowMinSize;
-        w.Width = SizeDefaults.WindowMinSize;
-
-        WindowFunctions.CenterWindowOnScreen();
-        vm.CanResize = true;
-        vm.IsAutoFit = false;
+        HandleAutoFit(vm);
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {

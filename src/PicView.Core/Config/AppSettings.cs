@@ -19,7 +19,7 @@ public record WindowProperties
     public double Left { get; set; } = 0;
     public double Width { get; set; } = 750;
     public double Height { get; set; } = 1024;
-    public bool AutoFit { get; set; } = false;
+    public bool AutoFit { get; set; } = true;
     public bool TopMost { get; set; } = false;
     public bool Maximized { get; set; } = false;
     public bool Fullscreen { get; set; } = false;
