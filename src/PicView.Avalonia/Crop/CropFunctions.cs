@@ -69,7 +69,11 @@ public static class CropFunctions
         {
             return false;
         }
-        
+
+        if (vm.IsEditableTitlebarOpen)
+        {
+            return false;
+        }
         
         return vm is { ScaleX: 1, RotationAngle: 0 };
     }
