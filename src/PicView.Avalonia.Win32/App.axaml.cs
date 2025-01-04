@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Avalonia.Threading;
 using PicView.Avalonia.ColorManagement;
 using PicView.Avalonia.Interfaces;
 using PicView.Avalonia.Navigation;
@@ -74,7 +75,7 @@ public partial class App : Application, IPlatformSpecificService
 
                 _mainWindow = new WinMainWindow();
                 desktop.MainWindow = _mainWindow;
-            });
+            },DispatcherPriority.Send);
         
             _vm = new MainViewModel(this);
         
@@ -82,7 +83,7 @@ public partial class App : Application, IPlatformSpecificService
             {
                 _mainWindow.DataContext = _vm;
                 StartUpHelper.Start(_vm, settingsExists, desktop, _mainWindow);
-            });
+            },DispatcherPriority.Send);
         }
         catch (Exception e)
         {

@@ -38,40 +38,39 @@ public class App : Application, IPlatformSpecificService
 
     public override async void OnFrameworkInitializationCompleted()
     {
-        base.OnFrameworkInitializationCompleted();
-
-        if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            return;
-        }
-
-        bool settingsExists;
         try
         {
-            settingsExists = await SettingsHelper.LoadSettingsAsync().ConfigureAwait(false);
-        }
-        catch (TaskCanceledException)
-        {
-            return;
-        }
+            base.OnFrameworkInitializationCompleted();
+
+            if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                return;
+            }
+
+            var settingsExists = await SettingsHelper.LoadSettingsAsync().ConfigureAwait(false);
         
-        TranslationHelper.Init();
+            TranslationHelper.Init();
         
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            ThemeManager.DetermineTheme(Current, settingsExists);
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                ThemeManager.DetermineTheme(Current, settingsExists);
             
-            _mainWindow = new MacMainWindow();
-            desktop.MainWindow = _mainWindow;
-        });
+                _mainWindow = new MacMainWindow();
+                desktop.MainWindow = _mainWindow;
+            },DispatcherPriority.Send);
         
-        _vm = new MainViewModel(this);
+            _vm = new MainViewModel(this);
         
-        await Dispatcher.UIThread.InvokeAsync(() =>
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                _mainWindow.DataContext = _vm;
+                StartUpHelper.Start(_vm, settingsExists, desktop, _mainWindow);
+            },DispatcherPriority.Send);
+        }
+        catch (Exception)
         {
-            _mainWindow.DataContext = _vm;
-            StartUpHelper.Start(_vm, settingsExists, desktop, _mainWindow);
-        });
+            //
+        }
     }
 
     public void SetTaskbarProgress(ulong progress, ulong maximum)
