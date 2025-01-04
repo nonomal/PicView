@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Primitives;
 using Avalonia.Threading;
+using ImageMagick;
 using PicView.Avalonia.ColorManagement;
 using PicView.Avalonia.Input;
 using PicView.Avalonia.Navigation;
@@ -63,6 +64,7 @@ public static class StartUpHelper
         }
         window.Show();
         vm.ImageViewer = new ImageViewer();
+        ResourceLimits.LimitMemory(new Percentage(90));
         HandleStartUpMenuOrImage(vm, args);
         Task.Run(async () =>
         {
