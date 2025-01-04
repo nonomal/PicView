@@ -258,9 +258,23 @@ public class ViewModelBase : ReactiveObject
         ShowConfirmationOnEsc = TranslationHelper.Translation.ShowConfirmationOnEsc;
         ImageAliasing = TranslationHelper.Translation.ImageAliasing;
         HighQuality = TranslationHelper.Translation.HighQuality;
+        Lighting = TranslationHelper.Translation.Lighting;
+        Gamma = TranslationHelper.Translation.Gamma;
     }
 
     #region Strings
+    
+    public string? Gamma
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
+    
+    public string? Lighting
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
     
     public string? HighQuality
     {

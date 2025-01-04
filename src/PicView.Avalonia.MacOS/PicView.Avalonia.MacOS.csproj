@@ -63,6 +63,10 @@
       <DependentUpon>BatchResizeWindow.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\EffectsWindow.axaml.cs">
+      <DependentUpon>EffectsWindow.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
 	<ItemGroup>

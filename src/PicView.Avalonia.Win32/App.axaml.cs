@@ -33,6 +33,7 @@ public partial class App : Application, IPlatformSpecificService
     private AboutWindow? _aboutWindow;
     private SingleImageResizeWindow? _singleImageResizeWindow;
     private BatchResizeWindow? _batchResizeWindow;
+    private EffectsWindow? _effectsWindow;
     private MainViewModel? _vm;
     
     private TaskbarProgress? _taskbarProgress;
@@ -305,11 +306,6 @@ public partial class App : Application, IPlatformSpecificService
             
         }
     }
-    
-    public void ShowEffectsWindow()
-    {
-        // TODO: Implement ShowEffectsWindow
-    }
 
     public void ShowSingleImageResizeWindow()
     {
@@ -379,6 +375,41 @@ public partial class App : Application, IPlatformSpecificService
             }
             _= FunctionsHelper.CloseMenus();
         }   
+    }
+    
+    public void ShowEffectsWindow()
+    {
+        if (Dispatcher.UIThread.CheckAccess())
+        {
+            Set();
+        }
+        else
+        {
+            Dispatcher.UIThread.InvokeAsync(Set);
+        }
+        return;
+        void Set()
+        {
+            if (Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                return;
+            }
+            if (_effectsWindow is null)
+            {
+                _effectsWindow = new EffectsWindow
+                {
+                    DataContext = _vm,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,    
+                };
+                _effectsWindow.Show(desktop.MainWindow);
+                _effectsWindow.Closing += (s, e) => _effectsWindow = null;
+            }
+            else
+            {
+                _effectsWindow.Show();
+            }
+            _= FunctionsHelper.CloseMenus();
+        }
     }
 
     public void Print(string path)

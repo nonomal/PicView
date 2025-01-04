@@ -399,4 +399,7 @@ public record LanguageModel
     public string? ShowConfirmationOnEsc { get; set; }
     
     public string? PermanentlyDelete { get; set; }
+    
+    public string? Lighting { get; set; }
+    public string? Gamma { get; set; }
 }

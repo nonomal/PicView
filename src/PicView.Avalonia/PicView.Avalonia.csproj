@@ -88,6 +88,10 @@
       <DependentUpon>DeleteDialog.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\EffectsView.axaml.cs">
+      <DependentUpon>EffectsView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
   
