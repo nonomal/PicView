@@ -307,6 +307,7 @@ public static class StartUpHelper
         vm.IsShowingConfirmationOnEsc  = SettingsHelper.Settings.UIProperties.ShowConfirmationOnEsc;
         vm.IsUsingTouchpad  = SettingsHelper.Settings.Zoom.IsUsingTouchPad;
         vm.IsAscending  = SettingsHelper.Settings.Sorting.Ascending;
+        vm.BackgroundChoice = SettingsHelper.Settings.UIProperties.BgColorChoice;
     }
 
     private static void SetWindowEventHandlers(Window w)

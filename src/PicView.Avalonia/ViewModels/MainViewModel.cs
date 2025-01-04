@@ -621,6 +621,12 @@ public class MainViewModel : ViewModelBase
     }
 
     #endregion Booleans
+    
+    public int BackgroundChoice
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
 
     public double WindowMinSize
     {
