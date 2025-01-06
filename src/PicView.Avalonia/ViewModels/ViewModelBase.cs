@@ -259,12 +259,12 @@ public class ViewModelBase : ReactiveObject
         ImageAliasing = TranslationHelper.Translation.ImageAliasing;
         HighQuality = TranslationHelper.Translation.HighQuality;
         Lighting = TranslationHelper.Translation.Lighting;
-        Gamma = TranslationHelper.Translation.Gamma;
+        Emboss = TranslationHelper.Translation.Embossed; // Should change to Emboss
     }
 
     #region Strings
     
-    public string? Gamma
+    public string? Emboss
     {
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);

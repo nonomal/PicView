@@ -401,5 +401,8 @@ public record LanguageModel
     public string? PermanentlyDelete { get; set; }
     
     public string? Lighting { get; set; }
-    public string? Gamma { get; set; }
+    
+    public string? ActionProgram { get; set; }
+    
+    public string? SaveImage { get; set; }
 }
