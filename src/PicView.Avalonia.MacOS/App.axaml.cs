@@ -3,6 +3,7 @@ using System.Runtime;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using PicView.Avalonia.ColorManagement;
 using PicView.Avalonia.Interfaces;
@@ -399,9 +400,14 @@ public class App : Application, IPlatformSpecificService
         return false;
     }
 
-    public Task CopyImageToClipboard()
+    public Task CopyImageToClipboard(Bitmap bitmap)
     {
         return Task.CompletedTask;
+    }
+
+    public Task<Bitmap?> GetImageFromClipboard()
+    {
+        return null;
     }
 
     public Task<bool> ExtractWithLocalSoftwareAsync(string path, string tempDirectory)

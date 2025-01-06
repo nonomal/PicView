@@ -3,7 +3,9 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media.Imaging;
 using Avalonia.Threading;
+using Clowd.Clipboard;
 using PicView.Avalonia.ColorManagement;
 using PicView.Avalonia.Interfaces;
 using PicView.Avalonia.Navigation;
@@ -439,9 +441,14 @@ public partial class App : Application, IPlatformSpecificService
         return Win32Clipboard.CopyFileToClipboard(true, path);
     }
 
-    public Task CopyImageToClipboard()
+    public async Task CopyImageToClipboard(Bitmap bitmap)
     {
-        return Task.CompletedTask;
+        await ClipboardAvalonia.SetImageAsync(bitmap).ConfigureAwait(false);
+    }
+
+    public async Task<Bitmap?> GetImageFromClipboard()
+    {
+        return await ClipboardAvalonia.GetImageAsync().ConfigureAwait(false);
     }
     
     public async Task<bool> ExtractWithLocalSoftwareAsync(string path, string tempDirectory)
