@@ -320,7 +320,7 @@ public sealed class ImageIterator : IDisposable
 
     public async Task Preload()
     {
-        await PreLoader.PreLoadAsync(CurrentIndex, ImagePaths.Count, IsReversed, ImagePaths).ConfigureAwait(false);
+        await PreLoader.PreLoadAsync(CurrentIndex, IsReversed, ImagePaths).ConfigureAwait(false);
     }
 
     public async Task AddAsync(int index, ImageModel imageModel)
@@ -368,6 +368,11 @@ public sealed class ImageIterator : IDisposable
     public void RemoveCurrentItemFromPreLoader()
     {
         PreLoader.Remove(CurrentIndex, ImagePaths);
+    }
+
+    public void RefreshAllFileInfo()
+    {
+        PreLoader.RefreshAllFileInfo(ImagePaths);
     }
 
     #endregion
@@ -556,7 +561,7 @@ public sealed class ImageIterator : IDisposable
                         });
                     }
 
-                    await PreLoader.PreLoadAsync(CurrentIndex, ImagePaths.Count, IsReversed, ImagePaths)
+                    await PreLoader.PreLoadAsync(CurrentIndex, IsReversed, ImagePaths)
                         .ConfigureAwait(false);
                 }
 

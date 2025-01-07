@@ -12,6 +12,7 @@ using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.ArchiveHandling;
 using PicView.Core.Config;
+using PicView.Core.FileHandling;
 using PicView.Core.Gallery;
 using PicView.Core.ImageDecoding;
 using PicView.Core.Localization;
@@ -227,6 +228,22 @@ public static class NavigationHelper
         {
             vm.PlatformService.StopTaskbarProgress();
             await PreviewPicAndLoadGallery(new FileInfo(fileList[0]), vm, fileList);
+        }
+    }
+
+    public static async Task DuplicateAndNavigate(MainViewModel vm)
+    {
+        if (!CanNavigate(vm))
+        {
+            return;
+        }
+        var oldPath = vm.FileInfo.FullName;
+        var newPath = await Task.FromResult(FileHelper.DuplicateAndReturnFileName(oldPath)).ConfigureAwait(false);
+        if (File.Exists(newPath))
+        {
+            // Refresh preloader to not load cached image at same index
+            vm.ImageIterator.RefreshAllFileInfo();
+            await LoadPicFromFile(newPath, vm);
         }
     }
 
