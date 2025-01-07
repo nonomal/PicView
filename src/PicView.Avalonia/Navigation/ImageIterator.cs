@@ -131,11 +131,10 @@ public sealed class ImageIterator : IDisposable
         
         SetTitleHelper.RefreshTitle(_vm);
 
-        IsRunning = false;
-
         var index = ImagePaths.IndexOf(e.FullPath);
         if (index < 0)
         {
+            IsRunning = false;
             return;
         }
 
@@ -158,6 +157,8 @@ public sealed class ImageIterator : IDisposable
             PreLoader.RefreshAllFileInfo(ImagePaths);
             cleared = true;
         }
+        
+        IsRunning = false;
 
         var isGalleryItemAdded = await GalleryFunctions.AddGalleryItem(index, fileInfo, _vm);
         if (isGalleryItemAdded)
@@ -172,7 +173,6 @@ public sealed class ImageIterator : IDisposable
 
             GalleryNavigation.CenterScrollToSelectedItem(_vm);
         }
-
 
         if (cleared)
         {
@@ -370,9 +370,9 @@ public sealed class ImageIterator : IDisposable
         PreLoader.Remove(CurrentIndex, ImagePaths);
     }
 
-    public void RefreshAllFileInfo()
+    public bool RefreshAllFileInfo()
     {
-        PreLoader.RefreshAllFileInfo(ImagePaths);
+        return PreLoader.RefreshAllFileInfo(ImagePaths);
     }
 
     #endregion

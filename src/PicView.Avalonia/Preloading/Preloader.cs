@@ -154,12 +154,7 @@ public sealed class PreLoader : IAsyncDisposable
         return removed;
     }
 
-    
-    /// <summary>
-    /// Refreshes the file information for all images in the preload list.
-    /// </summary>
-    /// <param name="list">The list of image paths.</param>
-    public void RefreshAllFileInfo(List<string> list)
+    public bool RefreshAllFileInfo(List<string> list)
     {
         try
         {
@@ -171,9 +166,16 @@ public sealed class PreLoader : IAsyncDisposable
                 }
 
                 var fileInfo = new FileInfo(list[item.Key]);
-                if (item.Value.ImageModel != null)
+                if (item.Value.ImageModel == null)
                 {
-                    item.Value.ImageModel.FileInfo = fileInfo;
+                    continue;
+                }
+
+                item.Value.ImageModel.FileInfo = fileInfo;
+                var removed = _preLoadList.TryRemove(item.Key, out var newItem);
+                if (removed)
+                {
+                    return _preLoadList.TryAdd(list.IndexOf(newItem.ImageModel.FileInfo.FullName), newItem);
                 }
             }
         }
@@ -183,6 +185,8 @@ public sealed class PreLoader : IAsyncDisposable
             Trace.WriteLine($"{nameof(PreLoader)}.{nameof(RefreshAllFileInfo)} \n{e.Message}");
 #endif
         }
+
+        return false;
     }
 
     /// <summary>
@@ -450,13 +454,7 @@ public sealed class PreLoader : IAsyncDisposable
         {
             await Parallel.ForAsync(0, PreLoaderConfig.PositiveIterations, parallelOptions, async (i, _) =>
             {
-                if (list.Count == 0 || count != list.Count)
-                {
-                    Clear();
-                    return;
-                }
-
-                var index = (nextStartingIndex + i) % list.Count;
+                var index = (nextStartingIndex + i) % count;
                 var isAdded = await AddAsync(index, list);
                 if (isAdded)
                 {
@@ -469,13 +467,7 @@ public sealed class PreLoader : IAsyncDisposable
         {
             await Parallel.ForAsync(0, PreLoaderConfig.NegativeIterations, parallelOptions, async (i, _) =>
             {
-                if (list.Count == 0 || count != list.Count)
-                {
-                    Clear();
-                    return;
-                }
-
-                var index = (prevStartingIndex - i + list.Count) % list.Count;
+                var index = (prevStartingIndex - i + count) % count;
                 var isAdded = await AddAsync(index, list);
                 if (isAdded)
                 {

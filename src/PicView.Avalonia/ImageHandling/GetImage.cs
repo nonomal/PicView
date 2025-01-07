@@ -25,10 +25,6 @@ public static class GetImage
         return bitmap;
     }
     
-    public static async Task<Bitmap?> GetDefaultBitmapAsync(string file)
-    {
-        return await GetDefaultBitmapAsync(new FileInfo(file)).ConfigureAwait(false);
-    }
     public static async Task<Bitmap?> GetDefaultBitmapAsync(FileInfo fileInfo)
     {
         using var magickImage = new MagickImage();
