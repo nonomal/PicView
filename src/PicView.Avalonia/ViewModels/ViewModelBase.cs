@@ -259,12 +259,26 @@ public class ViewModelBase : ReactiveObject
         ImageAliasing = TranslationHelper.Translation.ImageAliasing;
         HighQuality = TranslationHelper.Translation.HighQuality;
         Lighting = TranslationHelper.Translation.Lighting;
-        Emboss = TranslationHelper.Translation.Embossed; // Should change to Emboss
+        Emboss = TranslationHelper.Translation.Embossed; 
         BlackAndWhite = TranslationHelper.Translation.BlackAndWhite;
         NegativeColors = TranslationHelper.Translation.NegativeColors;
+        Blur = TranslationHelper.Translation.Blur;
+        DirectionalBlur = TranslationHelper.Translation.DirectionalBlur;
     }
 
     #region Strings
+    
+    public string? DirectionalBlur
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
+    
+    public string? Blur
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
     
     public string? NegativeColors
     {

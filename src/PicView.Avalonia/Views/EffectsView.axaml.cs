@@ -17,8 +17,18 @@ public partial class EffectsView : UserControl
         InitializeComponent();
         Loaded += (_, _) =>
         {
+            ResetContrastBtn.Click += delegate
+            {
+                ContrastSlider.Value = 0;
+            };
+            ResetBrightnessBtn.Click += delegate
+            {
+                BrightnessSlider.Value = 0;
+            };
+            
             BrightnessSlider.ValueChanged += async (_, e) => await BrightnessChanged(e).ConfigureAwait(false);
             ContrastSlider.ValueChanged += async (_, e) => await ContrastChanged(e).ConfigureAwait(false);
+            DirectionalBlurSlider.ValueChanged += async (_, e) => await DirectionalBlurChanged(e).ConfigureAwait(false);
             BlackAndWhiteToggleButton.Click += async (_, _) =>
             {
                 if (!BlackAndWhiteToggleButton.IsChecked.HasValue)
@@ -99,6 +109,20 @@ public partial class EffectsView : UserControl
         }
         await ApplyEffects(vm);
     }
+    
+    private async Task DirectionalBlurChanged(RangeBaseValueChangedEventArgs e)
+    {
+        if (DataContext is not MainViewModel vm)
+        {
+            return;
+        }    
+
+        if (!NavigationHelper.CanNavigate(vm))
+        {
+            return;
+        }
+        await ApplyEffects(vm);
+    }
 
     private async Task ApplyEffects(MainViewModel vm)
     {
@@ -134,7 +158,7 @@ public partial class EffectsView : UserControl
         vm.ImageSource = bitmap;
     }
     
-    private async Task RemoveEffects(MainViewModel vm)
+    private static async Task RemoveEffects(MainViewModel vm)
     {
         using var magick = new MagickImage();
         await magick.ReadAsync(vm.FileInfo.FullName).ConfigureAwait(false);
