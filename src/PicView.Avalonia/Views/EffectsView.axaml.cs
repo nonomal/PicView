@@ -19,20 +19,54 @@ public partial class EffectsView : UserControl
         {
             BrightnessSlider.ValueChanged += async (_, e) => await BrightnessChanged(e).ConfigureAwait(false);
             ContrastSlider.ValueChanged += async (_, e) => await ContrastChanged(e).ConfigureAwait(false);
-            EmbossSlider.ValueChanged += async (_, e) => await EmbossChanged(e).ConfigureAwait(false);
-            if (DataContext is not MainViewModel vm)
+            BlackAndWhiteToggleButton.Click += async (_, _) =>
             {
-                return;
-            }
+                if (!BlackAndWhiteToggleButton.IsChecked.HasValue)
+                {
+                    return;
+                }
 
-            if (!NavigationHelper.CanNavigate(vm))
+                if (BlackAndWhiteToggleButton.IsChecked.Value)
+                {
+                    await ApplyEffects(DataContext as MainViewModel);
+                }
+                else
+                {
+                    await RemoveEffects(DataContext as MainViewModel);
+                }
+            };
+
+            NegativeToggleButton.Click += async (_, _) =>
             {
-                return;
-            }
+                if (!NegativeToggleButton.IsChecked.HasValue)
+                {
+                    return;
+                }
+                if (NegativeToggleButton.IsChecked.Value)
+                {
+                    await ApplyEffects(DataContext as MainViewModel);
+                }
+                else
+                {
+                    await RemoveEffects(DataContext as MainViewModel);
+                }
+            };
+            EmbossToggleButton.Click += async (_, _) =>
+            {
+                if (!EmbossToggleButton.IsChecked.HasValue)
+                {
+                    return;
+                }
 
-            // using var magick = new ImageMagick.MagickImage(vm.FileInfo);
-            // BrightnessSlider.Value = magick.get
-
+                if (EmbossToggleButton.IsChecked.Value)
+                {
+                    await ApplyEffects(DataContext as MainViewModel);
+                }
+                else
+                {
+                    await RemoveEffects(DataContext as MainViewModel);
+                }
+            };
         };
     }
 
@@ -48,7 +82,7 @@ public partial class EffectsView : UserControl
         {
             return;
         }
-        await SetBrightnessContrast(vm);
+        await ApplyEffects(vm);
     }
     
     private async Task ContrastChanged(RangeBaseValueChangedEventArgs e)
@@ -63,11 +97,14 @@ public partial class EffectsView : UserControl
         {
             return;
         }
-        await SetBrightnessContrast(vm);
+        await ApplyEffects(vm);
     }
 
-    private async Task SetBrightnessContrast(MainViewModel vm)
+    private async Task ApplyEffects(MainViewModel vm)
     {
+        var negative = NegativeToggleButton.IsChecked.HasValue && NegativeToggleButton.IsChecked.Value;
+        var blackAndWhite = BlackAndWhiteToggleButton.IsChecked.HasValue && BlackAndWhiteToggleButton.IsChecked.Value;
+        var emboss = EmbossToggleButton.IsChecked.HasValue && EmbossToggleButton.IsChecked.Value;
         using var magick = new MagickImage();
         await magick.ReadAsync(vm.FileInfo.FullName).ConfigureAwait(false);
         magick.BrightnessContrast(_brightness, _contrast);
@@ -75,6 +112,21 @@ public partial class EffectsView : UserControl
         magick.BackgroundColor = MagickColors.Transparent;
         magick.Settings.BackgroundColor = MagickColors.Transparent;
         magick.Settings.FillColor = MagickColors.Transparent;
+        if (negative)
+        {
+            magick.Negate();
+        }
+
+        if (blackAndWhite)
+        {
+            magick.Grayscale();
+        }
+
+        if (emboss)
+        {
+            magick.Emboss();
+        }
+
         await using var memoryStream = new MemoryStream();
         await magick.WriteAsync(memoryStream);
         memoryStream.Position = 0;
@@ -82,24 +134,14 @@ public partial class EffectsView : UserControl
         vm.ImageSource = bitmap;
     }
     
-    private async Task EmbossChanged(RangeBaseValueChangedEventArgs e)
+    private async Task RemoveEffects(MainViewModel vm)
     {
-        if (DataContext is not MainViewModel vm)
-        {
-            return;
-        }
-
-        if (!NavigationHelper.CanNavigate(vm))
-        {
-            return;
-        }
         using var magick = new MagickImage();
         await magick.ReadAsync(vm.FileInfo.FullName).ConfigureAwait(false);
         magick.Format = MagickFormat.WebP;
         magick.BackgroundColor = MagickColors.Transparent;
         magick.Settings.BackgroundColor = MagickColors.Transparent;
         magick.Settings.FillColor = MagickColors.Transparent;
-        magick.Emboss(0, e.NewValue);
         await using var memoryStream = new MemoryStream();
         await magick.WriteAsync(memoryStream);
         memoryStream.Position = 0;

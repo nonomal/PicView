@@ -38,9 +38,10 @@
                     LargeChange="5"
                     Margin="0,1,0,1"
                     Maximum="100"
-                    Minimum="0"
+                    Minimum="-85"
                     SmallChange="1"
                     TickFrequency="1"
+                    Value="0"
                     x:Name="BrightnessSlider" />
 
                 <!--  Contrast  -->
@@ -63,9 +64,10 @@
                     LargeChange="5"
                     Margin="0,1,0,1"
                     Maximum="100"
-                    Minimum="0"
+                    Minimum="-85"
                     SmallChange="1"
                     TickFrequency="1"
+                    Value="0"
                     x:Name="ContrastSlider" />
 
 
@@ -73,7 +75,8 @@
 
         </Expander>
 
-        <Expander IsExpanded="True" Margin="0,15,0,10">
+
+        <Expander IsExpanded="True" Margin="0,0,0,10">
             <Expander.Header>
                 <TextBlock
                     Classes="txt"
@@ -82,37 +85,49 @@
                     Padding="10,5"
                     Text="{CompiledBinding Effects}" />
             </Expander.Header>
-            <StackPanel Margin="15,20">
+            <StackPanel Margin="15,0">
 
                 <!--  Emboss  -->
-                <Panel IsEnabled="False">
+                <ToggleButton
+                    Background="Transparent"
+                    Classes="altHover"
+                    x:Name="EmbossToggleButton">
                     <TextBlock
                         Classes="txt"
                         HorizontalAlignment="Left"
                         Text="{CompiledBinding Emboss}"
                         VerticalAlignment="Center" />
+                </ToggleButton>
+
+
+                <!--  Black/White  -->
+                <ToggleButton
+                    Background="Transparent"
+                    Classes="altHover"
+                    x:Name="BlackAndWhiteToggleButton">
                     <TextBlock
                         Classes="txt"
-                        HorizontalAlignment="Right"
-                        Text="{Binding Path=Value, ElementName=EmbossSlider}"
+                        HorizontalAlignment="Left"
+                        Text="{CompiledBinding BlackAndWhite}"
                         VerticalAlignment="Center" />
-                </Panel>
+                </ToggleButton>
 
-                <customControls:CustomSlider
-                    Height="30"
-                    IsEnabled="False"
-                    IsSnapToTickEnabled="True"
-                    LargeChange="5"
-                    Margin="0,1,0,1"
-                    Maximum="100"
-                    Minimum="0"
-                    SmallChange="1"
-                    TickFrequency="1"
-                    x:Name="EmbossSlider" />
+                <!--  Negative Colors  -->
+                <ToggleButton
+                    Background="Transparent"
+                    Classes="altHover"
+                    x:Name="NegativeToggleButton">
+                    <TextBlock
+                        Classes="txt"
+                        HorizontalAlignment="Left"
+                        Text="{CompiledBinding NegativeColors}"
+                        VerticalAlignment="Center" />
+                </ToggleButton>
 
 
             </StackPanel>
 
         </Expander>
+
     </StackPanel>
 </UserControl>

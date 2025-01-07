@@ -260,9 +260,23 @@ public class ViewModelBase : ReactiveObject
         HighQuality = TranslationHelper.Translation.HighQuality;
         Lighting = TranslationHelper.Translation.Lighting;
         Emboss = TranslationHelper.Translation.Embossed; // Should change to Emboss
+        BlackAndWhite = TranslationHelper.Translation.BlackAndWhite;
+        NegativeColors = TranslationHelper.Translation.NegativeColors;
     }
 
     #region Strings
+    
+    public string? NegativeColors
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
+    
+    public string? BlackAndWhite
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
     
     public string? Emboss
     {
