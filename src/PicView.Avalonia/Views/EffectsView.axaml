@@ -30,7 +30,7 @@
                         Fill="{DynamicResource MainBorderColor}"
                         Height="15"
                         HorizontalAlignment="Center"
-                        Margin="0,0,120,-5"
+                        Margin="0,0,122,-5"
                         Stroke="{DynamicResource MainBorderColor}"
                         Width="2" />
                 </Panel>
@@ -54,7 +54,7 @@
                         x:Name="BrightnessSlider">
                         <customControls:CustomSlider.Background>
                             <LinearGradientBrush EndPoint="100%,50%" StartPoint="0%,50%">
-                                <GradientStop Color="Black" Offset="0" />
+                                <GradientStop Color="#111111" Offset="0" />
                                 <GradientStop Color="White" Offset="1" />
                             </LinearGradientBrush>
                         </customControls:CustomSlider.Background>
@@ -62,22 +62,23 @@
                     <NumericUpDown
                         Background="{DynamicResource MainButtonBackgroundColor}"
                         BorderBrush="{DynamicResource MainBorderColor}"
+                        Foreground="{DynamicResource MainTextColor}"
                         Maximum="{Binding Path=Maximum, ElementName=BrightnessSlider}"
                         Minimum="{Binding Path=Minimum, ElementName=BrightnessSlider}"
-                        Value="{Binding Path=Value, ElementName=BrightnessSlider}" />
-                    <Button
+                        Value="{Binding Path=Value, ElementName=BrightnessSlider}"
+                        Width="56" />
+                    <customControls:IconButton
                         Background="{DynamicResource MainButtonBackgroundColor}"
                         BorderBrush="{DynamicResource MainBorderColor}"
                         BorderThickness="1"
                         Classes="hover"
+                        Foreground="{DynamicResource MainTextColor}"
+                        Icon="{StaticResource UndoImage}"
+                        IconHeight="12"
+                        IconWidth="12"
                         Margin="5,0,0,0"
                         Width="30"
-                        x:Name="ResetBrightnessBtn">
-                        <Image
-                            Height="14"
-                            Source="{StaticResource UndoImage}"
-                            Width="14" />
-                    </Button>
+                        x:Name="ResetBrightnessBtn" />
                 </StackPanel>
 
                 <!--  Contrast  -->
@@ -92,7 +93,7 @@
                         Fill="{DynamicResource MainBorderColor}"
                         Height="15"
                         HorizontalAlignment="Center"
-                        Margin="0,0,120,-5"
+                        Margin="0,0,122,-5"
                         Stroke="{DynamicResource MainBorderColor}"
                         Width="2" />
                 </Panel>
@@ -102,7 +103,6 @@
                 <StackPanel Orientation="Horizontal">
 
                     <customControls:CustomSlider
-                        Background="{DynamicResource MainBackgroundColor}"
                         Height="30"
                         IsSnapToTickEnabled="True"
                         LargeChange="5"
@@ -114,26 +114,39 @@
                         TickFrequency="1"
                         Value="0"
                         Width="376"
-                        x:Name="ContrastSlider" />
+                        x:Name="ContrastSlider">
+                        <customControls:CustomSlider.Background>
+                            <LinearGradientBrush EndPoint="100%,50%" StartPoint="0%,50%">
+                                <GradientStop Color="#0DFF0000" Offset="0" />
+                                <GradientStop Color="#40FF7F00" Offset="0.17" />
+                                <GradientStop Color="#60FFFF00" Offset="0.33" />
+                                <GradientStop Color="#8000FF00" Offset="0.5" />
+                                <GradientStop Color="#A00000FF" Offset="0.67" />
+                                <GradientStop Color="#C04B0082" Offset="0.83" />
+                                <GradientStop Color="#FF8F00FF" Offset="1" />
+                            </LinearGradientBrush>
+                        </customControls:CustomSlider.Background>
+                    </customControls:CustomSlider>
                     <NumericUpDown
                         Background="{DynamicResource MainButtonBackgroundColor}"
                         BorderBrush="{DynamicResource MainBorderColor}"
+                        Foreground="{DynamicResource MainTextColor}"
                         Maximum="{Binding Path=Maximum, ElementName=ContrastSlider}"
                         Minimum="{Binding Path=Minimum, ElementName=ContrastSlider}"
-                        Value="{Binding Path=Value, ElementName=ContrastSlider}" />
-                    <Button
+                        Value="{Binding Path=Value, ElementName=ContrastSlider}"
+                        Width="56" />
+                    <customControls:IconButton
                         Background="{DynamicResource MainButtonBackgroundColor}"
                         BorderBrush="{DynamicResource MainBorderColor}"
                         BorderThickness="1"
                         Classes="hover"
+                        Foreground="{DynamicResource MainTextColor}"
+                        Icon="{StaticResource UndoImage}"
+                        IconHeight="12"
+                        IconWidth="12"
                         Margin="5,0,0,0"
                         Width="30"
-                        x:Name="ResetContrastBtn">
-                        <Image
-                            Height="14"
-                            Source="{StaticResource UndoImage}"
-                            Width="14" />
-                    </Button>
+                        x:Name="ResetContrastBtn" />
                 </StackPanel>
 
 
@@ -177,33 +190,6 @@
                     TickFrequency="1"
                     Value="0"
                     x:Name="BlurSlider" />
-
-
-                <!--  GaussianBlur  -->
-                <Panel Margin="0,10">
-                    <TextBlock
-                        Classes="txt"
-                        HorizontalAlignment="Left"
-                        Text="{CompiledBinding Blur}"
-                        VerticalAlignment="Center" />
-                    <TextBlock
-                        Classes="txt"
-                        HorizontalAlignment="Right"
-                        Text="{Binding Path=Value, ElementName=GaussianBlurSlider}"
-                        VerticalAlignment="Center" />
-                </Panel>
-
-                <customControls:CustomSlider
-                    Height="30"
-                    IsSnapToTickEnabled="True"
-                    LargeChange="5"
-                    Margin="0,1,0,1"
-                    Maximum="100"
-                    Minimum="-85"
-                    SmallChange="1"
-                    TickFrequency="1"
-                    Value="0"
-                    x:Name="GaussianBlurSlider" />
 
                 <!--  MotionBlur  -->
                 <Panel Margin="0,10">
