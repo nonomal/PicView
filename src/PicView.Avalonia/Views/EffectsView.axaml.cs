@@ -1,7 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Media.Imaging;
 using ImageMagick;
+using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.ViewModels;
 
@@ -150,11 +150,7 @@ public partial class EffectsView : UserControl
         {
             magick.Emboss();
         }
-
-        await using var memoryStream = new MemoryStream();
-        await magick.WriteAsync(memoryStream);
-        memoryStream.Position = 0;
-        var bitmap = new Bitmap(memoryStream);
+        var bitmap = magick.ToWriteableBitmap();
         vm.ImageSource = bitmap;
     }
     
@@ -166,10 +162,7 @@ public partial class EffectsView : UserControl
         magick.BackgroundColor = MagickColors.Transparent;
         magick.Settings.BackgroundColor = MagickColors.Transparent;
         magick.Settings.FillColor = MagickColors.Transparent;
-        await using var memoryStream = new MemoryStream();
-        await magick.WriteAsync(memoryStream);
-        memoryStream.Position = 0;
-        var bitmap = new Bitmap(memoryStream);
+        var bitmap = magick.ToWriteableBitmap();
         vm.ImageSource = bitmap;
     }
 }

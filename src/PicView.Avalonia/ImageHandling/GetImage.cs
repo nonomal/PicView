@@ -40,12 +40,7 @@ public static class GetImage
             await magickImage.ReadAsync(fileStream).ConfigureAwait(false);
         }
 
-        magickImage.Format = MagickFormat.Png;
-        await using var memoryStream = new MemoryStream();
-        await magickImage.WriteAsync(memoryStream);
-        memoryStream.Position = 0;
-
-        var bitmap = new Bitmap(memoryStream);
+        var bitmap = magickImage.ToWriteableBitmap();
         return bitmap;
     }
     
@@ -66,13 +61,7 @@ public static class GetImage
         };
         
         await magickImage.ReadAsync(new MemoryStream(base64Data), readSettings).ConfigureAwait(false);
-        
-        magickImage.Format = MagickFormat.Png;
-        await using var memoryStream = new MemoryStream();
-        await magickImage.WriteAsync(memoryStream);
-        memoryStream.Position = 0;
-        
-        var bitmap = new Bitmap(memoryStream);
+        var bitmap = magickImage.ToWriteableBitmap();
         magickImage.Dispose();
         return bitmap;
     }
