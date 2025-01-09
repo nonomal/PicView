@@ -259,14 +259,20 @@ public class ViewModelBase : ReactiveObject
         ImageAliasing = TranslationHelper.Translation.ImageAliasing;
         HighQuality = TranslationHelper.Translation.HighQuality;
         Lighting = TranslationHelper.Translation.Lighting;
-        Emboss = TranslationHelper.Translation.Embossed; 
         BlackAndWhite = TranslationHelper.Translation.BlackAndWhite;
         NegativeColors = TranslationHelper.Translation.NegativeColors;
         Blur = TranslationHelper.Translation.Blur;
         DirectionalBlur = TranslationHelper.Translation.DirectionalBlur;
+        PencilSketch = TranslationHelper.Translation.PencilSketch;
     }
 
     #region Strings
+    
+    public string? PencilSketch
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
     
     public string? DirectionalBlur
     {
@@ -287,12 +293,6 @@ public class ViewModelBase : ReactiveObject
     }
     
     public string? BlackAndWhite
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-    
-    public string? Emboss
     {
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);

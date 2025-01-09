@@ -42,8 +42,10 @@
                                 Rows="2"
                                 TabIndex="2">
                                 <RepeatButton
+                                    Classes="altHover"
                                     IsTabStop="{TemplateBinding IsTabStop}"
                                     Name="PART_IncreaseButton"
+                                    Padding="5,0,5,0"
                                     Theme="{StaticResource SimpleButtonSpinnerRepeatButton}">
                                     <Path
                                         Data="M0,5 L4.5,.5 9,5 6,5 4.5,3.5 3,5 z"
@@ -55,8 +57,10 @@
                                         Width="8" />
                                 </RepeatButton>
                                 <RepeatButton
+                                    Classes="altHover"
                                     IsTabStop="{TemplateBinding IsTabStop}"
                                     Name="PART_DecreaseButton"
+                                    Padding="5,0,5,0"
                                     Theme="{StaticResource SimpleButtonSpinnerRepeatButton}">
                                     <Path
                                         Data="M0,0 L3,0 4.5,1.5 6,0 9,0 4.5,4.5 z"

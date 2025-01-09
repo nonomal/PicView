@@ -28,10 +28,11 @@
 
                     <Rectangle
                         Fill="{DynamicResource MainBorderColor}"
-                        Height="15"
+                        Height="20"
                         HorizontalAlignment="Center"
-                        Margin="0,0,122,-5"
+                        Margin="0,0,122,-10"
                         Stroke="{DynamicResource MainBorderColor}"
+                        StrokeThickness="1"
                         Width="2" />
                 </Panel>
 
@@ -91,10 +92,11 @@
 
                     <Rectangle
                         Fill="{DynamicResource MainBorderColor}"
-                        Height="15"
+                        Height="20"
                         HorizontalAlignment="Center"
-                        Margin="0,0,122,-5"
+                        Margin="0,0,122,-10"
                         Stroke="{DynamicResource MainBorderColor}"
+                        StrokeThickness="1"
                         Width="2" />
                 </Panel>
 
@@ -117,7 +119,7 @@
                         x:Name="ContrastSlider">
                         <customControls:CustomSlider.Background>
                             <LinearGradientBrush EndPoint="100%,50%" StartPoint="0%,50%">
-                                <GradientStop Color="#0DFF0000" Offset="0" />
+                                <GradientStop Color="#06FF0000" Offset="0" />
                                 <GradientStop Color="#40FF7F00" Offset="0.17" />
                                 <GradientStop Color="#60FFFF00" Offset="0.33" />
                                 <GradientStop Color="#8000FF00" Offset="0.5" />
@@ -166,82 +168,180 @@
             <StackPanel Margin="15,0">
 
                 <!--  Blur  -->
-                <Panel Margin="0,10">
+                <Panel Margin="0,10,0,5">
                     <TextBlock
                         Classes="txt"
                         HorizontalAlignment="Left"
                         Text="{CompiledBinding Blur}"
                         VerticalAlignment="Center" />
-                    <TextBlock
-                        Classes="txt"
-                        HorizontalAlignment="Right"
-                        Text="{Binding Path=Value, ElementName=BlurSlider}"
-                        VerticalAlignment="Center" />
+
+                    <Rectangle
+                        Fill="{DynamicResource MainButtonBackgroundColor}"
+                        Height="20"
+                        HorizontalAlignment="Center"
+                        Margin="0,0,122,-10"
+                        Stroke="{DynamicResource MainBorderColor}"
+                        StrokeThickness="1.5"
+                        Width="2" />
                 </Panel>
 
-                <customControls:CustomSlider
-                    Height="30"
-                    IsSnapToTickEnabled="True"
-                    LargeChange="5"
-                    Margin="0,1,0,1"
-                    Maximum="100"
-                    Minimum="-85"
-                    SmallChange="1"
-                    TickFrequency="1"
-                    Value="0"
-                    x:Name="BlurSlider" />
+                <StackPanel Orientation="Horizontal">
+
+                    <customControls:CustomSlider
+                        Background="{DynamicResource MainButtonBackgroundColor}"
+                        BorderBrush="{DynamicResource MainBorderColor}"
+                        BorderThickness="1"
+                        Height="30"
+                        IsSnapToTickEnabled="True"
+                        LargeChange="5"
+                        Margin="0,1,10,1"
+                        Maximum="100"
+                        Minimum="-85"
+                        SmallChange="1"
+                        Theme="{StaticResource SetBg}"
+                        TickFrequency="1"
+                        Value="0"
+                        Width="376"
+                        x:Name="BlurSlider" />
+                    <NumericUpDown
+                        Background="{DynamicResource MainButtonBackgroundColor}"
+                        BorderBrush="{DynamicResource MainBorderColor}"
+                        Foreground="{DynamicResource MainTextColor}"
+                        Maximum="{Binding Path=Maximum, ElementName=BlurSlider}"
+                        Minimum="{Binding Path=Minimum, ElementName=BlurSlider}"
+                        Value="{Binding Path=Value, ElementName=BlurSlider}"
+                        Width="56" />
+                    <customControls:IconButton
+                        Background="{DynamicResource MainButtonBackgroundColor}"
+                        BorderBrush="{DynamicResource MainBorderColor}"
+                        BorderThickness="1"
+                        Classes="hover"
+                        Foreground="{DynamicResource MainTextColor}"
+                        Icon="{StaticResource UndoImage}"
+                        IconHeight="12"
+                        IconWidth="12"
+                        Margin="5,0,0,0"
+                        Width="30"
+                        x:Name="ResetBlurBtn" />
+                </StackPanel>
 
                 <!--  MotionBlur  -->
-                <Panel Margin="0,10">
+                <Panel Margin="0,10,0,5">
                     <TextBlock
                         Classes="txt"
                         HorizontalAlignment="Left"
                         Text="{CompiledBinding Blur}"
                         VerticalAlignment="Center" />
-                    <TextBlock
-                        Classes="txt"
-                        HorizontalAlignment="Right"
-                        Text="{Binding Path=Value, ElementName=MotionBlurSlider}"
-                        VerticalAlignment="Center" />
+
+                    <Rectangle
+                        Fill="{DynamicResource MainButtonBackgroundColor}"
+                        Height="20"
+                        HorizontalAlignment="Center"
+                        Margin="0,0,122,-10"
+                        Stroke="{DynamicResource MainBorderColor}"
+                        StrokeThickness="1.5"
+                        Width="2" />
                 </Panel>
 
-                <customControls:CustomSlider
-                    Height="30"
-                    IsSnapToTickEnabled="True"
-                    LargeChange="5"
-                    Margin="0,1,0,1"
-                    Maximum="100"
-                    Minimum="-85"
-                    SmallChange="1"
-                    TickFrequency="1"
-                    Value="0"
-                    x:Name="MotionBlurSlider" />
+                <StackPanel Orientation="Horizontal">
 
-                <!--  MotionBlur  -->
-                <Panel Margin="0,10">
+                    <customControls:CustomSlider
+                        Background="{DynamicResource MainButtonBackgroundColor}"
+                        BorderBrush="{DynamicResource MainBorderColor}"
+                        BorderThickness="1"
+                        Height="30"
+                        IsSnapToTickEnabled="True"
+                        LargeChange="5"
+                        Margin="0,1,10,1"
+                        Maximum="100"
+                        Minimum="-85"
+                        SmallChange="1"
+                        Theme="{StaticResource SetBg}"
+                        TickFrequency="1"
+                        Value="0"
+                        Width="376"
+                        x:Name="MotionBlurSlider" />
+                    <NumericUpDown
+                        Background="{DynamicResource MainButtonBackgroundColor}"
+                        BorderBrush="{DynamicResource MainBorderColor}"
+                        Foreground="{DynamicResource MainTextColor}"
+                        Maximum="{Binding Path=Maximum, ElementName=MotionBlurSlider}"
+                        Minimum="{Binding Path=Minimum, ElementName=MotionBlurSlider}"
+                        Value="{Binding Path=Value, ElementName=MotionBlurSlider}"
+                        Width="56" />
+                    <customControls:IconButton
+                        Background="{DynamicResource MainButtonBackgroundColor}"
+                        BorderBrush="{DynamicResource MainBorderColor}"
+                        BorderThickness="1"
+                        Classes="hover"
+                        Foreground="{DynamicResource MainTextColor}"
+                        Icon="{StaticResource UndoImage}"
+                        IconHeight="12"
+                        IconWidth="12"
+                        Margin="5,0,0,0"
+                        Width="30"
+                        x:Name="ResetMotionBlurBtn" />
+                </StackPanel>
+
+                <!--  Placeholder  -->
+                <Panel Margin="0,10,0,5">
                     <TextBlock
                         Classes="txt"
                         HorizontalAlignment="Left"
-                        Text="{CompiledBinding DirectionalBlur}"
+                        Text="{CompiledBinding PencilSketch}"
                         VerticalAlignment="Center" />
-                    <TextBlock
-                        Classes="txt"
-                        HorizontalAlignment="Right"
-                        Text="{Binding Path=Value, ElementName=DirectionalBlurSlider}"
-                        VerticalAlignment="Center" />
+
+                    <Rectangle
+                        Fill="{DynamicResource MainButtonBackgroundColor}"
+                        Height="20"
+                        HorizontalAlignment="Center"
+                        Margin="0,0,122,-10"
+                        Stroke="{DynamicResource MainBorderColor}"
+                        StrokeThickness="1.5"
+                        Width="2" />
                 </Panel>
 
-                <customControls:CustomSlider
-                    Height="30"
-                    IsSnapToTickEnabled="True"
-                    LargeChange="5"
-                    Margin="0,1,0,1"
-                    Maximum="100"
-                    Minimum="-85"
-                    SmallChange="1"
-                    TickFrequency="1"
-                    Value="0"
-                    x:Name="DirectionalBlurSlider" />
+
+
+                <StackPanel Orientation="Horizontal">
+
+                    <customControls:CustomSlider
+                        Background="{DynamicResource MainButtonBackgroundColor}"
+                        BorderBrush="{DynamicResource MainBorderColor}"
+                        BorderThickness="1"
+                        Height="30"
+                        IsSnapToTickEnabled="True"
+                        LargeChange="5"
+                        Margin="0,1,10,1"
+                        Maximum="100"
+                        Minimum="-85"
+                        SmallChange="1"
+                        Theme="{StaticResource SetBg}"
+                        TickFrequency="1"
+                        Value="0"
+                        Width="376"
+                        x:Name="PlaceholderSlider" />
+                    <NumericUpDown
+                        Background="{DynamicResource MainButtonBackgroundColor}"
+                        BorderBrush="{DynamicResource MainBorderColor}"
+                        Foreground="{DynamicResource MainTextColor}"
+                        Maximum="{Binding Path=Maximum, ElementName=PlaceholderSlider}"
+                        Minimum="{Binding Path=Minimum, ElementName=PlaceholderSlider}"
+                        Value="{Binding Path=Value, ElementName=PlaceholderSlider}"
+                        Width="56" />
+                    <customControls:IconButton
+                        Background="{DynamicResource MainButtonBackgroundColor}"
+                        BorderBrush="{DynamicResource MainBorderColor}"
+                        BorderThickness="1"
+                        Classes="hover"
+                        Foreground="{DynamicResource MainTextColor}"
+                        Icon="{StaticResource UndoImage}"
+                        IconHeight="12"
+                        IconWidth="12"
+                        Margin="5,0,0,0"
+                        Width="30"
+                        x:Name="ResetPlaceholderBtn" />
+                </StackPanel>
 
             </StackPanel>
 
@@ -257,18 +357,6 @@
                     Text="{CompiledBinding Effects}" />
             </Expander.Header>
             <StackPanel Margin="15,0">
-
-                <!--  Emboss  -->
-                <ToggleButton
-                    Background="Transparent"
-                    Classes="altHover"
-                    x:Name="EmbossToggleButton">
-                    <TextBlock
-                        Classes="txt"
-                        HorizontalAlignment="Left"
-                        Text="{CompiledBinding Emboss}"
-                        VerticalAlignment="Center" />
-                </ToggleButton>
 
 
                 <!--  Black/White  -->
@@ -292,6 +380,18 @@
                         Classes="txt"
                         HorizontalAlignment="Left"
                         Text="{CompiledBinding NegativeColors}"
+                        VerticalAlignment="Center" />
+                </ToggleButton>
+
+                <!--  Pencil Sketch  -->
+                <ToggleButton
+                    Background="Transparent"
+                    Classes="altHover"
+                    x:Name="PencilSketchToggleButton">
+                    <TextBlock
+                        Classes="txt"
+                        HorizontalAlignment="Left"
+                        Text="{CompiledBinding PencilSketch}"
                         VerticalAlignment="Center" />
                 </ToggleButton>
 
