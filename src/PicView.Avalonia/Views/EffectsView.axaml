@@ -283,25 +283,14 @@
                         x:Name="ResetMotionBlurBtn" />
                 </StackPanel>
 
-                <!--  Placeholder  -->
+                <!--  Pencil Sketch  -->
                 <Panel Margin="0,10,0,5">
                     <TextBlock
                         Classes="txt"
                         HorizontalAlignment="Left"
                         Text="{CompiledBinding PencilSketch}"
                         VerticalAlignment="Center" />
-
-                    <Rectangle
-                        Fill="{DynamicResource MainButtonBackgroundColor}"
-                        Height="20"
-                        HorizontalAlignment="Center"
-                        Margin="0,0,122,-10"
-                        Stroke="{DynamicResource MainBorderColor}"
-                        StrokeThickness="1.5"
-                        Width="2" />
                 </Panel>
-
-
 
                 <StackPanel Orientation="Horizontal">
 
@@ -311,23 +300,23 @@
                         BorderThickness="1"
                         Height="30"
                         IsSnapToTickEnabled="True"
-                        LargeChange="5"
+                        LargeChange="1"
                         Margin="0,1,10,1"
-                        Maximum="100"
-                        Minimum="-85"
+                        Maximum="6"
+                        Minimum="0"
                         SmallChange="1"
                         Theme="{StaticResource SetBg}"
                         TickFrequency="1"
                         Value="0"
                         Width="376"
-                        x:Name="PlaceholderSlider" />
+                        x:Name="PencilSketchSlider" />
                     <NumericUpDown
                         Background="{DynamicResource MainButtonBackgroundColor}"
                         BorderBrush="{DynamicResource MainBorderColor}"
                         Foreground="{DynamicResource MainTextColor}"
-                        Maximum="{Binding Path=Maximum, ElementName=PlaceholderSlider}"
-                        Minimum="{Binding Path=Minimum, ElementName=PlaceholderSlider}"
-                        Value="{Binding Path=Value, ElementName=PlaceholderSlider}"
+                        Maximum="{Binding Path=Maximum, ElementName=PencilSketchSlider}"
+                        Minimum="{Binding Path=Minimum, ElementName=PencilSketchSlider}"
+                        Value="{Binding Path=Value, ElementName=PencilSketchSlider}"
                         Width="56" />
                     <customControls:IconButton
                         Background="{DynamicResource MainButtonBackgroundColor}"
@@ -340,7 +329,7 @@
                         IconWidth="12"
                         Margin="5,0,0,0"
                         Width="30"
-                        x:Name="ResetPlaceholderBtn" />
+                        x:Name="ResetPencilSketchBtn" />
                 </StackPanel>
 
             </StackPanel>
@@ -383,15 +372,15 @@
                         VerticalAlignment="Center" />
                 </ToggleButton>
 
-                <!--  Pencil Sketch  -->
+                <!--  Old  Movie  -->
                 <ToggleButton
                     Background="Transparent"
                     Classes="altHover"
-                    x:Name="PencilSketchToggleButton">
+                    x:Name="OldMovieToggleButton">
                     <TextBlock
                         Classes="txt"
                         HorizontalAlignment="Left"
-                        Text="{CompiledBinding PencilSketch}"
+                        Text="{CompiledBinding OldMovie}"
                         VerticalAlignment="Center" />
                 </ToggleButton>
 

@@ -12,6 +12,8 @@ public partial class EffectsView : UserControl
     private Percentage _brightness = new(0);
     private Percentage _contrast = new(0);
     
+    private double _sketchStrokeWidth;
+    
     private Timer? _debounceTimer;
     
     public EffectsView()
@@ -43,10 +45,15 @@ public partial class EffectsView : UserControl
             {
                 BrightnessSlider.Value = 0;
             };
-            ResetPlaceholderBtn.Click += delegate
+            ResetPencilSketchBtn.Click += delegate
             {
-                PlaceholderSlider.Value = 0;
+                PencilSketchSlider.Value = 0;
             };
+            ResetPencilSketchBtn.Click += delegate
+            {
+                PencilSketchSlider.Value = 0;
+            };
+            
 
             if (DataContext is not MainViewModel vm)
             {
@@ -68,9 +75,9 @@ public partial class EffectsView : UserControl
                 DebounceSliderChange();
             };
             
-            PlaceholderSlider.ValueChanged += (_, e) =>
+            PencilSketchSlider.ValueChanged += (_, e) =>
             {
-                //
+                _sketchStrokeWidth = e.NewValue;
                 DebounceSliderChange();
             };
             
@@ -107,14 +114,14 @@ public partial class EffectsView : UserControl
                 }
             };
 
-            PencilSketchToggleButton.Click += async (_, _) =>
+            OldMovieToggleButton.Click += async (_, _) =>
             {
-                if (!PencilSketchToggleButton.IsChecked.HasValue)
+                if (!OldMovieToggleButton.IsChecked.HasValue)
                 {
                     return;
                 }
 
-                if (PencilSketchToggleButton.IsChecked.Value)
+                if (OldMovieToggleButton.IsChecked.Value)
                 {
                     await ApplyEffects(vm);
                 }
@@ -141,12 +148,12 @@ public partial class EffectsView : UserControl
     private async Task ApplyEffects(MainViewModel vm)
     {
         var fileInfo = vm.FileInfo;
-        bool negative = false, blackAndWhite = false, pencilSketch = false;
+        bool negative = false, blackAndWhite = false, oldMovie = false;
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             negative = NegativeToggleButton.IsChecked.HasValue && NegativeToggleButton.IsChecked.Value;
             blackAndWhite = BlackAndWhiteToggleButton.IsChecked.HasValue && BlackAndWhiteToggleButton.IsChecked.Value;
-            pencilSketch = PencilSketchToggleButton.IsChecked.HasValue && PencilSketchToggleButton.IsChecked.Value;
+            oldMovie = OldMovieToggleButton.IsChecked.HasValue && OldMovieToggleButton.IsChecked.Value;
         });
 
         using var magick = new MagickImage();
@@ -174,9 +181,28 @@ public partial class EffectsView : UserControl
             magick.Grayscale();
         }
 
-        if (pencilSketch)
+        if (oldMovie)
         {
-            magick.Charcoal();
+            // 1. Apply sepia tone
+            magick.SepiaTone(new Percentage(80));
+
+            // 2. Add noise
+            magick.AddNoise(NoiseType.MultiplicativeGaussian);
+
+            var random = new Random();
+            
+            // 3. Add vertical bands (simulate scratches)
+            for (var i = 0; i < magick.Width; i += random.Next(1,50))
+            {
+                using var band = new MagickImage(new MagickColor("#3E382A"), (uint)random.Next(1,3), magick.Height);
+                band.Evaluate(Channels.Alpha, EvaluateOperator.Set, 0.2); // semi-transparent
+                magick.Composite(band, i, 0, CompositeOperator.Over);
+            }
+        }
+
+        if (_sketchStrokeWidth is not 0)
+        {
+            magick.Charcoal(_sketchStrokeWidth, 0);
         }
         
         var bitmap = magick.ToWriteableBitmap();

@@ -264,9 +264,16 @@ public class ViewModelBase : ReactiveObject
         Blur = TranslationHelper.Translation.Blur;
         DirectionalBlur = TranslationHelper.Translation.DirectionalBlur;
         PencilSketch = TranslationHelper.Translation.PencilSketch;
+        OldMovie = TranslationHelper.Translation.OldMovie;
     }
 
     #region Strings
+    
+    public string? OldMovie
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
     
     public string? PencilSketch
     {
