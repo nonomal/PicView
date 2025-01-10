@@ -5,6 +5,17 @@
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
     xmlns:viewModels="clr-namespace:PicView.Avalonia.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Styles>
+        <Styles>
+            <Style Selector="NumericUpDown">
+                <Setter Property="Width" Value="56" />
+                <Setter Property="FormatString" Value="N0" />
+                <Setter Property="Background" Value="{DynamicResource MainBackgroundColor}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource MainBorderColor}" />
+                <Setter Property="Foreground" Value="{DynamicResource MainTextColor}" />
+            </Style>
+        </Styles>
+    </UserControl.Styles>
 
     <StackPanel Width="500">
         <Expander IsExpanded="True" Margin="0,15,0,10">
@@ -61,13 +72,9 @@
                         </customControls:CustomSlider.Background>
                     </customControls:CustomSlider>
                     <NumericUpDown
-                        Background="{DynamicResource MainButtonBackgroundColor}"
-                        BorderBrush="{DynamicResource MainBorderColor}"
-                        Foreground="{DynamicResource MainTextColor}"
                         Maximum="{Binding Path=Maximum, ElementName=BrightnessSlider}"
                         Minimum="{Binding Path=Minimum, ElementName=BrightnessSlider}"
-                        Value="{Binding Path=Value, ElementName=BrightnessSlider}"
-                        Width="56" />
+                        Value="{Binding Path=Value, ElementName=BrightnessSlider}" />
                     <customControls:IconButton
                         Background="{DynamicResource MainButtonBackgroundColor}"
                         BorderBrush="{DynamicResource MainBorderColor}"
@@ -130,13 +137,9 @@
                         </customControls:CustomSlider.Background>
                     </customControls:CustomSlider>
                     <NumericUpDown
-                        Background="{DynamicResource MainButtonBackgroundColor}"
-                        BorderBrush="{DynamicResource MainBorderColor}"
-                        Foreground="{DynamicResource MainTextColor}"
                         Maximum="{Binding Path=Maximum, ElementName=ContrastSlider}"
                         Minimum="{Binding Path=Minimum, ElementName=ContrastSlider}"
-                        Value="{Binding Path=Value, ElementName=ContrastSlider}"
-                        Width="56" />
+                        Value="{Binding Path=Value, ElementName=ContrastSlider}" />
                     <customControls:IconButton
                         Background="{DynamicResource MainButtonBackgroundColor}"
                         BorderBrush="{DynamicResource MainBorderColor}"
@@ -204,13 +207,9 @@
                         Width="376"
                         x:Name="BlurSlider" />
                     <NumericUpDown
-                        Background="{DynamicResource MainButtonBackgroundColor}"
-                        BorderBrush="{DynamicResource MainBorderColor}"
-                        Foreground="{DynamicResource MainTextColor}"
                         Maximum="{Binding Path=Maximum, ElementName=BlurSlider}"
                         Minimum="{Binding Path=Minimum, ElementName=BlurSlider}"
-                        Value="{Binding Path=Value, ElementName=BlurSlider}"
-                        Width="56" />
+                        Value="{Binding Path=Value, ElementName=BlurSlider}" />
                     <customControls:IconButton
                         Background="{DynamicResource MainButtonBackgroundColor}"
                         BorderBrush="{DynamicResource MainBorderColor}"
@@ -262,13 +261,9 @@
                         Width="376"
                         x:Name="MotionBlurSlider" />
                     <NumericUpDown
-                        Background="{DynamicResource MainButtonBackgroundColor}"
-                        BorderBrush="{DynamicResource MainBorderColor}"
-                        Foreground="{DynamicResource MainTextColor}"
                         Maximum="{Binding Path=Maximum, ElementName=MotionBlurSlider}"
                         Minimum="{Binding Path=Minimum, ElementName=MotionBlurSlider}"
-                        Value="{Binding Path=Value, ElementName=MotionBlurSlider}"
-                        Width="56" />
+                        Value="{Binding Path=Value, ElementName=MotionBlurSlider}" />
                     <customControls:IconButton
                         Background="{DynamicResource MainButtonBackgroundColor}"
                         BorderBrush="{DynamicResource MainBorderColor}"
@@ -282,6 +277,23 @@
                         Width="30"
                         x:Name="ResetMotionBlurBtn" />
                 </StackPanel>
+
+
+
+            </StackPanel>
+
+        </Expander>
+
+        <Expander IsExpanded="True" Margin="0,0,0,10">
+            <Expander.Header>
+                <TextBlock
+                    Classes="txt"
+                    FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
+                    FontSize="14"
+                    Padding="10,5"
+                    Text="{CompiledBinding Effects}" />
+            </Expander.Header>
+            <StackPanel Margin="15,0">
 
                 <!--  Pencil Sketch  -->
                 <Panel Margin="0,10,0,5">
@@ -311,13 +323,9 @@
                         Width="376"
                         x:Name="PencilSketchSlider" />
                     <NumericUpDown
-                        Background="{DynamicResource MainButtonBackgroundColor}"
-                        BorderBrush="{DynamicResource MainBorderColor}"
-                        Foreground="{DynamicResource MainTextColor}"
                         Maximum="{Binding Path=Maximum, ElementName=PencilSketchSlider}"
                         Minimum="{Binding Path=Minimum, ElementName=PencilSketchSlider}"
-                        Value="{Binding Path=Value, ElementName=PencilSketchSlider}"
-                        Width="56" />
+                        Value="{Binding Path=Value, ElementName=PencilSketchSlider}" />
                     <customControls:IconButton
                         Background="{DynamicResource MainButtonBackgroundColor}"
                         BorderBrush="{DynamicResource MainBorderColor}"
@@ -332,20 +340,50 @@
                         x:Name="ResetPencilSketchBtn" />
                 </StackPanel>
 
-            </StackPanel>
+                <!--  Posterize  -->
+                <Panel Margin="0,10,0,5">
+                    <TextBlock
+                        Classes="txt"
+                        HorizontalAlignment="Left"
+                        Text="{CompiledBinding Posterize}"
+                        VerticalAlignment="Center" />
+                </Panel>
 
-        </Expander>
+                <StackPanel Orientation="Horizontal">
 
-        <Expander IsExpanded="True" Margin="0,0,0,10">
-            <Expander.Header>
-                <TextBlock
-                    Classes="txt"
-                    FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                    FontSize="14"
-                    Padding="10,5"
-                    Text="{CompiledBinding Effects}" />
-            </Expander.Header>
-            <StackPanel Margin="15,0">
+                    <customControls:CustomSlider
+                        Background="{DynamicResource MainButtonBackgroundColor}"
+                        BorderBrush="{DynamicResource MainBorderColor}"
+                        BorderThickness="1"
+                        Height="30"
+                        IsSnapToTickEnabled="True"
+                        LargeChange="1"
+                        Margin="0,1,10,1"
+                        Maximum="8"
+                        Minimum="0"
+                        SmallChange="1"
+                        Theme="{StaticResource SetBg}"
+                        TickFrequency="1"
+                        Value="0"
+                        Width="376"
+                        x:Name="PosterizeSlider" />
+                    <NumericUpDown
+                        Maximum="{Binding Path=Maximum, ElementName=PosterizeSlider}"
+                        Minimum="{Binding Path=Minimum, ElementName=PosterizeSlider}"
+                        Value="{Binding Path=Value, ElementName=PosterizeSlider}" />
+                    <customControls:IconButton
+                        Background="{DynamicResource MainButtonBackgroundColor}"
+                        BorderBrush="{DynamicResource MainBorderColor}"
+                        BorderThickness="1"
+                        Classes="hover"
+                        Foreground="{DynamicResource MainTextColor}"
+                        Icon="{StaticResource UndoImage}"
+                        IconHeight="12"
+                        IconWidth="12"
+                        Margin="5,0,0,0"
+                        Width="30"
+                        x:Name="ResetPosterizeSketchBtn" />
+                </StackPanel>
 
 
                 <!--  Black/White  -->

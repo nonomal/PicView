@@ -265,9 +265,16 @@ public class ViewModelBase : ReactiveObject
         DirectionalBlur = TranslationHelper.Translation.DirectionalBlur;
         PencilSketch = TranslationHelper.Translation.PencilSketch;
         OldMovie = TranslationHelper.Translation.OldMovie;
+        Posterize = TranslationHelper.Translation.Posterize;
     }
 
     #region Strings
+    
+    public string? Posterize
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
     
     public string? OldMovie
     {

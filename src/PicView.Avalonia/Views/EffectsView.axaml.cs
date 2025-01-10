@@ -13,6 +13,7 @@ public partial class EffectsView : UserControl
     private Percentage _contrast = new(0);
     
     private double _sketchStrokeWidth;
+    private int _posterizeLevel;
     
     private Timer? _debounceTimer;
     
@@ -53,6 +54,10 @@ public partial class EffectsView : UserControl
             {
                 PencilSketchSlider.Value = 0;
             };
+            ResetPosterizeSketchBtn.Click += delegate
+            {
+                PosterizeSlider.Value = 0;
+            };
             
 
             if (DataContext is not MainViewModel vm)
@@ -78,6 +83,13 @@ public partial class EffectsView : UserControl
             PencilSketchSlider.ValueChanged += (_, e) =>
             {
                 _sketchStrokeWidth = e.NewValue;
+                DebounceSliderChange();
+            };
+            
+            PosterizeSlider.ValueChanged += (_, e) =>
+            {
+                var newValue = (int)e.NewValue;
+                _posterizeLevel = newValue is 1 ? 2 : newValue;
                 DebounceSliderChange();
             };
             
@@ -204,6 +216,13 @@ public partial class EffectsView : UserControl
         {
             magick.Charcoal(_sketchStrokeWidth, 0);
         }
+        
+        if (_posterizeLevel is not 0)
+        {
+            magick.Posterize(_posterizeLevel);
+        }
+        
+        
         
         var bitmap = magick.ToWriteableBitmap();
         vm.ImageSource = bitmap;
