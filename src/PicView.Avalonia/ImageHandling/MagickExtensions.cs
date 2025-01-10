@@ -8,7 +8,7 @@ namespace PicView.Avalonia.ImageHandling;
 
 public static class MagickExtensions
 {
-    public static unsafe WriteableBitmap ToWriteableBitmap<TQuantumType>(this IMagickImage<TQuantumType> self)
+    public static WriteableBitmap ToWriteableBitmap<TQuantumType>(this IMagickImage<TQuantumType> self)
         where TQuantumType : struct, IConvertible
     {
         var size = new PixelSize((int)self.Width, (int)self.Height);
