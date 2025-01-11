@@ -390,6 +390,7 @@
                 <ToggleButton
                     Background="Transparent"
                     Classes="altHover"
+                    Margin="0,5,0,0"
                     x:Name="BlackAndWhiteToggleButton">
                     <TextBlock
                         Classes="txt"

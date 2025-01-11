@@ -1,6 +1,6 @@
 using Avalonia.Controls;
-using Avalonia.Threading;
 using ImageMagick;
+using PicView.Avalonia.ImageEffects;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.ViewModels;
 using Timer = System.Timers.Timer;
@@ -9,32 +9,13 @@ namespace PicView.Avalonia.Views;
 
 public partial class EffectsView : UserControl
 {
-    private Percentage _brightness = new(0);
-    private Percentage _contrast = new(0);
-    
-    private double _sketchStrokeWidth;
-    private int _posterizeLevel;
+    private ImageEffectConfig _config;
     
     private Timer? _debounceTimer;
     
     public EffectsView()
     {
         InitializeComponent();
-        // if (Application.Current.TryGetResource("AccentColor",
-        //         Application.Current.RequestedThemeVariant, out var accentColor))
-        // {
-        //     if (accentColor is SolidColorBrush accentBrush)
-        //     {
-        //         var brush = new SolidColorBrush
-        //         {
-        //             Opacity = 0.3,
-        //             Color = new Color(accentBrush.Color.A, accentBrush.Color.R, accentBrush.Color.G,
-        //                 accentBrush.Color.B)
-        //         };
-        //         brush.Opacity = 0.3;
-        //         PlaceholderSlider.Background = brush;
-        //     }
-        // }
         
         Loaded += (_, _) =>
         {
@@ -70,26 +51,26 @@ public partial class EffectsView : UserControl
 
             BrightnessSlider.ValueChanged += (_, e) =>
             {
-                _brightness = new Percentage(e.NewValue);
+                _config.Brightness = new Percentage(e.NewValue);
                 DebounceSliderChange();
             };
             
             ContrastSlider.ValueChanged += (_, e) =>
             {
-                _contrast = new Percentage(e.NewValue);
+                _config.Contrast = new Percentage(e.NewValue);
                 DebounceSliderChange();
             };
             
             PencilSketchSlider.ValueChanged += (_, e) =>
             {
-                _sketchStrokeWidth = e.NewValue;
+                _config.SketchStrokeWidth = e.NewValue;
                 DebounceSliderChange();
             };
             
             PosterizeSlider.ValueChanged += (_, e) =>
             {
                 var newValue = (int)e.NewValue;
-                _posterizeLevel = newValue is 1 ? 2 : newValue;
+                _config.PosterizeLevel = newValue is 1 ? 2 : newValue;
                 DebounceSliderChange();
             };
             
@@ -99,15 +80,9 @@ public partial class EffectsView : UserControl
                 {
                     return;
                 }
-
-                if (BlackAndWhiteToggleButton.IsChecked.Value)
-                {
-                    await ApplyEffects(vm);
-                }
-                else
-                {
-                    await RemoveEffects(vm);
-                }
+                
+                _config.BlackAndWhite = BlackAndWhiteToggleButton.IsChecked.Value;
+                await ApplyEffects(vm);
             };
 
             NegativeToggleButton.Click += async (_, _) =>
@@ -115,15 +90,11 @@ public partial class EffectsView : UserControl
                 if (!NegativeToggleButton.IsChecked.HasValue)
                 {
                     return;
+
                 }
-                if (NegativeToggleButton.IsChecked.Value)
-                {
-                    await ApplyEffects(vm);
-                }
-                else
-                {
-                    await RemoveEffects(vm);
-                }
+
+                _config.Negative = NegativeToggleButton.IsChecked.Value;
+                await ApplyEffects(vm);
             };
 
             OldMovieToggleButton.Click += async (_, _) =>
@@ -133,14 +104,8 @@ public partial class EffectsView : UserControl
                     return;
                 }
 
-                if (OldMovieToggleButton.IsChecked.Value)
-                {
-                    await ApplyEffects(vm);
-                }
-                else
-                {
-                    await RemoveEffects(vm);
-                }
+                _config.OldMovie = OldMovieToggleButton.IsChecked.Value;
+                await ApplyEffects(vm);
             };
         };
     }
@@ -160,13 +125,6 @@ public partial class EffectsView : UserControl
     private async Task ApplyEffects(MainViewModel vm)
     {
         var fileInfo = vm.FileInfo;
-        bool negative = false, blackAndWhite = false, oldMovie = false;
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            negative = NegativeToggleButton.IsChecked.HasValue && NegativeToggleButton.IsChecked.Value;
-            blackAndWhite = BlackAndWhiteToggleButton.IsChecked.HasValue && BlackAndWhiteToggleButton.IsChecked.Value;
-            oldMovie = OldMovieToggleButton.IsChecked.HasValue && OldMovieToggleButton.IsChecked.Value;
-        });
 
         using var magick = new MagickImage();
         if (fileInfo.Length >= 2147483648)
@@ -179,21 +137,21 @@ public partial class EffectsView : UserControl
         {
             await magick.ReadAsync(fileInfo).ConfigureAwait(false);
         }
-        magick.BrightnessContrast(_brightness, _contrast);
+        magick.BrightnessContrast(_config.Brightness, _config.Contrast);
         magick.BackgroundColor = MagickColors.Transparent;
         magick.Settings.BackgroundColor = MagickColors.Transparent;
         magick.Settings.FillColor = MagickColors.Transparent;
-        if (negative)
+        if (_config.Negative)
         {
             magick.Negate();
         }
 
-        if (blackAndWhite)
+        if (_config.BlackAndWhite)
         {
             magick.Grayscale();
         }
 
-        if (oldMovie)
+        if (_config.OldMovie)
         {
             // 1. Apply sepia tone
             magick.SepiaTone(new Percentage(80));
@@ -212,17 +170,15 @@ public partial class EffectsView : UserControl
             }
         }
 
-        if (_sketchStrokeWidth is not 0)
+        if (_config.SketchStrokeWidth is not 0)
         {
-            magick.Charcoal(_sketchStrokeWidth, 0);
+            magick.Charcoal(_config.SketchStrokeWidth, 0);
         }
         
-        if (_posterizeLevel is not 0)
+        if (_config.PosterizeLevel is not 0)
         {
-            magick.Posterize(_posterizeLevel);
+            magick.Posterize(_config.PosterizeLevel);
         }
-        
-        
         
         var bitmap = magick.ToWriteableBitmap();
         vm.ImageSource = bitmap;
