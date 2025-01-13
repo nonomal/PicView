@@ -266,9 +266,16 @@ public class ViewModelBase : ReactiveObject
         PencilSketch = TranslationHelper.Translation.PencilSketch;
         OldMovie = TranslationHelper.Translation.OldMovie;
         Posterize = TranslationHelper.Translation.Posterize;
+        ClearEffects = TranslationHelper.Translation.ClearEffects;
     }
 
     #region Strings
+    
+    public string? ClearEffects
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
     
     public string? Posterize
     {

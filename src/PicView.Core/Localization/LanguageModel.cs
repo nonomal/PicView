@@ -406,4 +406,6 @@ public record LanguageModel
     public string? ActionProgram { get; set; }
     
     public string? SaveImage { get; set; }
+    
+    public string? ClearEffects { get; set; }
 }
