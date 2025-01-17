@@ -408,4 +408,5 @@ public record LanguageModel
     public string? SaveImage { get; set; }
     
     public string? ClearEffects { get; set; }
+    public string? Solarize { get; set; }
 }

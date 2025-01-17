@@ -267,9 +267,16 @@ public class ViewModelBase : ReactiveObject
         OldMovie = TranslationHelper.Translation.OldMovie;
         Posterize = TranslationHelper.Translation.Posterize;
         ClearEffects = TranslationHelper.Translation.ClearEffects;
+        Solarize = TranslationHelper.Translation.Solarize;
     }
 
     #region Strings
+    
+    public string? Solarize
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
     
     public string? ClearEffects
     {

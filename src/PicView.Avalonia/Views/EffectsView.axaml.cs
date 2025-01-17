@@ -1,20 +1,23 @@
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using Avalonia.Controls;
 using ImageMagick;
 using PicView.Avalonia.ImageEffects;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.FileHandling;
+using ReactiveUI;
 using Timer = System.Timers.Timer;
 
 namespace PicView.Avalonia.Views;
 
 public partial class EffectsView : UserControl
 {
+    private readonly CompositeDisposable _disposables = new();
     private CancellationTokenSource? _cancellationTokenSource;
     private ImageEffectConfig _config;
 
     private Timer? _debounceTimer;
-    private ImageEffectConfig _prevConfig;
 
     public EffectsView()
     {
@@ -22,6 +25,29 @@ public partial class EffectsView : UserControl
 
         Loaded += (_, _) =>
         {
+            if (DataContext is not MainViewModel vm)
+            {
+                return;
+            }
+
+            vm.WhenAnyValue(x => x.IsLoading)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(isLoading =>
+                {
+                    if (isLoading)
+                    {
+                        SpinWaiter.IsVisible = true;
+                        ParentContainer.IsHitTestVisible = false;
+                        ParentContainer.Opacity = 0.5;
+                    }
+                    else
+                    {
+                        SpinWaiter.IsVisible = false;
+                        ParentContainer.IsHitTestVisible = true;
+                        ParentContainer.Opacity = 1;
+                    }
+                }).DisposeWith(_disposables);
+
             PointerPressed += (_, e) =>
             {
                 if (e.GetCurrentPoint(this).Properties.IsRightButtonPressed)
@@ -31,17 +57,15 @@ public partial class EffectsView : UserControl
                 }
             };
 
-            if (DataContext is not MainViewModel vm)
-            {
-                return;
-            }
+            DetachedFromLogicalTree += (_, _) => CleanUp();
 
             ClearEffectsItem.Click += async delegate { await RemoveEffects(vm); };
             ResetContrastBtn.Click += delegate { ContrastSlider.Value = 0; };
             ResetBrightnessBtn.Click += delegate { BrightnessSlider.Value = 0; };
             ResetPencilSketchBtn.Click += delegate { PencilSketchSlider.Value = 0; };
             ResetPencilSketchBtn.Click += delegate { PencilSketchSlider.Value = 0; };
-            ResetPosterizeSketchBtn.Click += delegate { PosterizeSlider.Value = 0; };
+            ResetPosterizeBtn.Click += delegate { PosterizeSlider.Value = 0; };
+            ResetSolarizeBtn.Click += delegate { SolarizeSlider.Value = 0; };
             ResetBlurBtn.Click += delegate { BlurSlider.Value = 0; };
 
             _debounceTimer = new Timer { Interval = 300, AutoReset = false };
@@ -69,6 +93,12 @@ public partial class EffectsView : UserControl
             {
                 var newValue = (int)e.NewValue;
                 _config.PosterizeLevel = newValue is 1 ? 2 : newValue;
+                DebounceSliderChange();
+            };
+
+            SolarizeSlider.ValueChanged += (_, e) =>
+            {
+                _config.Solarize = new Percentage(e.NewValue);
                 DebounceSliderChange();
             };
 
@@ -124,35 +154,36 @@ public partial class EffectsView : UserControl
         if (_cancellationTokenSource is not null)
         {
             await _cancellationTokenSource.CancelAsync().ConfigureAwait(false);
-
         }
+
         _cancellationTokenSource = new CancellationTokenSource();
         await ApplyEffects(vm, _config, _cancellationTokenSource.Token).ConfigureAwait(false);
     }
 
-    private static async Task ApplyEffects(MainViewModel vm, ImageEffectConfig config, CancellationToken cancellationToken)
+    private static async Task ApplyEffects(MainViewModel vm, ImageEffectConfig config,
+        CancellationToken cancellationToken)
     {
+        vm.IsLoading = true;
         try
         {
             await Task.Run(async () =>
             {
                 var fileInfo = vm.FileInfo;
+                await using var filestream = FileHelper.GetOptimizedFileStream(fileInfo);
                 using var magick = new MagickImage();
                 if (fileInfo.Length >= 2147483648)
                 {
-                    await using var filestream = FileHelper.GetOptimizedFileStream(fileInfo);
                     // Fixes "The file is too long. This operation is currently limited to supporting files less than 2 gigabytes in size."
-                    // ReSharper disable once MethodHasAsyncOverload
                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                     magick.Read(filestream);
                 }
                 else
                 {
-                    await magick.ReadAsync(fileInfo, cancellationToken).ConfigureAwait(false);
+                    await magick.ReadAsync(filestream, cancellationToken).ConfigureAwait(false);
                 }
 
                 cancellationToken.ThrowIfCancellationRequested();
-                
+
                 magick.BrightnessContrast(config.Brightness, config.Contrast);
                 magick.BackgroundColor = MagickColors.Transparent;
                 magick.Settings.BackgroundColor = MagickColors.Transparent;
@@ -190,7 +221,7 @@ public partial class EffectsView : UserControl
 
                 if (config.SketchStrokeWidth is not 0)
                 {
-                    magick.Charcoal(config.SketchStrokeWidth,  3);
+                    magick.Charcoal(config.SketchStrokeWidth, 3);
                 }
 
                 if (config.PosterizeLevel is not 0)
@@ -200,14 +231,23 @@ public partial class EffectsView : UserControl
 
                 if (config.BlurRadius is not 0)
                 {
-                    magick.MotionBlur(0, config.BlurRadius,0);
+                    magick.MotionBlur(0, config.BlurRadius, 0);
                 }
-                
+
+                if (config.Solarize.ToUInt32() is not 0)
+                {
+                    magick.Solarize(config.Solarize);
+                }
+
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var bitmap = magick.ToWriteableBitmap();
                 vm.ImageSource = bitmap;
             }, cancellationToken).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+            //
         }
         catch (Exception e)
         {
@@ -215,8 +255,11 @@ public partial class EffectsView : UserControl
             Console.WriteLine(e);
 #endif
         }
+        finally
+        {
+            vm.IsLoading = false;
+        }
     }
-
 
     private async Task RemoveEffects(MainViewModel vm)
     {
@@ -228,5 +271,22 @@ public partial class EffectsView : UserControl
         var bitmap = magick.ToWriteableBitmap();
         vm.ImageSource = bitmap;
         _config = new ImageEffectConfig();
+    }
+
+    ~EffectsView()
+    {
+        CleanUp();
+    }
+
+    private void CleanUp()
+    {
+        if (DataContext is MainViewModel vm)
+        {
+            vm.IsLoading = false;
+        }
+
+        _debounceTimer?.Dispose();
+        _cancellationTokenSource?.Cancel();
+        _cancellationTokenSource?.Dispose();
     }
 }
