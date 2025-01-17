@@ -92,10 +92,10 @@
             </Style>
         </Style>
         <Style Selector="^:pointerover /template/ Border#border">
-            <Setter Property="BorderBrush" Value="{DynamicResource MainBorderColor}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource SecondaryBorderColor}" />
         </Style>
         <Style Selector="^:focus /template/ Border#border">
-            <Setter Property="BorderBrush" Value="{DynamicResource SecondaryBorderColor}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}" />
         </Style>
         <Style Selector="^:error /template/ Border#border">
             <Setter Property="BorderBrush" Value="{DynamicResource ErrorBrush}" />
