@@ -11,6 +11,8 @@ namespace PicView.Avalonia.UI;
 public static class TooltipHelper
 {
     private static bool _isRunning;
+    
+    private static CancellationTokenSource? _cancellationTokenSource;
 
     /// <summary>
     /// Shows the tooltip message on the UI.
@@ -22,46 +24,54 @@ public static class TooltipHelper
     {
         try
         {
-            await Dispatcher.UIThread.InvokeAsync(async () =>
+            var endAnimation = AnimationsHelper.OpacityAnimation(1, 0, .5);
+
+            // ReSharper disable once MethodHasAsyncOverload
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource = new CancellationTokenSource();
+            
+            await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 var toolTip = UIHelper.GetToolTipMessage;
-                var startAnimation = AnimationsHelper.OpacityAnimation(0, 1, .6);
-                var endAnimation = AnimationsHelper.OpacityAnimation(1, 0, .5);
-
-                if (_isRunning)
+                toolTip.ToolTipMessageText.Text = message.ToString();
+                UIHelper.GetToolTipMessage.IsVisible = true;
+                
+                if (!_isRunning)
                 {
-                    UIHelper.GetToolTipMessage.Opacity = 1;
-                    toolTip.ToolTipMessageText.Text = message.ToString();
-                    toolTip.Margin = center ? new Thickness(0) : new Thickness(0, 0, 0, 15);
-                    toolTip.VerticalAlignment = center ? VerticalAlignment.Center : VerticalAlignment.Bottom;
-
-                    await Task.Delay(interval);
-                    await endAnimation.RunAsync(UIHelper.GetToolTipMessage);
-                    _isRunning = false;
-                    return;
-                }
-
-                await Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    _isRunning = true;
-                    UIHelper.GetToolTipMessage.IsVisible = true;
-                    UIHelper.GetToolTipMessage.ToolTipMessageText.Text = message.ToString();
                     UIHelper.GetToolTipMessage.Margin = center ? new Thickness(0) : new Thickness(0, 0, 0, 15);
                     UIHelper.GetToolTipMessage.VerticalAlignment =
                         center ? VerticalAlignment.Center : VerticalAlignment.Bottom;
-                    UIHelper.GetToolTipMessage.Opacity = 0;
-                });
-                await startAnimation.RunAsync(UIHelper.GetToolTipMessage);
-                await Task.Delay(interval);
-                await endAnimation.RunAsync(UIHelper.GetToolTipMessage);
-                _isRunning = false;
-            });
+                }
+                else
+                {
+                    toolTip.Opacity = 1;
+                }
+            }, DispatcherPriority.Normal, _cancellationTokenSource.Token);
+
+            if (!_isRunning)
+            {
+                _isRunning = true;
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    UIHelper.GetToolTipMessage.Opacity = 1;
+                }, DispatcherPriority.Normal, _cancellationTokenSource.Token);
+                await Task.Delay(interval, _cancellationTokenSource.Token);
+                await endAnimation.RunAsync(UIHelper.GetToolTipMessage, _cancellationTokenSource.Token);
+            }
+        }
+        catch (TaskCanceledException)
+        {
+            // ignored
         }
         catch (Exception e)
         {
 #if DEBUG
-            Console.WriteLine(e.Message);
+            Console.WriteLine($"{nameof(ShowTooltipMessageAsync)} exception {e.Message}: \n{e.StackTrace}");
 #endif
+        }
+        finally
+        {
+            _isRunning = false;
         }
     }
 
