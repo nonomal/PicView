@@ -62,7 +62,8 @@
     <Panel>
         <uc:SpinWaiter
             HorizontalAlignment="Center"
-            IsVisible="False"
+            IsVisible="{CompiledBinding IsLoading,
+                                        Mode=OneWay}"
             VerticalAlignment="Center"
             x:Name="SpinWaiter" />
 

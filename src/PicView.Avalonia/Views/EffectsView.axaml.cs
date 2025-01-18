@@ -1,19 +1,15 @@
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
 using Avalonia.Controls;
 using ImageMagick;
 using PicView.Avalonia.ImageEffects;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.FileHandling;
-using ReactiveUI;
 using Timer = System.Timers.Timer;
 
 namespace PicView.Avalonia.Views;
 
 public partial class EffectsView : UserControl
 {
-    private readonly CompositeDisposable _disposables = new();
     private CancellationTokenSource? _cancellationTokenSource;
     private ImageEffectConfig _config;
 
@@ -29,24 +25,6 @@ public partial class EffectsView : UserControl
             {
                 return;
             }
-
-            vm.WhenAnyValue(x => x.IsLoading)
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .Subscribe(isLoading =>
-                {
-                    if (isLoading)
-                    {
-                        SpinWaiter.IsVisible = true;
-                        // ParentContainer.IsHitTestVisible = false;
-                        // ParentContainer.Opacity = 0.5;
-                    }
-                    else
-                    {
-                        SpinWaiter.IsVisible = false;
-                        // ParentContainer.IsHitTestVisible = true;
-                        // ParentContainer.Opacity = 1;
-                    }
-                }).DisposeWith(_disposables);
 
             PointerPressed += (_, e) =>
             {
