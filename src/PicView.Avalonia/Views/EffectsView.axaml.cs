@@ -37,14 +37,14 @@ public partial class EffectsView : UserControl
                     if (isLoading)
                     {
                         SpinWaiter.IsVisible = true;
-                        ParentContainer.IsHitTestVisible = false;
-                        ParentContainer.Opacity = 0.5;
+                        // ParentContainer.IsHitTestVisible = false;
+                        // ParentContainer.Opacity = 0.5;
                     }
                     else
                     {
                         SpinWaiter.IsVisible = false;
-                        ParentContainer.IsHitTestVisible = true;
-                        ParentContainer.Opacity = 1;
+                        // ParentContainer.IsHitTestVisible = true;
+                        // ParentContainer.Opacity = 1;
                     }
                 }).DisposeWith(_disposables);
 
@@ -104,7 +104,7 @@ public partial class EffectsView : UserControl
 
             BlurSlider.ValueChanged += (_, e) =>
             {
-                _config.BlurRadius = e.NewValue;
+                _config.BlurLevel = e.NewValue;
                 DebounceSliderChange();
             };
 
@@ -229,9 +229,9 @@ public partial class EffectsView : UserControl
                     magick.Posterize(config.PosterizeLevel);
                 }
 
-                if (config.BlurRadius is not 0)
+                if (config.BlurLevel is not 0)
                 {
-                    magick.MotionBlur(0, config.BlurRadius, 0);
+                    magick.Blur(0, config.BlurLevel);
                 }
 
                 if (config.Solarize.ToUInt32() is not 0)
