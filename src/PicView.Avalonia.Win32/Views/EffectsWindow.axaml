@@ -19,7 +19,11 @@
         x:Name="ParentBorder">
         <StackPanel>
 
-            <DockPanel Height="28" LastChildFill="True">
+            <DockPanel
+                Background="{DynamicResource WindowSecondaryBackgroundColor}"
+                Height="28"
+                LastChildFill="True"
+                x:Name="TitleBarPanel">
 
                 <Border
                     Background="{DynamicResource WindowButtonBackgroundColor}"
@@ -62,8 +66,19 @@
                     Width="30"
                     x:Name="MinimizeButton" />
 
+                <customControls:IconButton
+                    BorderBrush="{DynamicResource MainBorderColor}"
+                    BorderThickness="1,0,0,0"
+                    Classes="noBorderHover"
+                    Data="{StaticResource CogGeometry}"
+                    DockPanel.Dock="Right"
+                    Foreground="{DynamicResource MainTextColor}"
+                    IconHeight="12"
+                    IconWidth="12"
+                    IsEnabled="False"
+                    Width="30" />
+
                 <TextBlock
-                    Background="{DynamicResource WindowSecondaryBackgroundColor}"
                     Classes="txt"
                     Foreground="{DynamicResource MainTextColor}"
                     Height="28"

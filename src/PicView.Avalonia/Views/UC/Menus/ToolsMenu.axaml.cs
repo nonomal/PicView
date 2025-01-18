@@ -13,6 +13,11 @@ public partial class ToolsMenu : AnimatedMenu
         {
             if (SettingsHelper.Settings.Theme.GlassTheme)
             {
+                BatchResizeButton.Classes.Remove("noBorderHover");
+                BatchResizeButton.Classes.Add("hover");
+                
+                EffectsButton.Classes.Remove("noBorderHover");
+                EffectsButton.Classes.Add("hover");
             }
             else if (!SettingsHelper.Settings.Theme.Dark)
             {

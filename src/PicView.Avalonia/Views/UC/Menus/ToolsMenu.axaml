@@ -50,7 +50,8 @@
                     Height="45"
                     ToolTip.Tip="{CompiledBinding BatchResize,
                                                   Mode=OneWay}"
-                    Width="179">
+                    Width="179"
+                    x:Name="BatchResizeButton">
                     <StackPanel Orientation="Horizontal">
                         <Image
                             Height="22"
@@ -79,7 +80,8 @@
                     Height="45"
                     ToolTip.Tip="{CompiledBinding EffectsTooltip,
                                                   Mode=OneWay}"
-                    Width="136">
+                    Width="136"
+                    x:Name="EffectsButton">
                     <StackPanel Orientation="Horizontal">
                         <Image
                             Height="20"

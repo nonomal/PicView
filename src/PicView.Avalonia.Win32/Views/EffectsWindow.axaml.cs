@@ -24,6 +24,7 @@ public partial class EffectsWindow : Window
             CloseButton.BorderThickness = new Thickness(0);
             BorderRectangle.Height = 0;
             TitleText.Background = Brushes.Transparent;
+            TitleBarPanel.Background = Brushes.Transparent;
             
             if (!Application.Current.TryGetResource("SecondaryTextColor",
                     Application.Current.RequestedThemeVariant, out var textColor))
