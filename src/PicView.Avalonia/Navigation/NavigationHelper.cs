@@ -403,6 +403,9 @@ public static class NavigationHelper
         {
             await _cancellationTokenSource.CancelAsync();
         }
+        
+        vm.IsLoading = true;
+        SetTitleHelper.SetLoadingTitle(vm);
 
         var extraction = await ArchiveExtraction
             .ExtractArchiveAsync(path, vm.PlatformService.ExtractWithLocalSoftwareAsync).ConfigureAwait(false);
