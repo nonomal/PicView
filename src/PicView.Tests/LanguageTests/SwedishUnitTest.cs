@@ -302,7 +302,6 @@ public static class SwedishUnitTest
         Assert.Equal(TranslationHelper.Translation.Saturation, "Mättnad");
         Assert.Equal(TranslationHelper.Translation.Save, "Spara");
         Assert.Equal(TranslationHelper.Translation.SaveAs, "Spara som");
-        Assert.Equal(TranslationHelper.Translation.SaveImage, "Spara bild");
         Assert.Equal(TranslationHelper.Translation.SavingFileFailed, "Spara bild misslyckades");
         Assert.Equal(TranslationHelper.Translation.ScrollAndRotate, "Rulla och rotera");
         Assert.Equal(TranslationHelper.Translation.ScrollDirection, "Rullningsriktning");

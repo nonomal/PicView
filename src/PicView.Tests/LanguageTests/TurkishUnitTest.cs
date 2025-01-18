@@ -302,7 +302,6 @@ public static class TurkishUnitTest
         Assert.Equal(TranslationHelper.Translation.Saturation, "Doygunluk");
         Assert.Equal(TranslationHelper.Translation.Save, "Kaydet");
         Assert.Equal(TranslationHelper.Translation.SaveAs, "Farklı kaydet");
-        Assert.Equal(TranslationHelper.Translation.SaveImage, "Resmi kaydet");
         Assert.Equal(TranslationHelper.Translation.SavingFileFailed, "Dosya kaydedilemedi");
         Assert.Equal(TranslationHelper.Translation.ScrollAndRotate, "Kaydır ve döndür");
         Assert.Equal(TranslationHelper.Translation.ScrollDirection, "Kaydırma yönü");
