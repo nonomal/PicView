@@ -16,11 +16,26 @@ public class LanguageAndSettingsUnitTest
     }
 
     [Fact]
-    public void GetLanguages()
+    public async Task CheckLanguages()
     {
         var languages = TranslationHelper.GetLanguages();
         Assert.NotNull(languages);
         Assert.NotEmpty(languages);
+        
+        await CheckDanishLanguage();
+        await CheckEnglishLanguage();
+        await CheckGermanLanguage();
+        await CheckFrenchLanguage();
+        await CheckItalianLanguage();
+        await CheckKoreanLanguage();
+        await CheckPolishLanguage();
+        await CheckBrazilianPortugueseLanguage();
+        await CheckRomanianLanguage();
+        await CheckRussianLanguage();
+        await CheckSwedishLanguage();
+        await CheckTurkishLanguage();
+        await CheckChineseSimplifiedLanguage();
+        await CheckChineseTraditionalLanguage();
     }
 
     [Fact]

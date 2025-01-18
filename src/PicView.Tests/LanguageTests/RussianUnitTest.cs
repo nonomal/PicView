@@ -8,7 +8,7 @@ public static class RussianUnitTest
     [Fact]
     public static async Task CheckRussianLanguage()
     {
-        var exists = await TranslationHelper.LoadLanguage("pt-br");
+        var exists = await TranslationHelper.LoadLanguage("ru");
         Assert.True(exists);
 
         Assert.Equal(TranslationHelper.Translation.About, "О программе");

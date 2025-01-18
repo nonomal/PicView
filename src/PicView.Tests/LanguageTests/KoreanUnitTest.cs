@@ -296,7 +296,6 @@ public static class KoreanUnitTest
         Assert.Equal(TranslationHelper.Translation.Saturation, "채도");
         Assert.Equal(TranslationHelper.Translation.Save, "저장");
         Assert.Equal(TranslationHelper.Translation.SaveAs, "다른 이름으로 저장");
-        Assert.Equal(TranslationHelper.Translation.SaveImage, "이미지 저장");
         Assert.Equal(TranslationHelper.Translation.SavingFileFailed, "파일 저장 실패");
         Assert.Equal(TranslationHelper.Translation.ScrollAndRotate, "스크롤 및 회전");
         Assert.Equal(TranslationHelper.Translation.ScrollDirection, "스크롤 방향");

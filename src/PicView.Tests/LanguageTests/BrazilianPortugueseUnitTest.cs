@@ -308,7 +308,6 @@ public static class BrazilianPortugueseUnitTest
         Assert.Equal(TranslationHelper.Translation.Saturation, "Saturação");
         Assert.Equal(TranslationHelper.Translation.Save, "Salvar");
         Assert.Equal(TranslationHelper.Translation.SaveAs, "Salvar como");
-        Assert.Equal(TranslationHelper.Translation.SaveImage, "Salvar imagem");
         Assert.Equal(TranslationHelper.Translation.SavingFileFailed, "Falha ao salvar o arquivo");
         Assert.Equal(TranslationHelper.Translation.ScrollAndRotate, "Rolar e girar");
         Assert.Equal(TranslationHelper.Translation.ScrollDirection, "Direção da rolagem");

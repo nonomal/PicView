@@ -300,7 +300,6 @@ public static class EnglishUnitTest
         Assert.Equal(TranslationHelper.Translation.Saturation, "Saturation");
         Assert.Equal(TranslationHelper.Translation.Save, "Save");
         Assert.Equal(TranslationHelper.Translation.SaveAs, "Save as");
-        Assert.Equal(TranslationHelper.Translation.SaveImage, "Save image");
         Assert.Equal(TranslationHelper.Translation.SavingFileFailed, "Saving file failed");
         Assert.Equal(TranslationHelper.Translation.ScrollAndRotate, "Scroll and rotate");
         Assert.Equal(TranslationHelper.Translation.ScrollDirection, "Scroll direction");

@@ -8,7 +8,7 @@ public static class SwedishUnitTest
     [Fact]
     public static async Task CheckSwedishLanguage()
     {
-        var exists = await TranslationHelper.LoadLanguage("pt-br");
+        var exists = await TranslationHelper.LoadLanguage("sv");
         Assert.True(exists);
 
         Assert.Equal(TranslationHelper.Translation.About, "Om");
