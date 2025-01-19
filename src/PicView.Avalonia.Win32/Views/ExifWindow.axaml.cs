@@ -19,6 +19,7 @@ public partial class ExifWindow : Window
             
             TopWindowBorder.Background = Brushes.Transparent;
             StarOutlineButtons.Background = Brushes.Transparent;
+            RemoveRatingButton.Background = Brushes.Transparent;
             
             CloseButton.Background = Brushes.Transparent;
             CloseButton.BorderThickness = new Thickness(0);
@@ -59,11 +60,11 @@ public partial class ExifWindow : Window
             
             MinimizeButton.Foreground = new SolidColorBrush(color);
             CloseButton.Foreground = new SolidColorBrush(color);
-            RecycleText.Foreground = new SolidColorBrush(color);
-            DuplicateText.Foreground = new SolidColorBrush(color);
-            OptimizeText.Foreground = new SolidColorBrush(color);
-            OpenWithText.Foreground = new SolidColorBrush(color);
-            LocateOnDiskText.Foreground = new SolidColorBrush(color);
+            RecycleButton.Foreground = new SolidColorBrush(color);
+            DuplicateButton.Foreground = new SolidColorBrush(color);
+            OptimizeButton.Foreground = new SolidColorBrush(color);
+            OpenWithButton.Foreground = new SolidColorBrush(color);
+            LocateOnDiskButton.Foreground = new SolidColorBrush(color);
         }
         else if (!SettingsHelper.Settings.Theme.Dark)
         {

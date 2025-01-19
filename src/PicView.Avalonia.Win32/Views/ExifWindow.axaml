@@ -23,109 +23,34 @@
         PointerPressed="MoveWindow"
         x:Name="ParentBorder">
         <DockPanel Background="Transparent">
-            <StackPanel
+            <DockPanel
                 Background="{DynamicResource WindowBackgroundColor}"
                 DockPanel.Dock="Top"
                 Height="28"
-                Orientation="Horizontal"
+                LastChildFill="True"
                 x:Name="TopWindowBorder">
 
                 <Image
+                    DockPanel.Dock="Left"
                     Height="25"
                     Margin="7,1,7,1"
                     Source="{StaticResource LogoImage}"
                     Width="20" />
 
-                <Button
-                    BorderBrush="{DynamicResource MainBorderColor}"
-                    BorderThickness="1,0,1,0"
-                    Classes="noBorderHover"
-                    Command="{CompiledBinding DuplicateFileCommand}"
-                    Height="28"
-                    Width="131"
-                    x:Name="DuplicateButton">
-                    <TextBlock
-                        Classes="txt"
-                        Foreground="{DynamicResource MainTextColor}"
-                        HorizontalAlignment="Center"
-                        Text="{CompiledBinding DuplicateFile}"
-                        VerticalAlignment="Center"
-                        x:Name="DuplicateText" />
-                </Button>
 
-                <Button
-                    BorderBrush="{DynamicResource MainBorderColor}"
-                    BorderThickness="0,0,1,0"
-                    Classes="noBorderHover"
+                <customControls:IconButton
+                    Background="{DynamicResource MainButtonBackgroundColor}"
+                    Classes="hover"
+                    Click="Close"
                     ClickMode="Release"
-                    Command="{CompiledBinding RecycleFileCommand}"
-                    Height="28"
-                    Width="130"
-                    x:Name="RecycleButton">
-                    <TextBlock
-                        Classes="txt"
-                        Foreground="{DynamicResource MainTextColor}"
-                        HorizontalAlignment="Center"
-                        Text="{Binding DeleteFile}"
-                        VerticalAlignment="Center"
-                        x:Name="RecycleText" />
-                </Button>
+                    Data="{StaticResource CloseGeometry}"
+                    DockPanel.Dock="Right"
+                    Foreground="{DynamicResource MainTextColor}"
+                    IconHeight="10"
+                    IconWidth="10"
+                    Width="29"
+                    x:Name="CloseButton" />
 
-                <Button
-                    BorderBrush="{DynamicResource MainBorderColor}"
-                    BorderThickness="0,0,1,0"
-                    Classes="noBorderHover"
-                    Command="{Binding OptimizeImageCommand}"
-                    Height="28"
-                    Width="133"
-                    x:Name="OptimizeButton">
-                    <TextBlock
-                        Classes="txt"
-                        Foreground="{DynamicResource MainTextColor}"
-                        HorizontalAlignment="Center"
-                        Text="{Binding OptimizeImage}"
-                        VerticalAlignment="Center"
-                        x:Name="OptimizeText" />
-                </Button>
-
-                <Button
-                    BorderBrush="{DynamicResource MainBorderColor}"
-                    BorderThickness="0,0,1,0"
-                    Classes="noBorderHover"
-                    Command="{CompiledBinding OpenWithCommand}"
-                    CommandParameter="{CompiledBinding FileInfo.FullName,
-                                                       FallbackValue=''}"
-                    Height="28"
-                    Width="130"
-                    x:Name="OpenWithButton">
-                    <TextBlock
-                        Classes="txt"
-                        Foreground="{DynamicResource MainTextColor}"
-                        HorizontalAlignment="Center"
-                        Text="{Binding OpenWith}"
-                        VerticalAlignment="Center"
-                        x:Name="OpenWithText" />
-                </Button>
-
-                <Button
-                    BorderBrush="{DynamicResource MainBorderColor}"
-                    BorderThickness="0,0,1,0"
-                    Classes="noBorderHover"
-                    Command="{CompiledBinding LocateOnDiskCommand}"
-                    CommandParameter="{CompiledBinding FileInfo.FullName,
-                                                       FallbackValue=''}"
-                    Height="28"
-                    Width="133"
-                    x:Name="LocateOnDiskButton">
-                    <TextBlock
-                        Classes="txt"
-                        Foreground="{DynamicResource MainTextColor}"
-                        HorizontalAlignment="Center"
-                        Text="{Binding ShowInFolder}"
-                        VerticalAlignment="Center"
-                        x:Name="LocateOnDiskText" />
-                </Button>
-                <buttons:StarOutlineButtons Background="{DynamicResource TertiaryBackgroundColor}" x:Name="StarOutlineButtons" />
 
                 <customControls:IconButton
                     Background="{DynamicResource MainButtonBackgroundColor}"
@@ -142,19 +67,159 @@
                     Width="29"
                     x:Name="MinimizeButton" />
 
-                <customControls:IconButton
-                    Background="{DynamicResource MainButtonBackgroundColor}"
-                    Classes="hover"
-                    Click="Close"
-                    ClickMode="Release"
-                    Data="{StaticResource CloseGeometry}"
+                <buttons:StarOutlineButtons
+                    Background="{DynamicResource TertiaryBackgroundColor}"
                     DockPanel.Dock="Right"
-                    Foreground="{DynamicResource MainTextColor}"
-                    IconHeight="10"
-                    IconWidth="10"
-                    Width="29"
-                    x:Name="CloseButton" />
-            </StackPanel>
+                    x:Name="StarOutlineButtons" />
+
+                <customControls:IconButton
+                    Background="{DynamicResource TertiaryBackgroundColor}"
+                    BorderBrush="{DynamicResource MainBorderColor}"
+                    BorderThickness="0,0,1,0"
+                    Classes="noBorderHover"
+                    Command="{CompiledBinding SetExifRating0Command}"
+                    CommandParameter="{CompiledBinding FileInfo.FullName,
+                                                       FallbackValue=''}"
+                    DockPanel.Dock="Right"
+                    Icon="{StaticResource StarOffImage}"
+                    IconHeight="17"
+                    IconWidth="17"
+                    Width="35"
+                    x:Name="RemoveRatingButton" />
+
+                <customControls:IconButton
+                    BorderBrush="{DynamicResource MainBorderColor}"
+                    BorderThickness="0,0,1,0"
+                    Classes="errorHover"
+                    ClickMode="Release"
+                    Command="{CompiledBinding RecycleFileCommand}"
+                    Data="{StaticResource RecycleGeometry}"
+                    DockPanel.Dock="Right"
+                    Height="28"
+                    IconHeight="17"
+                    IconWidth="17"
+                    ToolTip.Tip="{CompiledBinding DeleteFile,
+                                                  Mode=OneWay}"
+                    Width="45"
+                    x:Name="RecycleButton" />
+
+                <customControls:IconButton
+                    BorderBrush="{DynamicResource MainBorderColor}"
+                    BorderThickness="0,0,1,0"
+                    Classes="noBorderHover"
+                    Command="{Binding OptimizeImageCommand}"
+                    DockPanel.Dock="Right"
+                    Height="28"
+                    Icon="{StaticResource PortalImage}"
+                    IconHeight="17"
+                    IconWidth="17"
+                    ToolTip.Tip="{CompiledBinding OptimizeImage,
+                                                  Mode=OneWay}"
+                    Width="45"
+                    x:Name="OptimizeButton" />
+
+                <customControls:IconButton
+                    BorderBrush="{DynamicResource MainBorderColor}"
+                    BorderThickness="0,0,1,0"
+                    Classes="noBorderHover"
+                    Command="{CompiledBinding OpenWithCommand}"
+                    CommandParameter="{CompiledBinding FileInfo.FullName,
+                                                       FallbackValue=''}"
+                    Data="{StaticResource OpenWithGeometry}"
+                    DockPanel.Dock="Right"
+                    Height="28"
+                    IconHeight="17"
+                    IconWidth="17"
+                    ToolTip.Tip="{CompiledBinding OpenWith,
+                                                  Mode=OneWay}"
+                    Width="45"
+                    x:Name="OpenWithButton" />
+
+                <customControls:IconButton
+                    BorderBrush="{DynamicResource MainBorderColor}"
+                    BorderThickness="0,0,1,0"
+                    Classes="noBorderHover"
+                    Command="{CompiledBinding PrintCommand}"
+                    CommandParameter="{CompiledBinding FileInfo.FullName,
+                                                       FallbackValue=''}"
+                    Data="{StaticResource PrintGeometry}"
+                    DockPanel.Dock="Right"
+                    Height="28"
+                    IconHeight="17"
+                    IconWidth="17"
+                    ToolTip.Tip="{CompiledBinding Print,
+                                                  Mode=OneWay}"
+                    Width="45"
+                    x:Name="PrintButton" />
+
+                <customControls:IconButton
+                    BorderBrush="{DynamicResource MainBorderColor}"
+                    BorderThickness="0,0,1,0"
+                    Classes="noBorderHover"
+                    Command="{CompiledBinding CopyImageCommand}"
+                    DockPanel.Dock="Right"
+                    Icon="{StaticResource CopyImages}"
+                    IconHeight="17"
+                    IconWidth="17"
+                    ToolTip.Tip="{CompiledBinding CopyImage,
+                                                  Mode=OneWay}"
+                    Width="45"
+                    x:Name="CopyButton" />
+
+                <customControls:IconButton
+                    BorderBrush="{DynamicResource MainBorderColor}"
+                    BorderThickness="0,0,1,0"
+                    Classes="noBorderHover"
+                    Command="{CompiledBinding CopyFileCommand}"
+                    Data="{StaticResource CopyGeometry}"
+                    DockPanel.Dock="Right"
+                    Height="28"
+                    IconHeight="17"
+                    IconWidth="17"
+                    ToolTip.Tip="{CompiledBinding CopyFile,
+                                                  Mode=OneWay}"
+                    Width="45"
+                    x:Name="CopyFileButton" />
+
+                <customControls:IconButton
+                    BorderBrush="{DynamicResource MainBorderColor}"
+                    BorderThickness="0,0,1,0"
+                    Classes="noBorderHover"
+                    Command="{CompiledBinding DuplicateFileCommand}"
+                    Data="{StaticResource DuplicateGeometry}"
+                    DockPanel.Dock="Right"
+                    Height="28"
+                    IconHeight="17"
+                    IconWidth="17"
+                    ToolTip.Tip="{CompiledBinding DuplicateFile,
+                                                  Mode=OneWay}"
+                    Width="45"
+                    x:Name="DuplicateButton" />
+
+                <customControls:IconButton
+                    BorderBrush="{DynamicResource MainBorderColor}"
+                    BorderThickness="1,0,1,0"
+                    Classes="noBorderHover"
+                    Command="{CompiledBinding LocateOnDiskCommand}"
+                    CommandParameter="{CompiledBinding FileInfo.FullName,
+                                                       FallbackValue=''}"
+                    Data="{StaticResource ShowInFolderGeometry}"
+                    DockPanel.Dock="Right"
+                    Height="28"
+                    IconHeight="17"
+                    IconWidth="17"
+                    ToolTip.Tip="{CompiledBinding ShowInFolder,
+                                                  Mode=OneWay}"
+                    Width="45"
+                    x:Name="LocateOnDiskButton" />
+
+
+                <TextBlock
+                    Classes="txt"
+                    DockPanel.Dock="Left"
+                    Text="{CompiledBinding ImageInfo}"
+                    TextAlignment="Center" />
+            </DockPanel>
             <Rectangle
                 DockPanel.Dock="Top"
                 Fill="{DynamicResource MainBorderColor}"

@@ -460,6 +460,7 @@
                         Background="{DynamicResource TertiaryBackgroundColor}"
                         BorderBrush="{DynamicResource MainBorderColor}"
                         BorderThickness="1"
+                        CornerRadius="2"
                         FontFamily="/Assets/Fonts/Roboto-Medium.ttf#Roboto"
                         Padding="5,7,0,7"
                         SelectedIndex="0"
@@ -478,7 +479,7 @@
                     <SplitButton
                         Background="{DynamicResource AccentColor}"
                         Classes="BorderStyle accentHover mainBtn"
-                        CornerRadius="4"
+                        CornerRadius="2"
                         Margin="0,40,0,0"
                         Width="140"
                         x:Name="SaveButton">
@@ -507,7 +508,7 @@
                     <!--  Reset  -->
                     <Button
                         Classes="BorderStyle altHover mainBtn"
-                        CornerRadius="4"
+                        CornerRadius="2"
                         Margin="0,20,0,0"
                         Width="140"
                         x:Name="ResetButton">
