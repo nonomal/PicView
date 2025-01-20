@@ -1,10 +1,13 @@
 ﻿using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
+using PicView.Avalonia.Clipboard;
 using PicView.Avalonia.Gallery;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.Calculations;
 using PicView.Core.Config;
+using PicView.Core.FileHandling;
 using PicView.Core.Gallery;
 using StartUpMenu = PicView.Avalonia.Views.StartUpMenu;
 
@@ -92,5 +95,39 @@ public static class ErrorHandling
         await vm.ImageIterator.ReloadFileList().ConfigureAwait(false);
         var index = vm.ImageIterator.ImagePaths.IndexOf(vm.FileInfo.FullName);
         await NavigationHelper.Navigate(index, vm).ConfigureAwait(false);
+    }
+    
+    public static async Task ReloadImageAsync(MainViewModel vm)
+    {
+        if (vm.ImageSource is null)
+        {
+            return;
+        }
+
+        if (NavigationHelper.CanNavigate(vm))
+        {
+            var preloadValue = await vm.ImageIterator.GetPreLoadValueAsync(vm.ImageIterator.CurrentIndex).ConfigureAwait(false);
+            if (preloadValue?.ImageModel.Image is not null)
+            {
+                vm.ImageSource = preloadValue.ImageModel.Image;
+            }
+        }
+        else
+        {
+            var url = vm.Title.GetURL();
+            if (!string.IsNullOrEmpty(url))
+            {
+                await NavigationHelper.LoadPicFromUrlAsync(url, vm).ConfigureAwait(false);
+            }
+            else 
+            {
+                if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+                {
+                    return;
+                }
+                var clipboard = desktop.MainWindow.Clipboard;
+                await ClipboardHelper.PasteClipboardImage(vm, clipboard);
+            }
+        }
     }
 }

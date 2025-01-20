@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Shapes;
 using Avalonia.Input;
+using Avalonia.Input.Platform;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
@@ -183,6 +184,20 @@ public static class ClipboardHelper
             return;
         }
         
+        var text = await clipboard.GetTextAsync();
+        if (!string.IsNullOrWhiteSpace(text))
+        {   
+            await NavigationHelper.LoadPicFromStringAsync(text, vm).ConfigureAwait(false);
+            return;
+        }
+        
+        await PasteClipboardImage(vm, clipboard);
+        
+
+    }
+    
+    public static async Task PasteClipboardImage(MainViewModel vm, IClipboard clipboard)
+    {
         var name = TranslationHelper.Translation.ClipboardImage;
         var imageType = ImageType.Bitmap;
         var bitmap = await GetBitmapFromBytes("PNG");
@@ -246,13 +261,7 @@ public static class ClipboardHelper
             UpdateImage.SetSingleImage(bitmap, imageType, name, vm);
             return;
         }
-        
-        var text = await clipboard.GetTextAsync();
-        if (!string.IsNullOrWhiteSpace(text))
-        {   
-            await NavigationHelper.LoadPicFromStringAsync(text, vm).ConfigureAwait(false);
-            return;
-        }
+
         // Handle for Windows
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {

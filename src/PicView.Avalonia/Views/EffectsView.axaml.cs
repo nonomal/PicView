@@ -1,9 +1,9 @@
 using Avalonia.Controls;
+using Avalonia.Threading;
 using ImageMagick;
 using PicView.Avalonia.ImageEffects;
-using PicView.Avalonia.ImageHandling;
+using PicView.Avalonia.Navigation;
 using PicView.Avalonia.ViewModels;
-using PicView.Core.FileHandling;
 using Timer = System.Timers.Timer;
 
 namespace PicView.Avalonia.Views;
@@ -14,6 +14,8 @@ public partial class EffectsView : UserControl
     private ImageEffectConfig _config;
 
     private Timer? _debounceTimer;
+
+    private bool _reloading;
 
     public EffectsView()
     {
@@ -40,7 +42,6 @@ public partial class EffectsView : UserControl
             ClearEffectsItem.Click += async delegate { await RemoveEffects(vm); };
             ResetContrastBtn.Click += delegate { ContrastSlider.Value = 0; };
             ResetBrightnessBtn.Click += delegate { BrightnessSlider.Value = 0; };
-            ResetPencilSketchBtn.Click += delegate { PencilSketchSlider.Value = 0; };
             ResetPencilSketchBtn.Click += delegate { PencilSketchSlider.Value = 0; };
             ResetPosterizeBtn.Click += delegate { PosterizeSlider.Value = 0; };
             ResetSolarizeBtn.Click += delegate { SolarizeSlider.Value = 0; };
@@ -129,126 +130,43 @@ public partial class EffectsView : UserControl
 
     private async Task ApplyEffectsDebounced(MainViewModel vm)
     {
+        if (_reloading)
+        {
+            return;
+        }
         if (_cancellationTokenSource is not null)
         {
             await _cancellationTokenSource.CancelAsync().ConfigureAwait(false);
         }
 
         _cancellationTokenSource = new CancellationTokenSource();
-        await ApplyEffects(vm, _config, _cancellationTokenSource.Token).ConfigureAwait(false);
-    }
-
-    private static async Task ApplyEffects(MainViewModel vm, ImageEffectConfig config,
-        CancellationToken cancellationToken)
-    {
-        vm.IsLoading = true;
-        try
-        {
-            await Task.Run(async () =>
-            {
-                var fileInfo = vm.FileInfo;
-                await using var filestream = FileHelper.GetOptimizedFileStream(fileInfo);
-                using var magick = new MagickImage();
-                if (fileInfo.Length >= 2147483648)
-                {
-                    // Fixes "The file is too long. This operation is currently limited to supporting files less than 2 gigabytes in size."
-                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                    magick.Read(filestream);
-                }
-                else
-                {
-                    await magick.ReadAsync(filestream, cancellationToken).ConfigureAwait(false);
-                }
-
-                cancellationToken.ThrowIfCancellationRequested();
-
-                magick.BrightnessContrast(config.Brightness, config.Contrast);
-                magick.BackgroundColor = MagickColors.Transparent;
-                magick.Settings.BackgroundColor = MagickColors.Transparent;
-                magick.Settings.FillColor = MagickColors.Transparent;
-
-                if (config.Negative)
-                {
-                    magick.Negate();
-                }
-
-                if (config.BlackAndWhite)
-                {
-                    magick.Grayscale();
-                }
-
-                if (config.OldMovie)
-                {
-                    // 1. Apply sepia tone
-                    magick.SepiaTone(new Percentage(80));
-
-                    // 2. Add noise
-                    magick.AddNoise(NoiseType.MultiplicativeGaussian);
-
-                    var random = new Random();
-
-                    // 3. Add vertical bands (simulate scratches)
-                    for (var i = 0; i < magick.Width; i += random.Next(1, 50))
-                    {
-                        using var band = new MagickImage(new MagickColor("#3E382A"), (uint)random.Next(1, 3),
-                            magick.Height);
-                        band.Evaluate(Channels.Alpha, EvaluateOperator.Set, 0.2); // semi-transparent
-                        magick.Composite(band, i, 0, CompositeOperator.Over);
-                    }
-                }
-
-                if (config.SketchStrokeWidth is not 0)
-                {
-                    magick.Charcoal(config.SketchStrokeWidth, 3);
-                }
-
-                if (config.PosterizeLevel is not 0)
-                {
-                    magick.Posterize(config.PosterizeLevel);
-                }
-
-                if (config.BlurLevel is not 0)
-                {
-                    magick.Blur(0, config.BlurLevel);
-                }
-
-                if (config.Solarize.ToUInt32() is not 0)
-                {
-                    magick.Solarize(config.Solarize);
-                }
-
-                cancellationToken.ThrowIfCancellationRequested();
-
-                var bitmap = magick.ToWriteableBitmap();
-                vm.ImageSource = bitmap;
-            }, cancellationToken).ConfigureAwait(false);
-        }
-        catch (OperationCanceledException)
-        {
-            //
-        }
-        catch (Exception e)
-        {
-#if DEBUG
-            Console.WriteLine(e);
-#endif
-        }
-        finally
-        {
-            vm.IsLoading = false;
-        }
+        await ImageEffectsHelper.ApplyEffects(vm, _config, _cancellationTokenSource.Token).ConfigureAwait(false);
     }
 
     private async Task RemoveEffects(MainViewModel vm)
     {
-        using var magick = new MagickImage();
-        await magick.ReadAsync(vm.FileInfo.FullName).ConfigureAwait(false);
-        magick.BackgroundColor = MagickColors.Transparent;
-        magick.Settings.BackgroundColor = MagickColors.Transparent;
-        magick.Settings.FillColor = MagickColors.Transparent;
-        var bitmap = magick.ToWriteableBitmap();
-        vm.ImageSource = bitmap;
-        _config = new ImageEffectConfig();
+        _reloading = true;
+        try
+        {
+            await ErrorHandling.ReloadImageAsync(vm).ConfigureAwait(false);
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                BlackAndWhiteToggleButton.IsChecked = false;
+                NegativeToggleButton.IsChecked = false;
+                OldMovieToggleButton.IsChecked = false;
+                ContrastSlider.Value = 0;
+                BrightnessSlider.Value = 0;
+                PencilSketchSlider.Value = 0;
+                PosterizeSlider.Value = 0;
+                SolarizeSlider.Value = 0;
+                BlurSlider.Value = 0;
+            });
+            _config = new ImageEffectConfig();
+        }
+        finally
+        {
+            _reloading = false;
+        }
     }
 
     ~EffectsView()
