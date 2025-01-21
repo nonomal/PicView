@@ -1,9 +1,12 @@
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using ImageMagick;
 using PicView.Avalonia.ImageEffects;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.ViewModels;
+using ReactiveUI;
 using Timer = System.Timers.Timer;
 
 namespace PicView.Avalonia.Views;
@@ -11,11 +14,11 @@ namespace PicView.Avalonia.Views;
 public partial class EffectsView : UserControl
 {
     private CancellationTokenSource? _cancellationTokenSource;
-    private ImageEffectConfig _config;
 
     private Timer? _debounceTimer;
 
     private bool _reloading;
+    private readonly CompositeDisposable _disposables = new();
 
     public EffectsView()
     {
@@ -36,6 +39,40 @@ public partial class EffectsView : UserControl
                     ContextMenu.Open();
                 }
             };
+            
+            vm.ObservableForProperty(v => v.FileInfo)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(_ => Reset())
+                .DisposeWith(_disposables);
+
+            if (vm.EffectConfig is null)
+            {
+                vm.EffectConfig = new ImageEffectConfig();
+            }
+            else
+            {
+                if (vm.EffectConfig.BlackAndWhite)
+                {
+                    BlackAndWhiteToggleButton.IsChecked = true;
+                }
+
+                if (vm.EffectConfig.OldMovie)
+                {
+                    OldMovieToggleButton.IsChecked = true;
+                }
+
+                if (vm.EffectConfig.Negative)
+                {
+                    NegativeToggleButton.IsChecked = true;
+                }
+
+                BrightnessSlider.Value = vm.EffectConfig.Brightness.ToInt32();
+                ContrastSlider.Value = vm.EffectConfig.Contrast.ToInt32();
+                PencilSketchSlider.Value = vm.EffectConfig.SketchStrokeWidth;
+                PosterizeSlider.Value = vm.EffectConfig.PosterizeLevel;
+                SolarizeSlider.Value = vm.EffectConfig.Solarize.ToInt32();
+                BlurSlider.Value = vm.EffectConfig.BlurLevel;
+            }
 
             DetachedFromLogicalTree += (_, _) => CleanUp();
 
@@ -52,38 +89,38 @@ public partial class EffectsView : UserControl
 
             BrightnessSlider.ValueChanged += (_, e) =>
             {
-                _config.Brightness = new Percentage(e.NewValue);
+                vm.EffectConfig.Brightness = new Percentage(e.NewValue);
                 DebounceSliderChange();
             };
 
             ContrastSlider.ValueChanged += (_, e) =>
             {
-                _config.Contrast = new Percentage(e.NewValue);
+                vm.EffectConfig.Contrast = new Percentage(e.NewValue);
                 DebounceSliderChange();
             };
 
             PencilSketchSlider.ValueChanged += (_, e) =>
             {
-                _config.SketchStrokeWidth = e.NewValue;
+                vm.EffectConfig.SketchStrokeWidth = e.NewValue;
                 DebounceSliderChange();
             };
 
             PosterizeSlider.ValueChanged += (_, e) =>
             {
                 var newValue = (int)e.NewValue;
-                _config.PosterizeLevel = newValue is 1 ? 2 : newValue;
+                vm.EffectConfig.PosterizeLevel = newValue is 1 ? 2 : newValue;
                 DebounceSliderChange();
             };
 
             SolarizeSlider.ValueChanged += (_, e) =>
             {
-                _config.Solarize = new Percentage(e.NewValue);
+                vm.EffectConfig.Solarize = new Percentage(e.NewValue);
                 DebounceSliderChange();
             };
 
             BlurSlider.ValueChanged += (_, e) =>
             {
-                _config.BlurLevel = e.NewValue;
+                vm.EffectConfig.BlurLevel = e.NewValue;
                 DebounceSliderChange();
             };
 
@@ -94,7 +131,7 @@ public partial class EffectsView : UserControl
                     return;
                 }
 
-                _config.BlackAndWhite = BlackAndWhiteToggleButton.IsChecked.Value;
+                vm.EffectConfig.BlackAndWhite = BlackAndWhiteToggleButton.IsChecked.Value;
                 await ApplyEffectsDebounced(vm);
             };
 
@@ -105,7 +142,7 @@ public partial class EffectsView : UserControl
                     return;
                 }
 
-                _config.Negative = NegativeToggleButton.IsChecked.Value;
+                vm.EffectConfig.Negative = NegativeToggleButton.IsChecked.Value;
                 await ApplyEffectsDebounced(vm);
             };
 
@@ -116,7 +153,7 @@ public partial class EffectsView : UserControl
                     return;
                 }
 
-                _config.OldMovie = OldMovieToggleButton.IsChecked.Value;
+                vm.EffectConfig.OldMovie = OldMovieToggleButton.IsChecked.Value;
                 await ApplyEffectsDebounced(vm);
             };
         };
@@ -140,7 +177,7 @@ public partial class EffectsView : UserControl
         }
 
         _cancellationTokenSource = new CancellationTokenSource();
-        await ImageEffectsHelper.ApplyEffects(vm, _config, _cancellationTokenSource.Token).ConfigureAwait(false);
+        await ImageEffectsHelper.ApplyEffects(vm, vm.EffectConfig, _cancellationTokenSource.Token).ConfigureAwait(false);
     }
 
     private async Task RemoveEffects(MainViewModel vm)
@@ -149,23 +186,29 @@ public partial class EffectsView : UserControl
         try
         {
             await ErrorHandling.ReloadImageAsync(vm).ConfigureAwait(false);
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                BlackAndWhiteToggleButton.IsChecked = false;
-                NegativeToggleButton.IsChecked = false;
-                OldMovieToggleButton.IsChecked = false;
-                ContrastSlider.Value = 0;
-                BrightnessSlider.Value = 0;
-                PencilSketchSlider.Value = 0;
-                PosterizeSlider.Value = 0;
-                SolarizeSlider.Value = 0;
-                BlurSlider.Value = 0;
-            });
-            _config = new ImageEffectConfig();
+            await Dispatcher.UIThread.InvokeAsync(Reset);
+            vm.EffectConfig = new ImageEffectConfig();
         }
         finally
         {
             _reloading = false;
+        }
+    }
+
+    private void Reset()
+    {
+        BlackAndWhiteToggleButton.IsChecked = false;
+        NegativeToggleButton.IsChecked = false;
+        OldMovieToggleButton.IsChecked = false;
+        ContrastSlider.Value = 0;
+        BrightnessSlider.Value = 0;
+        PencilSketchSlider.Value = 0;
+        PosterizeSlider.Value = 0;
+        SolarizeSlider.Value = 0;
+        BlurSlider.Value = 0;
+        if (DataContext is MainViewModel vm)
+        {
+            vm.EffectConfig = new ImageEffectConfig();
         }
     }
 
@@ -181,6 +224,7 @@ public partial class EffectsView : UserControl
             vm.IsLoading = false;
         }
 
+        _disposables.Dispose();
         _debounceTimer?.Dispose();
         _cancellationTokenSource?.Cancel();
         _cancellationTokenSource?.Dispose();

@@ -2,19 +2,19 @@
 
 namespace PicView.Avalonia.ImageEffects;
 
-public struct ImageEffectConfig(Percentage brightness, Percentage contrast, double sketchStrokeWidth, double blurLevel, int posterizeLevel, bool negative, bool blackAndWhite, bool oldMovie, Percentage solarize)
+public class ImageEffectConfig
 {
-    public Percentage Brightness = brightness;
-    public Percentage Contrast = contrast;
-    public Percentage Solarize = solarize;
+    public Percentage Brightness { get; set; }
+    public Percentage Contrast  { get; set; }
+    public Percentage Solarize { get; set; }
     
-    public double SketchStrokeWidth = sketchStrokeWidth;
+    public double SketchStrokeWidth { get; set; }
     
-    public int PosterizeLevel = posterizeLevel;
+    public int PosterizeLevel { get; set; }
     
-    public bool Negative = negative;
-    public bool BlackAndWhite = blackAndWhite;
-    public bool OldMovie = oldMovie;
-    public double BlurLevel = blurLevel;
+    public bool Negative { get; set; }
+    public bool BlackAndWhite { get; set; }
+    public bool OldMovie { get; set; }
+    public double BlurLevel { get; set; }
     
 }

@@ -8,6 +8,7 @@ using Avalonia.Media;
 using PicView.Avalonia.Clipboard;
 using PicView.Avalonia.Converters;
 using PicView.Avalonia.Gallery;
+using PicView.Avalonia.ImageEffects;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.ImageTransformations;
 using PicView.Avalonia.Interfaces;
@@ -93,6 +94,12 @@ public class MainViewModel : ViewModelBase
     } = double.NaN;
     
     public double AspectRatio
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
+    
+    public ImageEffectConfig? EffectConfig
     {
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);
