@@ -120,7 +120,7 @@ public partial class EffectsView : UserControl
         await ImageEffectsHelper.ApplyEffects(vm, vm.EffectConfig, _cancellationTokenSource.Token).ConfigureAwait(false);
     }
 
-    private async Task RemoveEffects(MainViewModel vm)
+    public async Task RemoveEffects(MainViewModel vm)
     {
         _reloading = true;
         try
