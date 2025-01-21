@@ -320,3 +320,5 @@ PicView does not collect data. No data is sent/recieved and/or collected by PicV
 If you wish to thank me for my work, please
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/W7W46BJFV)
+
+[<img src="https://api.gitsponsors.com/api/badge/img?id=79786795" height="20">](https://api.gitsponsors.com/api/badge/link?p=9B5NhQ6Ev0SwEqfTMlqv0OWpsuuyzOjxLIomvNvd3Qu+3tO+qFvXKEnZfWQ3PhTgnmotr9lHmcLlOhTLqmtqdgWClQp4blp6g6D86x8ddm8Uz4hU6x1CgMSmnNG2vLQQ)
