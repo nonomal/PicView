@@ -1,6 +1,9 @@
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
+using Avalonia.Input;
+using Avalonia.LogicalTree;
 using Avalonia.Threading;
 using ImageMagick;
 using PicView.Avalonia.ImageEffects;
@@ -14,149 +17,82 @@ namespace PicView.Avalonia.Views;
 public partial class EffectsView : UserControl
 {
     private CancellationTokenSource? _cancellationTokenSource;
-
     private Timer? _debounceTimer;
-
     private bool _reloading;
     private readonly CompositeDisposable _disposables = new();
 
     public EffectsView()
     {
         InitializeComponent();
+        Loaded += OnLoaded;
+        DetachedFromLogicalTree += OnDetachedFromLogicalTree;
+    }
 
-        Loaded += (_, _) =>
+    private void OnLoaded(object? sender, EventArgs e)
+    {
+        if (DataContext is not MainViewModel vm)
         {
-            if (DataContext is not MainViewModel vm)
-            {
-                return;
-            }
+            return;
+        }
 
-            PointerPressed += (_, e) =>
-            {
-                if (e.GetCurrentPoint(this).Properties.IsRightButtonPressed)
-                {
-                    // Context menu doesn't want to be opened normally
-                    ContextMenu.Open();
-                }
-            };
-            
-            vm.ObservableForProperty(v => v.FileInfo)
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .Subscribe(_ => Reset())
-                .DisposeWith(_disposables);
+        InitializeViewModel(vm);
+        InitializeUIEvents(vm);
+        InitializeDebounceTimer();
+    }
 
-            if (vm.EffectConfig is null)
-            {
-                vm.EffectConfig = new ImageEffectConfig();
-            }
-            else
-            {
-                if (vm.EffectConfig.BlackAndWhite)
-                {
-                    BlackAndWhiteToggleButton.IsChecked = true;
-                }
+    private void InitializeViewModel(MainViewModel vm)
+    {
+        // Reset on file change
+        vm.ObservableForProperty(v => v.FileInfo)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(_ => Reset())
+            .DisposeWith(_disposables);
 
-                if (vm.EffectConfig.OldMovie)
-                {
-                    OldMovieToggleButton.IsChecked = true;
-                }
+        if (vm.EffectConfig is null)
+        {
+            vm.EffectConfig = new ImageEffectConfig();
+        }
+        else
+        {
+            ApplyEffectConfig(vm.EffectConfig);
+        }
+    }
 
-                if (vm.EffectConfig.Negative)
-                {
-                    NegativeToggleButton.IsChecked = true;
-                }
+    private void InitializeUIEvents(MainViewModel vm)
+    {
+        PointerPressed += OnPointerPressed;
+        ClearEffectsItem.Click += async (_, _) => await RemoveEffects(vm);
+        ResetContrastBtn.Click += (_, _) => ContrastSlider.Value = 0;
+        ResetBrightnessBtn.Click += (_, _) => BrightnessSlider.Value = 0;
+        ResetPencilSketchBtn.Click += (_, _) => PencilSketchSlider.Value = 0;
+        ResetPosterizeBtn.Click += (_, _) => PosterizeSlider.Value = 0;
+        ResetSolarizeBtn.Click += (_, _) => SolarizeSlider.Value = 0;
+        ResetBlurBtn.Click += (_, _) => BlurSlider.Value = 0;
 
-                BrightnessSlider.Value = vm.EffectConfig.Brightness.ToInt32();
-                ContrastSlider.Value = vm.EffectConfig.Contrast.ToInt32();
-                PencilSketchSlider.Value = vm.EffectConfig.SketchStrokeWidth;
-                PosterizeSlider.Value = vm.EffectConfig.PosterizeLevel;
-                SolarizeSlider.Value = vm.EffectConfig.Solarize.ToInt32();
-                BlurSlider.Value = vm.EffectConfig.BlurLevel;
-            }
+        BrightnessSlider.ValueChanged += (s, e) => UpdateEffectConfig(vm, config => config.Brightness = new Percentage(e.NewValue));
+        ContrastSlider.ValueChanged += (s, e) => UpdateEffectConfig(vm, config => config.Contrast = new Percentage(e.NewValue));
+        PencilSketchSlider.ValueChanged += (s, e) => UpdateEffectConfig(vm, config => config.SketchStrokeWidth = e.NewValue);
+        PosterizeSlider.ValueChanged += (s, e) => UpdateEffectConfig(vm, config => config.PosterizeLevel = (int)e.NewValue == 1 ? 2 : (int)e.NewValue);
+        SolarizeSlider.ValueChanged += (s, e) => UpdateEffectConfig(vm, config => config.Solarize = new Percentage(e.NewValue));
+        BlurSlider.ValueChanged += (s, e) => UpdateEffectConfig(vm, config => config.BlurLevel = e.NewValue);
 
-            DetachedFromLogicalTree += (_, _) => CleanUp();
+        BlackAndWhiteToggleButton.Click += async (_, _) => await UpdateToggleEffect(vm, BlackAndWhiteToggleButton, config => config.BlackAndWhite = BlackAndWhiteToggleButton.IsChecked.Value);
+        NegativeToggleButton.Click += async (_, _) => await UpdateToggleEffect(vm, NegativeToggleButton, config => config.Negative = NegativeToggleButton.IsChecked.Value);
+        OldMovieToggleButton.Click += async (_, _) => await UpdateToggleEffect(vm, OldMovieToggleButton, config => config.OldMovie = OldMovieToggleButton.IsChecked.Value);
+    }
 
-            ClearEffectsItem.Click += async delegate { await RemoveEffects(vm); };
-            ResetContrastBtn.Click += delegate { ContrastSlider.Value = 0; };
-            ResetBrightnessBtn.Click += delegate { BrightnessSlider.Value = 0; };
-            ResetPencilSketchBtn.Click += delegate { PencilSketchSlider.Value = 0; };
-            ResetPosterizeBtn.Click += delegate { PosterizeSlider.Value = 0; };
-            ResetSolarizeBtn.Click += delegate { SolarizeSlider.Value = 0; };
-            ResetBlurBtn.Click += delegate { BlurSlider.Value = 0; };
+    private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        if (e.GetCurrentPoint(this).Properties.IsRightButtonPressed)
+        {
+            ContextMenu.Open();
+        }
+    }
 
-            _debounceTimer = new Timer { Interval = 300, AutoReset = false };
-            _debounceTimer.Elapsed += async (_, _) => await ApplyEffectsDebounced(vm).ConfigureAwait(false);
-
-            BrightnessSlider.ValueChanged += (_, e) =>
-            {
-                vm.EffectConfig.Brightness = new Percentage(e.NewValue);
-                DebounceSliderChange();
-            };
-
-            ContrastSlider.ValueChanged += (_, e) =>
-            {
-                vm.EffectConfig.Contrast = new Percentage(e.NewValue);
-                DebounceSliderChange();
-            };
-
-            PencilSketchSlider.ValueChanged += (_, e) =>
-            {
-                vm.EffectConfig.SketchStrokeWidth = e.NewValue;
-                DebounceSliderChange();
-            };
-
-            PosterizeSlider.ValueChanged += (_, e) =>
-            {
-                var newValue = (int)e.NewValue;
-                vm.EffectConfig.PosterizeLevel = newValue is 1 ? 2 : newValue;
-                DebounceSliderChange();
-            };
-
-            SolarizeSlider.ValueChanged += (_, e) =>
-            {
-                vm.EffectConfig.Solarize = new Percentage(e.NewValue);
-                DebounceSliderChange();
-            };
-
-            BlurSlider.ValueChanged += (_, e) =>
-            {
-                vm.EffectConfig.BlurLevel = e.NewValue;
-                DebounceSliderChange();
-            };
-
-            BlackAndWhiteToggleButton.Click += async (_, _) =>
-            {
-                if (!BlackAndWhiteToggleButton.IsChecked.HasValue)
-                {
-                    return;
-                }
-
-                vm.EffectConfig.BlackAndWhite = BlackAndWhiteToggleButton.IsChecked.Value;
-                await ApplyEffectsDebounced(vm);
-            };
-
-            NegativeToggleButton.Click += async (_, _) =>
-            {
-                if (!NegativeToggleButton.IsChecked.HasValue)
-                {
-                    return;
-                }
-
-                vm.EffectConfig.Negative = NegativeToggleButton.IsChecked.Value;
-                await ApplyEffectsDebounced(vm);
-            };
-
-            OldMovieToggleButton.Click += async (_, _) =>
-            {
-                if (!OldMovieToggleButton.IsChecked.HasValue)
-                {
-                    return;
-                }
-
-                vm.EffectConfig.OldMovie = OldMovieToggleButton.IsChecked.Value;
-                await ApplyEffectsDebounced(vm);
-            };
-        };
+    private void InitializeDebounceTimer()
+    {
+        _debounceTimer = new Timer { Interval = 300, AutoReset = false };
+        _debounceTimer.Elapsed += async (_, _) => await ApplyEffectsDebounced();
     }
 
     private void DebounceSliderChange()
@@ -165,18 +101,22 @@ public partial class EffectsView : UserControl
         _debounceTimer.Start();
     }
 
-    private async Task ApplyEffectsDebounced(MainViewModel vm)
+    private async Task ApplyEffectsDebounced()
     {
         if (_reloading)
         {
             return;
         }
+
         if (_cancellationTokenSource is not null)
         {
             await _cancellationTokenSource.CancelAsync().ConfigureAwait(false);
         }
-
         _cancellationTokenSource = new CancellationTokenSource();
+        
+        MainViewModel? vm = null;
+        await Dispatcher.UIThread.InvokeAsync(() => { vm = DataContext as MainViewModel; });
+        
         await ImageEffectsHelper.ApplyEffects(vm, vm.EffectConfig, _cancellationTokenSource.Token).ConfigureAwait(false);
     }
 
@@ -187,7 +127,6 @@ public partial class EffectsView : UserControl
         {
             await ErrorHandling.ReloadImageAsync(vm).ConfigureAwait(false);
             await Dispatcher.UIThread.InvokeAsync(Reset);
-            vm.EffectConfig = new ImageEffectConfig();
         }
         finally
         {
@@ -210,6 +149,42 @@ public partial class EffectsView : UserControl
         {
             vm.EffectConfig = new ImageEffectConfig();
         }
+    }
+
+    private void ApplyEffectConfig(ImageEffectConfig config)
+    {
+        if (config.BlackAndWhite) { BlackAndWhiteToggleButton.IsChecked = true; }
+        if (config.OldMovie) { OldMovieToggleButton.IsChecked = true; }
+        if (config.Negative) { NegativeToggleButton.IsChecked = true; }
+
+        BrightnessSlider.Value = config.Brightness.ToInt32();
+        ContrastSlider.Value = config.Contrast.ToInt32();
+        PencilSketchSlider.Value = config.SketchStrokeWidth;
+        PosterizeSlider.Value = config.PosterizeLevel;
+        SolarizeSlider.Value = config.Solarize.ToInt32();
+        BlurSlider.Value = config.BlurLevel;
+    }
+
+    private void UpdateEffectConfig(MainViewModel vm, Action<ImageEffectConfig> updateAction)
+    {
+        updateAction(vm.EffectConfig);
+        DebounceSliderChange();
+    }
+
+    private async Task UpdateToggleEffect(MainViewModel vm, ToggleButton toggleButton, Action<ImageEffectConfig> updateAction)
+    {
+        if (!toggleButton.IsChecked.HasValue)
+        {
+            return;
+        }
+
+        updateAction(vm.EffectConfig);
+        await ApplyEffectsDebounced();
+    }
+
+    private void OnDetachedFromLogicalTree(object? sender, LogicalTreeAttachmentEventArgs e)
+    {
+        CleanUp();
     }
 
     ~EffectsView()
