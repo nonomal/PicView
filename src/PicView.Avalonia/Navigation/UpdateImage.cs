@@ -115,6 +115,9 @@ public static class UpdateImage
                 vm.ImageViewer?.MainImage?.InvalidateVisual();
             });
         }
+
+        // Reset effects
+        vm.EffectConfig = null;
     }
 
     /// <summary>
