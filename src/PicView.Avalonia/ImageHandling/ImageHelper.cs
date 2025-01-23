@@ -18,8 +18,35 @@ public static class ImageHelper
         return frames > 1;
     }
     
-    public static async Task<string> ConvertToCommonSupportedFormatAsync(string path)
+    public static async Task<string> ConvertToCommonSupportedFormatAsync(string path, MainViewModel vm)
     {
+        if (NavigationHelper.CanNavigate(vm) && vm.EffectConfig is not null && !string.IsNullOrEmpty(path))
+        {
+            Bitmap? source = null;
+            if (path == vm.FileInfo.FullName)
+            {
+                if (vm.ImageSource is Bitmap bmp)
+                {
+                    source = bmp;
+                }
+            }
+            else
+            {
+                var preloadValue = await vm.ImageIterator.GetPreLoadValueAsync(vm.ImageIterator.ImagePaths.IndexOf(path))
+                    .ConfigureAwait(false);
+                if (preloadValue?.ImageModel.Image is Bitmap bitmap)
+                {
+                    source = bitmap;
+                }
+            }
+
+            if (source is not null)
+            {
+                var tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + "bmp");
+                source.Save(tempPath);
+                return tempPath;
+            }
+        }
         var url = path.GetURL();
         if (!string.IsNullOrWhiteSpace(url))
         {
@@ -57,6 +84,8 @@ public static class ImageHelper
                 var success = await SaveImageFileHelper.SaveImageAsync(null, path, tempPath, null, null, null, ".png");
                 return !success ? string.Empty : tempPath;
         }
+        
+
     }
     
     

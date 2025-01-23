@@ -20,7 +20,6 @@ using PicView.Core.Localization;
 using PicView.Core.ProcessHandling;
 using PicView.WindowsNT;
 using PicView.WindowsNT.FileHandling;
-using PicView.WindowsNT.Lockscreen;
 using PicView.WindowsNT.Taskbar;
 using PicView.WindowsNT.Wallpaper;
 using Dispatcher = Avalonia.Threading.Dispatcher;
@@ -478,7 +477,8 @@ public partial class App : Application, IPlatformSpecificService
     
     public bool SetAsLockScreen(string path)
     {
-        return LockscreenHelper.SetLockScreenImage(path);
+        return false;
+        // return LockscreenHelper.SetLockScreenImage(path);
     }
 
     public bool CopyFile(string path)

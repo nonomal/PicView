@@ -39,10 +39,22 @@ public static class StartUpHelper
             {
                 HandleMultipleInstances(args);
             }
-            else if (args.Length > 1 && args[1].Equals("update", StringComparison.InvariantCultureIgnoreCase))
+            else if (args.Length > 1)
             {
-                Task.Run(async () => await UpdateManager.UpdateCurrentVersion(vm));
-                return;
+                var arg = args[1];
+                if (arg.Equals("update", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    Task.Run(async () => await UpdateManager.UpdateCurrentVersion(vm));
+                    return;
+                }
+                if (arg.StartsWith("lockscreen", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    // var path = arg[(arg.LastIndexOf(',') + 1)..];
+                    // path = Path.GetFullPath(path);
+                    // vm.PlatformService.SetAsLockScreen(path);
+                    // Environment.Exit(0);
+                    return;
+                }
             }
         }
         

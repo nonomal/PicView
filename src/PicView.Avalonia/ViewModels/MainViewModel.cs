@@ -1364,14 +1364,7 @@ public class MainViewModel : ViewModelBase
         {
             return;
         }
-        if (PlatformService is null)
-        {
-            return;
-        }
-        await Task.Run(() =>
-        {
-            PlatformService?.SetAsWallpaper(path, WallpaperManager.GetWallpaperStyle(WallpaperStyle.Fit));
-        });
+        await SetAsWallpaperTask(path, WallpaperStyle.Fit).ConfigureAwait(false);
     }
     
     public async Task SetAsWallpaperFilledTask(string path)
@@ -1380,14 +1373,7 @@ public class MainViewModel : ViewModelBase
         {
             return;
         }
-        if (PlatformService is null)
-        {
-            return;
-        }
-        await Task.Run(() =>
-        {
-            PlatformService?.SetAsWallpaper(path, WallpaperManager.GetWallpaperStyle(WallpaperStyle.Fill));
-        });
+        await SetAsWallpaperTask(path, WallpaperStyle.Fill).ConfigureAwait(false);
     }
     
     public async Task SetAsWallpaperTiledTask(string path)
@@ -1396,14 +1382,7 @@ public class MainViewModel : ViewModelBase
         {
             return;
         }
-        if (PlatformService is null)
-        {
-            return;
-        }
-        await Task.Run(() =>
-        {
-            PlatformService?.SetAsWallpaper(path, WallpaperManager.GetWallpaperStyle(WallpaperStyle.Tile));
-        });
+        await SetAsWallpaperTask(path, WallpaperStyle.Tile).ConfigureAwait(false);
     }
     
     public async Task SetAsWallpaperStretchedTask(string path)
@@ -1412,14 +1391,7 @@ public class MainViewModel : ViewModelBase
         {
             return;
         }
-        if (PlatformService is null)
-        {
-            return;
-        }
-        await Task.Run(() =>
-        {
-            PlatformService?.SetAsWallpaper(path, WallpaperManager.GetWallpaperStyle(WallpaperStyle.Stretch));
-        });
+        await SetAsWallpaperTask(path, WallpaperStyle.Stretch).ConfigureAwait(false);
     }
     
     public async Task SetAsWallpaperCenteredTask(string path)
@@ -1428,14 +1400,35 @@ public class MainViewModel : ViewModelBase
         {
             return;
         }
+        await SetAsWallpaperTask(path, WallpaperStyle.Center).ConfigureAwait(false);
+    }
+    
+    public async Task SetAsWallpaperTask(string path, WallpaperStyle style)
+    {
+
         if (PlatformService is null)
         {
             return;
         }
-        await Task.Run(() =>
+        
+        IsLoading = true;
+        try
         {
-            PlatformService?.SetAsWallpaper(path, WallpaperManager.GetWallpaperStyle(WallpaperStyle.Center));
-        });
+            var file = await ImageHelper.ConvertToCommonSupportedFormatAsync(path, this).ConfigureAwait(false);
+
+            PlatformService?.SetAsWallpaper(file, WallpaperManager.GetWallpaperStyle(style));
+        }
+        catch (Exception e)
+        {
+            await TooltipHelper.ShowTooltipMessageAsync(e.Message, true);
+#if DEBUG
+            Console.WriteLine(e);   
+#endif
+        }
+        finally
+        {
+            IsLoading = false;
+        }
     }
     
     private async Task SetAsLockScreenTask(string path)
@@ -1451,23 +1444,36 @@ public class MainViewModel : ViewModelBase
         
         IsLoading = true;
 
-        var file = await ImageHelper.ConvertToCommonSupportedFormatAsync(path).ConfigureAwait(false);
-
-        var process = new Process
+        try
         {
-            StartInfo = new ProcessStartInfo
+            var file = await ImageHelper.ConvertToCommonSupportedFormatAsync(path, this).ConfigureAwait(false);
+
+            var process = new Process
             {
-                Verb = "runas",
-                UseShellExecute = true,
-                FileName = "PicView.exe",
-                Arguments = "lockscreen," + file,
-                WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory
-            }
-        };
-        process.Start();
-        await TooltipHelper.ShowTooltipMessageAsync(TranslationHelper.Translation.Applying, true);
-        await process.WaitForExitAsync();
-        IsLoading = false;
+                StartInfo = new ProcessStartInfo
+                {
+                    Verb = "runas",
+                    UseShellExecute = true,
+                    FileName = "PicView.exe",
+                    Arguments = "lockscreen," + file,
+                    WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory
+                }
+            };
+            process.Start();
+            await TooltipHelper.ShowTooltipMessageAsync(TranslationHelper.Translation.Applying, true);
+            await process.WaitForExitAsync();
+        }
+        catch (Exception e)
+        {
+            await TooltipHelper.ShowTooltipMessageAsync(e.Message, true);
+#if DEBUG
+         Console.WriteLine(e);   
+#endif
+        }
+        finally
+        {
+            IsLoading = false;
+        }
     }
 
     public async Task GalleryItemStretchTask(string value)

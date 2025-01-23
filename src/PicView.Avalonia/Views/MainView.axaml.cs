@@ -3,7 +3,6 @@ using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.Interactivity;
 using Avalonia.Media;
 using PicView.Avalonia.Crop;
 using PicView.Avalonia.DragAndDrop;
@@ -199,11 +198,5 @@ public partial class MainView : UserControl
     private void DragLeave(object? sender, DragEventArgs e)
     {
         DragAndDropHelper.DragLeave(e, this);
-    }
-
-    private void SetWallpaperClick(object? sender, RoutedEventArgs e)
-    {
-        Task.Run(FunctionsHelper.SetAsWallpaper);
-        MainContextMenu.Close();
     }
 }
