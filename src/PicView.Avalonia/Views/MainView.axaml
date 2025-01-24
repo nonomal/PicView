@@ -638,25 +638,25 @@
                     </MenuItem.Icon>
                 </MenuItem>
 
-                <Separator />
-
-                <!--  Set as lock screen  -->
-                <MenuItem
-                    Command="{CompiledBinding SetAsLockScreenCommand}"
-                    CommandParameter="{CompiledBinding FileInfo.FullName,
-                                                       FallbackValue=''}"
-                    Header="{CompiledBinding SetAsLockScreenImage,
-                                             Mode=OneWay}"
-                    IsEnabled="False">
-                    <MenuItem.Icon>
-                        <Path
-                            Data="{StaticResource PanoramaGeometry}"
-                            Fill="{StaticResource Brush0}"
-                            Height="10.40"
-                            Stretch="Fill"
-                            Width="13" />
-                    </MenuItem.Icon>
-                </MenuItem>
+                <!-- <Separator /> -->
+                <!-- -->
+                <!-- ~1~  Set as lock screen  @1@ -->
+                <!-- <MenuItem -->
+                <!--     Command="{CompiledBinding SetAsLockScreenCommand}" -->
+                <!--     CommandParameter="{CompiledBinding FileInfo.FullName, -->
+                <!--                                        FallbackValue=''}" -->
+                <!--     Header="{CompiledBinding SetAsLockScreenImage, -->
+                <!--                              Mode=OneWay}" -->
+                <!--     IsEnabled="False"> -->
+                <!--     <MenuItem.Icon> -->
+                <!--         <Path -->
+                <!--             Data="{StaticResource PanoramaGeometry}" -->
+                <!--             Fill="{StaticResource Brush0}" -->
+                <!--             Height="10.40" -->
+                <!--             Stretch="Fill" -->
+                <!--             Width="13" /> -->
+                <!--     </MenuItem.Icon> -->
+                <!-- </MenuItem> -->
 
             </MenuItem>
 
