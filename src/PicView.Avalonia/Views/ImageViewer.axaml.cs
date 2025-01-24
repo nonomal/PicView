@@ -397,6 +397,10 @@ public partial class ImageViewer : UserControl
             }
             ImageLayoutTransformControl.LayoutTransform = null;
             MainImage.RenderTransform = null;
+            if (DataContext is MainViewModel vm)
+            {
+                vm.RotationAngle = 0;
+            }
         }
     }
     
