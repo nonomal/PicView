@@ -302,7 +302,7 @@ public partial class BatchResizeView : UserControl
                     }
                 }
 
-                await using var stream = FileHelper.GetOptimizedFileStream(fileInfo);
+                await using var stream = FileHelper.GetOptimizedFileStream(fileInfo, true);
 
                 var success = await SaveImageFileHelper.SaveImageAsync(
                     stream,
@@ -431,7 +431,7 @@ public partial class BatchResizeView : UserControl
                 
                     var oldSize = $" ({magick.Width} x {magick.Height}{ImageTitleFormatter.FormatAspectRatio((int)magick.Width, (int)magick.Height)}{fileInfo.Length.GetReadableFileSize()}";
 
-                    await using var stream = FileHelper.GetOptimizedFileStream(fileInfo);
+                    await using var stream = FileHelper.GetOptimizedFileStream(fileInfo, true);
 
                     _cancellationTokenSource.Token.ThrowIfCancellationRequested();
                     

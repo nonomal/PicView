@@ -121,6 +121,7 @@ public static partial class FileHelper
     /// to improve performance for different file sizes.
     /// </summary>
     /// <param name="fileInfo">The <see cref="FileInfo"/> object representing the file to be opened.</param>
+    /// <param name="writeAccess"></param>
     /// <returns>
     /// A <see cref="FileStream"/> object configured for optimal file reading or writing, 
     /// with different settings based on the file size.
@@ -131,7 +132,7 @@ public static partial class FileHelper
     /// - For files larger than 100 MB, a buffer size of 16 KB is used, with <see cref="FileOptions.SequentialScan"/> 
     ///   enabled to optimize for large, sequential file reads.
     /// </remarks>
-    public static FileStream GetOptimizedFileStream(FileInfo fileInfo)
+    public static FileStream GetOptimizedFileStream(FileInfo fileInfo, bool writeAccess = false)
     {
         // Define thresholds for file size and buffer sizes
         var fileSize = fileInfo.Length;
@@ -157,8 +158,8 @@ public static partial class FileHelper
         // Open a FileStream with the selected buffer size and options
         return new FileStream(
             fileInfo.FullName,
-            FileMode.OpenOrCreate,
-            FileAccess.ReadWrite,
+            writeAccess ? FileMode.OpenOrCreate : FileMode.Open,
+            writeAccess ? FileAccess.ReadWrite : FileAccess.Read,
             FileShare.ReadWrite,
             bufferSize,
             options
