@@ -100,6 +100,13 @@ public static partial class FileHelper
         return newFile;
     }
 
+    /// <summary>
+    /// Checks if a file is currently in use by another process.
+    /// </summary>
+    /// <param name="filePath">The path of the file to check.</param>
+    /// <returns>
+    /// <c>true</c> if the file is in use by another process; otherwise, <c>false</c>.
+    /// </returns>
     public static bool IsFileInUse(string filePath)
     {
         try
@@ -121,7 +128,7 @@ public static partial class FileHelper
     /// to improve performance for different file sizes.
     /// </summary>
     /// <param name="fileInfo">The <see cref="FileInfo"/> object representing the file to be opened.</param>
-    /// <param name="writeAccess"></param>
+    /// <param name="writeAccess">Specifies whether to open the file with write access. Defaults to <c>false</c>.</param>
     /// <returns>
     /// A <see cref="FileStream"/> object configured for optimal file reading or writing, 
     /// with different settings based on the file size.

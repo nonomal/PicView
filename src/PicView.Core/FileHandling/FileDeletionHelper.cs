@@ -64,7 +64,6 @@ public static class FileDeletionHelper
 #if DEBUG
             Trace.WriteLine($"{nameof(DeleteTempFiles)} caught exception:\n{exception.Message}");
 #endif
-            return;
         }
     }
 }
