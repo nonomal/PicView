@@ -87,6 +87,10 @@ public class CropKeyboardManager(CropControl control)
                 case "GalleryClick":
                     await vm.CropImageCommand.Execute();
                     return;
+                case "CopyImage":
+                case "CopyFile":
+                    await vm.CopyCropImageCommand.Execute();
+                    return;
             }
         }
     }

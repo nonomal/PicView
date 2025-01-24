@@ -24,18 +24,21 @@ public class ImageCropperViewModel : ViewModelBase
     private void InitializeCommands()
     {
         CropImageCommand = ReactiveCommand.CreateFromTask(SaveCroppedImageAsync);
+        CopyCropImageCommand = ReactiveCommand.CreateFromTask(CopyCroppedImageAsync);
         CloseCropCommand = ReactiveCommand.Create(HandleCloseCrop);
     }
 
     private void InitializeTranslations()
     {
         Crop = TranslationHelper.Translation.CropPicture;
+        Copy = TranslationHelper.Translation.CopyImage;
         Close = TranslationHelper.Translation.Close;
         Width = TranslationHelper.Translation.Width;
         Height = TranslationHelper.Translation.Height;
     }
     
     public ReactiveCommand<Unit, Unit>? CropImageCommand { get; private set; }
+    public ReactiveCommand<Unit, Unit>? CopyCropImageCommand { get; private set; }
     public ReactiveCommand<Unit, Unit>? CloseCropCommand { get; private set; }
 
     public Bitmap Bitmap
@@ -137,6 +140,22 @@ public class ImageCropperViewModel : ViewModelBase
             await ErrorHandling.ReloadAsync(vm);
         }
     }
+    
+    private async Task CopyCroppedImageAsync()
+    {
+        if (UIHelper.GetMainView.DataContext is not MainViewModel vm) return;
+
+        if (vm.ImageSource is not Bitmap sourceBitmap) return;
+        var x = Convert.ToInt32(SelectionX / AspectRatio);
+        var y = Convert.ToInt32(SelectionY / AspectRatio);
+        var rect = new PixelRect(x, y, (int)PixelSelectionWidth, (int)PixelSelectionHeight);
+
+        var croppedBitmap = new CroppedBitmap(sourceBitmap, rect);
+        var bitmap = BitmapHelper.ConvertCroppedBitmapToBitmap(croppedBitmap);
+        await vm.PlatformService.CopyImageToClipboard(bitmap);
+        
+        CropFunctions.CloseCropControl(vm);
+    }
 
     private (string fileName, FileInfo fileInfo, Bitmap? bitmap) PrepareCropData(MainViewModel vm)
     {
@@ -156,7 +175,7 @@ public class ImageCropperViewModel : ViewModelBase
         var width = (int)PixelSelectionWidth;
         var height = (int)PixelSelectionHeight;
         var croppedBitmap = new CroppedBitmap(Bitmap, new PixelRect(x, y, width, height));
-        var bitmap = ImageHelper.ConvertCroppedBitmapToBitmap(croppedBitmap);
+        var bitmap = BitmapHelper.ConvertCroppedBitmapToBitmap(croppedBitmap);
         return (fileName, new FileInfo(fileName), bitmap);
     }
 
