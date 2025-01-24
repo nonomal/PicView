@@ -1256,8 +1256,33 @@ public class MainViewModel : ViewModelBase
         }
         await Task.Run(() =>
         {
-            FileDeletionHelper.DeleteFileWithErrorMsg(path, recycle: false);
+            try
+            {
+                var index = ImageIterator?.ImagePaths.IndexOf(path);
+                if (!index.HasValue)
+                {
+                    return;
+                }
+
+                var errorMsg = FileDeletionHelper.DeleteFileWithErrorMsg(path, recycle: false);
+                if (!string.IsNullOrWhiteSpace(errorMsg))
+                {
+                    TooltipHelper.ShowTooltipMessage(errorMsg);
+                }
+                else
+                {
+                    ImageIterator?.RemoveItemFromPreLoader(index.Value);
+                }
+            }
+            catch (Exception e)
+            {
+                TooltipHelper.ShowTooltipMessage(e);
+#if DEBUG
+                Console.WriteLine(e);
+#endif
+            }
         });
+        
     }
     
     private async Task RecycleFileTask(string path)
