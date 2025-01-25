@@ -65,19 +65,17 @@ _UI overview with bottom gallery_
     Scroll Image
 </h3>
 
-<h1 align="center">
-    <img src="https://picview.org/assets/screenshots/scroll/large/PicView%20-%20Scroll%20Dark%20Theme%2001.webp" />
-</h1>
+![SideBySideScroll3 0 0](https://github.com/user-attachments/assets/59ab9368-eb6c-4964-8134-44cf134ea753)
 
-Press `X` to toggle the scroll function. Click the mousewheel for auto scroll.
+
+You can toggle the interface to show images `Side by side` and you can also turn scrolling on/off. Click the mousewheel for auto scroll.
 
 <h3 align="center">
     Crop Image
 </h3>
 
-<h1 align="center">
-    <img src="https://picview.org/assets/screenshots/PicView-Crop/PicView%20Crop%20Dark%20Theme.webp" />
-</h1>
+![Cropping3 0](https://github.com/user-attachments/assets/e70990d9-b607-4118-8be4-587a3f02c4d7)
+
 
 
 Quickly crop image by pressing `C`. Hold `Shift` for square selection.
