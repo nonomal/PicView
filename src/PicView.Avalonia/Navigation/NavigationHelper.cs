@@ -228,6 +228,10 @@ public static class NavigationHelper
         {
             vm.PlatformService.StopTaskbarProgress();
             await PreviewPicAndLoadGallery(new FileInfo(fileList[0]), vm, fileList);
+            if (vm.Title == TranslationHelper.Translation.Loading)
+            {
+                SetTitleHelper.SetTitle(vm);
+            }
         }
     }
 
