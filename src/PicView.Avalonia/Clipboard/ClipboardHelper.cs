@@ -19,7 +19,7 @@ using PicView.Core.ProcessHandling;
 namespace PicView.Avalonia.Clipboard;
 public static class ClipboardHelper
 {
-    private static async Task CopyAnimation()
+    public static async Task CopyAnimation()
     {
         const double speed = 0.2;
         const double opacity = 0.4;

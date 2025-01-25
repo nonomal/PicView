@@ -2,6 +2,7 @@
 using Avalonia;
 using Avalonia.Media.Imaging;
 using ImageMagick;
+using PicView.Avalonia.Clipboard;
 using PicView.Avalonia.Crop;
 using PicView.Avalonia.FileSystem;
 using PicView.Avalonia.ImageHandling;
@@ -144,17 +145,21 @@ public class ImageCropperViewModel : ViewModelBase
     private async Task CopyCroppedImageAsync()
     {
         if (UIHelper.GetMainView.DataContext is not MainViewModel vm) return;
-
         if (vm.ImageSource is not Bitmap sourceBitmap) return;
+        
+        CropFunctions.CloseCropControl(vm);
+
         var x = Convert.ToInt32(SelectionX / AspectRatio);
         var y = Convert.ToInt32(SelectionY / AspectRatio);
         var rect = new PixelRect(x, y, (int)PixelSelectionWidth, (int)PixelSelectionHeight);
 
         var croppedBitmap = new CroppedBitmap(sourceBitmap, rect);
         var bitmap = BitmapHelper.ConvertCroppedBitmapToBitmap(croppedBitmap);
-        await vm.PlatformService.CopyImageToClipboard(bitmap);
-        
-        CropFunctions.CloseCropControl(vm);
+
+        if (bitmap is not null)
+        {
+            await Task.WhenAll(vm.PlatformService.CopyImageToClipboard(bitmap), ClipboardHelper.CopyAnimation());
+        }
     }
 
     private (string fileName, FileInfo fileInfo, Bitmap? bitmap) PrepareCropData(MainViewModel vm)
