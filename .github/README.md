@@ -48,11 +48,11 @@ cmd $> scoop install extras/picview
 # Features and screenshots
 ![3x3 0 0](https://github.com/user-attachments/assets/1839c2bb-aff3-4d31-8093-ba3814952ce7)
 
-Switch between a dark and a light theme and toggle between hiding the UI
+Switch between a dark and a light theme and toggle between hiding the UI.
 
 ![UI-Dark-Theme-Magenta 3 0 0](https://github.com/user-attachments/assets/ede687f6-523e-49dd-b2fa-3509929434e1)
 
-_UI overview with bottom gallery_
+_UI overview with bottom gallery._
 
 
 <h3 align="center">
@@ -81,22 +81,15 @@ Quickly crop image by pressing `C`. Hold `Shift` for square selection.
 
 <h1 align="center">
     <img src="https://picview.org/assets/screenshots/exifwindow/Image%20Info%20Window%203.0.0%20.png" />
-    <img src="https://picview.org/assets/screenshots/exifwindow/gps3.0.png" />
 </h1>
 
-Click on the stars to edit EXIF image rating.
+Perform operations such as _renaming, _file conversion_, _copying, _compressing_, _resizing_, adding it to the _recycle bin_ and editing the _EXIF image rating_.
 
-Rename or move files by editing the text-box values.
+Changing size can be done by editing the `width` and/or `height` text-boxes. Use the `%` keyboard button to resize it by percentage.
 
-__Resize image:__
-
-Edit the `width` and/or `height` text-boxes to rezise the current image.
-
-Use the % button in the `width` and/or `height` text-boxes to resize the current image by percentage.
-
-#### EXIF:
-
-Scroll down for viewing EXIF metadata information about the viewed image.
+<h1 align="center">
+    <img src="https://picview.org/assets/screenshots/exifwindow/gps3.0.png" />
+</h1>
 
 If the GPS coordinates are saved on the image, you can click the Google or Bing buttons to open the respective maps at the GPS coordinates
 
@@ -152,7 +145,7 @@ Rename or move files in the titlebar by pressing `F2` or right clicking it.
    .pgm  .hdr  .cut  .exr  .dib  .emf  .wmf  .wpg  .pcx  .xbm  .xpm .wbmp 
 
 ## Default Shortcuts
-_* Shortcuts can be changed by opening the `About` window, and scrolling down_
+_* Shortcuts can be changed by opening the `Keybindings` window_
 | Shortcut             | Explanation                                                                                                      |
 | -------------------- | ---------------------------------------------------------------------------------------------------------------- |
 | Esc                  | Close window or current open menu                                                                                |
