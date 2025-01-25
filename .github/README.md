@@ -16,12 +16,9 @@ Additional features includes viewing EXIF metadata, image compression, batch res
     <img alt="Windows OS" src="https://img.shields.io/badge/OS-Windows%2010/11%2064%20bit-00adef.svg?maxAge=3600&style=flat-square">
 </p>
 
-# Project status
-PicView is currently being rewritten to the Avalonia platform. You can read more [here](https://github.com/Ruben2776/PicView/issues/159) or download the preview versions [https://picview.org/avalonia-download](https://picview.org/avalonia-download)
-
 # Downloads
 
-[![](https://img.shields.io/badge/Windows-x64-blue?style=flat-square&logo=windows&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/2.3.3/PicView-v2.3.3-win-x64.zip) [![](https://img.shields.io/badge/Windows-arm64-blue?style=flat-square&logo=windows&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/2.3.3/PicView-v2.3.3-win-arm64.zip)
+[![](https://img.shields.io/badge/Windows-x64-blue?style=flat-square&logo=windows&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/3.0.0-Final/Setup-PicView-v3.0.0-Final-win-x64.exe) [![](https://img.shields.io/badge/Windows-arm64-blue?style=flat-square&logo=windows&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/3.0.0-Final/Setup-PicView-v3.0.0-Final-win-arm64.exe)
 
 Latest releases at https://picview.org/download
 
@@ -51,7 +48,6 @@ cmd $> scoop install extras/picview
 
 
 ## Code Signing Policy
-Starting with v3.0.0-rc-preview-4 the builds are digitally signed.
 
 Free code signing is provided by [SignPath.io](https://about.signpath.io/), certificate by [SignPath Foundation](https://signpath.org/).
 
