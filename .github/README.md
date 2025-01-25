@@ -28,6 +28,8 @@ Additional features includes viewing EXIF metadata, image compression, batch res
 [FossHub](https://www.fosshub.com/PicView.html) <br>
 [SourceForge](https://sourceforge.net/projects/picview/)
 
+<br>
+
 
 Winget:
 ```cmd
@@ -45,15 +47,26 @@ cmd $> scoop bucket add extras
 cmd $> scoop install extras/picview
 ```
 
+___
+
+<br>
+
+If you like PicView, consider giving it a star or a like on [AlternativeTo](https://alternativeto.net/software/picview/about/)!
+
+<br>
+
 # Features and screenshots
 ![3x3 0 0](https://github.com/user-attachments/assets/1839c2bb-aff3-4d31-8093-ba3814952ce7)
 
 Switch between a dark and a light theme and toggle between hiding the UI.
 
+<br>
+
 ![UI-Dark-Theme-Magenta 3 0 0](https://github.com/user-attachments/assets/ede687f6-523e-49dd-b2fa-3509929434e1)
 
 _UI overview with bottom gallery._
 
+<br>
 
 <h3 align="center">
     Scroll Image
@@ -64,16 +77,17 @@ _UI overview with bottom gallery._
 
 You can toggle the interface to show images `Side by side` and you can also turn scrolling on/off. Click the mousewheel for auto scroll.
 
+<br>
+
 <h3 align="center">
     Crop Image
 </h3>
 
 ![Cropping3 0](https://github.com/user-attachments/assets/e70990d9-b607-4118-8be4-587a3f02c4d7)
 
-
-
 Quickly crop image by pressing `C`. Hold `Shift` for square selection.
 
+<br>
 
 <h3 align="center">
     Image Info Window
@@ -83,7 +97,7 @@ Quickly crop image by pressing `C`. Hold `Shift` for square selection.
     <img src="https://picview.org/assets/screenshots/exifwindow/Image%20Info%20Window%203.0.0%20.png" />
 </h1>
 
-Perform operations such as _renaming, _file conversion_, _copying, _compressing_, _resizing_, adding it to the _recycle bin_ and editing the _EXIF image rating_.
+Perform operations such as _renaming_, _file conversion_, _copying_, _compressing_, _resizing_, adding it to the _recycle bin_ and editing the _EXIF image rating_.
 
 Changing size can be done by editing the `width` and/or `height` text-boxes. Use the `%` keyboard button to resize it by percentage.
 
@@ -94,6 +108,7 @@ Changing size can be done by editing the `width` and/or `height` text-boxes. Use
 If the GPS coordinates are saved on the image, you can click the Google or Bing buttons to open the respective maps at the GPS coordinates
 
 
+<br>
 
 <h3 align="center">
     Image Gallery
@@ -109,6 +124,7 @@ If the GPS coordinates are saved on the image, you can click the Google or Bing 
 Navigate the gallery with the `arrow keys` or `W`,`A`,`S`,`D` and load the selected image with `Enter` or the `E` key.
 The bottom gallery can be turned on or off
 
+<br>
 
 <h3 align="center">
     Batch Resizing
@@ -133,6 +149,8 @@ The `Quality` dropdown option allows you to change quality of supported file typ
 The `Resize` dropdown option allows you to resize the picture by **height**, **width** and **percentage** while keeping the aspect ratio of the image.
 
 ___
+
+<br>
 
 ### Other features
 
