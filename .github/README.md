@@ -52,11 +52,11 @@ cmd $> scoop install extras/picview
 Free code signing is provided by [SignPath.io](https://about.signpath.io/), certificate by [SignPath Foundation](https://signpath.org/).
 
 # Features and screenshots
-![configure-ui02 - Copy (2)](https://github.com/Ruben2776/PicView/assets/4200419/2459b663-ca42-415c-8d98-b6f45da0134c)
+![3x3 0 0](https://github.com/user-attachments/assets/1839c2bb-aff3-4d31-8093-ba3814952ce7)
 
 Switch between a dark and a light theme and toggle between hiding the UI
 
-![UI-Dark-Theme-Magenta](https://github.com/Ruben2776/PicView/assets/4200419/c2bf8c6f-35bc-487c-baef-26df3b35fb82)
+![UI-Dark-Theme-Magenta 3 0 0](https://github.com/user-attachments/assets/ede687f6-523e-49dd-b2fa-3509929434e1)
 
 _UI overview with bottom gallery_
 
