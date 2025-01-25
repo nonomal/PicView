@@ -46,11 +46,6 @@ cmd $> scoop bucket add extras
 cmd $> scoop install extras/picview
 ```
 
-
-## Code Signing Policy
-
-Free code signing is provided by [SignPath.io](https://about.signpath.io/), certificate by [SignPath Foundation](https://signpath.org/).
-
 # Features and screenshots
 ![3x3 0 0](https://github.com/user-attachments/assets/1839c2bb-aff3-4d31-8093-ba3814952ce7)
 
@@ -123,21 +118,6 @@ The bottom gallery can be turned on or off
 
 
 <h3 align="center">
-    Image filters
-</h3>
-
-<h1 align="center">
-    <img src="https://d33wubrfki0l68.cloudfront.net/7fa49db824f06b6b0f7ff10c299560149b36416f/3dc08/assets/video/hlsl-v2-800w.webp" />
-</h1>
-
-
-### Use the slider to change the intensity of the effect
-
-
-Save it locally, set is as wallpaper/lock-screen image, or copy it to clip-holder with the effect applied.
-
-
-<h3 align="center">
     Batch Resizing
 </h3>
 
@@ -163,33 +143,13 @@ ___
 
 ### Other features
 
-If you have 7-Zip or WinRAR installed, you can view images inside archives, such as `.zip`, `.rar`, etc, and comic book archives (`.cbr`, `.cb7`, `.cbt`, .`cbz`, `.cba`).
-
-* Quick startup time and built-in preloader to instantly view next image
-* For images with a transparent background, the background can be changed to a checkerboard background, a dark background or a white background by pressing `B`.
-* Interface can be toggled to just show the image by pressing `Alt + Z`.
-* Image EXIF rating
-* Preview between 27 different image filters that will be applied when copying image or setting it as wallpaper/lockscreen image or saving file locally
-* Image Galleries
-* Sort files by: `name`, `file size`, `date created`, `last accessed`, `latest edit`, `file extension` and `randomized`
-* hover buttons can be toggled on/off in the settings window.
-* Basic editing: rotate, flip, crop, resize, change file type
-* Stay on top of other windows
-* Search subdirectories
-* Drag & drop/paste from clipholder support for files, folders, URLs and archives
-* Scroll function (built with manga/comics in mind)
-* Open file in external application, show it in folder or view file properties
-* Color picker
-
 <img src="https://picview.org/assets/screenshots/rename-titlebar/rename-titlebar-pink-dark.webp"/><br>
 Rename or move files in the titlebar by pressing `F2` or right clicking it.
 
 **File support** 
  > .jpg  .jpeg  .jpe  .png  .bmp  .tif  .tiff  .gif  .ico  .jfif  .webp .svg .svgz <br>
    .psd  .psb .xcf .jxl .heic .heif .jp2 .hdr .tga .dds<br>.3fr  .arw  .cr2 .cr3  .crw  .dcr  .dng  .erf  .kdc  .mdc  .mef  .mos  .mrw  .nef  .nrw  .orf  .pef .raf  .raw  .rw2  .srf  .x3f *<br>
-   .pgm  .hdr  .cut  .exr  .dib  .emf  .wmf  .wpg  .pcx  .xbm  .xpm .wbmp *
-   
-   _* RAW camera formats may be slower to load_
+   .pgm  .hdr  .cut  .exr  .dib  .emf  .wmf  .wpg  .pcx  .xbm  .xpm .wbmp 
 
 ## Default Shortcuts
 _* Shortcuts can be changed by opening the `About` window, and scrolling down_
@@ -303,6 +263,14 @@ English and Danish by me<br>
 **Looking for translators!**
 If you want to help translate another language or update/improve a current one and be listed here, please take a look at
 https://github.com/Ruben2776/PicView/issues/13
+
+
+
+## Code Signing Policy
+
+All releases are virus scanned and digitally signed.
+
+Free code signing is provided by [SignPath.io](https://about.signpath.io/), certificate by [SignPath Foundation](https://signpath.org/).
 
 
 ## Privacy Policy
