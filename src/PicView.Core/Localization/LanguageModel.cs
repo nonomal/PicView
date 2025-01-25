@@ -114,29 +114,7 @@ public record LanguageModel
     public string? ColorTone { get; set; }
     public string? OldMovie { get; set; }
     public string? Posterize { get; set; }
-    public string? Bloom { get; set; }
-    public string? Gloom { get; set; }
-    public string? Monochrome { get; set; }
-    public string? WaveWarper { get; set; }
-    public string? Underwater { get; set; }
-    public string? BandedSwirl { get; set; }
-    public string? Swirl { get; set; }
-    public string? Ripple { get; set; }
-    public string? RippleAlt { get; set; }
     public string? Blur { get; set; }
-    public string? DirectionalBlur { get; set; }
-    public string? TelescopicBlur { get; set; }
-    public string? Pixelate { get; set; }
-    public string? Embossed { get; set; }
-    public string? SmoothMagnify { get; set; }
-    public string? Pivot { get; set; }
-    public string? PaperFold { get; set; }
-    public string? PencilSketch { get; set; }
-    public string? Sketch { get; set; }
-    public string? ToneMapping { get; set; }
-    public string? FrostyOutline { get; set; }
-    public string? Bands { get; set; }
-    public string? GlassTile { get; set; }
     public string? Navigation { get; set; }
     public string? NextImage { get; set; }
     public string? PrevImage { get; set; }
@@ -258,7 +236,6 @@ public record LanguageModel
     public string? PasswordArchive { get; set; }
     public string? SentFileToRecycleBin { get; set; }
     public string? DeletedFile { get; set; }
-    public string? AnErrorOccuredWhenDeleting { get; set; }
     public string? ScrollingEnabled { get; set; }
     public string? ScrollingDisabled { get; set; }
     public string? ConvertedToBase64 { get; set; }
@@ -407,4 +384,5 @@ public record LanguageModel
     
     public string? ClearEffects { get; set; }
     public string? Solarize { get; set; }
+    public string? PencilSketch { get; set; }
 }

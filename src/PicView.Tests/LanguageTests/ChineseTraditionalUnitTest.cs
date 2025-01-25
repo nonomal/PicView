@@ -36,13 +36,10 @@ public static class ChineseTraditionalUnitTest
         Assert.Equal(TranslationHelper.Translation.Auto, "自動");
         Assert.Equal(TranslationHelper.Translation.AutoFitWindow, "自動適應視窗");
         Assert.Equal(TranslationHelper.Translation.BadArchive, "無法處理壓縮檔案");
-        Assert.Equal(TranslationHelper.Translation.BandedSwirl, "帶狀旋轉");
-        Assert.Equal(TranslationHelper.Translation.Bands, "條帶");
         Assert.Equal(TranslationHelper.Translation.Base64Image, "Base64 圖片");
         Assert.Equal(TranslationHelper.Translation.BatchResize, "批次調整影像尺寸");
         Assert.Equal(TranslationHelper.Translation.BitDepth, "色深");
         Assert.Equal(TranslationHelper.Translation.BlackAndWhite, "黑白");
-        Assert.Equal(TranslationHelper.Translation.Bloom, "鮮明");
         Assert.Equal(TranslationHelper.Translation.Blur, "模糊");
         Assert.Equal(TranslationHelper.Translation.BottomGalleryItemSize, "底部圖庫項目");
         Assert.Equal(TranslationHelper.Translation.BottomGalleryThumbnailStretch, "圖庫項目縮放");
@@ -103,7 +100,6 @@ public static class ChineseTraditionalUnitTest
         Assert.Equal(TranslationHelper.Translation.DeletedFile, "已刪除檔案");
         Assert.Equal(TranslationHelper.Translation.Descending, "下降");
         Assert.Equal(TranslationHelper.Translation.DigitalZoom, "數位變焦");
-        Assert.Equal(TranslationHelper.Translation.DirectionalBlur, "方向模糊");
         Assert.Equal(TranslationHelper.Translation.DisableFadeInButtonsOnHover, "停用滑鼠懸停時的淡入按鈕");
         Assert.Equal(TranslationHelper.Translation.DiskSize, "磁碟大小");
         Assert.Equal(TranslationHelper.Translation.DoubleClick, "雙擊");
@@ -115,7 +111,6 @@ public static class ChineseTraditionalUnitTest
         Assert.Equal(TranslationHelper.Translation.DuplicateFile, "複製檔案");
         Assert.Equal(TranslationHelper.Translation.Effects, "特效");
         Assert.Equal(TranslationHelper.Translation.EffectsTooltip, "顯示影像特效視窗");
-        Assert.Equal(TranslationHelper.Translation.Embossed, "浮雕");
         Assert.Equal(TranslationHelper.Translation.Enter, "Enter");
         Assert.Equal(TranslationHelper.Translation.Esc, "Esc");
         Assert.Equal(TranslationHelper.Translation.EscCloseTooltip, "關閉當前開啟的視窗和選單");
@@ -156,7 +151,6 @@ public static class ChineseTraditionalUnitTest
         Assert.Equal(TranslationHelper.Translation.FocalLength35mm, "35mm 焦距");
         Assert.Equal(TranslationHelper.Translation.Folder, "資料夾");
         Assert.Equal(TranslationHelper.Translation.Forward, "向前");
-        Assert.Equal(TranslationHelper.Translation.FrostyOutline, "霧化輪廓");
         Assert.Equal(TranslationHelper.Translation.Fstop, "F 值");
         Assert.Equal(TranslationHelper.Translation.FullPath, "完整路徑");
         Assert.Equal(TranslationHelper.Translation.Fullscreen, "全螢幕");
@@ -166,8 +160,6 @@ public static class ChineseTraditionalUnitTest
         Assert.Equal(TranslationHelper.Translation.GenerateThumbnails, "生成縮圖");
         Assert.Equal(TranslationHelper.Translation.GithubRepo, "Github");
         Assert.Equal(TranslationHelper.Translation.GlassTheme, "玻璃主題");
-        Assert.Equal(TranslationHelper.Translation.GlassTile, "毛玻璃");
-        Assert.Equal(TranslationHelper.Translation.Gloom, "暗淡");
         Assert.Equal(TranslationHelper.Translation.GoBackBy100Images, "後退 100 張圖片");
         Assert.Equal(TranslationHelper.Translation.GoBackBy10Images, "後退 10 張圖片");
         Assert.Equal(TranslationHelper.Translation.GoToImageAtSpecifiedIndex, "跳轉至指定圖片");
@@ -218,7 +210,6 @@ public static class ChineseTraditionalUnitTest
         Assert.Equal(TranslationHelper.Translation.Minimize, "最小化");
         Assert.Equal(TranslationHelper.Translation.MiscSettings, "其他設定");
         Assert.Equal(TranslationHelper.Translation.Modified, "修改時間");
-        Assert.Equal(TranslationHelper.Translation.Monochrome, "單色調");
         Assert.Equal(TranslationHelper.Translation.MouseDrag, "滑鼠拖曳");
         Assert.Equal(TranslationHelper.Translation.MouseKeyBack, "滑鼠拓展鍵 向後鍵");
         Assert.Equal(TranslationHelper.Translation.MouseKeyForward, "滑鼠拓展鍵 向前鍵");
@@ -251,7 +242,6 @@ public static class ChineseTraditionalUnitTest
         Assert.Equal(TranslationHelper.Translation.Orientation, "方向");
         Assert.Equal(TranslationHelper.Translation.OutputFolder, "匯出目錄");
         Assert.Equal(TranslationHelper.Translation.Pan, "平移");
-        Assert.Equal(TranslationHelper.Translation.PaperFold, "摺紙");
         Assert.Equal(TranslationHelper.Translation.PasswordArchive, "暫不支援加密的壓縮檔案");
         Assert.Equal(TranslationHelper.Translation.PasteImageFromClipholder, "從剪貼簿中貼上圖片");
         Assert.Equal(TranslationHelper.Translation.PencilSketch, "鉛筆素描");
@@ -259,8 +249,6 @@ public static class ChineseTraditionalUnitTest
         Assert.Equal(TranslationHelper.Translation.Percentage, "百分比");
         Assert.Equal(TranslationHelper.Translation.PermanentlyDelete, "永久刪除");
         Assert.Equal(TranslationHelper.Translation.PhotometricInterpretation, "光度解釋");
-        Assert.Equal(TranslationHelper.Translation.Pivot, "翻轉");
-        Assert.Equal(TranslationHelper.Translation.Pixelate, "像素化");
         Assert.Equal(TranslationHelper.Translation.Pixels, "像素");
         Assert.Equal(TranslationHelper.Translation.Portrait, "縱向");
         Assert.Equal(TranslationHelper.Translation.PressKey, "按鍵...");
@@ -287,8 +275,6 @@ public static class ChineseTraditionalUnitTest
         Assert.Equal(TranslationHelper.Translation.RestoreDown, "退出全螢幕");
         Assert.Equal(TranslationHelper.Translation.Reverse, "逆轉");
         Assert.Equal(TranslationHelper.Translation.Right, "右");
-        Assert.Equal(TranslationHelper.Translation.Ripple, "波紋");
-        Assert.Equal(TranslationHelper.Translation.RippleAlt, "漣漪");
         Assert.Equal(TranslationHelper.Translation.RotateLeft, "向左旋轉");
         Assert.Equal(TranslationHelper.Translation.RotateRight, "向右旋轉");
         Assert.Equal(TranslationHelper.Translation.Rotated, "已旋轉");
@@ -340,9 +326,7 @@ public static class ChineseTraditionalUnitTest
         Assert.Equal(TranslationHelper.Translation.Size, "大小");
         Assert.Equal(TranslationHelper.Translation.SizeMp, "大小（兆像素）");
         Assert.Equal(TranslationHelper.Translation.SizeTooltip, "以像素或百分比輸入所需的大小。");
-        Assert.Equal(TranslationHelper.Translation.Sketch, "素描");
         Assert.Equal(TranslationHelper.Translation.Slideshow, "幻燈片");
-        Assert.Equal(TranslationHelper.Translation.SmoothMagnify, "扭曲放大");
         Assert.Equal(TranslationHelper.Translation.Soft, "柔和");
         Assert.Equal(TranslationHelper.Translation.Software, "軟體");
         Assert.Equal(TranslationHelper.Translation.SortFilesBy, "排序方式");
@@ -358,8 +342,6 @@ public static class ChineseTraditionalUnitTest
         Assert.Equal(TranslationHelper.Translation.StrobeReturnLightDetected, "檢測到閃光燈反射");
         Assert.Equal(TranslationHelper.Translation.StrobeReturnLightNotDetected, "未檢測到閃光燈反射");
         Assert.Equal(TranslationHelper.Translation.Subject, "主題");
-        Assert.Equal(TranslationHelper.Translation.Swirl, "旋轉");
-        Assert.Equal(TranslationHelper.Translation.TelescopicBlur, "拉伸模糊");
         Assert.Equal(TranslationHelper.Translation.Theme, "主題");
         Assert.Equal(TranslationHelper.Translation.Thumbnail, "縮圖");
         Assert.Equal(TranslationHelper.Translation.Tile, "平鋪");
@@ -369,10 +351,8 @@ public static class ChineseTraditionalUnitTest
         Assert.Equal(TranslationHelper.Translation.ToggleLooping, "切換迴圈");
         Assert.Equal(TranslationHelper.Translation.ToggleScroll, "切換滾動");
         Assert.Equal(TranslationHelper.Translation.ToggleTaskbarProgress, "顯示工作列進度");
-        Assert.Equal(TranslationHelper.Translation.ToneMapping, "色調映射");
         Assert.Equal(TranslationHelper.Translation.UnableToRender, "无法渲染图像");
         Assert.Equal(TranslationHelper.Translation.Uncalibrated, "未校準");
-        Assert.Equal(TranslationHelper.Translation.Underwater, "水下");
         Assert.Equal(TranslationHelper.Translation.UnexpectedError, "發生未知錯誤");
         Assert.Equal(TranslationHelper.Translation.Unflip, "取消水平翻轉");
         Assert.Equal(TranslationHelper.Translation.Uniform, "均勻");
@@ -384,7 +364,6 @@ public static class ChineseTraditionalUnitTest
         Assert.Equal(TranslationHelper.Translation.UsingTouchpad, "使用觸控板");
         Assert.Equal(TranslationHelper.Translation.Version, "版本：");
         Assert.Equal(TranslationHelper.Translation.ViewLicenseFile, "檢視開源協議");
-        Assert.Equal(TranslationHelper.Translation.WaveWarper, "波浪");
         Assert.Equal(TranslationHelper.Translation.WhiteBalance, "白平衡");
         Assert.Equal(TranslationHelper.Translation.WhiteFluorescent, "白螢光");
         Assert.Equal(TranslationHelper.Translation.Width, "寬度");

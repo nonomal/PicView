@@ -1,4 +1,5 @@
-﻿using PicView.Core.Config;
+﻿using System.Text.Json;
+using PicView.Core.Config;
 using PicView.Core.Localization;
 using PicView.Tests.LanguageTests;
 
@@ -18,10 +19,30 @@ public class LanguageAndSettingsUnitTest
     [Fact]
     public async Task CheckLanguages()
     {
+        // Load the keys from the en.json file
+        var enJsonPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Config/Languages/en.json");
+        var enKeys = await GetJsonKeys(enJsonPath);
+    
         var languages = TranslationHelper.GetLanguages();
         Assert.NotNull(languages);
-        Assert.NotEmpty(languages);
+    
+        // Check each language file against en.json keys
+        foreach (var languagePath in languages)
+        {
+            if (languagePath.Equals(enJsonPath, StringComparison.OrdinalIgnoreCase))
+            {
+                continue; // Skip the en.json file itself
+            }
         
+            var languageKeys = await GetJsonKeys(languagePath);
+            var missingKeys = enKeys.Except(languageKeys).ToList();
+            var extraKeys = languageKeys.Except(enKeys).ToList();
+        
+            Assert.False(missingKeys.Count != 0, $"Missing keys in {Path.GetFileName(languagePath)}: {string.Join(", ", missingKeys)}");
+            Assert.True(extraKeys.Count == 0, $"Extra keys in {Path.GetFileName(languagePath)}: {string.Join(", ", extraKeys)}");
+            Assert.True(enKeys.SetEquals(languageKeys), $"Key mismatch in {Path.GetFileName(languagePath)}");
+        }
+    
         await CheckDanishLanguage();
         await CheckEnglishLanguage();
         await CheckGermanLanguage();
@@ -32,10 +53,26 @@ public class LanguageAndSettingsUnitTest
         await CheckBrazilianPortugueseLanguage();
         await CheckRomanianLanguage();
         await CheckRussianLanguage();
+        await CheckSpanishLanguage();
         await CheckSwedishLanguage();
         await CheckTurkishLanguage();
         await CheckChineseSimplifiedLanguage();
         await CheckChineseTraditionalLanguage();
+    }
+
+    private async Task<HashSet<string>> GetJsonKeys(string filePath)
+    {
+        var jsonString = await File.ReadAllTextAsync(filePath);
+        var jsonDocument = JsonDocument.Parse(jsonString);
+        var root = jsonDocument.RootElement;
+    
+        var keys = new HashSet<string>();
+        foreach (var property in root.EnumerateObject())
+        {
+            keys.Add(property.Name);
+        }
+    
+        return keys;
     }
 
     [Fact]
@@ -110,6 +147,12 @@ public class LanguageAndSettingsUnitTest
     public async Task CheckRussianLanguage()
     {
         await RussianUnitTest.CheckRussianLanguage();
+    }
+    
+    [Fact]
+    public async Task CheckSpanishLanguage()
+    {
+        await SpanishUnitTest.CheckSpanishLanguage();
     }
 
     [Fact]

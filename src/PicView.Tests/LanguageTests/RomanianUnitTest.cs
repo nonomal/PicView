@@ -38,13 +38,10 @@ public static class RomanianUnitTest
         Assert.Equal(TranslationHelper.Translation.Auto, "Automat");
         Assert.Equal(TranslationHelper.Translation.AutoFitWindow, "Potrivire automată fereastră");
         Assert.Equal(TranslationHelper.Translation.BadArchive, "Arhiva nu a putut fi procesată");
-        Assert.Equal(TranslationHelper.Translation.BandedSwirl, "Vârtej cu benzi");
-        Assert.Equal(TranslationHelper.Translation.Bands, "Benzi");
         Assert.Equal(TranslationHelper.Translation.Base64Image, "Imagine Base64");
         Assert.Equal(TranslationHelper.Translation.BatchResize, "Redimensionare lot");
         Assert.Equal(TranslationHelper.Translation.BitDepth, "Adâncimea biților");
         Assert.Equal(TranslationHelper.Translation.BlackAndWhite, "Negru și alb");
-        Assert.Equal(TranslationHelper.Translation.Bloom, "Strălucire");
         Assert.Equal(TranslationHelper.Translation.Blur, "Estompare");
         Assert.Equal(TranslationHelper.Translation.BottomGalleryItemSize, "Elemente galerie inferioară");
         Assert.Equal(TranslationHelper.Translation.BottomGalleryThumbnailStretch,
@@ -109,7 +106,6 @@ public static class RomanianUnitTest
         Assert.Equal(TranslationHelper.Translation.DeletedFile, "Fișier șters");
         Assert.Equal(TranslationHelper.Translation.Descending, "Descrescător");
         Assert.Equal(TranslationHelper.Translation.DigitalZoom, "Transfocare digitală");
-        Assert.Equal(TranslationHelper.Translation.DirectionalBlur, "Estompare direcțională");
         Assert.Equal(TranslationHelper.Translation.DisableFadeInButtonsOnHover,
             "Dezactivează butoanele fade-in la trecerea mouse-ului");
         Assert.Equal(TranslationHelper.Translation.DiskSize, "Mărime disc");
@@ -123,7 +119,6 @@ public static class RomanianUnitTest
         Assert.Equal(TranslationHelper.Translation.DuplicateFile, "Duplică fișierul");
         Assert.Equal(TranslationHelper.Translation.Effects, "Efecte");
         Assert.Equal(TranslationHelper.Translation.EffectsTooltip, "Arată fereastra cu efectele imaginii");
-        Assert.Equal(TranslationHelper.Translation.Embossed, "În relief");
         Assert.Equal(TranslationHelper.Translation.Enter, "Enter");
         Assert.Equal(TranslationHelper.Translation.Esc, "Esc");
         Assert.Equal(TranslationHelper.Translation.EscCloseTooltip, "Închide fereastra/meniul deschis în prezent");
@@ -166,7 +161,6 @@ public static class RomanianUnitTest
         Assert.Equal(TranslationHelper.Translation.FocalLength35mm, "Distanță focală 35mm");
         Assert.Equal(TranslationHelper.Translation.Folder, "Dosar");
         Assert.Equal(TranslationHelper.Translation.Forward, "Înainte");
-        Assert.Equal(TranslationHelper.Translation.FrostyOutline, "Conturare glacială");
         Assert.Equal(TranslationHelper.Translation.Fstop, "F-stop");
         Assert.Equal(TranslationHelper.Translation.FullPath, "Cale completă");
         Assert.Equal(TranslationHelper.Translation.Fullscreen, "Ecran complet");
@@ -176,8 +170,6 @@ public static class RomanianUnitTest
         Assert.Equal(TranslationHelper.Translation.GenerateThumbnails, "Generare miniaturi");
         Assert.Equal(TranslationHelper.Translation.GithubRepo, "Depozit GitHub");
         Assert.Equal(TranslationHelper.Translation.GlassTheme, "Temă de sticlă");
-        Assert.Equal(TranslationHelper.Translation.GlassTile, "Dale din sticlă");
-        Assert.Equal(TranslationHelper.Translation.Gloom, "Întunecare");
         Assert.Equal(TranslationHelper.Translation.GoBackBy100Images, "Mergi înapoi cu 100 imagini");
         Assert.Equal(TranslationHelper.Translation.GoBackBy10Images, "Mergi înapoi cu 10 imagini");
         Assert.Equal(TranslationHelper.Translation.GoToImageAtSpecifiedIndex, "Mergi la imagine la indexul specificat");
@@ -228,7 +220,6 @@ public static class RomanianUnitTest
         Assert.Equal(TranslationHelper.Translation.Minimize, "Minimizare");
         Assert.Equal(TranslationHelper.Translation.MiscSettings, "Alte setări");
         Assert.Equal(TranslationHelper.Translation.Modified, "Modificată");
-        Assert.Equal(TranslationHelper.Translation.Monochrome, "Monocrom");
         Assert.Equal(TranslationHelper.Translation.MouseDrag, "Glisare cu mausul");
         Assert.Equal(TranslationHelper.Translation.MouseKeyBack, "Tastă mausă înapoi");
         Assert.Equal(TranslationHelper.Translation.MouseKeyForward, "Tastă maus înainte");
@@ -261,7 +252,6 @@ public static class RomanianUnitTest
         Assert.Equal(TranslationHelper.Translation.Orientation, "Orientare");
         Assert.Equal(TranslationHelper.Translation.OutputFolder, "Dosar de ieșire");
         Assert.Equal(TranslationHelper.Translation.Pan, "Panoramare");
-        Assert.Equal(TranslationHelper.Translation.PaperFold, "Pliant de hârtie");
         Assert.Equal(TranslationHelper.Translation.PasswordArchive, "Arhiva protejată cu parolă nu este acceptată");
         Assert.Equal(TranslationHelper.Translation.PasteImageFromClipholder, "Lipire imagine din memoria temporară");
         Assert.Equal(TranslationHelper.Translation.PencilSketch, "Schiță cu creionul");
@@ -269,8 +259,6 @@ public static class RomanianUnitTest
         Assert.Equal(TranslationHelper.Translation.Percentage, "Procentaj");
         Assert.Equal(TranslationHelper.Translation.PermanentlyDelete, "Șterge definitiv");
         Assert.Equal(TranslationHelper.Translation.PhotometricInterpretation, "Interpretare fotometrică");
-        Assert.Equal(TranslationHelper.Translation.Pivot, "Pivot");
-        Assert.Equal(TranslationHelper.Translation.Pixelate, "Pixelare");
         Assert.Equal(TranslationHelper.Translation.Pixels, "pixeli");
         Assert.Equal(TranslationHelper.Translation.Portrait, "Portret");
         Assert.Equal(TranslationHelper.Translation.PressKey, "Apasă tasta...");
@@ -297,8 +285,6 @@ public static class RomanianUnitTest
         Assert.Equal(TranslationHelper.Translation.RestoreDown, "Restabilire în jos");
         Assert.Equal(TranslationHelper.Translation.Reverse, "Inversă");
         Assert.Equal(TranslationHelper.Translation.Right, "Dreapta");
-        Assert.Equal(TranslationHelper.Translation.Ripple, "Undă");
-        Assert.Equal(TranslationHelper.Translation.RippleAlt, "Undă alternativă");
         Assert.Equal(TranslationHelper.Translation.RotateLeft, "Rotire la stânga");
         Assert.Equal(TranslationHelper.Translation.RotateRight, "Rotire la dreapta");
         Assert.Equal(TranslationHelper.Translation.Rotated, "Rotită");
@@ -347,15 +333,14 @@ public static class RomanianUnitTest
         Assert.Equal(TranslationHelper.Translation.ShowInFolder, "Arată în dosar");
         Assert.Equal(TranslationHelper.Translation.ShowInfoWindow, "Arată fereastra cu informații");
         Assert.Equal(TranslationHelper.Translation.ShowResizeWindow, "Arată fereastra de redimensionare");
+        Assert.Equal(TranslationHelper.Translation.ShowUI, "Afișează interfața");
         Assert.Equal(TranslationHelper.Translation.ShutterPriority, "Prioritate obturator");
         Assert.Equal(TranslationHelper.Translation.SideBySide, "Alăturat");
         Assert.Equal(TranslationHelper.Translation.SideBySideTooltip, "Afișați imagini una lângă alta");
         Assert.Equal(TranslationHelper.Translation.Size, "Dimensiune");
         Assert.Equal(TranslationHelper.Translation.SizeMp, "Dimensiune (mp)");
         Assert.Equal(TranslationHelper.Translation.SizeTooltip, "Introdu dimensiunea dorită în pixeli sau în procent.");
-        Assert.Equal(TranslationHelper.Translation.Sketch, "Schiță");
         Assert.Equal(TranslationHelper.Translation.Slideshow, "Prezentare");
-        Assert.Equal(TranslationHelper.Translation.SmoothMagnify, "Amplificare lină");
         Assert.Equal(TranslationHelper.Translation.Soft, "Moale");
         Assert.Equal(TranslationHelper.Translation.Software, "Software");
         Assert.Equal(TranslationHelper.Translation.SortFilesBy, "Sortare fișiere după");
@@ -373,8 +358,6 @@ public static class RomanianUnitTest
         Assert.Equal(TranslationHelper.Translation.StrobeReturnLightNotDetected,
             "Lumină de întoarcere a blițului nedetectată");
         Assert.Equal(TranslationHelper.Translation.Subject, "Subiect");
-        Assert.Equal(TranslationHelper.Translation.Swirl, "Vârtej");
-        Assert.Equal(TranslationHelper.Translation.TelescopicBlur, "Estompare telescopică");
         Assert.Equal(TranslationHelper.Translation.Theme, "Temă");
         Assert.Equal(TranslationHelper.Translation.Thumbnail, "Miniatură");
         Assert.Equal(TranslationHelper.Translation.Tile, "Împărțire");
@@ -384,10 +367,8 @@ public static class RomanianUnitTest
         Assert.Equal(TranslationHelper.Translation.ToggleLooping, "Comutare repetare");
         Assert.Equal(TranslationHelper.Translation.ToggleScroll, "Comutare defilare");
         Assert.Equal(TranslationHelper.Translation.ToggleTaskbarProgress, "Afișează progresul în bara de activități");
-        Assert.Equal(TranslationHelper.Translation.ToneMapping, "Mapare de ton");
         Assert.Equal(TranslationHelper.Translation.UnableToRender, "Nu se poate reda imaginea");
         Assert.Equal(TranslationHelper.Translation.Uncalibrated, "Necalibrat");
-        Assert.Equal(TranslationHelper.Translation.Underwater, "Subacvatic");
         Assert.Equal(TranslationHelper.Translation.UnexpectedError, "A apărut o eroare necunoscută");
         Assert.Equal(TranslationHelper.Translation.Unflip, "Anulare răsturnare");
         Assert.Equal(TranslationHelper.Translation.Uniform, "Uniform");
@@ -399,7 +380,6 @@ public static class RomanianUnitTest
         Assert.Equal(TranslationHelper.Translation.UsingTouchpad, "Utilizarea touchpad-ului");
         Assert.Equal(TranslationHelper.Translation.Version, "Versiune:");
         Assert.Equal(TranslationHelper.Translation.ViewLicenseFile, "Vizualizare fișier de licență");
-        Assert.Equal(TranslationHelper.Translation.WaveWarper, "Deformare cu unde");
         Assert.Equal(TranslationHelper.Translation.WhiteBalance, "Balans de alb");
         Assert.Equal(TranslationHelper.Translation.WhiteFluorescent, "Fluorescent alb");
         Assert.Equal(TranslationHelper.Translation.Width, "Lățime");

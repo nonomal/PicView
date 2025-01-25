@@ -36,13 +36,10 @@ public static class ChineseSimplifiedUnitTest
         Assert.Equal(TranslationHelper.Translation.Auto, "自动");
         Assert.Equal(TranslationHelper.Translation.AutoFitWindow, "自动适应窗口");
         Assert.Equal(TranslationHelper.Translation.BadArchive, "无法处理压缩文件");
-        Assert.Equal(TranslationHelper.Translation.BandedSwirl, "带状旋转");
-        Assert.Equal(TranslationHelper.Translation.Bands, "条带");
         Assert.Equal(TranslationHelper.Translation.Base64Image, "Base64 图片");
         Assert.Equal(TranslationHelper.Translation.BatchResize, "批量调整尺寸");
         Assert.Equal(TranslationHelper.Translation.BitDepth, "位深");
         Assert.Equal(TranslationHelper.Translation.BlackAndWhite, "黑白");
-        Assert.Equal(TranslationHelper.Translation.Bloom, "鲜明");
         Assert.Equal(TranslationHelper.Translation.Blur, "模糊");
         Assert.Equal(TranslationHelper.Translation.BottomGalleryItemSize, "底部图库项目");
         Assert.Equal(TranslationHelper.Translation.BottomGalleryThumbnailStretch, "缩略图拉伸在底部图库");
@@ -103,7 +100,6 @@ public static class ChineseSimplifiedUnitTest
         Assert.Equal(TranslationHelper.Translation.DeletedFile, "已删除文件");
         Assert.Equal(TranslationHelper.Translation.Descending, "下降");
         Assert.Equal(TranslationHelper.Translation.DigitalZoom, "数码变焦");
-        Assert.Equal(TranslationHelper.Translation.DirectionalBlur, "方向模糊");
         Assert.Equal(TranslationHelper.Translation.DisableFadeInButtonsOnHover, "禁用鼠标悬停时的淡入按钮");
         Assert.Equal(TranslationHelper.Translation.DiskSize, "磁盘大小");
         Assert.Equal(TranslationHelper.Translation.DoubleClick, "双击");
@@ -115,7 +111,6 @@ public static class ChineseSimplifiedUnitTest
         Assert.Equal(TranslationHelper.Translation.DuplicateFile, "复制文件");
         Assert.Equal(TranslationHelper.Translation.Effects, "特效");
         Assert.Equal(TranslationHelper.Translation.EffectsTooltip, "显示图像特效窗口");
-        Assert.Equal(TranslationHelper.Translation.Embossed, "浮雕");
         Assert.Equal(TranslationHelper.Translation.Enter, "Enter");
         Assert.Equal(TranslationHelper.Translation.Esc, "Esc");
         Assert.Equal(TranslationHelper.Translation.EscCloseTooltip, "关闭当前打开的窗口和菜单");
@@ -156,7 +151,6 @@ public static class ChineseSimplifiedUnitTest
         Assert.Equal(TranslationHelper.Translation.FocalLength35mm, "35mm 焦距");
         Assert.Equal(TranslationHelper.Translation.Folder, "文件夹");
         Assert.Equal(TranslationHelper.Translation.Forward, "向前");
-        Assert.Equal(TranslationHelper.Translation.FrostyOutline, "Frosty 轮廓");
         Assert.Equal(TranslationHelper.Translation.Fstop, "F 值");
         Assert.Equal(TranslationHelper.Translation.FullPath, "完整路径");
         Assert.Equal(TranslationHelper.Translation.Fullscreen, "全屏");
@@ -166,8 +160,6 @@ public static class ChineseSimplifiedUnitTest
         Assert.Equal(TranslationHelper.Translation.GenerateThumbnails, "生成缩略图");
         Assert.Equal(TranslationHelper.Translation.GithubRepo, "Github 仓库");
         Assert.Equal(TranslationHelper.Translation.GlassTheme, "玻璃主题");
-        Assert.Equal(TranslationHelper.Translation.GlassTile, "平铺瓷砖");
-        Assert.Equal(TranslationHelper.Translation.Gloom, "暗淡");
         Assert.Equal(TranslationHelper.Translation.GoBackBy100Images, "后退 100 张图片");
         Assert.Equal(TranslationHelper.Translation.GoBackBy10Images, "后退 10 张图片");
         Assert.Equal(TranslationHelper.Translation.GoToImageAtSpecifiedIndex, "跳转至指定图片");
@@ -218,7 +210,6 @@ public static class ChineseSimplifiedUnitTest
         Assert.Equal(TranslationHelper.Translation.Minimize, "最小化");
         Assert.Equal(TranslationHelper.Translation.MiscSettings, "其他设置");
         Assert.Equal(TranslationHelper.Translation.Modified, "修改时间");
-        Assert.Equal(TranslationHelper.Translation.Monochrome, "单色化");
         Assert.Equal(TranslationHelper.Translation.MouseDrag, "鼠标拖拽");
         Assert.Equal(TranslationHelper.Translation.MouseKeyBack, "鼠标拓展键 向后键");
         Assert.Equal(TranslationHelper.Translation.MouseKeyForward, "鼠标拓展键 向前键");
@@ -251,7 +242,6 @@ public static class ChineseSimplifiedUnitTest
         Assert.Equal(TranslationHelper.Translation.Orientation, "方向");
         Assert.Equal(TranslationHelper.Translation.OutputFolder, "输出文件夹");
         Assert.Equal(TranslationHelper.Translation.Pan, "平移");
-        Assert.Equal(TranslationHelper.Translation.PaperFold, "折纸");
         Assert.Equal(TranslationHelper.Translation.PasswordArchive, "暂不支持带密码的压缩文件");
         Assert.Equal(TranslationHelper.Translation.PasteImageFromClipholder, "从剪贴板中粘贴图片");
         Assert.Equal(TranslationHelper.Translation.PencilSketch, "铅笔素描");
@@ -259,8 +249,6 @@ public static class ChineseSimplifiedUnitTest
         Assert.Equal(TranslationHelper.Translation.Percentage, "百分比");
         Assert.Equal(TranslationHelper.Translation.PermanentlyDelete, "永久删除");
         Assert.Equal(TranslationHelper.Translation.PhotometricInterpretation, "光度学解释");
-        Assert.Equal(TranslationHelper.Translation.Pivot, "翻转");
-        Assert.Equal(TranslationHelper.Translation.Pixelate, "像素化");
         Assert.Equal(TranslationHelper.Translation.Pixels, "px");
         Assert.Equal(TranslationHelper.Translation.Portrait, "纵向");
         Assert.Equal(TranslationHelper.Translation.PressKey, "按键...");
@@ -287,8 +275,6 @@ public static class ChineseSimplifiedUnitTest
         Assert.Equal(TranslationHelper.Translation.RestoreDown, "退出全屏");
         Assert.Equal(TranslationHelper.Translation.Reverse, "逆转");
         Assert.Equal(TranslationHelper.Translation.Right, "右");
-        Assert.Equal(TranslationHelper.Translation.Ripple, "波纹");
-        Assert.Equal(TranslationHelper.Translation.RippleAlt, "涟漪");
         Assert.Equal(TranslationHelper.Translation.RotateLeft, "向左旋转");
         Assert.Equal(TranslationHelper.Translation.RotateRight, "向右旋转");
         Assert.Equal(TranslationHelper.Translation.Rotated, "已旋转");
@@ -340,9 +326,7 @@ public static class ChineseSimplifiedUnitTest
         Assert.Equal(TranslationHelper.Translation.Size, "大小");
         Assert.Equal(TranslationHelper.Translation.SizeMp, "大小（兆像素）");
         Assert.Equal(TranslationHelper.Translation.SizeTooltip, "以像素或百分比输入所需的尺寸。");
-        Assert.Equal(TranslationHelper.Translation.Sketch, "素描");
         Assert.Equal(TranslationHelper.Translation.Slideshow, "幻灯片");
-        Assert.Equal(TranslationHelper.Translation.SmoothMagnify, "扭曲放大");
         Assert.Equal(TranslationHelper.Translation.Soft, "柔和");
         Assert.Equal(TranslationHelper.Translation.Software, "软件");
         Assert.Equal(TranslationHelper.Translation.SortFilesBy, "排序方式");
@@ -358,8 +342,6 @@ public static class ChineseSimplifiedUnitTest
         Assert.Equal(TranslationHelper.Translation.StrobeReturnLightDetected, "检测到闪光灯返回光");
         Assert.Equal(TranslationHelper.Translation.StrobeReturnLightNotDetected, "未检测到闪光灯返回光");
         Assert.Equal(TranslationHelper.Translation.Subject, "主题");
-        Assert.Equal(TranslationHelper.Translation.Swirl, "旋转");
-        Assert.Equal(TranslationHelper.Translation.TelescopicBlur, "拉伸模糊");
         Assert.Equal(TranslationHelper.Translation.Theme, "主题");
         Assert.Equal(TranslationHelper.Translation.Thumbnail, "缩略图");
         Assert.Equal(TranslationHelper.Translation.Tile, "平铺");
@@ -369,10 +351,8 @@ public static class ChineseSimplifiedUnitTest
         Assert.Equal(TranslationHelper.Translation.ToggleLooping, "切换循环");
         Assert.Equal(TranslationHelper.Translation.ToggleScroll, "切换滚动");
         Assert.Equal(TranslationHelper.Translation.ToggleTaskbarProgress, "显示任务栏进度");
-        Assert.Equal(TranslationHelper.Translation.ToneMapping, "色调映射");
         Assert.Equal(TranslationHelper.Translation.UnableToRender, "无法渲染图像");
         Assert.Equal(TranslationHelper.Translation.Uncalibrated, "未校准");
-        Assert.Equal(TranslationHelper.Translation.Underwater, "水下");
         Assert.Equal(TranslationHelper.Translation.UnexpectedError, "发生未知错误");
         Assert.Equal(TranslationHelper.Translation.Unflip, "取消水平翻转");
         Assert.Equal(TranslationHelper.Translation.Uniform, "均匀");
@@ -384,7 +364,6 @@ public static class ChineseSimplifiedUnitTest
         Assert.Equal(TranslationHelper.Translation.UsingTouchpad, "使用触控板");
         Assert.Equal(TranslationHelper.Translation.Version, "版本：");
         Assert.Equal(TranslationHelper.Translation.ViewLicenseFile, "查看开源协议");
-        Assert.Equal(TranslationHelper.Translation.WaveWarper, "波浪");
         Assert.Equal(TranslationHelper.Translation.WhiteBalance, "白平衡");
         Assert.Equal(TranslationHelper.Translation.WhiteFluorescent, "白光荧光");
         Assert.Equal(TranslationHelper.Translation.Width, "宽度");

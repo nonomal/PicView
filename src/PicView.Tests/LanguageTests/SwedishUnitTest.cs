@@ -37,13 +37,10 @@ public static class SwedishUnitTest
         Assert.Equal(TranslationHelper.Translation.Auto, "Auto");
         Assert.Equal(TranslationHelper.Translation.AutoFitWindow, "Auto-anpassa fönster");
         Assert.Equal(TranslationHelper.Translation.BadArchive, "Arkivet kan inte bearbetas");
-        Assert.Equal(TranslationHelper.Translation.BandedSwirl, "Bandvirvel");
-        Assert.Equal(TranslationHelper.Translation.Bands, "Band");
         Assert.Equal(TranslationHelper.Translation.Base64Image, "Base64-bild");
         Assert.Equal(TranslationHelper.Translation.BatchResize, "Batch ändra storlek");
         Assert.Equal(TranslationHelper.Translation.BitDepth, "Bitdjup");
         Assert.Equal(TranslationHelper.Translation.BlackAndWhite, "Svart/vit");
-        Assert.Equal(TranslationHelper.Translation.Bloom, "Blomma");
         Assert.Equal(TranslationHelper.Translation.Blur, "Oskärpa");
         Assert.Equal(TranslationHelper.Translation.BottomGalleryItemSize, "Storlek på tumnaglar i nedre galleriet");
         Assert.Equal(TranslationHelper.Translation.BottomGalleryThumbnailStretch,
@@ -109,7 +106,6 @@ public static class SwedishUnitTest
         Assert.Equal(TranslationHelper.Translation.DeletedFile, "Fil raderad");
         Assert.Equal(TranslationHelper.Translation.Descending, "Sjunkande");
         Assert.Equal(TranslationHelper.Translation.DigitalZoom, "Digital zoom");
-        Assert.Equal(TranslationHelper.Translation.DirectionalBlur, "Riktad oskärpa");
         Assert.Equal(TranslationHelper.Translation.DisableFadeInButtonsOnHover,
             "Göm dolda knappar när musen är i kanterna av programmet");
         Assert.Equal(TranslationHelper.Translation.DiskSize, "Skivstorlek");
@@ -122,7 +118,6 @@ public static class SwedishUnitTest
         Assert.Equal(TranslationHelper.Translation.DuplicateFile, "Duplicera fil");
         Assert.Equal(TranslationHelper.Translation.Effects, "Effekter");
         Assert.Equal(TranslationHelper.Translation.EffectsTooltip, "Visa bildeffekts-fönstret");
-        Assert.Equal(TranslationHelper.Translation.Embossed, "Relief");
         Assert.Equal(TranslationHelper.Translation.Enter, "Enter");
         Assert.Equal(TranslationHelper.Translation.Esc, "Esc");
         Assert.Equal(TranslationHelper.Translation.EscCloseTooltip, "Stänger nuvarande fönster/meny");
@@ -163,7 +158,6 @@ public static class SwedishUnitTest
         Assert.Equal(TranslationHelper.Translation.FocalLength35mm, "Brännvidd 35mm");
         Assert.Equal(TranslationHelper.Translation.Folder, "Mapp");
         Assert.Equal(TranslationHelper.Translation.Forward, "Framåt");
-        Assert.Equal(TranslationHelper.Translation.FrostyOutline, "Frostig kontur");
         Assert.Equal(TranslationHelper.Translation.Fstop, "Bländarsteg");
         Assert.Equal(TranslationHelper.Translation.FullPath, "Full sökkväg");
         Assert.Equal(TranslationHelper.Translation.Fullscreen, "Fullskärm");
@@ -173,8 +167,6 @@ public static class SwedishUnitTest
         Assert.Equal(TranslationHelper.Translation.GenerateThumbnails, "Generera tumnaglar");
         Assert.Equal(TranslationHelper.Translation.GithubRepo, "Github-repository");
         Assert.Equal(TranslationHelper.Translation.GlassTheme, "Glastema");
-        Assert.Equal(TranslationHelper.Translation.GlassTile, "Glasflisa");
-        Assert.Equal(TranslationHelper.Translation.Gloom, "Dyster");
         Assert.Equal(TranslationHelper.Translation.GoBackBy100Images, "Bakåt 100 bilder");
         Assert.Equal(TranslationHelper.Translation.GoBackBy10Images, "Bakåt 10 bilder");
         Assert.Equal(TranslationHelper.Translation.GoToImageAtSpecifiedIndex, "Gå till bildnummer");
@@ -225,7 +217,6 @@ public static class SwedishUnitTest
         Assert.Equal(TranslationHelper.Translation.Minimize, "Minimera");
         Assert.Equal(TranslationHelper.Translation.MiscSettings, "Övriga inställningar");
         Assert.Equal(TranslationHelper.Translation.Modified, "Ändrad");
-        Assert.Equal(TranslationHelper.Translation.Monochrome, "Monokrom");
         Assert.Equal(TranslationHelper.Translation.MouseDrag, "Dra musen");
         Assert.Equal(TranslationHelper.Translation.MouseKeyBack, "Musknapp bakåt");
         Assert.Equal(TranslationHelper.Translation.MouseKeyForward, "Musknapp framåt");
@@ -258,7 +249,6 @@ public static class SwedishUnitTest
         Assert.Equal(TranslationHelper.Translation.Orientation, "Orientering");
         Assert.Equal(TranslationHelper.Translation.OutputFolder, "Destinationsmapp");
         Assert.Equal(TranslationHelper.Translation.Pan, "Panorera");
-        Assert.Equal(TranslationHelper.Translation.PaperFold, "Papersvikning");
         Assert.Equal(TranslationHelper.Translation.PasswordArchive, "Lösenordsskyddade arkiv stöds inte");
         Assert.Equal(TranslationHelper.Translation.PasteImageFromClipholder, "Klista in bild");
         Assert.Equal(TranslationHelper.Translation.PencilSketch, "Blyertsskiss");
@@ -266,8 +256,6 @@ public static class SwedishUnitTest
         Assert.Equal(TranslationHelper.Translation.Percentage, "Procent");
         Assert.Equal(TranslationHelper.Translation.PermanentlyDelete, "Ta bort permanent");
         Assert.Equal(TranslationHelper.Translation.PhotometricInterpretation, "Fotometrisk tolkning");
-        Assert.Equal(TranslationHelper.Translation.Pivot, "Rotera");
-        Assert.Equal(TranslationHelper.Translation.Pixelate, "Pixla");
         Assert.Equal(TranslationHelper.Translation.Pixels, "pixlar");
         Assert.Equal(TranslationHelper.Translation.Portrait, "Stående");
         Assert.Equal(TranslationHelper.Translation.PressKey, "Tryck en tangent...");
@@ -294,8 +282,6 @@ public static class SwedishUnitTest
         Assert.Equal(TranslationHelper.Translation.RestoreDown, "Återställ ner");
         Assert.Equal(TranslationHelper.Translation.Reverse, "Bakåt");
         Assert.Equal(TranslationHelper.Translation.Right, "Höger");
-        Assert.Equal(TranslationHelper.Translation.Ripple, "Vågor");
-        Assert.Equal(TranslationHelper.Translation.RippleAlt, "Vågor alternativ");
         Assert.Equal(TranslationHelper.Translation.RotateLeft, "Rotera vänster");
         Assert.Equal(TranslationHelper.Translation.RotateRight, "Rotera höger");
         Assert.Equal(TranslationHelper.Translation.Rotated, "Roterad");
@@ -350,9 +336,7 @@ public static class SwedishUnitTest
         Assert.Equal(TranslationHelper.Translation.Size, "Storlek");
         Assert.Equal(TranslationHelper.Translation.SizeMp, "Storlek (mp)");
         Assert.Equal(TranslationHelper.Translation.SizeTooltip, "Ange önskad storlek i pixlar eller procent.");
-        Assert.Equal(TranslationHelper.Translation.Sketch, "Skissa");
         Assert.Equal(TranslationHelper.Translation.Slideshow, "Bildvisning");
-        Assert.Equal(TranslationHelper.Translation.SmoothMagnify, "Mjuk förstoring");
         Assert.Equal(TranslationHelper.Translation.Soft, "Mjuk");
         Assert.Equal(TranslationHelper.Translation.Software, "Program");
         Assert.Equal(TranslationHelper.Translation.SortFilesBy, "Sortera filer efter");
@@ -368,8 +352,6 @@ public static class SwedishUnitTest
         Assert.Equal(TranslationHelper.Translation.StrobeReturnLightDetected, "Strob-returljus detekterat");
         Assert.Equal(TranslationHelper.Translation.StrobeReturnLightNotDetected, "Strob-returljus inte detekterat");
         Assert.Equal(TranslationHelper.Translation.Subject, "Ämne");
-        Assert.Equal(TranslationHelper.Translation.Swirl, "Virvel");
-        Assert.Equal(TranslationHelper.Translation.TelescopicBlur, "Teleskopisk oskärpa");
         Assert.Equal(TranslationHelper.Translation.Theme, "Tema");
         Assert.Equal(TranslationHelper.Translation.Thumbnail, "Tumnagel");
         Assert.Equal(TranslationHelper.Translation.Tile, "Flisa");
@@ -379,10 +361,8 @@ public static class SwedishUnitTest
         Assert.Equal(TranslationHelper.Translation.ToggleLooping, "Slinga av/på");
         Assert.Equal(TranslationHelper.Translation.ToggleScroll, "Rullning av/på");
         Assert.Equal(TranslationHelper.Translation.ToggleTaskbarProgress, "Visa framstegsstapel");
-        Assert.Equal(TranslationHelper.Translation.ToneMapping, "Tonmappning");
         Assert.Equal(TranslationHelper.Translation.UnableToRender, "Kan inte skapa bilden");
         Assert.Equal(TranslationHelper.Translation.Uncalibrated, "Okalilbrerad");
-        Assert.Equal(TranslationHelper.Translation.Underwater, "Undervatten");
         Assert.Equal(TranslationHelper.Translation.UnexpectedError, "Ett oväntat fel inträffade");
         Assert.Equal(TranslationHelper.Translation.Unflip, "Återställ spegelvänd horisontellt");
         Assert.Equal(TranslationHelper.Translation.Uniform, "Enhetlig");
@@ -394,7 +374,6 @@ public static class SwedishUnitTest
         Assert.Equal(TranslationHelper.Translation.UsingTouchpad, "Använder pekplatta");
         Assert.Equal(TranslationHelper.Translation.Version, "Version:");
         Assert.Equal(TranslationHelper.Translation.ViewLicenseFile, "Se licensfilen");
-        Assert.Equal(TranslationHelper.Translation.WaveWarper, "Vågeffekt");
         Assert.Equal(TranslationHelper.Translation.WhiteBalance, "Vitbalans");
         Assert.Equal(TranslationHelper.Translation.WhiteFluorescent, "Lysrör vitt");
         Assert.Equal(TranslationHelper.Translation.Width, "Bredd");

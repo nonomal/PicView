@@ -37,13 +37,10 @@ public static class DanishUnitTest
         Assert.Equal(TranslationHelper.Translation.Auto, "Auto");
         Assert.Equal(TranslationHelper.Translation.AutoFitWindow, "Auto tilpas vindue");
         Assert.Equal(TranslationHelper.Translation.BadArchive, "Arkivet kunne ikke behandles");
-        Assert.Equal(TranslationHelper.Translation.BandedSwirl, "Båndet virvel");
-        Assert.Equal(TranslationHelper.Translation.Bands, "Bånd");
         Assert.Equal(TranslationHelper.Translation.Base64Image, "Base64 billede");
         Assert.Equal(TranslationHelper.Translation.BatchResize, "Batch Billedstørrelse");
         Assert.Equal(TranslationHelper.Translation.BitDepth, "Bit dybde");
         Assert.Equal(TranslationHelper.Translation.BlackAndWhite, "Sort/hvid");
-        Assert.Equal(TranslationHelper.Translation.Bloom, "Bloom");
         Assert.Equal(TranslationHelper.Translation.Blur, "Sløring");
         Assert.Equal(TranslationHelper.Translation.BottomGalleryItemSize, "Billedstørrelse i bundgalleriet");
         Assert.Equal(TranslationHelper.Translation.BottomGalleryThumbnailStretch,
@@ -108,7 +105,6 @@ public static class DanishUnitTest
         Assert.Equal(TranslationHelper.Translation.DeletedFile, "Slettede filen");
         Assert.Equal(TranslationHelper.Translation.Descending, "Faldende");
         Assert.Equal(TranslationHelper.Translation.DigitalZoom, "Digital zoom");
-        Assert.Equal(TranslationHelper.Translation.DirectionalBlur, "Retningsvis Sløring");
         Assert.Equal(TranslationHelper.Translation.DisableFadeInButtonsOnHover,
             "Skjul skjulte knapper, når musen er i kanterne i programmet");
         Assert.Equal(TranslationHelper.Translation.DiskSize, "Disk størrelse");
@@ -122,7 +118,6 @@ public static class DanishUnitTest
         Assert.Equal(TranslationHelper.Translation.DuplicateFile, "Dupliker fil");
         Assert.Equal(TranslationHelper.Translation.Effects, "Billedeffekter");
         Assert.Equal(TranslationHelper.Translation.EffectsTooltip, "Vis billedeffektsvinduet");
-        Assert.Equal(TranslationHelper.Translation.Embossed, "Emboss");
         Assert.Equal(TranslationHelper.Translation.Enter, "Enter");
         Assert.Equal(TranslationHelper.Translation.Esc, "Esc");
         Assert.Equal(TranslationHelper.Translation.EscCloseTooltip, "Lukker nuværende åbne vindue el. menu");
@@ -163,7 +158,6 @@ public static class DanishUnitTest
         Assert.Equal(TranslationHelper.Translation.FocalLength35mm, "Brændvidde 35mm");
         Assert.Equal(TranslationHelper.Translation.Folder, "Mappe");
         Assert.Equal(TranslationHelper.Translation.Forward, "Fremad");
-        Assert.Equal(TranslationHelper.Translation.FrostyOutline, "Frosty Outline");
         Assert.Equal(TranslationHelper.Translation.Fstop, "F-stop");
         Assert.Equal(TranslationHelper.Translation.FullPath, "Filsti");
         Assert.Equal(TranslationHelper.Translation.Fullscreen, "Fuldskærm");
@@ -173,8 +167,6 @@ public static class DanishUnitTest
         Assert.Equal(TranslationHelper.Translation.GenerateThumbnails, "Generer thumbnails");
         Assert.Equal(TranslationHelper.Translation.GithubRepo, "Github side");
         Assert.Equal(TranslationHelper.Translation.GlassTheme, "Glas tema");
-        Assert.Equal(TranslationHelper.Translation.GlassTile, "Glasflise");
-        Assert.Equal(TranslationHelper.Translation.Gloom, "Gloom");
         Assert.Equal(TranslationHelper.Translation.GoBackBy100Images, "Gå 100 billeder tilbage");
         Assert.Equal(TranslationHelper.Translation.GoBackBy10Images, "Gå 10 billeder tilbage");
         Assert.Equal(TranslationHelper.Translation.GoToImageAtSpecifiedIndex,
@@ -226,7 +218,6 @@ public static class DanishUnitTest
         Assert.Equal(TranslationHelper.Translation.Minimize, "Minimer");
         Assert.Equal(TranslationHelper.Translation.MiscSettings, "Diverse indstillinger");
         Assert.Equal(TranslationHelper.Translation.Modified, "Modificeret");
-        Assert.Equal(TranslationHelper.Translation.Monochrome, "Monokrom");
         Assert.Equal(TranslationHelper.Translation.MouseDrag, "Træk musen");
         Assert.Equal(TranslationHelper.Translation.MouseKeyBack, "Mouse knap tilbage");
         Assert.Equal(TranslationHelper.Translation.MouseKeyForward, "Museknap fremad");
@@ -259,7 +250,6 @@ public static class DanishUnitTest
         Assert.Equal(TranslationHelper.Translation.Orientation, "Orientering");
         Assert.Equal(TranslationHelper.Translation.OutputFolder, "Destination");
         Assert.Equal(TranslationHelper.Translation.Pan, "Panorering");
-        Assert.Equal(TranslationHelper.Translation.PaperFold, "Papirfoldning");
         Assert.Equal(TranslationHelper.Translation.PasswordArchive, "Adgangskodebeskyttet arkiv understøttes ikke");
         Assert.Equal(TranslationHelper.Translation.PasteImageFromClipholder, "Indsæt billede fra udklipsholderen");
         Assert.Equal(TranslationHelper.Translation.PencilSketch, "Blyantskitse");
@@ -267,8 +257,6 @@ public static class DanishUnitTest
         Assert.Equal(TranslationHelper.Translation.Percentage, "Procent");
         Assert.Equal(TranslationHelper.Translation.PermanentlyDelete, "Slet permanent");
         Assert.Equal(TranslationHelper.Translation.PhotometricInterpretation, "Fotometrisk fortolkning");
-        Assert.Equal(TranslationHelper.Translation.Pivot, "Omdrejning");
-        Assert.Equal(TranslationHelper.Translation.Pixelate, "Pixeler");
         Assert.Equal(TranslationHelper.Translation.Pixels, "pixels");
         Assert.Equal(TranslationHelper.Translation.Portrait, "Portræt");
         Assert.Equal(TranslationHelper.Translation.PressKey, "Tryk på tasten...");
@@ -295,8 +283,6 @@ public static class DanishUnitTest
         Assert.Equal(TranslationHelper.Translation.RestoreDown, "Gendan");
         Assert.Equal(TranslationHelper.Translation.Reverse, "Baglæns");
         Assert.Equal(TranslationHelper.Translation.Right, "Højre");
-        Assert.Equal(TranslationHelper.Translation.Ripple, "Bølge effekt");
-        Assert.Equal(TranslationHelper.Translation.RippleAlt, "Bølge effekt Alt");
         Assert.Equal(TranslationHelper.Translation.RotateLeft, "Roter til venstre");
         Assert.Equal(TranslationHelper.Translation.RotateRight, "Roter til højre");
         Assert.Equal(TranslationHelper.Translation.Rotated, "Roteret");
@@ -351,9 +337,7 @@ public static class DanishUnitTest
         Assert.Equal(TranslationHelper.Translation.Size, "Størrelse");
         Assert.Equal(TranslationHelper.Translation.SizeMp, "Størrelse (mp)");
         Assert.Equal(TranslationHelper.Translation.SizeTooltip, "Indtast størrelse i pixels eller procent.");
-        Assert.Equal(TranslationHelper.Translation.Sketch, "Skitse");
         Assert.Equal(TranslationHelper.Translation.Slideshow, "Slideshow");
-        Assert.Equal(TranslationHelper.Translation.SmoothMagnify, "Glat forstørrelse");
         Assert.Equal(TranslationHelper.Translation.Soft, "Blød");
         Assert.Equal(TranslationHelper.Translation.Software, "Program");
         Assert.Equal(TranslationHelper.Translation.SortFilesBy, "Sorter efter");
@@ -369,8 +353,6 @@ public static class DanishUnitTest
         Assert.Equal(TranslationHelper.Translation.StrobeReturnLightDetected, "Strob returneringslys genkendt");
         Assert.Equal(TranslationHelper.Translation.StrobeReturnLightNotDetected, "returneringslys ikke genkendt");
         Assert.Equal(TranslationHelper.Translation.Subject, "Emne");
-        Assert.Equal(TranslationHelper.Translation.Swirl, "Virvel");
-        Assert.Equal(TranslationHelper.Translation.TelescopicBlur, "Teleskopisk Sløring");
         Assert.Equal(TranslationHelper.Translation.Theme, "Tema");
         Assert.Equal(TranslationHelper.Translation.Thumbnail, "Thumb");
         Assert.Equal(TranslationHelper.Translation.Tile, "Flise");
@@ -380,10 +362,8 @@ public static class DanishUnitTest
         Assert.Equal(TranslationHelper.Translation.ToggleLooping, "Slå looping til/fra");
         Assert.Equal(TranslationHelper.Translation.ToggleScroll, "Slå scroll til/fra");
         Assert.Equal(TranslationHelper.Translation.ToggleTaskbarProgress, "Vis fremskridt i proceslinjen");
-        Assert.Equal(TranslationHelper.Translation.ToneMapping, "ToneMapping");
         Assert.Equal(TranslationHelper.Translation.UnableToRender, "Kan ikke gengive billedet");
         Assert.Equal(TranslationHelper.Translation.Uncalibrated, "Ikke kalibreret");
-        Assert.Equal(TranslationHelper.Translation.Underwater, "Undersøisk");
         Assert.Equal(TranslationHelper.Translation.UnexpectedError, "Der skete en ukendt fejl");
         Assert.Equal(TranslationHelper.Translation.Unflip, "Spejlvend tilbage");
         Assert.Equal(TranslationHelper.Translation.Uniform, "Ensartet");
@@ -395,7 +375,6 @@ public static class DanishUnitTest
         Assert.Equal(TranslationHelper.Translation.UsingTouchpad, "Bruger pegefelt");
         Assert.Equal(TranslationHelper.Translation.Version, "Version:");
         Assert.Equal(TranslationHelper.Translation.ViewLicenseFile, "Se licensfilen");
-        Assert.Equal(TranslationHelper.Translation.WaveWarper, "Bølger");
         Assert.Equal(TranslationHelper.Translation.WhiteBalance, "Hvidbalance");
         Assert.Equal(TranslationHelper.Translation.WhiteFluorescent, "Hvid fluorescerende");
         Assert.Equal(TranslationHelper.Translation.Width, "Bredde");

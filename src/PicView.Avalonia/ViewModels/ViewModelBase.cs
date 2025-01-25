@@ -262,7 +262,6 @@ public class ViewModelBase : ReactiveObject
         BlackAndWhite = TranslationHelper.Translation.BlackAndWhite;
         NegativeColors = TranslationHelper.Translation.NegativeColors;
         Blur = TranslationHelper.Translation.Blur;
-        DirectionalBlur = TranslationHelper.Translation.DirectionalBlur;
         PencilSketch = TranslationHelper.Translation.PencilSketch;
         OldMovie = TranslationHelper.Translation.OldMovie;
         Posterize = TranslationHelper.Translation.Posterize;

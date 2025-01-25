@@ -37,13 +37,10 @@ public static class ItalianUnitTest
         Assert.Equal(TranslationHelper.Translation.Auto, "Auto");
         Assert.Equal(TranslationHelper.Translation.AutoFitWindow, "Adattamento automatico");
         Assert.Equal(TranslationHelper.Translation.BadArchive, "Impossibile elaborare l'archivio");
-        Assert.Equal(TranslationHelper.Translation.BandedSwirl, "Turbinio fasciato");
-        Assert.Equal(TranslationHelper.Translation.Bands, "Bande");
         Assert.Equal(TranslationHelper.Translation.Base64Image, "Immagine base64");
         Assert.Equal(TranslationHelper.Translation.BatchResize, "Batch ridimensiona");
         Assert.Equal(TranslationHelper.Translation.BitDepth, "Profondità di bit");
         Assert.Equal(TranslationHelper.Translation.BlackAndWhite, "Bianco e nero");
-        Assert.Equal(TranslationHelper.Translation.Bloom, "Fioritura");
         Assert.Equal(TranslationHelper.Translation.Blur, "Blur");
         Assert.Equal(TranslationHelper.Translation.BottomGalleryItemSize, "Elementi galleria inferiore");
         Assert.Equal(TranslationHelper.Translation.BottomGalleryThumbnailStretch,
@@ -110,7 +107,6 @@ public static class ItalianUnitTest
         Assert.Equal(TranslationHelper.Translation.DeletedFile, "File cancellato");
         Assert.Equal(TranslationHelper.Translation.Descending, "Discendente");
         Assert.Equal(TranslationHelper.Translation.DigitalZoom, "Zoom digitale");
-        Assert.Equal(TranslationHelper.Translation.DirectionalBlur, "Sfocatura direzionale");
         Assert.Equal(TranslationHelper.Translation.DisableFadeInButtonsOnHover,
             "Disabilita pulsanti in dissolvenza al passaggio del mouse");
         Assert.Equal(TranslationHelper.Translation.DiskSize, "Dimensione del disco");
@@ -124,7 +120,6 @@ public static class ItalianUnitTest
         Assert.Equal(TranslationHelper.Translation.DuplicateFile, "Duplica file");
         Assert.Equal(TranslationHelper.Translation.Effects, "Effetti Shader");
         Assert.Equal(TranslationHelper.Translation.EffectsTooltip, "Mostra finestra effetti immagine");
-        Assert.Equal(TranslationHelper.Translation.Embossed, "Rilievo");
         Assert.Equal(TranslationHelper.Translation.Enter, "Enter");
         Assert.Equal(TranslationHelper.Translation.Esc, "Esc");
         Assert.Equal(TranslationHelper.Translation.EscCloseTooltip, "Chiudi la finestra/menu attualmente aperti");
@@ -166,7 +161,6 @@ public static class ItalianUnitTest
         Assert.Equal(TranslationHelper.Translation.FocalLength35mm, "Lunghezza focale 35mm");
         Assert.Equal(TranslationHelper.Translation.Folder, "Cartella");
         Assert.Equal(TranslationHelper.Translation.Forward, "Inoltrare");
-        Assert.Equal(TranslationHelper.Translation.FrostyOutline, "Contorno gelido");
         Assert.Equal(TranslationHelper.Translation.Fstop, "F-stop");
         Assert.Equal(TranslationHelper.Translation.FullPath, "Percorso completo");
         Assert.Equal(TranslationHelper.Translation.Fullscreen, "A schermo intero");
@@ -177,8 +171,6 @@ public static class ItalianUnitTest
         Assert.Equal(TranslationHelper.Translation.GenerateThumbnails, "Genera le miniature");
         Assert.Equal(TranslationHelper.Translation.GithubRepo, "Repository Github");
         Assert.Equal(TranslationHelper.Translation.GlassTheme, "Tema di vetro");
-        Assert.Equal(TranslationHelper.Translation.GlassTile, "Piastrella di vetro");
-        Assert.Equal(TranslationHelper.Translation.Gloom, "BuioGloom");
         Assert.Equal(TranslationHelper.Translation.GoBackBy100Images, "Torna indietro di 100 immagini");
         Assert.Equal(TranslationHelper.Translation.GoBackBy10Images, "Torna indietro di 10 immagini");
         Assert.Equal(TranslationHelper.Translation.GoToImageAtSpecifiedIndex,
@@ -230,7 +222,6 @@ public static class ItalianUnitTest
         Assert.Equal(TranslationHelper.Translation.Minimize, "Minimizzare");
         Assert.Equal(TranslationHelper.Translation.MiscSettings, "Impostazioni varie");
         Assert.Equal(TranslationHelper.Translation.Modified, "Modificato");
-        Assert.Equal(TranslationHelper.Translation.Monochrome, "Monocroma");
         Assert.Equal(TranslationHelper.Translation.MouseDrag, "Trascinamento del mouse");
         Assert.Equal(TranslationHelper.Translation.MouseKeyBack, "Tasto mouse indietro");
         Assert.Equal(TranslationHelper.Translation.MouseKeyForward, "Tasto mouse in avanti");
@@ -263,7 +254,6 @@ public static class ItalianUnitTest
         Assert.Equal(TranslationHelper.Translation.Orientation, "Orientamento");
         Assert.Equal(TranslationHelper.Translation.OutputFolder, "Cartella di uscita");
         Assert.Equal(TranslationHelper.Translation.Pan, "Fare una panoramica");
-        Assert.Equal(TranslationHelper.Translation.PaperFold, "Pieghevole");
         Assert.Equal(TranslationHelper.Translation.PasswordArchive, "Archivio protetto da password non supportato");
         Assert.Equal(TranslationHelper.Translation.PasteImageFromClipholder, "Incolla l'immagine dagli appunti");
         Assert.Equal(TranslationHelper.Translation.PencilSketch, "Schizzo a matita");
@@ -271,8 +261,6 @@ public static class ItalianUnitTest
         Assert.Equal(TranslationHelper.Translation.Percentage, "Percentuale");
         Assert.Equal(TranslationHelper.Translation.PermanentlyDelete, "Elimina definitivamente");
         Assert.Equal(TranslationHelper.Translation.PhotometricInterpretation, "Interpretazione fotometrica");
-        Assert.Equal(TranslationHelper.Translation.Pivot, "Volto");
-        Assert.Equal(TranslationHelper.Translation.Pixelate, "Pixelare");
         Assert.Equal(TranslationHelper.Translation.Pixels, "Pixel");
         Assert.Equal(TranslationHelper.Translation.Portrait, "Ritratto");
         Assert.Equal(TranslationHelper.Translation.PressKey, "Premi il tasto...");
@@ -299,8 +287,6 @@ public static class ItalianUnitTest
         Assert.Equal(TranslationHelper.Translation.RestoreDown, "Ripristina giù");
         Assert.Equal(TranslationHelper.Translation.Reverse, "Inversione");
         Assert.Equal(TranslationHelper.Translation.Right, "Destra");
-        Assert.Equal(TranslationHelper.Translation.Ripple, "Ondulazione");
-        Assert.Equal(TranslationHelper.Translation.RippleAlt, "Ondulazione Alt");
         Assert.Equal(TranslationHelper.Translation.RotateLeft, "Ruota a sinistra");
         Assert.Equal(TranslationHelper.Translation.RotateRight, "Ruota a destra");
         Assert.Equal(TranslationHelper.Translation.Rotated, "Ruotato");
@@ -360,9 +346,7 @@ public static class ItalianUnitTest
         Assert.Equal(TranslationHelper.Translation.SizeMp, "Dimensione (mp)");
         Assert.Equal(TranslationHelper.Translation.SizeTooltip,
             "Inserisci la dimensione desiderata in pixel o in percentuale.");
-        Assert.Equal(TranslationHelper.Translation.Sketch, "Schizzo");
         Assert.Equal(TranslationHelper.Translation.Slideshow, "Presentazione");
-        Assert.Equal(TranslationHelper.Translation.SmoothMagnify, "Ingrandimento uniforme");
         Assert.Equal(TranslationHelper.Translation.Soft, "Morbido");
         Assert.Equal(TranslationHelper.Translation.Software, "Software");
         Assert.Equal(TranslationHelper.Translation.SortFilesBy, "Ordina file per");
@@ -379,8 +363,6 @@ public static class ItalianUnitTest
         Assert.Equal(TranslationHelper.Translation.StrobeReturnLightNotDetected,
             "Luce di ritorno dello strobo non rilevata");
         Assert.Equal(TranslationHelper.Translation.Subject, "Soggetto");
-        Assert.Equal(TranslationHelper.Translation.Swirl, "Turbinio");
-        Assert.Equal(TranslationHelper.Translation.TelescopicBlur, "Sfocatura telescopica");
         Assert.Equal(TranslationHelper.Translation.Theme, "Tema");
         Assert.Equal(TranslationHelper.Translation.Thumbnail, "Miniature");
         Assert.Equal(TranslationHelper.Translation.Tile, "Piastrellare");
@@ -391,10 +373,8 @@ public static class ItalianUnitTest
         Assert.Equal(TranslationHelper.Translation.ToggleScroll, "Attiva/disattiva scorrimento");
         Assert.Equal(TranslationHelper.Translation.ToggleTaskbarProgress,
             "Mostra progresso sulla barra delle applicazioni");
-        Assert.Equal(TranslationHelper.Translation.ToneMapping, "Mappatura dei toni");
         Assert.Equal(TranslationHelper.Translation.UnableToRender, "Impossibile renderizzare l'immagine");
         Assert.Equal(TranslationHelper.Translation.Uncalibrated, "Non calibrato");
-        Assert.Equal(TranslationHelper.Translation.Underwater, "Sott'acqua");
         Assert.Equal(TranslationHelper.Translation.UnexpectedError, "Si è verificato un errore sconosciuto");
         Assert.Equal(TranslationHelper.Translation.Unflip, "Srotolare");
         Assert.Equal(TranslationHelper.Translation.Uniform, "Uniforme");
@@ -406,7 +386,6 @@ public static class ItalianUnitTest
         Assert.Equal(TranslationHelper.Translation.UsingTouchpad, "Utilizzare il touchpad");
         Assert.Equal(TranslationHelper.Translation.Version, "Versione:");
         Assert.Equal(TranslationHelper.Translation.ViewLicenseFile, "Visualizza file di licenza");
-        Assert.Equal(TranslationHelper.Translation.WaveWarper, "onda deformante");
         Assert.Equal(TranslationHelper.Translation.WhiteBalance, "Bilanciamento del bianco");
         Assert.Equal(TranslationHelper.Translation.WhiteFluorescent, "Fluorescente bianco");
         Assert.Equal(TranslationHelper.Translation.Width, "Larghezza");

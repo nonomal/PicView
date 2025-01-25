@@ -37,13 +37,10 @@ public static class TurkishUnitTest
         Assert.Equal(TranslationHelper.Translation.Auto, "Otomatik");
         Assert.Equal(TranslationHelper.Translation.AutoFitWindow, "Pencereye otomatik sığdır");
         Assert.Equal(TranslationHelper.Translation.BadArchive, "Arşiv işlenemedi");
-        Assert.Equal(TranslationHelper.Translation.BandedSwirl, "Şeritli Girdap");
-        Assert.Equal(TranslationHelper.Translation.Bands, "Şeritler");
         Assert.Equal(TranslationHelper.Translation.Base64Image, "Base64 resim");
         Assert.Equal(TranslationHelper.Translation.BatchResize, "Toplu Yeniden Boyutlandırma");
         Assert.Equal(TranslationHelper.Translation.BitDepth, "Bit derinliği");
         Assert.Equal(TranslationHelper.Translation.BlackAndWhite, "Siyah Beyaz");
-        Assert.Equal(TranslationHelper.Translation.Bloom, "Çiçeklenme");
         Assert.Equal(TranslationHelper.Translation.Blur, "Bulanıklaştırma");
         Assert.Equal(TranslationHelper.Translation.BottomGalleryItemSize, "Alt galerideki küçük resimlerin boyutu");
         Assert.Equal(TranslationHelper.Translation.BottomGalleryThumbnailStretch, "Alt galeride küçük resim esnetme");
@@ -108,7 +105,6 @@ public static class TurkishUnitTest
         Assert.Equal(TranslationHelper.Translation.DeletedFile, "Silinen dosya");
         Assert.Equal(TranslationHelper.Translation.Descending, "Azalan");
         Assert.Equal(TranslationHelper.Translation.DigitalZoom, "Dijital yakınlaştırma");
-        Assert.Equal(TranslationHelper.Translation.DirectionalBlur, "Yönlü bulanıklık");
         Assert.Equal(TranslationHelper.Translation.DisableFadeInButtonsOnHover,
             "Fareyle üzerine gelindiğinde soluklaşan butonları devre dışı bırak");
         Assert.Equal(TranslationHelper.Translation.DiskSize, "Disk boyutu");
@@ -122,7 +118,6 @@ public static class TurkishUnitTest
         Assert.Equal(TranslationHelper.Translation.DuplicateFile, "Yinelenen dosya");
         Assert.Equal(TranslationHelper.Translation.Effects, "Efektler");
         Assert.Equal(TranslationHelper.Translation.EffectsTooltip, "Resim efektleri penceresini göster");
-        Assert.Equal(TranslationHelper.Translation.Embossed, "Kabartma");
         Assert.Equal(TranslationHelper.Translation.Enter, "Enter");
         Assert.Equal(TranslationHelper.Translation.Esc, "Esc");
         Assert.Equal(TranslationHelper.Translation.EscCloseTooltip, "Açık olan pencere/menüyü kapatır");
@@ -163,7 +158,6 @@ public static class TurkishUnitTest
         Assert.Equal(TranslationHelper.Translation.FocalLength35mm, "35mm odak uzaklığı");
         Assert.Equal(TranslationHelper.Translation.Folder, "Klasör");
         Assert.Equal(TranslationHelper.Translation.Forward, "İleri");
-        Assert.Equal(TranslationHelper.Translation.FrostyOutline, "Buzlu Kontur");
         Assert.Equal(TranslationHelper.Translation.Fstop, "F-stop");
         Assert.Equal(TranslationHelper.Translation.FullPath, "Tam dosya yolu");
         Assert.Equal(TranslationHelper.Translation.Fullscreen, "Tam ekran");
@@ -173,8 +167,6 @@ public static class TurkishUnitTest
         Assert.Equal(TranslationHelper.Translation.GenerateThumbnails, "Küçük resimler oluştur");
         Assert.Equal(TranslationHelper.Translation.GithubRepo, "Github deposu");
         Assert.Equal(TranslationHelper.Translation.GlassTheme, "Cam Teması");
-        Assert.Equal(TranslationHelper.Translation.GlassTile, "Cam Karosu");
-        Assert.Equal(TranslationHelper.Translation.Gloom, "Kasvet");
         Assert.Equal(TranslationHelper.Translation.GoBackBy100Images, "100 Resim geri git");
         Assert.Equal(TranslationHelper.Translation.GoBackBy10Images, "10 Resim geri git");
         Assert.Equal(TranslationHelper.Translation.GoToImageAtSpecifiedIndex, "Belirtilen dizindeki görüntüye git");
@@ -225,7 +217,6 @@ public static class TurkishUnitTest
         Assert.Equal(TranslationHelper.Translation.Minimize, "Minimize et");
         Assert.Equal(TranslationHelper.Translation.MiscSettings, "Çeşitli ayarlar");
         Assert.Equal(TranslationHelper.Translation.Modified, "Değiştirilmiş");
-        Assert.Equal(TranslationHelper.Translation.Monochrome, "Monokrom");
         Assert.Equal(TranslationHelper.Translation.MouseDrag, "Fare sürükleme");
         Assert.Equal(TranslationHelper.Translation.MouseKeyBack, "Fare tuşu geri");
         Assert.Equal(TranslationHelper.Translation.MouseKeyForward, "Fare tuşu ileri");
@@ -258,7 +249,6 @@ public static class TurkishUnitTest
         Assert.Equal(TranslationHelper.Translation.Orientation, "Yönlendirme");
         Assert.Equal(TranslationHelper.Translation.OutputFolder, "Çıktı klasörü");
         Assert.Equal(TranslationHelper.Translation.Pan, "Panorama");
-        Assert.Equal(TranslationHelper.Translation.PaperFold, "Kağıt Katlama");
         Assert.Equal(TranslationHelper.Translation.PasswordArchive, "Şifreli arşiv desteklenmiyor");
         Assert.Equal(TranslationHelper.Translation.PasteImageFromClipholder, "Panodan resmi yapıştır");
         Assert.Equal(TranslationHelper.Translation.PencilSketch, "Kurşun Kalem Çizimi");
@@ -266,8 +256,6 @@ public static class TurkishUnitTest
         Assert.Equal(TranslationHelper.Translation.Percentage, "Yüzde");
         Assert.Equal(TranslationHelper.Translation.PermanentlyDelete, "Kalıcı olarak sil");
         Assert.Equal(TranslationHelper.Translation.PhotometricInterpretation, "Fotometrik yorumlama");
-        Assert.Equal(TranslationHelper.Translation.Pivot, "Eksen");
-        Assert.Equal(TranslationHelper.Translation.Pixelate, "Pikselleştir");
         Assert.Equal(TranslationHelper.Translation.Pixels, "pikseller");
         Assert.Equal(TranslationHelper.Translation.Portrait, "Portre");
         Assert.Equal(TranslationHelper.Translation.PressKey, "Tuşa basın...");
@@ -294,8 +282,6 @@ public static class TurkishUnitTest
         Assert.Equal(TranslationHelper.Translation.RestoreDown, "Küçült");
         Assert.Equal(TranslationHelper.Translation.Reverse, "Tersine çevir");
         Assert.Equal(TranslationHelper.Translation.Right, "Sağ");
-        Assert.Equal(TranslationHelper.Translation.Ripple, "Dalgalanma");
-        Assert.Equal(TranslationHelper.Translation.RippleAlt, "Dalgalanma yüksekliği");
         Assert.Equal(TranslationHelper.Translation.RotateLeft, "Sola döndür");
         Assert.Equal(TranslationHelper.Translation.RotateRight, "Sağa döndür");
         Assert.Equal(TranslationHelper.Translation.Rotated, "Döndürülmüş");
@@ -351,9 +337,7 @@ public static class TurkishUnitTest
         Assert.Equal(TranslationHelper.Translation.Size, "Boyut");
         Assert.Equal(TranslationHelper.Translation.SizeMp, "Boyut (mp)");
         Assert.Equal(TranslationHelper.Translation.SizeTooltip, "İstediğiniz boyutu piksel veya yüzde cinsinden gir.");
-        Assert.Equal(TranslationHelper.Translation.Sketch, "Çizim");
         Assert.Equal(TranslationHelper.Translation.Slideshow, "Slayt gösterisi");
-        Assert.Equal(TranslationHelper.Translation.SmoothMagnify, "Pürüzsüz Büyütme");
         Assert.Equal(TranslationHelper.Translation.Soft, "Yumuşak");
         Assert.Equal(TranslationHelper.Translation.Software, "Yazılım");
         Assert.Equal(TranslationHelper.Translation.SortFilesBy, "Dosyaları şuna göre sırala");
@@ -369,8 +353,6 @@ public static class TurkishUnitTest
         Assert.Equal(TranslationHelper.Translation.StrobeReturnLightDetected, "Strob ışık geri dönüşü algılandı");
         Assert.Equal(TranslationHelper.Translation.StrobeReturnLightNotDetected, "Strob ışık geri dönüşü algılanmadı");
         Assert.Equal(TranslationHelper.Translation.Subject, "Konu");
-        Assert.Equal(TranslationHelper.Translation.Swirl, "Girdap");
-        Assert.Equal(TranslationHelper.Translation.TelescopicBlur, "Teleskopik Bulanıklık");
         Assert.Equal(TranslationHelper.Translation.Theme, "Tema");
         Assert.Equal(TranslationHelper.Translation.Thumbnail, "Küçük resim");
         Assert.Equal(TranslationHelper.Translation.Tile, "Fayans");
@@ -380,10 +362,8 @@ public static class TurkishUnitTest
         Assert.Equal(TranslationHelper.Translation.ToggleLooping, "Döngüyü aç / kapat");
         Assert.Equal(TranslationHelper.Translation.ToggleScroll, "Kaydırmayı aç / kapat");
         Assert.Equal(TranslationHelper.Translation.ToggleTaskbarProgress, "Görev çubuğu ilerlemesini görüntüle");
-        Assert.Equal(TranslationHelper.Translation.ToneMapping, "Ton Haritalama");
         Assert.Equal(TranslationHelper.Translation.UnableToRender, "Görüntü işlenemiyor");
         Assert.Equal(TranslationHelper.Translation.Uncalibrated, "Uncalibrated");
-        Assert.Equal(TranslationHelper.Translation.Underwater, "Kalibre edilmemiş");
         Assert.Equal(TranslationHelper.Translation.UnexpectedError, "Bilinmeyen bir hata oluştu");
         Assert.Equal(TranslationHelper.Translation.Unflip, "Ters çevir");
         Assert.Equal(TranslationHelper.Translation.Uniform, "üniforma");
@@ -395,7 +375,6 @@ public static class TurkishUnitTest
         Assert.Equal(TranslationHelper.Translation.UsingTouchpad, "Dokunmatik yüzey kullanılıyor");
         Assert.Equal(TranslationHelper.Translation.Version, "Sürüm:");
         Assert.Equal(TranslationHelper.Translation.ViewLicenseFile, "Lisans dosyasını görüntüle");
-        Assert.Equal(TranslationHelper.Translation.WaveWarper, "Dalga Savar");
         Assert.Equal(TranslationHelper.Translation.WhiteBalance, "Beyaz dengesi");
         Assert.Equal(TranslationHelper.Translation.WhiteFluorescent, "Beyaz floresan");
         Assert.Equal(TranslationHelper.Translation.Width, "Genişlik");

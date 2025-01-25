@@ -37,13 +37,10 @@ public static class RussianUnitTest
         Assert.Equal(TranslationHelper.Translation.Auto, "Авто");
         Assert.Equal(TranslationHelper.Translation.AutoFitWindow, "Окно автозаполнения");
         Assert.Equal(TranslationHelper.Translation.BadArchive, "Архив не может быть обработан");
-        Assert.Equal(TranslationHelper.Translation.BandedSwirl, "Водоворот");
-        Assert.Equal(TranslationHelper.Translation.Bands, "Группы");
         Assert.Equal(TranslationHelper.Translation.Base64Image, "Изображение Base64");
         Assert.Equal(TranslationHelper.Translation.BatchResize, "Групповое изменение размера");
         Assert.Equal(TranslationHelper.Translation.BitDepth, "Битовая глубина");
         Assert.Equal(TranslationHelper.Translation.BlackAndWhite, "Черно-белый");
-        Assert.Equal(TranslationHelper.Translation.Bloom, "Цветение");
         Assert.Equal(TranslationHelper.Translation.Blur, "Размытие");
         Assert.Equal(TranslationHelper.Translation.BottomGalleryItemSize, "Количество элементов нижней галереи");
         Assert.Equal(TranslationHelper.Translation.BottomGalleryThumbnailStretch,
@@ -110,7 +107,6 @@ public static class RussianUnitTest
         Assert.Equal(TranslationHelper.Translation.DeletedFile, "Удаленный файл");
         Assert.Equal(TranslationHelper.Translation.Descending, "Убыванию");
         Assert.Equal(TranslationHelper.Translation.DigitalZoom, "Цифровое увеличение");
-        Assert.Equal(TranslationHelper.Translation.DirectionalBlur, "Направленное размытие");
         Assert.Equal(TranslationHelper.Translation.DisableFadeInButtonsOnHover,
             "Отключить кнопки с эффектом плавного появления при наведении мыши");
         Assert.Equal(TranslationHelper.Translation.DiskSize, "Размер диска");
@@ -124,7 +120,6 @@ public static class RussianUnitTest
         Assert.Equal(TranslationHelper.Translation.DuplicateFile, "Создать копию файла");
         Assert.Equal(TranslationHelper.Translation.Effects, "Эффекты");
         Assert.Equal(TranslationHelper.Translation.EffectsTooltip, "Показать окно эффектов изображения");
-        Assert.Equal(TranslationHelper.Translation.Embossed, "Тисненый");
         Assert.Equal(TranslationHelper.Translation.Enter, "Enter");
         Assert.Equal(TranslationHelper.Translation.Esc, "Esc");
         Assert.Equal(TranslationHelper.Translation.EscCloseTooltip, "Закрывает открытое в данный момент окно/меню");
@@ -165,7 +160,6 @@ public static class RussianUnitTest
         Assert.Equal(TranslationHelper.Translation.FocalLength35mm, "Фокусное расстояние (35 мм)");
         Assert.Equal(TranslationHelper.Translation.Folder, "Папка");
         Assert.Equal(TranslationHelper.Translation.Forward, "Вперед");
-        Assert.Equal(TranslationHelper.Translation.FrostyOutline, "Морозный контур");
         Assert.Equal(TranslationHelper.Translation.Fstop, "F-стоп");
         Assert.Equal(TranslationHelper.Translation.FullPath, "Полный путь");
         Assert.Equal(TranslationHelper.Translation.Fullscreen, "Весь экран");
@@ -175,8 +169,6 @@ public static class RussianUnitTest
         Assert.Equal(TranslationHelper.Translation.GenerateThumbnails, "Генерировать миниатюры");
         Assert.Equal(TranslationHelper.Translation.GithubRepo, "Репозиторий Github");
         Assert.Equal(TranslationHelper.Translation.GlassTheme, "Стеклянная тема");
-        Assert.Equal(TranslationHelper.Translation.GlassTile, "Стеклянная плитка");
-        Assert.Equal(TranslationHelper.Translation.Gloom, "Мрак");
         Assert.Equal(TranslationHelper.Translation.GoBackBy100Images, "Вернуться на 100 изображений назад");
         Assert.Equal(TranslationHelper.Translation.GoBackBy10Images, "Вернуться на 10 изображений назад");
         Assert.Equal(TranslationHelper.Translation.GoToImageAtSpecifiedIndex,
@@ -228,7 +220,6 @@ public static class RussianUnitTest
         Assert.Equal(TranslationHelper.Translation.Minimize, "Свернуть");
         Assert.Equal(TranslationHelper.Translation.MiscSettings, "Прочие настройки");
         Assert.Equal(TranslationHelper.Translation.Modified, "Изменено");
-        Assert.Equal(TranslationHelper.Translation.Monochrome, "Монохром");
         Assert.Equal(TranslationHelper.Translation.MouseDrag, "Перетаскивание мышью");
         Assert.Equal(TranslationHelper.Translation.MouseKeyBack, "Клавиша мыши назад");
         Assert.Equal(TranslationHelper.Translation.MouseKeyForward, "Клавиша мыши вперед");
@@ -261,7 +252,6 @@ public static class RussianUnitTest
         Assert.Equal(TranslationHelper.Translation.Orientation, "Ориентация");
         Assert.Equal(TranslationHelper.Translation.OutputFolder, "Папки вывода");
         Assert.Equal(TranslationHelper.Translation.Pan, "Панорамировать");
-        Assert.Equal(TranslationHelper.Translation.PaperFold, "Бумага");
         Assert.Equal(TranslationHelper.Translation.PasswordArchive, "Архив, защищенный паролем, не поддерживается");
         Assert.Equal(TranslationHelper.Translation.PasteImageFromClipholder, "Вставить изображение из буфера обмена");
         Assert.Equal(TranslationHelper.Translation.PencilSketch, "Карандашный набросок");
@@ -269,8 +259,6 @@ public static class RussianUnitTest
         Assert.Equal(TranslationHelper.Translation.Percentage, "Процент");
         Assert.Equal(TranslationHelper.Translation.PermanentlyDelete, "Удалить навсегда");
         Assert.Equal(TranslationHelper.Translation.PhotometricInterpretation, "Фотометрическая интерпретация");
-        Assert.Equal(TranslationHelper.Translation.Pivot, "Вращение");
-        Assert.Equal(TranslationHelper.Translation.Pixelate, "Пикселизация");
         Assert.Equal(TranslationHelper.Translation.Pixels, "пиксели");
         Assert.Equal(TranslationHelper.Translation.Portrait, "Портрет");
         Assert.Equal(TranslationHelper.Translation.PressKey, "Нажмите клавишу...");
@@ -297,8 +285,6 @@ public static class RussianUnitTest
         Assert.Equal(TranslationHelper.Translation.RestoreDown, "Восстановить");
         Assert.Equal(TranslationHelper.Translation.Reverse, "Назад");
         Assert.Equal(TranslationHelper.Translation.Right, "Вправо");
-        Assert.Equal(TranslationHelper.Translation.Ripple, "Пульсация");
-        Assert.Equal(TranslationHelper.Translation.RippleAlt, "Aльтернативная пульсация");
         Assert.Equal(TranslationHelper.Translation.RotateLeft, "Повернуть налево");
         Assert.Equal(TranslationHelper.Translation.RotateRight, "Повернуть вправо");
         Assert.Equal(TranslationHelper.Translation.Rotated, "Повернуто");
@@ -356,9 +342,7 @@ public static class RussianUnitTest
         Assert.Equal(TranslationHelper.Translation.Size, "Размер");
         Assert.Equal(TranslationHelper.Translation.SizeMp, "Размер (mp)");
         Assert.Equal(TranslationHelper.Translation.SizeTooltip, "Введите желаемый размер в пикселях или процентах.");
-        Assert.Equal(TranslationHelper.Translation.Sketch, "Эскиз");
         Assert.Equal(TranslationHelper.Translation.Slideshow, "Слайдшоу");
-        Assert.Equal(TranslationHelper.Translation.SmoothMagnify, "Гладкое увеличение");
         Assert.Equal(TranslationHelper.Translation.Soft, "Мягкий");
         Assert.Equal(TranslationHelper.Translation.Software, "Программное обеспечение");
         Assert.Equal(TranslationHelper.Translation.SortFilesBy, "Сортировать файлы по");
@@ -375,8 +359,6 @@ public static class RussianUnitTest
         Assert.Equal(TranslationHelper.Translation.StrobeReturnLightNotDetected,
             "Вспышка не обнаружила возвратного света");
         Assert.Equal(TranslationHelper.Translation.Subject, "Тема");
-        Assert.Equal(TranslationHelper.Translation.Swirl, "Вихрь");
-        Assert.Equal(TranslationHelper.Translation.TelescopicBlur, "Телескопическое размытие");
         Assert.Equal(TranslationHelper.Translation.Theme, "Тема");
         Assert.Equal(TranslationHelper.Translation.Thumbnail, "Thumb");
         Assert.Equal(TranslationHelper.Translation.Tile, "Плитка");
@@ -386,10 +368,8 @@ public static class RussianUnitTest
         Assert.Equal(TranslationHelper.Translation.ToggleLooping, "Переключить цикл");
         Assert.Equal(TranslationHelper.Translation.ToggleScroll, "Переключить прокрутку");
         Assert.Equal(TranslationHelper.Translation.ToggleTaskbarProgress, "Отображение прогресса на панели задач");
-        Assert.Equal(TranslationHelper.Translation.ToneMapping, "Тональное отображение");
         Assert.Equal(TranslationHelper.Translation.UnableToRender, "Невозможно отобразить изображение");
         Assert.Equal(TranslationHelper.Translation.Uncalibrated, "Некалиброванный");
-        Assert.Equal(TranslationHelper.Translation.Underwater, "Подводный");
         Assert.Equal(TranslationHelper.Translation.UnexpectedError, "Произошла неизвестная ошибка");
         Assert.Equal(TranslationHelper.Translation.Unflip, "Развернуть");
         Assert.Equal(TranslationHelper.Translation.Uniform, "Равномерный");
@@ -401,7 +381,6 @@ public static class RussianUnitTest
         Assert.Equal(TranslationHelper.Translation.UsingTouchpad, "Использование тачпада");
         Assert.Equal(TranslationHelper.Translation.Version, "Версия:");
         Assert.Equal(TranslationHelper.Translation.ViewLicenseFile, "Просмотреть файл лицензии");
-        Assert.Equal(TranslationHelper.Translation.WaveWarper, "Искаженные волны");
         Assert.Equal(TranslationHelper.Translation.WhiteBalance, "Баланс белого");
         Assert.Equal(TranslationHelper.Translation.WhiteFluorescent, "Белый флуоресцентный");
         Assert.Equal(TranslationHelper.Translation.Width, "Ширина");

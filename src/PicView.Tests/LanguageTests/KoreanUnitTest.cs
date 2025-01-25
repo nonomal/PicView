@@ -36,13 +36,10 @@ public static class KoreanUnitTest
         Assert.Equal(TranslationHelper.Translation.Auto, "자동");
         Assert.Equal(TranslationHelper.Translation.AutoFitWindow, "자동 맞춤 창");
         Assert.Equal(TranslationHelper.Translation.BadArchive, "압축파일을 처리할 수 없습니다");
-        Assert.Equal(TranslationHelper.Translation.BandedSwirl, "줄무늬 소용돌이");
-        Assert.Equal(TranslationHelper.Translation.Bands, "밴드");
         Assert.Equal(TranslationHelper.Translation.Base64Image, "Base64 이미지");
         Assert.Equal(TranslationHelper.Translation.BatchResize, "일괄 크기 조정");
         Assert.Equal(TranslationHelper.Translation.BitDepth, "비트 깊이");
         Assert.Equal(TranslationHelper.Translation.BlackAndWhite, "흑백");
-        Assert.Equal(TranslationHelper.Translation.Bloom, "화사");
         Assert.Equal(TranslationHelper.Translation.Blur, "흐림");
         Assert.Equal(TranslationHelper.Translation.BottomGalleryItemSize, "하단 갤러리의 썸네일 크기");
         Assert.Equal(TranslationHelper.Translation.BottomGalleryThumbnailStretch, "하단 갤러리의 슬라이드쇼 크기");
@@ -104,7 +101,6 @@ public static class KoreanUnitTest
         Assert.Equal(TranslationHelper.Translation.DeletedFile, "삭제된 파일");
         Assert.Equal(TranslationHelper.Translation.Descending, "내림차순");
         Assert.Equal(TranslationHelper.Translation.DigitalZoom, "디지털 줌");
-        Assert.Equal(TranslationHelper.Translation.DirectionalBlur, "방향 흐림");
         Assert.Equal(TranslationHelper.Translation.DisableFadeInButtonsOnHover, "마우스 오버 시 페이드인 버튼 비활성화");
         Assert.Equal(TranslationHelper.Translation.DiskSize, "디스크 크기");
         Assert.Equal(TranslationHelper.Translation.DoubleClick, "더블 클릭");
@@ -116,7 +112,6 @@ public static class KoreanUnitTest
         Assert.Equal(TranslationHelper.Translation.DuplicateFile, "파일 복제");
         Assert.Equal(TranslationHelper.Translation.Effects, "효과");
         Assert.Equal(TranslationHelper.Translation.EffectsTooltip, "이미지 효과 창 표시");
-        Assert.Equal(TranslationHelper.Translation.Embossed, "양각 무늬");
         Assert.Equal(TranslationHelper.Translation.Enter, "Enter");
         Assert.Equal(TranslationHelper.Translation.Esc, "Esc");
         Assert.Equal(TranslationHelper.Translation.EscCloseTooltip, "현재 열려 있는 창/메뉴 닫기");
@@ -157,7 +152,6 @@ public static class KoreanUnitTest
         Assert.Equal(TranslationHelper.Translation.FocalLength35mm, "35mm 초점 거리");
         Assert.Equal(TranslationHelper.Translation.Folder, "폴더");
         Assert.Equal(TranslationHelper.Translation.Forward, "앞으로");
-        Assert.Equal(TranslationHelper.Translation.FrostyOutline, "서리가 내린 윤곽");
         Assert.Equal(TranslationHelper.Translation.Fstop, "F 값");
         Assert.Equal(TranslationHelper.Translation.FullPath, "전체 경로");
         Assert.Equal(TranslationHelper.Translation.Fullscreen, "전체 화면");
@@ -167,8 +161,6 @@ public static class KoreanUnitTest
         Assert.Equal(TranslationHelper.Translation.GenerateThumbnails, "썸네일 생성");
         Assert.Equal(TranslationHelper.Translation.GithubRepo, "Github 저장소");
         Assert.Equal(TranslationHelper.Translation.GlassTheme, "유리 테마");
-        Assert.Equal(TranslationHelper.Translation.GlassTile, "유리 타일");
-        Assert.Equal(TranslationHelper.Translation.Gloom, "우울");
         Assert.Equal(TranslationHelper.Translation.GoBackBy100Images, "이미지 100개 뒤로 이동");
         Assert.Equal(TranslationHelper.Translation.GoBackBy10Images, "이미지 10개 뒤로 이동");
         Assert.Equal(TranslationHelper.Translation.GoToImageAtSpecifiedIndex, "지정된 인덱스에서 이미지로 이동");
@@ -219,7 +211,6 @@ public static class KoreanUnitTest
         Assert.Equal(TranslationHelper.Translation.Minimize, "최소화");
         Assert.Equal(TranslationHelper.Translation.MiscSettings, "기타 설정");
         Assert.Equal(TranslationHelper.Translation.Modified, "수정 날짜");
-        Assert.Equal(TranslationHelper.Translation.Monochrome, "단색");
         Assert.Equal(TranslationHelper.Translation.MouseDrag, "마우스 끌기");
         Assert.Equal(TranslationHelper.Translation.MouseKeyBack, "마우스 키 뒤로");
         Assert.Equal(TranslationHelper.Translation.MouseKeyForward, "마우스 키 앞으로");
@@ -252,7 +243,6 @@ public static class KoreanUnitTest
         Assert.Equal(TranslationHelper.Translation.Orientation, "방향");
         Assert.Equal(TranslationHelper.Translation.OutputFolder, "출력 폴더");
         Assert.Equal(TranslationHelper.Translation.Pan, "팬");
-        Assert.Equal(TranslationHelper.Translation.PaperFold, "종이 접기");
         Assert.Equal(TranslationHelper.Translation.PasswordArchive, "암호로 보호된 압축파일은 지원되지 않습니다");
         Assert.Equal(TranslationHelper.Translation.PasteImageFromClipholder, "클립 홀더에서 이미지 붙여넣기");
         Assert.Equal(TranslationHelper.Translation.PencilSketch, "연필 스케치");
@@ -260,8 +250,6 @@ public static class KoreanUnitTest
         Assert.Equal(TranslationHelper.Translation.Percentage, "백분율");
         Assert.Equal(TranslationHelper.Translation.PermanentlyDelete, "영구 삭제");
         Assert.Equal(TranslationHelper.Translation.PhotometricInterpretation, "측광 해석");
-        Assert.Equal(TranslationHelper.Translation.Pivot, "중심점");
-        Assert.Equal(TranslationHelper.Translation.Pixelate, "픽셀 레이트");
         Assert.Equal(TranslationHelper.Translation.Pixels, "픽셀");
         Assert.Equal(TranslationHelper.Translation.Portrait, "세로");
         Assert.Equal(TranslationHelper.Translation.PressKey, "키를 누르세요...");
@@ -288,8 +276,6 @@ public static class KoreanUnitTest
         Assert.Equal(TranslationHelper.Translation.RestoreDown, "복원 다운");
         Assert.Equal(TranslationHelper.Translation.Reverse, "역방향");
         Assert.Equal(TranslationHelper.Translation.Right, "오른쪽");
-        Assert.Equal(TranslationHelper.Translation.Ripple, "잔물결");
-        Assert.Equal(TranslationHelper.Translation.RippleAlt, "잔물결 고도");
         Assert.Equal(TranslationHelper.Translation.RotateLeft, "왼쪽으로 회전");
         Assert.Equal(TranslationHelper.Translation.RotateRight, "오른쪽으로 회전");
         Assert.Equal(TranslationHelper.Translation.Rotated, "회전됨");
@@ -341,9 +327,7 @@ public static class KoreanUnitTest
         Assert.Equal(TranslationHelper.Translation.Size, "크기");
         Assert.Equal(TranslationHelper.Translation.SizeMp, "크기 (mp)");
         Assert.Equal(TranslationHelper.Translation.SizeTooltip, "원하는 크기를 픽셀 또는 백분율로 입력하세요.");
-        Assert.Equal(TranslationHelper.Translation.Sketch, "스케치");
         Assert.Equal(TranslationHelper.Translation.Slideshow, "슬라이드쇼");
-        Assert.Equal(TranslationHelper.Translation.SmoothMagnify, "매끄럽게 확대");
         Assert.Equal(TranslationHelper.Translation.Soft, "부드럽게");
         Assert.Equal(TranslationHelper.Translation.Software, "소프트웨어");
         Assert.Equal(TranslationHelper.Translation.SortFilesBy, "파일 정렬");
@@ -359,8 +343,6 @@ public static class KoreanUnitTest
         Assert.Equal(TranslationHelper.Translation.StrobeReturnLightDetected, "스트로브 반사 빛 감지됨");
         Assert.Equal(TranslationHelper.Translation.StrobeReturnLightNotDetected, "스트로브 반사 빛 감지 안 됨");
         Assert.Equal(TranslationHelper.Translation.Subject, "주제");
-        Assert.Equal(TranslationHelper.Translation.Swirl, "소용돌이");
-        Assert.Equal(TranslationHelper.Translation.TelescopicBlur, "망원 흐림");
         Assert.Equal(TranslationHelper.Translation.Theme, "테마");
         Assert.Equal(TranslationHelper.Translation.Thumbnail, "썸네일");
         Assert.Equal(TranslationHelper.Translation.Tile, "타일");
@@ -370,10 +352,8 @@ public static class KoreanUnitTest
         Assert.Equal(TranslationHelper.Translation.ToggleLooping, "순환 전환");
         Assert.Equal(TranslationHelper.Translation.ToggleScroll, "스크롤 전환");
         Assert.Equal(TranslationHelper.Translation.ToggleTaskbarProgress, "작업 표시줄 진행률 표시");
-        Assert.Equal(TranslationHelper.Translation.ToneMapping, "톤 매핑");
         Assert.Equal(TranslationHelper.Translation.UnableToRender, "이미지를 렌더링할 수 없습니다");
         Assert.Equal(TranslationHelper.Translation.Uncalibrated, "보정되지 않음");
-        Assert.Equal(TranslationHelper.Translation.Underwater, "수중");
         Assert.Equal(TranslationHelper.Translation.UnexpectedError, "알 수 없는 오류 발생");
         Assert.Equal(TranslationHelper.Translation.Unflip, "뒤집기 취소");
         Assert.Equal(TranslationHelper.Translation.Uniform, "균일하게");
@@ -385,7 +365,6 @@ public static class KoreanUnitTest
         Assert.Equal(TranslationHelper.Translation.UsingTouchpad, "터치패드 사용");
         Assert.Equal(TranslationHelper.Translation.Version, "버전:");
         Assert.Equal(TranslationHelper.Translation.ViewLicenseFile, "라이선스 파일 보기");
-        Assert.Equal(TranslationHelper.Translation.WaveWarper, "파도");
         Assert.Equal(TranslationHelper.Translation.WhiteBalance, "화이트 밸런스");
         Assert.Equal(TranslationHelper.Translation.WhiteFluorescent, "백색 형광등");
         Assert.Equal(TranslationHelper.Translation.Width, "너비");
