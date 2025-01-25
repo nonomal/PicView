@@ -121,15 +121,11 @@ public partial class EditableTitlebar : UserControl
             return;
         }
 
-        if (!NavigationHelper.CanNavigate(vm))
+        if (vm.FileInfo is { Exists: false })
         {
             return;
         }
         
-        if (vm.FileInfo is null)
-        {
-            return;
-        }
         vm.IsLoading = true;
         var oldPath = vm.FileInfo.FullName;
         var newPath = Path.Combine(vm.FileInfo.DirectoryName, TextBox.Text);
@@ -194,8 +190,6 @@ public partial class EditableTitlebar : UserControl
 
         async Task End()
         {
-            // vm.ImageIterator?.RemoveCurrentItemFromPreLoader();
-            // await NavigationHelper.LoadPicFromFile(newPath, vm).ConfigureAwait(false);
             vm.IsLoading = false;
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
@@ -205,6 +199,9 @@ public partial class EditableTitlebar : UserControl
                 UIHelper.GetMainView.Focus();
             });
             vm.IsEditableTitlebarOpen = false;
+            vm.ImageIterator?.RefreshAllFileInfo();
+            vm.FileInfo = new FileInfo(newPath);
+            SetTitleHelper.RefreshTitle(vm);
         }
     }
     
