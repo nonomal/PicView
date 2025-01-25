@@ -20,14 +20,13 @@ Additional features includes viewing EXIF metadata, image compression, batch res
 
 [![](https://img.shields.io/badge/Windows-x64-blue?style=flat-square&logo=windows&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/3.0.0-Final/Setup-PicView-v3.0.0-Final-win-x64.exe) [![](https://img.shields.io/badge/Windows-arm64-blue?style=flat-square&logo=windows&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/3.0.0-Final/Setup-PicView-v3.0.0-Final-win-arm64.exe)
 
-Latest releases at https://picview.org/download
+[Latest releases at PicView.org](https://picview.org/download)
 
 **Mirrors**
 
+[uptodown](https://picview.en.uptodown.com/windows) <br>
 [FossHub](https://www.fosshub.com/PicView.html) <br>
-[MajorGeeks](https://www.majorgeeks.com/files/details/picview.html)  <br>
-[SourceForge](https://sourceforge.net/projects/picview/) <br>
-[uptodown](https://picview.en.uptodown.com/windows)
+[SourceForge](https://sourceforge.net/projects/picview/)
 
 
 Winget:
@@ -81,24 +80,25 @@ Quickly crop image by pressing `C`. Hold `Shift` for square selection.
 </h3>
 
 <h1 align="center">
-    <img src="https://picview.org/assets/screenshots/EXIF-image-Info-Dark.webp" />
+    <img src="https://picview.org/assets/screenshots/exifwindow/Image%20Info%20Window%203.0.0%20.png" />
+    <img src="https://picview.org/assets/screenshots/exifwindow/gps3.0.png" />
 </h1>
 
-Lossleslly compress current image by pressing the __Optimize Image__ button.
+Click on the stars to edit EXIF image rating.
 
-Click on the stars to save EXIF image rating.
-
-Rename or move files by editing the text box values.
+Rename or move files by editing the text-box values.
 
 __Resize image:__
 
-Edit the Width and Height boxes to rezise image.
+Edit the `width` and/or `height` text-boxes to rezise the current image.
 
-Use % to resize it by percentage.
+Use the % button in the `width` and/or `height` text-boxes to resize the current image by percentage.
 
 #### EXIF:
 
-Click the expander button to view GPS coordinates which links to Google or BING maps, including advanced camera info, image info, authors, copyright etc.
+Scroll down for viewing EXIF metadata information about the viewed image.
+
+If the GPS coordinates are saved on the image, you can click the Google or Bing buttons to open the respective maps at the GPS coordinates
 
 
 
@@ -229,7 +229,7 @@ _* Shortcuts can be changed by opening the `About` window, and scrolling down_
 
 _* Scrollwheel behavior can be changed in settings_
 
-You can also view and change shortcuts by opening the `About` window `F1`
+You can also view and change shortcuts by opening the `Keybindings` window `K`
 
 
 # Contributions
