@@ -115,7 +115,7 @@ If the GPS coordinates are saved on the image, you can click the Google or Bing 
 </h3>
 
 <h1 align="center">
-    <img src="https://picview.org/assets/screenshots/Horizontal%20Gallery/Horizontal%20Gallery%202023-04-26%20175830.png" />
+    <img src="https://picview.org/assets/screenshots/Gallery/PicView3.0-galleryAnimation.gif" />
 </h1>
 
 
