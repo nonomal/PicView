@@ -119,7 +119,7 @@ If the GPS coordinates are saved on the image, you can click the Google or Bing 
 </h1>
 
 
-### Press `G` to open or close the image gallery
+**Press `G` to open or close the image gallery**
 
 Navigate the gallery with the `arrow keys` or `W`,`A`,`S`,`D` and load the selected image with `Enter` or the `E` key.
 The bottom gallery can be turned on or off
