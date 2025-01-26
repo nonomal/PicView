@@ -154,7 +154,9 @@ ___
 
 ### Other features
 
-<img src="https://picview.org/assets/screenshots/rename-titlebar/rename-titlebar-pink-dark.webp"/><br>
+
+![Screenshot 2025-01-26 141624](https://github.com/user-attachments/assets/5ff7834a-3461-4b39-9784-7cf386c8d429)
+
 Rename or move files in the titlebar by pressing `F2` or right clicking it.
 Changing the file extension will convert the image to the respective format.
 
@@ -162,91 +164,19 @@ Changing the file extension will convert the image to the respective format.
 
 ## File support
  > .jpg  .jpeg  .jpe  .png  .bmp  .tif  .tiff  .gif  .ico  .jfif  .webp .svg .svgz <br>
-   .psd  .psb .xcf .jxl .heic .heif .jp2 .hdr .tga .dds<br>.3fr  .arw  .cr2 .cr3  .crw  .dcr  .dng  .erf  .kdc  .mdc  .mef  .mos  .mrw  .nef  .nrw  .orf  .pef .raf  .raw  .rw2  .srf  .x3f *<br>
+   .psd  .psb .xcf .jxl .heic .heif .jp2 .hdr .tga .dds<br>.3fr  .arw  .cr2 .cr3  .crw  .dcr  .dng  .erf  .kdc  .mdc  .mef  .mos  .mrw  .nef  .nrw  .orf  .pef .raf  .raw  .rw2  .srf  .x3f<br>
    .pgm  .hdr  .cut  .exr  .dib  .emf  .wmf  .wpg  .pcx  .xbm  .xpm .wbmp
 
 
 <br>
 
 
-## Default Shortcuts
-_* Shortcuts can be changed by opening the `Keybindings` window_
-| Shortcut             | Explanation                                                                                                      |
-| -------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| Esc                  | Close window or current open menu                                                                                |
-| F1                   | Open the about window                                                                                            |
-| F2                   | Rename or move the current file                                                                                  |
-| F3                   | Open and select current file in Explorer                                                                         |
-| F4                   | Open the settings window                                                                                         |
-| F5                   | Start slideshow                                                                                                  |
-| F6                   | Open the effects window                                                                                          |
-| F7                   | Reset Zoom                                                                                                       |
-| F9                   | Open the batch resize window                                                                                     |
-| F11                  | Toggle fullscreen                                                                                                 |
-| F12                  | Toggle viewing fullscreen gallery                                                                                 |
-| Alt + Enter          | Toggle fullscreen                                                                                                 |
-| C                    | Crop Image                                                                                                       |
-| Ctrl + C             | Copy image or copy cropped image                                                                                 |
-| Ctrl + V             | Paste from clipholder, URL, File, File Path or Image                                                             |
-| Ctrl + X             | Cut image file into clipboard                                                                                    |
-| O, Ctrl + O          | Open file picker dialog                                                                                          |
-| Ctrl + S             | Save as file                                                                                                     |
-| B                    | Toggle background color                                                                                          |
-| X                    | Toggle scrolling the image                                                                                       |
-| F                    | Flip the image                                                                                                   |
-| J                    | Open the image resize function                                                                                   |
-| Del                  | Send current file to the recycle bin                                                                             |
-| Shift + Del          | Permanently delete current file                                                                                  |
-| I                    | Show the image info window                                                                                       |
-| Ctrl + I             | Show file properties                                                                                             |
-| Ctrl + Alt + I       | Open the image resize function                                                                                   |
-| Ctrl + P             | Print the image                                                                                                  |
-| R                    | Reset zoom                                                                                                       |
-| Ctrl + R             | Reload                                                                                                           |
-| L                    | Toggle looping                                                                                                   |
-| E                    | Open with another application (opens highlighted image if in gallery view)                                       |
-| T                    | Toggle if the applications should stay above other windows                                                       |
-| N                    | Open the batch resize window                                                                                     |
-| Ctrl + N             | Open new window                                                                                                  |
-| G                    | Toggles the gallery view                                                                                         |
-| Space                | Centers window on the current screen (if gallery is open, it will scroll to the center of the highlighted image) |
-| 1                    | Turns on the `Auto fit window` and sets `Fill image` off                                                         |
-| 2                    | Turns on the `Auto fit window` and sets `Fill image` on                                                          |
-| 3                    | Turns off the `Auto fit window` and sets `Fill image` off                                                        |
-| 4                    | Turns off the `Auto fit window` and sets `Fill image` on                                                         |
-| Home                 | Scrolls to the top, when scrolling is enabled                                                                    |
-| End                  | Scrolls to the bottom, when scrolling is enabled                                                                 |
-| Enter                | Opens highlighted image if in gallery view                                                                       |
-| A                    | Navigate to previous image                                                                                       |
-| Left                 | Navigate to previous image                                                                                       |
-| Ctrl + A             | Navigate to first image                                                                                          |
-| Ctrl + Left          | Navigate to first image                                                                                          |
-| D                    | Navigate to next image                                                                                           |
-| Right                | Navigate to next image                                                                                           |
-| Ctrl + D             | Navigate to last image                                                                                           |
-| Ctrl + Right         | Navigate to first image                                                                                          |
-| Ctrl + Shift + Right | Navigate to next folder                                                                                          |
-| Ctrl + Shift + Left  | Navigate to previous folder                                                                                      |
-| Ctrl + Shift + D     | Navigate to next folder                                                                                          |
-| Ctrl + Shift + A     | Navigate to previous folder                                                                                      |
-| Up ⇔ W              | Rotates the image up (clockwise)                                                                                 |
-| Up ⇔ W              | Scrolls up when scrolling is enabled                                                                             |
-| PageUp               | Scrolls up when scrolling is enabled                                                                             |
-| Down ⇔ S            | Rotates image down (counterclockwise)                                                                            |
-| Down ⇔ S            | Scrolls down when scrolling is enabled                                                                           |
-| PageDown             | Scrolls down when scrolling is enabled                                                                           |
-| +                    | Zooms in at cursor position                                                                                      |
-| -                    | Zooms out at cursor position                                                                                     |
-| Double click         | Reset zoom                                                                                                       |
-| Mouse Browserback    | Go to the previous entry in the file history                                                                     |
-| Mouse Browserforward | Go to the next entry in the file history                                                                         |
-| Scrollwheel\*        | Navigates back or forth                                                                                          |
-| Ctrl + Scrollwheel   | Zoom in or out                                                                                                   |
-| Alt + Z              | Show or hide UI                                                                                                  |
+## Shortcuts
+You can view and change keyboard shortcuts by opening the `Keybindings` window by pressing `K`.
 
-_* Scrollwheel behavior can be changed in settings_
-
-You can also view and change shortcuts by opening the `Keybindings` window `K`
+<h1 align="center">
+    <img src="https://picview.org/assets/screenshots/Keybindings/KeybindingsWindow3.0.webp" />
+</h1>
 
 
 # Contributions
