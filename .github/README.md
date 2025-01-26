@@ -131,7 +131,7 @@ The bottom gallery can be turned on or off
 </h3>
 
 <h1 align="center">
-    <img src="https://picview.org/assets/screenshots/batch%20resize/batch%20resize%20dark%202023-05-12%20121358.webp" />
+    <img src="https://picview.org/assets/screenshots/batch%20resize/batch-resize-3.0v2.webp" />
 </h1>
 
 
@@ -156,18 +156,24 @@ ___
 
 <img src="https://picview.org/assets/screenshots/rename-titlebar/rename-titlebar-pink-dark.webp"/><br>
 Rename or move files in the titlebar by pressing `F2` or right clicking it.
+Changing the file extension will convert the image to the respective format.
 
-**File support** 
+<br>
+
+## File support
  > .jpg  .jpeg  .jpe  .png  .bmp  .tif  .tiff  .gif  .ico  .jfif  .webp .svg .svgz <br>
    .psd  .psb .xcf .jxl .heic .heif .jp2 .hdr .tga .dds<br>.3fr  .arw  .cr2 .cr3  .crw  .dcr  .dng  .erf  .kdc  .mdc  .mef  .mos  .mrw  .nef  .nrw  .orf  .pef .raf  .raw  .rw2  .srf  .x3f *<br>
-   .pgm  .hdr  .cut  .exr  .dib  .emf  .wmf  .wpg  .pcx  .xbm  .xpm .wbmp 
+   .pgm  .hdr  .cut  .exr  .dib  .emf  .wmf  .wpg  .pcx  .xbm  .xpm .wbmp
+
+
+<br>
+
 
 ## Default Shortcuts
 _* Shortcuts can be changed by opening the `Keybindings` window_
 | Shortcut             | Explanation                                                                                                      |
 | -------------------- | ---------------------------------------------------------------------------------------------------------------- |
 | Esc                  | Close window or current open menu                                                                                |
-| Ctrl + Q             | Exit the application                                                                                             |
 | F1                   | Open the about window                                                                                            |
 | F2                   | Rename or move the current file                                                                                  |
 | F3                   | Open and select current file in Explorer                                                                         |
