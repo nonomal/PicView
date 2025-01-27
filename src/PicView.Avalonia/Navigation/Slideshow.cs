@@ -115,7 +115,5 @@ public static class Slideshow
         {
             vm.GalleryMode = GalleryMode.BottomToClosed;
         }
-        
-        await NavigationHelper.Navigate(true, vm).ConfigureAwait(false);
     }
 }
