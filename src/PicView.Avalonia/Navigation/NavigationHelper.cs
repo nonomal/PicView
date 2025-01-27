@@ -279,15 +279,23 @@ public static class NavigationHelper
         {
             var check = ErrorHelper.CheckIfLoadableString(source);
 
-            switch (check)
+            if (check == null)
             {
-                default:
+                await ErrorHandling.ReloadAsync(vm).ConfigureAwait(false);
+                vm.IsLoading = false;
+                ArchiveExtraction.Cleanup();
+                return;
+            }
+
+            switch (check.Value.Type)
+            {
+                case ErrorHelper.LoadAbleFileType.File:
                     // Navigate to the image if it exists in the image iterator
                     if (vm.ImageIterator is not null)
                     {
-                        if (vm.ImageIterator.ImagePaths.Contains(check))
+                        if (vm.ImageIterator.ImagePaths.Contains(check.Value.Data))
                         {
-                            await vm.ImageIterator.IterateToIndex(vm.ImageIterator.ImagePaths.IndexOf(check),
+                            await vm.ImageIterator.IterateToIndex(vm.ImageIterator.ImagePaths.IndexOf(check.Value.Data),
                                     _cancellationTokenSource)
                                 .ConfigureAwait(false);
                             return;
@@ -295,39 +303,34 @@ public static class NavigationHelper
                     }
 
                     vm.CurrentView = vm.ImageViewer;
-                    await LoadPicFromFile(check, vm).ConfigureAwait(false);
+                    await LoadPicFromFile(check.Value.Data, vm).ConfigureAwait(false);
                     vm.IsLoading = false;
                     ArchiveExtraction.Cleanup();
                     return;
-
-                case "web":
+                case ErrorHelper.LoadAbleFileType.Directory:
                     vm.CurrentView = vm.ImageViewer;
-                    await LoadPicFromUrlAsync(source, vm).ConfigureAwait(false);
+                    await LoadPicFromDirectoryAsync(check.Value.Data, vm).ConfigureAwait(false);
                     vm.IsLoading = false;
                     ArchiveExtraction.Cleanup();
                     return;
-
-                case "base64":
+                case ErrorHelper.LoadAbleFileType.Web:
                     vm.CurrentView = vm.ImageViewer;
-                    await LoadPicFromBase64Async(source, vm).ConfigureAwait(false);
+                    await LoadPicFromUrlAsync(check.Value.Data, vm).ConfigureAwait(false);
                     vm.IsLoading = false;
                     ArchiveExtraction.Cleanup();
                     return;
-
-                case "directory":
+                case ErrorHelper.LoadAbleFileType.Base64:
                     vm.CurrentView = vm.ImageViewer;
-                    await LoadPicFromDirectoryAsync(source, vm).ConfigureAwait(false);
+                    await LoadPicFromBase64Async(check.Value.Data, vm).ConfigureAwait(false);
                     vm.IsLoading = false;
                     ArchiveExtraction.Cleanup();
                     return;
-
-                case "zip":
+                case ErrorHelper.LoadAbleFileType.Zip:
                     vm.CurrentView = vm.ImageViewer;
-                    await LoadPicFromArchiveAsync(source, vm).ConfigureAwait(false);
+                    await LoadPicFromArchiveAsync(check.Value.Data, vm).ConfigureAwait(false);
                     vm.IsLoading = false;
                     return;
-
-                case "":
+                default:
                     await ErrorHandling.ReloadAsync(vm).ConfigureAwait(false);
                     vm.IsLoading = false;
                     ArchiveExtraction.Cleanup();
