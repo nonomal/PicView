@@ -72,7 +72,7 @@
                     DockPanel.Dock="Right"
                     x:Name="StarOutlineButtons" />
 
-                <customControls:IconButton
+                <Button
                     Background="{DynamicResource TertiaryBackgroundColor}"
                     BorderBrush="{DynamicResource MainBorderColor}"
                     BorderThickness="0,0,1,0"
@@ -81,11 +81,14 @@
                     CommandParameter="{CompiledBinding FileInfo.FullName,
                                                        FallbackValue=''}"
                     DockPanel.Dock="Right"
-                    Icon="{StaticResource StarOffImage}"
-                    IconHeight="17"
-                    IconWidth="17"
+                    Foreground="{StaticResource SecondaryTextColor}"
                     Width="35"
-                    x:Name="RemoveRatingButton" />
+                    x:Name="RemoveRatingButton">
+                    <Image
+                        Height="17"
+                        Source="{StaticResource StarOffImage}"
+                        Width="17" />
+                </Button>
 
                 <customControls:IconButton
                     BorderBrush="{DynamicResource MainBorderColor}"
@@ -95,6 +98,7 @@
                     Command="{CompiledBinding RecycleFileCommand}"
                     Data="{StaticResource RecycleGeometry}"
                     DockPanel.Dock="Right"
+                    Foreground="{DynamicResource MainTextColor}"
                     Height="28"
                     IconHeight="17"
                     IconWidth="17"
@@ -109,6 +113,7 @@
                     Classes="noBorderHover"
                     Command="{Binding OptimizeImageCommand}"
                     DockPanel.Dock="Right"
+                    Foreground="{DynamicResource MainTextColor}"
                     Height="28"
                     Icon="{StaticResource PortalImage}"
                     IconHeight="17"
@@ -127,6 +132,7 @@
                                                        FallbackValue=''}"
                     Data="{StaticResource OpenWithGeometry}"
                     DockPanel.Dock="Right"
+                    Foreground="{DynamicResource MainTextColor}"
                     Height="28"
                     IconHeight="17"
                     IconWidth="17"
@@ -144,6 +150,7 @@
                                                        FallbackValue=''}"
                     Data="{StaticResource PrintGeometry}"
                     DockPanel.Dock="Right"
+                    Foreground="{DynamicResource MainTextColor}"
                     Height="28"
                     IconHeight="17"
                     IconWidth="17"
@@ -158,6 +165,7 @@
                     Classes="noBorderHover"
                     Command="{CompiledBinding CopyImageCommand}"
                     DockPanel.Dock="Right"
+                    Foreground="{DynamicResource MainTextColor}"
                     Icon="{StaticResource CopyImages}"
                     IconHeight="17"
                     IconWidth="17"
@@ -173,6 +181,7 @@
                     Command="{CompiledBinding CopyFileCommand}"
                     Data="{StaticResource CopyGeometry}"
                     DockPanel.Dock="Right"
+                    Foreground="{DynamicResource MainTextColor}"
                     Height="28"
                     IconHeight="17"
                     IconWidth="17"
@@ -188,6 +197,7 @@
                     Command="{CompiledBinding DuplicateFileCommand}"
                     Data="{StaticResource DuplicateGeometry}"
                     DockPanel.Dock="Right"
+                    Foreground="{DynamicResource MainTextColor}"
                     Height="28"
                     IconHeight="17"
                     IconWidth="17"
@@ -205,6 +215,7 @@
                                                        FallbackValue=''}"
                     Data="{StaticResource ShowInFolderGeometry}"
                     DockPanel.Dock="Right"
+                    Foreground="{DynamicResource MainTextColor}"
                     Height="28"
                     IconHeight="17"
                     IconWidth="17"
@@ -217,6 +228,7 @@
                 <TextBlock
                     Classes="txt"
                     DockPanel.Dock="Left"
+                    Foreground="{DynamicResource MainTextColor}"
                     Text="{CompiledBinding ImageInfo}"
                     TextAlignment="Center" />
             </DockPanel>

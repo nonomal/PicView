@@ -31,21 +31,6 @@ public partial class ExifWindow : Window
             OptimizeButton.BorderThickness = new Thickness(0);
             OpenWithButton.BorderThickness = new Thickness(0);
             LocateOnDiskButton.BorderThickness = new Thickness(0);
-
-            RecycleButton.Classes.Remove("noBorderHover");
-            RecycleButton.Classes.Add("hover");
-            
-            DuplicateButton.Classes.Remove("noBorderHover");
-            DuplicateButton.Classes.Add("hover");
-            
-            OptimizeButton.Classes.Remove("noBorderHover");
-            OptimizeButton.Classes.Add("hover");
-            
-            OpenWithButton.Classes.Remove("noBorderHover");
-            OpenWithButton.Classes.Add("hover");
-            
-            LocateOnDiskButton.Classes.Remove("noBorderHover");
-            LocateOnDiskButton.Classes.Add("hover");
             
             if (!Application.Current.TryGetResource("SecondaryTextColor",
                     Application.Current.RequestedThemeVariant, out var textColor))
@@ -69,6 +54,36 @@ public partial class ExifWindow : Window
         else if (!SettingsHelper.Settings.Theme.Dark)
         {
             ParentBorder.Background = new SolidColorBrush(Color.FromArgb(114,132, 132, 132));
+        }
+
+        if (SettingsHelper.Settings.Theme.GlassTheme || !SettingsHelper.Settings.Theme.Dark)
+        {
+            RecycleButton.Classes.Remove("noBorderHover");
+            RecycleButton.Classes.Add("hover");
+            
+            DuplicateButton.Classes.Remove("noBorderHover");
+            DuplicateButton.Classes.Add("hover");
+            
+            CopyButton.Classes.Remove("noBorderHover");
+            CopyButton.Classes.Add("hover");
+            
+            CopyFileButton.Classes.Remove("noBorderHover");
+            CopyFileButton.Classes.Add("hover");
+            
+            PrintButton.Classes.Remove("noBorderHover");
+            PrintButton.Classes.Add("hover");
+            
+            OptimizeButton.Classes.Remove("noBorderHover");
+            OptimizeButton.Classes.Add("hover");
+            
+            OpenWithButton.Classes.Remove("noBorderHover");
+            OpenWithButton.Classes.Add("hover");
+            
+            LocateOnDiskButton.Classes.Remove("noBorderHover");
+            LocateOnDiskButton.Classes.Add("hover");
+            
+            RemoveRatingButton.Classes.Remove("noBorderHover");
+            RemoveRatingButton.Classes.Add("hover");
         }
         Title = TranslationHelper.GetTranslation("ImageInfo") + " - PicView";
         KeyDown += (_, e) =>
