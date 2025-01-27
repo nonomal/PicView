@@ -16,7 +16,7 @@ public static class FileSaverHelper
         
         if (vm.FileInfo is null)
         {
-            await SaveFileAsync(null, vm.FileInfo.FullName, vm);
+            await SaveFileAs(vm);
         }
         else
         {
@@ -33,14 +33,9 @@ public static class FileSaverHelper
             return;
         }
         
-        if (vm.FileInfo is null)
-        {
-            await SaveFileAsync(null, vm.FileInfo.FullName, vm);
-        }
-        else
-        {
-            await FilePicker.PickAndSaveFileAsAsync(vm.FileInfo.FullName, vm);
-        }
+        var fileName = vm.FileInfo is null ? Path.GetTempFileName() : vm.FileInfo.Name;
+
+        await FilePicker.PickAndSaveFileAsAsync(fileName, vm);
     }
 
     public static async Task SaveFileAsync(string? filename, string destination, MainViewModel vm)
