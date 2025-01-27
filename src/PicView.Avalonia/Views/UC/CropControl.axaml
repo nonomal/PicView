@@ -72,7 +72,10 @@
                 Padding="8,5"
                 ZIndex="2"
                 x:Name="SizeBorder">
-                <TextBlock Classes="txt" FontSize="14">
+                <TextBlock
+                    Classes="txt"
+                    FontSize="14"
+                    Foreground="{DynamicResource MainTextColor}">
                     <Run Text="{CompiledBinding Width, Mode=OneWay}" />
                     <Run Text=": " />
                     <Run Text="{CompiledBinding PixelSelectionWidth, Mode=OneWay}" />
