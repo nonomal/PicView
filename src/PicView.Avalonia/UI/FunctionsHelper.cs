@@ -426,10 +426,9 @@ public static class FunctionsHelper
     
     public static async Task Center()
     {
-        // TODO: scroll to center when the gallery is open
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
-            WindowFunctions.CenterWindowOnScreen();
+            UIHelper.Center(Vm);
         });
     }
 

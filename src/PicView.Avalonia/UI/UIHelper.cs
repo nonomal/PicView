@@ -200,6 +200,22 @@ public static class UIHelper
         }
     }
 
+    public static void Center(MainViewModel? vm)
+    {
+        if (vm is null)
+        {
+            return;
+        }
+        if (GalleryFunctions.IsFullGalleryOpen)
+        {
+            GalleryFunctions.CenterGallery(vm);
+        }
+        else
+        {
+             WindowFunctions.CenterWindowOnScreen();
+        }
+    }
+
 
 
     #endregion Navigation

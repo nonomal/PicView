@@ -245,6 +245,31 @@ public static class GalleryFunctions
         }
     }
 
+    public static void CenterGallery(MainViewModel vm)
+    {
+        if (Dispatcher.UIThread.CheckAccess())
+        {
+            Center();
+        }
+        else
+        {
+            Dispatcher.UIThread.Post(Center);
+        }
+        
+        return;
+
+        void Center()
+        {
+            var mainView = UIHelper.GetMainView;
+
+            var galleryListBox = mainView.GalleryView.GalleryListBox;
+            if (galleryListBox.Items[vm.SelectedGalleryItemIndex] is GalleryItem centerItem)
+            {
+                galleryListBox.ScrollToCenterOfItem(centerItem);
+            }
+        }
+    }
+
     #region Gallery toggle
 
     public static bool IsFullGalleryOpen { get; private set; }
