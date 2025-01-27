@@ -68,12 +68,12 @@
                     x:Name="MinimizeButton" />
 
                 <buttons:StarOutlineButtons
-                    Background="{DynamicResource TertiaryBackgroundColor}"
+                    Background="{DynamicResource SecondaryButtonBackgroundColor}"
                     DockPanel.Dock="Right"
                     x:Name="StarOutlineButtons" />
 
-                <Button
-                    Background="{DynamicResource TertiaryBackgroundColor}"
+                <customControls:IconButton
+                    Background="{DynamicResource SecondaryButtonBackgroundColor}"
                     BorderBrush="{DynamicResource MainBorderColor}"
                     BorderThickness="0,0,1,0"
                     Classes="noBorderHover"
@@ -81,14 +81,12 @@
                     CommandParameter="{CompiledBinding FileInfo.FullName,
                                                        FallbackValue=''}"
                     DockPanel.Dock="Right"
-                    Foreground="{StaticResource SecondaryTextColor}"
+                    Foreground="{DynamicResource MainTextColor}"
+                    Icon="{StaticResource StarOffImage}"
+                    IconHeight="17"
+                    IconWidth="17"
                     Width="35"
-                    x:Name="RemoveRatingButton">
-                    <Image
-                        Height="17"
-                        Source="{StaticResource StarOffImage}"
-                        Width="17" />
-                </Button>
+                    x:Name="RemoveRatingButton" />
 
                 <customControls:IconButton
                     BorderBrush="{DynamicResource MainBorderColor}"

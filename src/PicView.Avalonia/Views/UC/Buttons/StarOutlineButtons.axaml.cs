@@ -76,12 +76,12 @@ public partial class StarOutlineButtons : UserControl
             return;
         }
         var filledStar = resourceValue1 as DrawingImage;
-        Star1.Icon = filledStar;
         var outlinedStar = resourceValue2 as DrawingImage;
-        Star2.Icon = outlinedStar;
-        Star3.Icon = outlinedStar;
-        Star4.Icon = outlinedStar;
-        Star5.Icon = outlinedStar;
+        Star1Icon.Source = filledStar;
+        Star2Icon.Source = outlinedStar;
+        Star3Icon.Source = outlinedStar;
+        Star4Icon.Source = outlinedStar;
+        Star5Icon.Source = outlinedStar;
     }
 
     public void FillStar2()
@@ -96,11 +96,11 @@ public partial class StarOutlineButtons : UserControl
             return;
         }
         var filledStar = resourceValue1 as DrawingImage;
-        Star1.Icon = filledStar;
-        Star2.Icon = filledStar;
-        Star3.Icon = resourceValue2 as DrawingImage;
-        Star4.Icon = resourceValue2 as DrawingImage;
-        Star5.Icon = resourceValue2 as DrawingImage;
+        Star1Icon.Source = filledStar;
+        Star2Icon.Source = filledStar;
+        Star3Icon.Source = resourceValue2 as DrawingImage;
+        Star4Icon.Source = resourceValue2 as DrawingImage;
+        Star5Icon.Source = resourceValue2 as DrawingImage;
     }
 
     public void FillStar3()
@@ -115,11 +115,11 @@ public partial class StarOutlineButtons : UserControl
             return;
         }
         var filledStar = resourceValue1 as DrawingImage;
-        Star1.Icon = filledStar;
-        Star2.Icon = filledStar;
-        Star3.Icon = filledStar;
-        Star4.Icon = resourceValue2 as DrawingImage;
-        Star5.Icon = resourceValue2 as DrawingImage;
+        Star1Icon.Source = filledStar;
+        Star2Icon.Source = filledStar;
+        Star3Icon.Source = filledStar;
+        Star4Icon.Source = resourceValue2 as DrawingImage;
+        Star5Icon.Source = resourceValue2 as DrawingImage;
     }
 
     public void FillStar4()
@@ -134,11 +134,11 @@ public partial class StarOutlineButtons : UserControl
             return;
         }
         var filledStar = resourceValue1 as DrawingImage;
-        Star1.Icon = filledStar;
-        Star2.Icon = filledStar;
-        Star3.Icon = filledStar;
-        Star4.Icon = filledStar;
-        Star5.Icon = resourceValue2 as DrawingImage;
+        Star1Icon.Source = filledStar;
+        Star2Icon.Source = filledStar;
+        Star3Icon.Source = filledStar;
+        Star4Icon.Source = filledStar;
+        Star5Icon.Source = resourceValue2 as DrawingImage;
     }
 
     public void FillStar5()
@@ -148,11 +148,11 @@ public partial class StarOutlineButtons : UserControl
             return;
         }
         var filledStar = resourceValue as DrawingImage;
-        Star1.Icon = filledStar;
-        Star2.Icon = filledStar;
-        Star3.Icon = filledStar;
-        Star4.Icon = filledStar;
-        Star5.Icon = filledStar;
+        Star1Icon.Source = filledStar;
+        Star2Icon.Source = filledStar;
+        Star3Icon.Source = filledStar;
+        Star4Icon.Source = filledStar;
+        Star5Icon.Source = filledStar;
     }
 
     public void OutlineStars()
@@ -164,11 +164,11 @@ public partial class StarOutlineButtons : UserControl
         }
 
         var drawingImage = resourceValue as DrawingImage;
-        Star1.Icon = drawingImage;
-        Star2.Icon = drawingImage;
-        Star3.Icon = drawingImage;
-        Star4.Icon = drawingImage;
-        Star5.Icon = drawingImage;
+        Star1Icon.Source = drawingImage;
+        Star2Icon.Source = drawingImage;
+        Star3Icon.Source = drawingImage;
+        Star4Icon.Source = drawingImage;
+        Star5Icon.Source = drawingImage;
             
     }
 
