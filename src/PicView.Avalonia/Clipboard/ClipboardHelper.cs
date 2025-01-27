@@ -13,6 +13,7 @@ using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
+using PicView.Core.FileHandling;
 using PicView.Core.Localization;
 using PicView.Core.ProcessHandling;
 
@@ -46,6 +47,26 @@ public static class ClipboardHelper
             UIHelper.GetMainView.MainGrid.Children.Remove(rectangle);
         });
     }
+
+    public static async Task Duplicate(MainViewModel vm)
+    {
+        if (!NavigationHelper.CanNavigate(vm))
+        {
+            return;
+        }
+        vm.IsLoading = true;
+        var oldPath = vm.FileInfo.FullName;
+        var duplicatedPathTask = Task.FromResult(FileHelper.DuplicateAndReturnFileName(oldPath));
+        await Task.WhenAll(CopyAnimation(), duplicatedPathTask);
+        var duplicatedPath = await duplicatedPathTask;
+        if (!File.Exists(duplicatedPath))
+        {
+            return;
+        }
+        vm.ImageIterator.Clear();
+        await NavigationHelper.LoadPicFromFile(duplicatedPath, vm);
+    }
+    
     public static async Task CopyTextToClipboard(string text)
     {
         if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)

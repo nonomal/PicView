@@ -12,7 +12,6 @@ using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.ArchiveHandling;
 using PicView.Core.Config;
-using PicView.Core.FileHandling;
 using PicView.Core.Gallery;
 using PicView.Core.ImageDecoding;
 using PicView.Core.Localization;
@@ -233,17 +232,6 @@ public static class NavigationHelper
                 SetTitleHelper.SetTitle(vm);
             }
         }
-    }
-
-    public static async Task DuplicateAndNavigate(MainViewModel vm)
-    {
-        if (!CanNavigate(vm))
-        {
-            return;
-        }
-        vm.IsLoading = true;
-        var oldPath = vm.FileInfo.FullName;
-        await Task.FromResult(FileHelper.DuplicateAndReturnFileName(oldPath)).ConfigureAwait(false);
     }
 
     #endregion

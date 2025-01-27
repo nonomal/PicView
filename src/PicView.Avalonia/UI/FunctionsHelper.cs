@@ -86,6 +86,7 @@ public static class FunctionsHelper
             "ResizeWindow" => ResizeWindow,
             "SettingsWindow" => SettingsWindow,
             "KeybindingsWindow" => KeybindingsWindow,
+            "BatchResizeWindow" => BatchResizeWindow,
 
             // Open functions
             "Open" => Open,
@@ -466,6 +467,12 @@ public static class FunctionsHelper
         Vm?.PlatformService?.ShowSingleImageResizeWindow();
         return Task.CompletedTask;
     }
+    
+    public static Task BatchResizeWindow()
+    {
+        Vm?.PlatformService?.ShowBatchResizeWindow();
+        return Task.CompletedTask;
+    }
 
     public static Task SettingsWindow()
     {
@@ -667,7 +674,7 @@ public static class FunctionsHelper
 
     public static async Task DuplicateFile()
     {
-        await NavigationHelper.DuplicateAndNavigate(Vm).ConfigureAwait(false);
+        await ClipboardHelper.Duplicate(Vm).ConfigureAwait(false);
     }
 
     public static async Task CutFile()
