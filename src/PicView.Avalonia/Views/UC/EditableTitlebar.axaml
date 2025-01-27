@@ -43,6 +43,7 @@
                                          Mode=OneWay}"
                 IsTabStop="False"
                 Padding="0,7,0,5"
+                SelectionForegroundBrush="{DynamicResource SecondaryTextColor}"
                 TextAlignment="Center"
                 VerticalAlignment="Center"
                 x:Name="TextBox" />
