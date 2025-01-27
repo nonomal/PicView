@@ -202,6 +202,14 @@ public partial class EditableTitlebar : UserControl
             vm.ImageIterator?.RefreshAllFileInfo();
             vm.FileInfo = new FileInfo(newPath);
             SetTitleHelper.RefreshTitle(vm);
+            if (vm.Title == TranslationHelper.Translation.UnexpectedError)
+            {
+                var preloadValue = await vm.ImageIterator?.GetCurrentPreLoadValueAsync();
+                if (preloadValue?.ImageModel is not null)
+                {
+                    SetTitleHelper.SetTitle(vm, preloadValue.ImageModel);
+                }
+            }
         }
     }
     
