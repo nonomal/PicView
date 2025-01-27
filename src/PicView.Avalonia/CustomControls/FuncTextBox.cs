@@ -41,10 +41,11 @@ namespace PicView.Avalonia.CustomControls
                 return;
             }
 
+            // TODO fix translations here
             var contextMenu = new ContextMenu();
             var selectAllMenuItem = new MenuItem
             {
-                Header = TranslationHelper.Translation.SelectAll,
+                Header = TranslationHelper.GetTranslation("Paste"),
                 Icon = new Image
                 {
                     Width = 12,
@@ -57,7 +58,7 @@ namespace PicView.Avalonia.CustomControls
 
             var cutMenuItem = new MenuItem
             {
-                Header = TranslationHelper.Translation.Cut,
+                Header = TranslationHelper.GetTranslation("Cut"),
                 Icon = new PathIcon
                 {
                     Width = 12,
@@ -71,7 +72,7 @@ namespace PicView.Avalonia.CustomControls
 
             var copyMenuItem = new MenuItem
             {
-                Header = TranslationHelper.Translation.Copy,
+                Header = TranslationHelper.GetTranslation("Paste"),
                 Icon = new PathIcon
                 {
                     Width = 12,
@@ -85,8 +86,7 @@ namespace PicView.Avalonia.CustomControls
 
             var pasteMenuItem = new MenuItem
             {
-                Header = TranslationHelper
-                    .GetTranslation("Paste"),
+                Header = TranslationHelper.GetTranslation("Paste"),
                 Icon = new PathIcon
                 {
                     Width = 12,
