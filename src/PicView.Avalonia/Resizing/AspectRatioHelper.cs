@@ -14,8 +14,8 @@ public static class AspectRatioHelper
         var percentage = isWidth ? widthTextBox.Text.GetPercentage() : heightTextBox.Text.GetPercentage();
         if (percentage > 0)
         {
-            var newWidth = vm.PixelWidth * (percentage / 100);
-            var newHeight = vm.PixelHeight * (percentage / 100);
+            var newWidth = Convert.ToUInt32(vm.PixelWidth * (percentage / 100));
+            var newHeight = Convert.ToUInt32(vm.PixelHeight * (percentage / 100));
 
             widthTextBox.Text = newWidth.ToString("# ", CultureInfo.CurrentCulture);
             heightTextBox.Text = newHeight.ToString("# ", CultureInfo.CurrentCulture);
@@ -58,12 +58,12 @@ public static class AspectRatioHelper
 
             if (isWidth)
             {
-                var newHeight = Math.Round(width / aspectRatio);
+                var newHeight = Convert.ToUInt32(Math.Round(width / aspectRatio));
                 heightTextBox.Text = newHeight.ToString(CultureInfo.CurrentCulture);
             }
             else
             {
-                var newWidth = Math.Round(height * aspectRatio);
+                var newWidth = Convert.ToUInt32(Math.Round(height * aspectRatio));
                 widthTextBox.Text = newWidth.ToString(CultureInfo.CurrentCulture);
             }
         }

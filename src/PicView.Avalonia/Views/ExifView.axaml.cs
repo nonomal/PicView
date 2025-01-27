@@ -125,6 +125,10 @@ public partial class ExifView : UserControl
         {
             return;
         }
+        var aspectRatio = (double)vm.PixelWidth / vm.PixelHeight;
+        AspectRatioHelper.SetAspectRatioForTextBox(PixelWidthTextBox, PixelHeightTextBox, sender == PixelWidthTextBox,
+            aspectRatio, DataContext as MainViewModel);
+        
         if (!int.TryParse(PixelWidthTextBox.Text, out var width) || !int.TryParse(PixelHeightTextBox.Text, out var height))
         {
             return;
@@ -140,11 +144,7 @@ public partial class ExifView : UserControl
         SizeMpTextBox.Text = printSizes.SizeMp;
 
         var gcd = ImageTitleFormatter.GCD(width, height);
-        var aspectRatio = (double)vm.PixelWidth / vm.PixelHeight;
         AspectRatioTextBox.Text = AspectRatioHelper.GetFormattedAspectRatio(gcd, vm.PixelWidth, vm.PixelHeight);
-        
-        AspectRatioHelper.SetAspectRatioForTextBox(PixelWidthTextBox, PixelHeightTextBox, sender == PixelWidthTextBox,
-            aspectRatio, DataContext as MainViewModel);
     }
 
     private static async Task DoResize(MainViewModel vm, bool isWidth, object width, object height)
