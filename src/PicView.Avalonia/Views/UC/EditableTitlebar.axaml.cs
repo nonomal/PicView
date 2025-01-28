@@ -219,16 +219,12 @@ public partial class EditableTitlebar : UserControl
         {
             return;
         }
-
-        if (!NavigationHelper.CanNavigate(vm))
-        {
-            return;
-        }
         
         if (vm.FileInfo is null)
         {
             return;
         }
+        
         TextBox.Text = vm.FileInfo.Name;
         var filename = vm.FileInfo.Name;
         var start = TextBox.Text.Length - filename.Length;
