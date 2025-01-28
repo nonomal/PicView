@@ -198,8 +198,13 @@ public sealed class ImageIterator : IDisposable
             return;
         }
         var isSameFile = CurrentIndex == index;
-        
-        PreLoader.Remove(index, ImagePaths);
+        var isCleared = false;
+
+        if (PreLoader.Contains(index, ImagePaths))
+        {
+            await PreLoader.ClearAsync();   
+            isCleared = true;
+        }
         
         if (!ImagePaths.Remove(e.FullPath))
         {
@@ -242,6 +247,10 @@ public sealed class ImageIterator : IDisposable
         }
 
         FileHistoryNavigation.Remove(e.FullPath);
+        if (isCleared)
+        {
+            await Preload();
+        }
     }
 
     private async Task OnFileRenamed(RenamedEventArgs e)
