@@ -173,6 +173,7 @@ Changing the file extension will convert the image to the respective format.
 
 ## Shortcuts
 You can view and change keyboard shortcuts by opening the `Keybindings` window by pressing `K`.
+Alternatively, they are also listed at [PicView.org](https://picview.org/#Shortcuts).
 
 <h1 align="center">
     <img src="https://picview.org/assets/screenshots/Keybindings/KeybindingsWindow3.0.webp" />
