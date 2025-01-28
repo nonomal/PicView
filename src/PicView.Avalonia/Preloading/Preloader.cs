@@ -393,11 +393,20 @@ namespace PicView.Avalonia.Preloading
         /// <param name="list">The list of image paths.</param>
         public async Task PreLoadAsync(int currentIndex, bool reverse, List<string> list)
         {
-            if (_cancellationTokenSource is null)
+            if (list == null)
             {
-                _cancellationTokenSource = new CancellationTokenSource();
-                _cancellationTokenSource.CancelAfter(TimeSpan.FromMinutes(5));
+#if DEBUG
+                Trace.WriteLine($"{nameof(PreLoader)}.{nameof(PreLoadAsync)} list null \n{currentIndex}");
+#endif
+                return;
             }
+
+            if (IsRunning)
+            {
+                return;
+            }
+            
+            _cancellationTokenSource ??= new CancellationTokenSource();
 
             try
             {
@@ -418,19 +427,6 @@ namespace PicView.Avalonia.Preloading
         private async Task PreLoadInternalAsync(int currentIndex, bool reverse, List<string> list,
             CancellationToken token)
         {
-            if (list == null)
-            {
-#if DEBUG
-                Trace.WriteLine($"{nameof(PreLoader)}.{nameof(PreLoadInternalAsync)} list null \n{currentIndex}");
-#endif
-                return;
-            }
-
-            if (IsRunning)
-            {
-                return;
-            }
-
             IsRunning = true;
 
             var count = list.Count;
