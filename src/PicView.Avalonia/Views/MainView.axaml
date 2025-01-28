@@ -159,7 +159,7 @@
                                              Mode=OneWay}"
                     IsChecked="{CompiledBinding SortOrder,
                                                 Converter={StaticResource EnumToBoolConverter},
-                                                ConverterParameter=FileExtension}"
+                                                ConverterParameter=Extension}"
                     ToggleType="Radio" />
 
                 <!--  Sort files by creation time  -->
@@ -170,7 +170,7 @@
                                              Mode=OneWay}"
                     IsChecked="{CompiledBinding SortOrder,
                                                 Converter={StaticResource EnumToBoolConverter},
-                                                ConverterParameter=Created}"
+                                                ConverterParameter=CreationTime}"
                     ToggleType="Radio" />
 
                 <!--  Sort files by last access time  -->
@@ -550,7 +550,7 @@
                         Stretch="Fill"
                         Width="13" />
                 </MenuItem.Icon>
-                
+
                 <!--  Set as wallpaper filled  -->
                 <MenuItem
                     Command="{CompiledBinding SetAsWallpaperFilledCommand}"
@@ -639,22 +639,22 @@
                 </MenuItem>
 
                 <!-- <Separator /> -->
-                <!-- -->
-                <!-- ~1~  Set as lock screen  @1@ -->
-                <!-- <MenuItem -->
-                <!--     Command="{CompiledBinding SetAsLockScreenCommand}" -->
-                <!--     CommandParameter="{CompiledBinding FileInfo.FullName, -->
-                <!--                                        FallbackValue=''}" -->
-                <!--     Header="{CompiledBinding SetAsLockScreenImage, -->
-                <!--                              Mode=OneWay}" -->
-                <!--     IsEnabled="False"> -->
+                <!--    -->
+                <!--  ~1~  Set as lock screen  @1@  -->
+                <!--  <MenuItem  -->
+                <!--  Command="{CompiledBinding SetAsLockScreenCommand}"  -->
+                <!--  CommandParameter="{CompiledBinding FileInfo.FullName,  -->
+                <!--  FallbackValue=''}"  -->
+                <!--  Header="{CompiledBinding SetAsLockScreenImage,  -->
+                <!--  Mode=OneWay}"  -->
+                <!--  IsEnabled="False">  -->
                 <!--     <MenuItem.Icon> -->
-                <!--         <Path -->
-                <!--             Data="{StaticResource PanoramaGeometry}" -->
-                <!--             Fill="{StaticResource Brush0}" -->
-                <!--             Height="10.40" -->
-                <!--             Stretch="Fill" -->
-                <!--             Width="13" /> -->
+                <!--  <Path  -->
+                <!--  Data="{StaticResource PanoramaGeometry}"  -->
+                <!--  Fill="{StaticResource Brush0}"  -->
+                <!--  Height="10.40"  -->
+                <!--  Stretch="Fill"  -->
+                <!--  Width="13" />  -->
                 <!--     </MenuItem.Icon> -->
                 <!-- </MenuItem> -->
 
