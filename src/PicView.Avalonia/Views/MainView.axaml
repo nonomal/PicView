@@ -238,6 +238,16 @@
                         Width="12" />
                 </MenuItem.Icon>
 
+                <!--  Toggle Subdirectories  -->
+                <MenuItem
+                    Command="{CompiledBinding ToggleSubdirectoriesCommand}"
+                    Header="{CompiledBinding SearchSubdirectory,
+                                             Mode=OneWay}"
+                    IsChecked="{Binding IsIncludingSubdirectories}"
+                    ToggleType="CheckBox" />
+
+                <Separator />
+
                 <!--  Toggle looping  -->
                 <MenuItem
                     Header="{CompiledBinding GetIsLoopingTranslation,
