@@ -94,7 +94,7 @@ Quickly crop image by pressing `C`. Hold `Shift` for square selection.
 </h3>
 
 <h1 align="center">
-    <img src="https://picview.org/assets/screenshots/exifwindow/Image%20Info%20Window%203.0.0%20.png" />
+    <img src="https://picview.org/assets/screenshots/exifwindow/Image%20Info%20Window%203.0.0%20.webp" />
 </h1>
 
 Perform operations such as _renaming_, _file conversion_, _copying_, _compressing_, _resizing_, adding it to the _recycle bin_ and editing the _EXIF image rating_.
@@ -102,7 +102,7 @@ Perform operations such as _renaming_, _file conversion_, _copying_, _compressin
 Changing size can be done by editing the `width` and/or `height` text-boxes. Use the `%` keyboard button to resize it by percentage.
 
 <h1 align="center">
-    <img src="https://picview.org/assets/screenshots/exifwindow/gps3.0.png" />
+    <img src="https://picview.org/assets/screenshots/exifwindow/gps3.0.webp" />
 </h1>
 
 If the GPS coordinates are saved on the image, you can click the Google or Bing buttons to open the respective maps at the GPS coordinates
@@ -115,7 +115,7 @@ If the GPS coordinates are saved on the image, you can click the Google or Bing 
 </h3>
 
 <h1 align="center">
-    <img src="https://picview.org/assets/screenshots/Gallery/PicView3.0-galleryAnimation.gif" />
+    <img src="https://picview.org/assets/screenshots/gallery/PicView3.0-galleryAnimation.webp" />
 </h1>
 
 
