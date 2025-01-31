@@ -35,7 +35,7 @@
                 </Border>
 
                 <customControls:IconButton
-                    Background="{DynamicResource MainButtonBackgroundColor}"
+                    Background="{DynamicResource WindowButtonBackgroundColor}"
                     Classes="hover"
                     Click="Close"
                     ClickMode="Release"
@@ -50,7 +50,7 @@
                     x:Name="CloseButton" />
 
                 <customControls:IconButton
-                    Background="{DynamicResource MainButtonBackgroundColor}"
+                    Background="{DynamicResource WindowButtonBackgroundColor}"
                     BorderBrush="{DynamicResource MainBorderColor}"
                     BorderThickness="1,0,1,0"
                     Classes="hover"
