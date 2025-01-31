@@ -492,6 +492,12 @@ public sealed class ImageIterator : IDisposable
         }
     }
 
+    /// <summary>
+    ///     Iterates to the given index in the image list, shows the corresponding image and preloads the next/previous images.
+    /// </summary>
+    /// <param name="index">The index to iterate to.</param>
+    /// <param name="cts">The cancellation token source.</param>
+    /// <returns>A <see cref="Task" /> that represents the asynchronous operation.</returns>
     public async Task IterateToIndex(int index, CancellationTokenSource cts)
     {
         if (index < 0 || index >= ImagePaths.Count)
@@ -499,7 +505,7 @@ public sealed class ImageIterator : IDisposable
             ErrorHandling.ShowStartUpMenu(_vm);
             return;
         }
-        
+
         try
         {
             CurrentIndex = index;
@@ -508,20 +514,21 @@ public sealed class ImageIterator : IDisposable
             var preloadValue = PreLoader.Get(index, ImagePaths);
             if (preloadValue is not null)
             {
-                if (preloadValue.IsLoading)
+                // Wait for image to load
+                if (preloadValue is { IsLoading: true, ImageModel.Image: not null })
                 {
                     TryShowPreview();
-                }
 
-                while (preloadValue.IsLoading)
-                {
-                    await Task.Delay(20, cts.Token).ConfigureAwait(false);
-                    if (CurrentIndex != index)
+                    do
                     {
-                        // Skip loading if user went to next value
-                        await cts.CancelAsync();
-                        return;
-                    }
+                        await Task.Delay(20, cts.Token).ConfigureAwait(false);
+                        if (CurrentIndex != index)
+                        {
+                            // Skip loading if user went to next value
+                            await cts.CancelAsync();
+                            return;
+                        }
+                    } while (preloadValue.IsLoading);
                 }
             }
             else
@@ -555,7 +562,8 @@ public sealed class ImageIterator : IDisposable
 
                 if (!cts.IsCancellationRequested)
                 {
-                    await UpdateImage.UpdateSource(_vm, index, ImagePaths, IsReversed, preloadValue, nextPreloadValue)
+                    await UpdateImage.UpdateSource(_vm, index, ImagePaths, IsReversed, preloadValue,
+                            nextPreloadValue)
                         .ConfigureAwait(false);
                 }
             }
@@ -594,7 +602,7 @@ public sealed class ImageIterator : IDisposable
         {
             // Ignore
 #if DEBUG
-            Trace.WriteLine($"{nameof(IterateToIndex)} canceled");
+            Trace.WriteLine($"\n{nameof(IterateToIndex)} canceled\n");
 #endif
         }
         catch (Exception e)
@@ -621,6 +629,7 @@ public sealed class ImageIterator : IDisposable
     }
 
     private static Timer? _timer;
+
 
     private async Task TimerIteration(int index, CancellationTokenSource cts)
     {

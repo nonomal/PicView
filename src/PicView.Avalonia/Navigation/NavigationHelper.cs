@@ -610,32 +610,44 @@ public static class NavigationHelper
 
     #region Private helpers
     
+    /// <summary>
+    /// Checks if the previous iteration has been cancelled and starts the next iteration in a new task.
+    /// </summary>
+    /// <param name="navigateTo">The direction to navigate.</param>
+    /// <param name="vm">The main view model instance.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
     private static async Task CheckCancellationAndStartNextIteration(NavigateTo navigateTo, MainViewModel vm)
     {
-        await Task.Run(async () =>
+        await Task.Run(() =>
         {
             if (_cancellationTokenSource is not null)
             {
-                await _cancellationTokenSource.CancelAsync().ConfigureAwait(false);
+                _ = _cancellationTokenSource.CancelAsync().ConfigureAwait(false);
             }
 
             _cancellationTokenSource = new CancellationTokenSource();
-            await vm.ImageIterator.NextIteration(navigateTo, _cancellationTokenSource).ConfigureAwait(false);
+            _ = vm.ImageIterator.NextIteration(navigateTo, _cancellationTokenSource).ConfigureAwait(false);
             _cancellationTokenSource.CancelAfter(TimeSpan.FromMinutes(5));
         }).ConfigureAwait(false);
     }
     
+    /// <summary>
+    /// Checks if the previous iteration has been cancelled and starts the iteration at the given index in a new task.
+    /// </summary>
+    /// <param name="index">The index to iterate to.</param>
+    /// <param name="vm">The main view model instance.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
     private static async Task CheckCancellationAndStartIterateToIndex(int index, MainViewModel vm)
     {
-        await Task.Run(async () =>
+        await Task.Run(() =>
         {
             if (_cancellationTokenSource is not null)
             {
-                await _cancellationTokenSource.CancelAsync().ConfigureAwait(false);
+                _ = _cancellationTokenSource.CancelAsync().ConfigureAwait(false);
             }
 
             _cancellationTokenSource = new CancellationTokenSource();
-            await vm.ImageIterator.IterateToIndex(index, _cancellationTokenSource).ConfigureAwait(false);
+            _ = vm.ImageIterator.IterateToIndex(index, _cancellationTokenSource).ConfigureAwait(false);
             _cancellationTokenSource.CancelAfter(TimeSpan.FromMinutes(5));
         }).ConfigureAwait(false);
     }
