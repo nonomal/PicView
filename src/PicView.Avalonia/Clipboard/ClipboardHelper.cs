@@ -63,7 +63,7 @@ public static class ClipboardHelper
         {
             return;
         }
-        vm.ImageIterator.Clear();
+        await vm.ImageIterator.ClearAsync();
         await NavigationHelper.LoadPicFromFile(duplicatedPath, vm);
     }
     

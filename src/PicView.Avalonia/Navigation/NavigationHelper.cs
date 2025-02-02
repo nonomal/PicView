@@ -693,33 +693,57 @@ public static class NavigationHelper
         }).ConfigureAwait(false);
     }
 
+
     /// <summary>
-    /// Previews the picture and loads the gallery with the specified files.
+    /// Loads a picture from a given file, reloads the ImageIterator and loads the corresponding gallery from the file's directory.
     /// </summary>
-    /// <param name="fileInfo">The file info of the picture to preview.</param>
+    /// <param name="fileInfo">The FileInfo object representing the file to load.</param>
     /// <param name="vm">The main view model instance.</param>
-    /// <param name="files">Optional: List of file paths in the gallery.</param>
+    /// <param name="files">Optional: The list of file paths to load. If null, the list is loaded from the given file's directory.</param>
+    /// <param name="index">Optional: The index at which to start the navigation. Defaults to 0.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    private static async Task PreviewPicAndLoadGallery(FileInfo fileInfo, MainViewModel vm, List<string>? files = null)
+    private static async Task PreviewPicAndLoadGallery(FileInfo fileInfo, MainViewModel vm, List<string>? files = null, int index = 0)
     {
         var imageModel = await GetImageModel.GetImageModelAsync(fileInfo).ConfigureAwait(false);
+        ImageModel? nextImageModel = null;
         vm.ImageSource = imageModel.Image;
         vm.ImageType = imageModel.ImageType;
-        await Dispatcher.UIThread.InvokeAsync(() =>
+        if (Settings.ImageScaling.ShowImageSideBySide)
         {
-            WindowResizing.SetSize(imageModel.PixelWidth, imageModel.PixelHeight, 0, 0, imageModel.Rotation, vm);
-        });
-
-        if (files is null)
-        {
-            vm.ImageIterator = new ImageIterator(fileInfo, vm);
-            await vm.ImageIterator.IterateToIndex(vm.ImageIterator.ImagePaths.IndexOf(fileInfo.FullName),
-                _cancellationTokenSource);
+            nextImageModel = (await vm.ImageIterator.GetNextPreLoadValueAsync()).ImageModel;
+            vm.SecondaryImageSource = nextImageModel.Image;
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                WindowResizing.SetSize(imageModel.PixelWidth, imageModel.PixelHeight, nextImageModel.PixelWidth, nextImageModel.PixelHeight, imageModel.Rotation, vm);
+            });
         }
         else
         {
-            vm.ImageIterator = new ImageIterator(fileInfo, files, 0, vm);
-            await vm.ImageIterator.IterateToIndex(0, _cancellationTokenSource);
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                WindowResizing.SetSize(imageModel.PixelWidth, imageModel.PixelHeight, 0, 0, imageModel.Rotation, vm);
+            });
+        }
+        
+        await vm.ImageIterator.DisposeAsync();
+
+        // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
+        if (files is null)
+        {
+            vm.ImageIterator = new ImageIterator(fileInfo, vm);
+        }
+        else
+        {
+            vm.ImageIterator = new ImageIterator(fileInfo, files, index, vm);
+        }
+
+        if (Settings.ImageScaling.ShowImageSideBySide)
+        {
+            SetTitleHelper.SetSideBySideTitle(vm, imageModel, nextImageModel);
+        }
+        else
+        {
+            SetTitleHelper.SetTitle(vm, imageModel);
         }
 
         await CheckAndReloadGallery(fileInfo, vm);

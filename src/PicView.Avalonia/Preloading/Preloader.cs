@@ -43,56 +43,38 @@ namespace PicView.Avalonia.Preloading
         /// <returns>True if the image was added successfully; otherwise, false.</returns>
         public async Task<bool> AddAsync(int index, List<string> list, ImageModel? imageModel = null)
         {
-            if (list == null)
+            if (list == null || index < 0 || index >= list.Count)
             {
 #if DEBUG
-                Trace.WriteLine($"{nameof(PreLoader)}.{nameof(AddAsync)} list null \n{index}");
+                Trace.WriteLine($"{nameof(PreLoader)}.{nameof(AddAsync)} invalid parameters: \n{index}");
 #endif
                 return false;
             }
 
-            if (index < 0 || index >= list.Count)
-            {
-#if DEBUG
-                Trace.WriteLine($"{nameof(PreLoader)}.{nameof(AddAsync)} invalid index: \n{index}");
-#endif
-                return false;
-            }
 
             var preLoadValue = new PreLoadValue(imageModel);
             try
             {
-                var add = _preLoadList.TryAdd(index, preLoadValue);
-                if (add)
+                if (_preLoadList.TryAdd(index, preLoadValue))
                 {
-                    if (imageModel is null)
+                    preLoadValue.IsLoading = true;
+                    if (imageModel == null)
                     {
-                        preLoadValue.IsLoading = true;
                         var fileInfo = new FileInfo(list[index]);
                         imageModel = await GetImageModel.GetImageModelAsync(fileInfo).ConfigureAwait(false);
-                        preLoadValue.ImageModel = imageModel;
                     }
-                    else
+                    else if (imageModel.Image == null)
                     {
-                        preLoadValue.ImageModel = imageModel;
-                        if (imageModel.Image is null)
-                        {
-                            preLoadValue.IsLoading = true;
-
-                            preLoadValue.ImageModel =
-                                await GetImageModel.GetImageModelAsync(imageModel.FileInfo).ConfigureAwait(false);
-                        }
+                        imageModel = await GetImageModel.GetImageModelAsync(imageModel.FileInfo).ConfigureAwait(false);
                     }
 
-                    if (imageModel.EXIFOrientation is null)
-                    {
-                        preLoadValue.ImageModel.EXIFOrientation = EXIFHelper.GetImageOrientation(imageModel.FileInfo);
-                    }
+                    preLoadValue.ImageModel = imageModel;
+                    imageModel.EXIFOrientation ??= EXIFHelper.GetImageOrientation(imageModel.FileInfo);
 
 #if DEBUG
                     if (ShowAddRemove)
                     {
-                        Trace.WriteLine($"{imageModel?.FileInfo?.Name} added at {index}");
+                        Trace.WriteLine($"{imageModel.FileInfo.Name} added at {index}");
                     }
 #endif
                     return true;
@@ -107,11 +89,7 @@ namespace PicView.Avalonia.Preloading
             }
             finally
             {
-                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-                if (preLoadValue is not null)
-                {
-                    preLoadValue.IsLoading = false;
-                }
+                preLoadValue.IsLoading = false;
             }
 
             return false;
@@ -168,38 +146,32 @@ namespace PicView.Avalonia.Preloading
         /// </remarks>
         public bool RefreshAllFileInfo(List<string> list)
         {
+            if (list == null) return false;
+
             try
             {
                 foreach (var item in _preLoadList)
                 {
-                    if (item.Value is null)
-                    {
-                        continue;
-                    }
+                    // ReSharper disable once ConditionalAccessQualifierIsNonNullableAccordingToAPIContract
+                    if (item.Value?.ImageModel == null) continue;
 
-                    var fileInfo = new FileInfo(list[item.Key]);
-                    if (item.Value.ImageModel == null)
-                    {
-                        continue;
-                    }
+                    item.Value.ImageModel.FileInfo = new FileInfo(list[item.Key]);
+                    if (!_preLoadList.TryRemove(item.Key, out var newItem)) continue;
 
-                    item.Value.ImageModel.FileInfo = fileInfo;
-                    var removed = _preLoadList.TryRemove(item.Key, out var newItem);
-                    if (removed)
-                    {
-                        return _preLoadList.TryAdd(list.IndexOf(newItem.ImageModel.FileInfo.FullName), newItem);
-                    }
+                    _preLoadList.TryAdd(list.IndexOf(newItem.ImageModel.FileInfo.FullName), newItem);
                 }
+
+                return true;
             }
             catch (Exception e)
             {
 #if DEBUG
-                Trace.WriteLine($"{nameof(PreLoader)}.{nameof(RefreshAllFileInfo)} \n{e.Message}");
+                Trace.WriteLine($"{nameof(PreLoader)}.{nameof(RefreshAllFileInfo)} exception: \n{e.Message}");
 #endif
+                return false;
             }
-
-            return false;
         }
+
 
         /// <summary>
         ///     Clears all preloaded images from the cache.
@@ -209,7 +181,7 @@ namespace PicView.Avalonia.Preloading
             _cancellationTokenSource?.Cancel();
             foreach (var item in _preLoadList.Values)
             {
-                if (item?.ImageModel?.Image is Bitmap img)
+                if (item.ImageModel?.Image is Bitmap img)
                 {
                     img.Dispose();
                 }
@@ -243,23 +215,15 @@ namespace PicView.Avalonia.Preloading
         /// <returns>The preloaded value if it exists; otherwise, null.</returns>
         public PreLoadValue? Get(int key, List<string> list)
         {
-            if (list == null)
+            if (list != null && key >= 0 && key < list.Count)
             {
-#if DEBUG
-                Trace.WriteLine($"{nameof(PreLoader)}.{nameof(Get)} list null \n{key}");
-#endif
-                return null;
+                return Contains(key, list) ? _preLoadList[key] : null;
             }
-
-            if (key < 0 || key >= list.Count)
-            {
 #if DEBUG
-                Trace.WriteLine($"{nameof(PreLoader)}.{nameof(Get)} invalid key: \n{key}");
+            Trace.WriteLine($"{nameof(PreLoader)}.{nameof(Get)} invalid parameters: \n{key}");
 #endif
-                return null;
-            }
+            return null;
 
-            return !Contains(key, list) ? null : _preLoadList[key];
         }
 
 
@@ -271,26 +235,15 @@ namespace PicView.Avalonia.Preloading
         /// <returns>The preloaded value if it exists; otherwise, null.</returns>
         public async Task<PreLoadValue?> GetAsync(int key, List<string> list)
         {
-            if (list == null)
+            if (list == null || key < 0 || key >= list.Count)
             {
 #if DEBUG
-                Trace.WriteLine($"{nameof(PreLoader)}.{nameof(GetAsync)} list null \n{key}");
+                Trace.WriteLine($"{nameof(PreLoader)}.{nameof(GetAsync)} invalid parameters: \n{key}");
 #endif
                 return null;
             }
 
-            if (key < 0 || key >= list.Count)
-            {
-#if DEBUG
-                Trace.WriteLine($"{nameof(PreLoader)}.{nameof(GetAsync)} invalid key: \n{key}");
-#endif
-                return null;
-            }
-
-            if (Contains(key, list))
-            {
-                return _preLoadList[key];
-            }
+            if (Contains(key, list)) return _preLoadList[key];
 
             await AddAsync(key, list);
             return Get(key, list);
@@ -304,23 +257,7 @@ namespace PicView.Avalonia.Preloading
         /// <returns>True if the key exists; otherwise, false.</returns>
         public bool Contains(int key, List<string> list)
         {
-            if (list == null)
-            {
-#if DEBUG
-                Trace.WriteLine($"{nameof(PreLoader)}.{nameof(Get)} list null \n{key}");
-#endif
-                return false;
-            }
-
-            if (key < 0 || key >= list.Count)
-            {
-#if DEBUG
-                Trace.WriteLine($"{nameof(PreLoader)}.{nameof(Contains)} invalid key: \n{key}");
-#endif
-                return false;
-            }
-
-            return _preLoadList.ContainsKey(key);
+            return list != null && key >= 0 && key < list.Count && _preLoadList.ContainsKey(key);
         }
 
 
@@ -332,57 +269,48 @@ namespace PicView.Avalonia.Preloading
         /// <returns>True if the key was removed; otherwise, false.</returns>
         public bool Remove(int key, List<string> list)
         {
-            if (list == null)
+            if (list == null || key < 0 || key >= list.Count || !Contains(key, list))
             {
 #if DEBUG
-                Trace.WriteLine($"{nameof(PreLoader)}.{nameof(Get)} list null \n{key}");
+                Trace.WriteLine($"{nameof(PreLoader)}.{nameof(Remove)} invalid parameters: \n{key}");
 #endif
-                return false;
-            }
-
-            if (key < 0 || key >= list.Count)
-            {
-#if DEBUG
-                Trace.WriteLine($"{nameof(PreLoader)}.{nameof(Remove)} invalid key: \n{key}");
-#endif
-                return false;
-            }
-
-            if (!Contains(key, list))
-            {
                 return false;
             }
 
             try
             {
-                var item = _preLoadList[key];
-                if (item?.ImageModel?.Image is Bitmap img)
+                if (_preLoadList.TryGetValue(key, out var item))
                 {
-                    img.Dispose();
-                }
+                    // Ensure proper Bitmap disposal
+                    if (item.ImageModel?.Image is Bitmap bitmap)
+                    {
+                        bitmap.Dispose();
+                    }
 
-                if (item?.ImageModel is not null)
-                {
-                    item.ImageModel.Image = null;
-                    item.ImageModel.FileInfo = null;
-                }
+                    if (item.ImageModel is not null)
+                    {
+                        item.ImageModel.Image = null;
+                        item.ImageModel.FileInfo = null;
+                    }
 
-                var remove = _preLoadList.TryRemove(key, out _);
+                    var removed = _preLoadList.TryRemove(key, out _);
 #if DEBUG
-                if (remove && ShowAddRemove)
-                {
-                    Trace.WriteLine($"{list[key]} removed at {list.IndexOf(list[key])}");
-                }
+                    if (removed && ShowAddRemove)
+                    {
+                        Trace.WriteLine($"{list[key]} removed at {list.IndexOf(list[key])}");
+                    }
 #endif
-                return remove;
+                    return removed;
+                }
             }
             catch (Exception e)
             {
 #if DEBUG
                 Trace.WriteLine($"{nameof(Remove)} exception:\n{e.Message}");
 #endif
-                return false;
             }
+
+            return false;
         }
 
         /// <summary>
@@ -462,13 +390,13 @@ namespace PicView.Avalonia.Preloading
             {
                 if (reverse)
                 {
-                    await NegativeLoop(options);
-                    await PositiveLoop(options);
+                    await LoopAsync(options, false);
+                    await LoopAsync(options, true);
                 }
                 else
                 {
-                    await PositiveLoop(options);
-                    await NegativeLoop(options);
+                    await LoopAsync(options, true);
+                    await LoopAsync(options, false);
                 }
 
                 RemoveLoop();
@@ -479,25 +407,12 @@ namespace PicView.Avalonia.Preloading
             }
 
             return;
-
-            async Task PositiveLoop(ParallelOptions parallelOptions)
+            
+            async Task LoopAsync(ParallelOptions parallelOptions, bool positive)
             {
                 await Parallel.ForAsync(0, PreLoaderConfig.PositiveIterations, parallelOptions, async (i, _) =>
                 {
-                    var index = (nextStartingIndex + i) % count;
-                    var isAdded = await AddAsync(index, list);
-                    if (isAdded)
-                    {
-                        array[i] = index;
-                    }
-                });
-            }
-
-            async Task NegativeLoop(ParallelOptions parallelOptions)
-            {
-                await Parallel.ForAsync(0, PreLoaderConfig.NegativeIterations, parallelOptions, async (i, _) =>
-                {
-                    var index = (prevStartingIndex - i + count) % count;
+                    var index = positive ? (nextStartingIndex + i) % count : (prevStartingIndex - i + count) % count;
                     var isAdded = await AddAsync(index, list);
                     if (isAdded)
                     {
@@ -579,14 +494,9 @@ namespace PicView.Avalonia.Preloading
                 return;
             }
 
-            await DisposeAsyncCore().ConfigureAwait(false);
+            await ClearAsync().ConfigureAwait(false);
 
             Dispose(false);
-        }
-
-        public async ValueTask DisposeAsyncCore()
-        {
-            await ClearAsync().ConfigureAwait(false);
         }
 
         ~PreLoader()

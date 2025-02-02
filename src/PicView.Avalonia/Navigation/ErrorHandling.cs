@@ -90,7 +90,7 @@ public static class ErrorHandling
             return;
         }
         
-        vm.ImageIterator.Clear();
+        await vm.ImageIterator.ClearAsync().ConfigureAwait(false);
         await vm.ImageIterator.ReloadFileList().ConfigureAwait(false);
         var index = vm.ImageIterator.ImagePaths.IndexOf(vm.FileInfo.FullName);
         await NavigationHelper.Navigate(index, vm).ConfigureAwait(false);

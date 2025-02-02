@@ -13,7 +13,7 @@ using Timer = System.Timers.Timer;
 
 namespace PicView.Avalonia.Navigation;
 
-public sealed class ImageIterator : IDisposable
+public sealed class ImageIterator : IAsyncDisposable
 {
     #region Properties
 
@@ -331,6 +331,11 @@ public sealed class ImageIterator : IDisposable
     public void Clear()
     {
         PreLoader.Clear();
+    }
+    
+    public async Task ClearAsync()
+    {
+        await PreLoader.ClearAsync().ConfigureAwait(false);
     }
 
     public async Task Preload()
@@ -670,8 +675,14 @@ public sealed class ImageIterator : IDisposable
         Dispose(true);
         GC.SuppressFinalize(this);
     }
+    
+    public async ValueTask DisposeAsync()
+    {
+        await ClearAsync().ConfigureAwait(false);
+        Dispose(false, true);
+    }
 
-    private void Dispose(bool disposing)
+    private void Dispose(bool disposing, bool cleared = false)
     {
         if (_disposed)
         {
@@ -681,13 +692,17 @@ public sealed class ImageIterator : IDisposable
         if (disposing)
         {
             _watcher?.Dispose();
-            Clear();
+            if (!cleared)
+            {
+                Clear();
+            }
             _timer?.Dispose();
             PreLoader.Dispose();
         }
 
         _disposed = true;
     }
+    
 
     ~ImageIterator()
     {
