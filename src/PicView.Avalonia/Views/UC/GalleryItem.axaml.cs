@@ -5,49 +5,48 @@ using Avalonia.Input;
 using Avalonia.Media;
 using Exception = System.Exception;
 
-namespace PicView.Avalonia.Views.UC
-{
-    public partial class GalleryItem : UserControl
-    {
-        public GalleryItem()
-        {
-            InitializeComponent();
-            GalleryContextMenu.Opened += delegate
-            {
-                if (!Application.Current.TryGetResource("SecondaryAccentColor", Application.Current.RequestedThemeVariant, out var color))
-                {
-                    return;
-                }
+namespace PicView.Avalonia.Views.UC;
 
-                try
-                {
-                    var secondaryAccentBrush = (SolidColorBrush)color;
-                    ImageBorder.BorderBrush = secondaryAccentBrush;
-                }
-#if DEBUG
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                }
-#else
-        catch (Exception){}
-#endif
-            };
-            GalleryContextMenu.Closed += delegate
-            {
-                ImageBorder.BorderBrush = Brushes.Transparent;
-            };
-        }
-        
-        private void Flyout_OnPointerPressed(object? sender, PointerPressedEventArgs e)
+public partial class GalleryItem : UserControl
+{
+    public GalleryItem()
+    {
+        InitializeComponent();
+        GalleryContextMenu.Opened += delegate
         {
-            if (sender is not Control ctl)
+            if (!Application.Current.TryGetResource("SecondaryAccentColor", Application.Current.RequestedThemeVariant, out var color))
             {
                 return;
             }
 
-            FlyoutBase.ShowAttachedFlyout(ctl);
-            GalleryItemSizeSlider.SetMaxAndMin();
+            try
+            {
+                var secondaryAccentBrush = (SolidColorBrush)color;
+                ImageBorder.BorderBrush = secondaryAccentBrush;
+            }
+#if DEBUG
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+#else
+        catch (Exception){}
+#endif
+        };
+        GalleryContextMenu.Closed += delegate
+        {
+            ImageBorder.BorderBrush = Brushes.Transparent;
+        };
+    }
+        
+    private void Flyout_OnPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        if (sender is not Control ctl)
+        {
+            return;
         }
+
+        FlyoutBase.ShowAttachedFlyout(ctl);
+        GalleryItemSizeSlider.SetMaxAndMin();
     }
 }
