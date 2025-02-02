@@ -19,12 +19,6 @@ public static class GalleryLoad
     {
         // TODO: Lazy load this when scrolling instead. Figure out how to support virtualization. 
         
-        // Make sure height is set
-        if (Settings.Gallery.IsBottomGalleryShown && !GalleryFunctions.IsFullGalleryOpen)
-        {
-            vm.GetGalleryItemHeight = vm.GetBottomGalleryItemHeight;
-        }
-        
         if (vm.ImageIterator?.ImagePaths.Count == 0 || IsLoading || vm.ImageIterator is null)
         {
             return;
@@ -59,6 +53,12 @@ public static class GalleryLoad
         if (toReturn)
         {
             return;
+        }
+        
+        // Make sure height is set
+        if (Settings.Gallery.IsBottomGalleryShown && !GalleryFunctions.IsFullGalleryOpen)
+        {
+            vm.GetGalleryItemHeight = vm.GetBottomGalleryItemHeight;
         }
     
         _cancellationTokenSource = new CancellationTokenSource();

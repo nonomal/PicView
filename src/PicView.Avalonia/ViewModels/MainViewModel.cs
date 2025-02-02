@@ -1501,17 +1501,17 @@ public class MainViewModel : ViewModelBase
         }
     }
 
-    public async Task GalleryItemStretchTask(string value)
+    public void SetGalleryItemStretch(string value)
     {
         if (value.Equals("Square", StringComparison.OrdinalIgnoreCase))
         {
             if (GalleryFunctions.IsFullGalleryOpen)
             {
-                await GalleryStretchMode.ChangeFullGalleryStretchSquare(this);
+                GalleryStretchMode.ChangeFullGalleryStretchSquare(this);
             }
             else
             {
-                await GalleryStretchMode.ChangeBottomGalleryStretchSquare(this);
+                GalleryStretchMode.ChangeBottomGalleryStretchSquare(this);
             }
             return;
         }
@@ -1520,11 +1520,11 @@ public class MainViewModel : ViewModelBase
         {
             if (GalleryFunctions.IsFullGalleryOpen)
             {
-                await GalleryStretchMode.ChangeFullGalleryStretchSquareFill(this);
+                GalleryStretchMode.ChangeFullGalleryStretchSquareFill(this);
             }
             else
             {
-                await GalleryStretchMode.ChangeBottomGalleryStretchSquareFill(this);
+                GalleryStretchMode.ChangeBottomGalleryStretchSquareFill(this);
             }
             return;
         }
@@ -1533,11 +1533,11 @@ public class MainViewModel : ViewModelBase
         {
             if (GalleryFunctions.IsFullGalleryOpen)
             {
-                await GalleryStretchMode.ChangeFullGalleryItemStretch(this, stretch);
+                GalleryStretchMode.ChangeFullGalleryItemStretch(this, stretch);
             }
             else
             {
-                await GalleryStretchMode.ChangeBottomGalleryItemStretch(this, stretch);
+                GalleryStretchMode.ChangeBottomGalleryItemStretch(this, stretch);
             }
         }
     }
@@ -1766,7 +1766,7 @@ public class MainViewModel : ViewModelBase
         
         CloseGalleryCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.CloseGallery);
         
-        GalleryItemStretchCommand = ReactiveCommand.CreateFromTask<string>(GalleryItemStretchTask);
+        GalleryItemStretchCommand = ReactiveCommand.Create<string>(SetGalleryItemStretch);
 
         #endregion Gallery Commands
 

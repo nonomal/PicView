@@ -118,12 +118,12 @@ public partial class GalleryView : UserControl
                 }
             }
 
-            FullGalleryComboBox.SelectionChanged += async (_, _) => await FullGalleryComboBox_SelectionChanged();
-            BottomGalleryComboBox.SelectionChanged += async (_, _) => await BottomGalleryComboBox_SelectionChanged();
+            FullGalleryComboBox.SelectionChanged += (_, _) => FullGalleryComboBox_SelectionChanged();
+            BottomGalleryComboBox.SelectionChanged += (_, _) => BottomGalleryComboBox_SelectionChanged();
         };
     }
 
-    private async Task FullGalleryComboBox_SelectionChanged()
+    private void FullGalleryComboBox_SelectionChanged()
     {
         if (DataContext is not MainViewModel vm)
         {
@@ -132,31 +132,31 @@ public partial class GalleryView : UserControl
 
         if (FullGalleryUniformItem.IsSelected)
         {
-            await GalleryStretchMode.ChangeFullGalleryItemStretch(vm, Stretch.Uniform);
+            GalleryStretchMode.ChangeFullGalleryItemStretch(vm, Stretch.Uniform);
         }
         else if (FullGalleryUniformToFillItem.IsSelected)
         {
-            await GalleryStretchMode.ChangeFullGalleryItemStretch(vm, Stretch.UniformToFill);
+            GalleryStretchMode.ChangeFullGalleryItemStretch(vm, Stretch.UniformToFill);
         }
         else if (FullGalleryFillItem.IsSelected)
         {
-            await GalleryStretchMode.ChangeFullGalleryItemStretch(vm, Stretch.Fill);
+            GalleryStretchMode.ChangeFullGalleryItemStretch(vm, Stretch.Fill);
         }
         else if (FullGalleryNoneItem.IsSelected)
         {
-            await GalleryStretchMode.ChangeFullGalleryItemStretch(vm, Stretch.None);
+            GalleryStretchMode.ChangeFullGalleryItemStretch(vm, Stretch.None);
         }
         else if (FullGallerySquareItem.IsSelected)
         {
-            await GalleryStretchMode.ChangeFullGalleryStretchSquare(vm);
+            GalleryStretchMode.ChangeFullGalleryStretchSquare(vm);
         }
         else if (FullGalleryFillSquareItem.IsSelected)
         {
-            await GalleryStretchMode.ChangeFullGalleryStretchSquareFill(vm);
+            GalleryStretchMode.ChangeFullGalleryStretchSquareFill(vm);
         }
     }
 
-    private async Task BottomGalleryComboBox_SelectionChanged()
+    private void BottomGalleryComboBox_SelectionChanged()
     {
         if (DataContext is not MainViewModel vm)
         {
@@ -165,27 +165,27 @@ public partial class GalleryView : UserControl
 
         if (BottomGalleryUniformItem.IsSelected)
         {
-            await GalleryStretchMode.ChangeBottomGalleryItemStretch(vm, Stretch.Uniform);
+            GalleryStretchMode.ChangeBottomGalleryItemStretch(vm, Stretch.Uniform);
         }
         else if (BottomGalleryUniformToFillItem.IsSelected)
         {
-            await GalleryStretchMode.ChangeBottomGalleryItemStretch(vm, Stretch.UniformToFill);
+            GalleryStretchMode.ChangeBottomGalleryItemStretch(vm, Stretch.UniformToFill);
         }
         else if (BottomGalleryFillItem.IsSelected)
         {
-            await GalleryStretchMode.ChangeBottomGalleryItemStretch(vm, Stretch.Fill);
+            GalleryStretchMode.ChangeBottomGalleryItemStretch(vm, Stretch.Fill);
         }
         else if (BottomGalleryNoneItem.IsSelected)
         {
-            await GalleryStretchMode.ChangeBottomGalleryItemStretch(vm, Stretch.None);
+            GalleryStretchMode.ChangeBottomGalleryItemStretch(vm, Stretch.None);
         }
         else if (BottomGallerySquareItem.IsSelected)
         {
-            await GalleryStretchMode.ChangeBottomGalleryStretchSquare(vm);
+            GalleryStretchMode.ChangeBottomGalleryStretchSquare(vm);
         }
         else if (BottomGalleryFillSquareItem.IsSelected)
         {
-            await GalleryStretchMode.ChangeBottomGalleryStretchSquareFill(vm);
+            GalleryStretchMode.ChangeBottomGalleryStretchSquareFill(vm);
         }
     }
 }

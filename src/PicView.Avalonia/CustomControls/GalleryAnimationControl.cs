@@ -103,7 +103,7 @@ public class GalleryAnimationControl : UserControl
         {
             return;
         }
-        await vm.GalleryItemStretchTask(Settings.Gallery.FullGalleryStretchMode);
+        vm.SetGalleryItemStretch(Settings.Gallery.FullGalleryStretchMode);
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             IsVisible = true;
@@ -129,7 +129,7 @@ public class GalleryAnimationControl : UserControl
             vm.GalleryVerticalAlignment = VerticalAlignment.Stretch;
         });
         _isAnimating = false;
-        await Task.Delay(50); // Need to wait for the animation
+        await Task.Delay(opacityAnimation.Delay); // Need to wait for the animation
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             GalleryNavigation.CenterScrollToSelectedItem(vm);
@@ -169,7 +169,7 @@ public class GalleryAnimationControl : UserControl
         {
             return;
         }
-        await vm.GalleryItemStretchTask(Settings.Gallery.BottomGalleryStretchMode);
+        vm.SetGalleryItemStretch(Settings.Gallery.BottomGalleryStretchMode);
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             Height = 0;
@@ -285,12 +285,6 @@ public class GalleryAnimationControl : UserControl
         {
             return;
         }
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            Height = parent.Bounds.Height;
-            UIHelper.GetGalleryView.BlurMask.BlurEnabled = false;
-            vm.GalleryItemMargin = new Thickness(2,0);
-        });
         vm.GalleryVerticalAlignment = VerticalAlignment.Bottom;
         vm.IsGalleryCloseIconVisible = false;
         
@@ -300,15 +294,18 @@ public class GalleryAnimationControl : UserControl
         var heightAnimation = AnimationsHelper.HeightAnimation(from, to, speed);
         _isAnimating = true;
         await heightAnimation.RunAsync(this);
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            Height = double.NaN;
-            vm.GalleryOrientation = Orientation.Horizontal;
-        });
         if (!GalleryLoad.IsLoading)
         {
             GalleryStretchMode.DetermineStretchMode(vm);
         }
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            Height = parent.Bounds.Height;
+            UIHelper.GetGalleryView.BlurMask.BlurEnabled = false;
+            vm.GalleryItemMargin = new Thickness(2,0);
+            vm.GalleryOrientation = Orientation.Horizontal;
+        });
+
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             GalleryNavigation.CenterScrollToSelectedItem(vm);

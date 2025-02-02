@@ -214,51 +214,45 @@ public static class GalleryStretchMode
         vm.GalleryStretch = Stretch.Fill;
     }
 
-    public static async Task ChangeBottomGalleryItemStretch(MainViewModel vm, Stretch stretch)
+    public static void ChangeBottomGalleryItemStretch(MainViewModel vm, Stretch stretch)
     {
         SetGalleryStretch(vm, stretch);
         
         Settings.Gallery.BottomGalleryStretchMode = stretch.ToString();
-        await SaveSettingsAsync();
     }
     
-    public static async Task ChangeFullGalleryItemStretch(MainViewModel vm, Stretch stretch)
+    public static void ChangeFullGalleryItemStretch(MainViewModel vm, Stretch stretch)
     {
         SetGalleryStretch(vm, stretch);
         
         Settings.Gallery.FullGalleryStretchMode = stretch.ToString();
-        await SaveSettingsAsync();
     }
     
-    public static async Task ChangeBottomGalleryStretchSquare(MainViewModel vm)
+    public static void ChangeBottomGalleryStretchSquare(MainViewModel vm)
     {
         SetSquareStretch(vm);
         
         Settings.Gallery.BottomGalleryStretchMode = "Square";
-        await SaveSettingsAsync();
     }
     
-    public static async Task ChangeBottomGalleryStretchSquareFill(MainViewModel vm)
+    public static void ChangeBottomGalleryStretchSquareFill(MainViewModel vm)
     {
         SetSquareFillStretch(vm);
         
         Settings.Gallery.BottomGalleryStretchMode = "FillSquare";
-        await SaveSettingsAsync();
     }
 
-    public static async Task ChangeFullGalleryStretchSquare(MainViewModel vm)
+    public static void ChangeFullGalleryStretchSquare(MainViewModel vm)
     {
         SetSquareStretch(vm);
         
         Settings.Gallery.FullGalleryStretchMode = "Square";
-        await SaveSettingsAsync();
     }
     
-    public static async Task ChangeFullGalleryStretchSquareFill(MainViewModel vm)
+    public static void ChangeFullGalleryStretchSquareFill(MainViewModel vm)
     {
         SetSquareFillStretch(vm);
         
         Settings.Gallery.FullGalleryStretchMode = "FillSquare";
-        await SaveSettingsAsync();
     }
 }
