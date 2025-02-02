@@ -2,9 +2,10 @@
 <img src="https://d33wubrfki0l68.cloudfront.net/327934f4ff80060e07c17935683ecad27cda8080/ee2bc/assets/images/photoshop_1.png" alt="PicView Logo" height="90">
 </h1>
 
-PicView is a fast, free and fully customizable image viewer for Windows 10 and 11. It supports a vast range of image file types, including `WEBP`, `GIF`, `SVG`, `PNG`, `JXL`, `HEIC`, `PSD` and many others. 
+PicView is a fast, free and fully customizable picture viewer for Windows 10 and 11. It supports all image file types, including _(animated)_ `WEBP`, _(animated)_ `GIF`, `SVG`, `AVIF`, `JXL`, `HEIC`, `PSD` and many others. 
 
-Additional features includes viewing EXIF metadata, image compression, batch resizing, viewing images within archives and comic books, image effects, image galleries, and more.
+Enjoy a clean, free, and fast experience with no bloated UI or annoying pop-ups.
+
 
 <p align=center>
     <a href="https://github.com/Ruben2776/PicView/releases">
@@ -36,11 +37,6 @@ Winget:
 cmd $> winget install picview
 ```
 
-Chocolatey:
-```cmd
-cmd $> choco install picview
-```
-
 Scoop:
 ```cmd
 cmd $> scoop bucket add extras
@@ -49,11 +45,14 @@ cmd $> scoop install extras/picview
 
 ___
 
+PicView is portable by default. Settings and keybindings are stored in the same directory _(unless there is no write permissions)_. No system files are modified or installation necessary. Perfect for storing on a portable USB drive. 
+
+If installing, it will set file associations.
+
 <br>
 
 If you like PicView, consider giving it a star or a like on [AlternativeTo](https://alternativeto.net/software/picview/about/)!
 
-<br>
 
 # Features and screenshots
 ![3x3 0 0](https://github.com/user-attachments/assets/1839c2bb-aff3-4d31-8093-ba3814952ce7)
@@ -152,7 +151,7 @@ ___
 
 <br>
 
-### Other features
+### Renaming
 
 
 ![Screenshot 2025-01-26 141624](https://github.com/user-attachments/assets/5ff7834a-3461-4b39-9784-7cf386c8d429)
