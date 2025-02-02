@@ -14,7 +14,6 @@ using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Win32.Views;
 using PicView.Avalonia.WindowBehavior;
-using PicView.Core.Config;
 using PicView.Core.FileHandling;
 using PicView.Core.Localization;
 using PicView.Core.ProcessHandling;
@@ -62,7 +61,7 @@ public partial class App : Application, IPlatformSpecificService
             bool settingsExists;
             try
             {
-                settingsExists = await SettingsHelper.LoadSettingsAsync().ConfigureAwait(false);
+                settingsExists = await LoadSettingsAsync().ConfigureAwait(false);
             }
             catch (TaskCanceledException)
             {

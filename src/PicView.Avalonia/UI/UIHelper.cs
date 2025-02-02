@@ -12,7 +12,6 @@ using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.Views.UC.Menus;
 using PicView.Avalonia.Views.UC.PopUps;
 using PicView.Avalonia.WindowBehavior;
-using PicView.Core.Config;
 using PicView.Core.Gallery;
 
 namespace PicView.Avalonia.UI;
@@ -242,7 +241,7 @@ public static class UIHelper
             return;
         }
 
-        if (SettingsHelper.Settings.WindowProperties.Fullscreen)
+        if (Settings.WindowProperties.Fullscreen)
         {
             await WindowFunctions.MaximizeRestore();
             return;
@@ -254,7 +253,7 @@ public static class UIHelper
 
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
-            if (SettingsHelper.Settings.UIProperties.ShowConfirmationOnEsc)
+            if (Settings.UIProperties.ShowConfirmationOnEsc)
             {
                 GetMainView.MainGrid.Children.Add(new CloseDialog());
             }

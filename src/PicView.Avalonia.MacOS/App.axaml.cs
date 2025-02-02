@@ -13,7 +13,6 @@ using PicView.Avalonia.StartUp;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
-using PicView.Core.Config;
 using PicView.Core.FileHandling;
 using PicView.Core.Localization;
 
@@ -49,7 +48,7 @@ public class App : Application, IPlatformSpecificService
                 return;
             }
 
-            var settingsExists = await SettingsHelper.LoadSettingsAsync().ConfigureAwait(false);
+            var settingsExists = await LoadSettingsAsync().ConfigureAwait(false);
         
             TranslationHelper.Init();
         

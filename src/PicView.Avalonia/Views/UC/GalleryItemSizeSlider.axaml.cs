@@ -4,7 +4,6 @@ using PicView.Avalonia.Gallery;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
-using PicView.Core.Config;
 
 namespace PicView.Avalonia.Views.UC;
 
@@ -54,10 +53,10 @@ public partial class GalleryItemSizeSlider : UserControl
             // Binding to height depends on timing of the update. Maybe find a cleaner mvvm solution one day
         
             // Maybe save this on close or some other way
-            SettingsHelper.Settings.Gallery.ExpandedGalleryItemSize = e.NewValue;
+            Settings.Gallery.ExpandedGalleryItemSize = e.NewValue;
             
         }
-        else if (SettingsHelper.Settings.Gallery.IsBottomGalleryShown)
+        else if (Settings.Gallery.IsBottomGalleryShown)
         {
             // ReSharper disable once CompareOfFloatsByEqualityOperator
             if (vm.GetBottomGalleryItemHeight == e.NewValue)
@@ -72,9 +71,9 @@ public partial class GalleryItemSizeSlider : UserControl
         
             // Binding to height depends on timing of the update. Maybe find a cleaner mvvm solution one day
             // Maybe save this on close or some other way
-            SettingsHelper.Settings.Gallery.BottomGalleryItemSize = e.NewValue;
+            Settings.Gallery.BottomGalleryItemSize = e.NewValue;
         }
        
-        _ = SettingsHelper.SaveSettingsAsync();
+        _ = SaveSettingsAsync();
     }
 }

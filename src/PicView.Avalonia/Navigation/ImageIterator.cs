@@ -6,7 +6,6 @@ using PicView.Avalonia.Input;
 using PicView.Avalonia.Preloading;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
-using PicView.Core.Config;
 using PicView.Core.FileHandling;
 using PicView.Core.Gallery;
 using PicView.Core.Navigation;
@@ -76,7 +75,7 @@ public sealed class ImageIterator : IDisposable
         _watcher.Path = fileInfo.DirectoryName;
         _watcher.EnableRaisingEvents = true;
         _watcher.Filter = "*.*";
-        _watcher.IncludeSubdirectories = SettingsHelper.Settings.Sorting.IncludeSubDirectories;
+        _watcher.IncludeSubdirectories = Settings.Sorting.IncludeSubDirectories;
         _watcher.Created += async (_, e) => await OnFileAdded(e);
         _watcher.Deleted += async (_, e) => await OnFileDeleted(e);
         _watcher.Renamed += async (_, e) => await OnFileRenamed(e);
@@ -109,7 +108,7 @@ public sealed class ImageIterator : IDisposable
 
         IsRunning = true;
 
-        var sourceFileInfo = SettingsHelper.Settings.Sorting.IncludeSubDirectories
+        var sourceFileInfo = Settings.Sorting.IncludeSubDirectories
             ? new FileInfo(_watcher.Path)
             : fileInfo;
 
@@ -165,7 +164,7 @@ public sealed class ImageIterator : IDisposable
         var isGalleryItemAdded = await GalleryFunctions.AddGalleryItem(index, fileInfo, _vm);
         if (isGalleryItemAdded)
         {
-            if (SettingsHelper.Settings.Gallery.IsBottomGalleryShown && ImagePaths.Count > 1)
+            if (Settings.Gallery.IsBottomGalleryShown && ImagePaths.Count > 1)
             {
                 if (_vm.GalleryMode is GalleryMode.BottomToClosed or GalleryMode.FullToClosed)
                 {
@@ -235,7 +234,7 @@ public sealed class ImageIterator : IDisposable
         var removed = GalleryFunctions.RemoveGalleryItem(index, _vm);
         if (removed)
         {
-            if (SettingsHelper.Settings.Gallery.IsBottomGalleryShown)
+            if (Settings.Gallery.IsBottomGalleryShown)
             {
                 if (ImagePaths.Count == 1)
                 {
@@ -283,7 +282,7 @@ public sealed class ImageIterator : IDisposable
             return;
         }
 
-        var sourceFileInfo = SettingsHelper.Settings.Sorting.IncludeSubDirectories
+        var sourceFileInfo = Settings.Sorting.IncludeSubDirectories
             ? new FileInfo(_watcher.Path)
             : fileInfo;
         var newList = FileListHelper.RetrieveFiles(sourceFileInfo).ToList();
@@ -432,7 +431,7 @@ public sealed class ImageIterator : IDisposable
                 var indexChange = navigateTo == NavigateTo.Next ? skipAmount : -skipAmount;
                 IsReversed = navigateTo == NavigateTo.Previous;
 
-                if (SettingsHelper.Settings.UIProperties.Looping)
+                if (Settings.UIProperties.Looping)
                 {
                     // Calculate new index with looping
                     next = (index + indexChange + ImagePaths.Count) % ImagePaths.Count;
@@ -476,7 +475,7 @@ public sealed class ImageIterator : IDisposable
     public async Task NextIteration(NavigateTo navigateTo, CancellationTokenSource cts)
     {
         var index = GetIteration(CurrentIndex, navigateTo,
-            SettingsHelper.Settings.ImageScaling.ShowImageSideBySide);
+            Settings.ImageScaling.ShowImageSideBySide);
         if (index < 0)
         {
             return;
@@ -544,7 +543,7 @@ public sealed class ImageIterator : IDisposable
                 return;
             }
 
-            if (SettingsHelper.Settings.ImageScaling.ShowImageSideBySide)
+            if (Settings.ImageScaling.ShowImageSideBySide)
             {
                 var nextIndex = GetIteration(index, IsReversed ? NavigateTo.Previous : NavigateTo.Next);
                 var nextPreloadValue = await PreLoader.GetAsync(nextIndex, ImagePaths);
@@ -578,7 +577,7 @@ public sealed class ImageIterator : IDisposable
 
             if (ImagePaths.Count > 1)
             {
-                if (SettingsHelper.Settings.UIProperties.IsTaskbarProgressEnabled)
+                if (Settings.UIProperties.IsTaskbarProgressEnabled)
                 {
                     await Dispatcher.UIThread.InvokeAsync(() =>
                     {
@@ -651,7 +650,7 @@ public sealed class ImageIterator : IDisposable
             return;
         }
 
-        _timer.Interval = TimeSpan.FromSeconds(SettingsHelper.Settings.UIProperties.NavSpeed).TotalMilliseconds;
+        _timer.Interval = TimeSpan.FromSeconds(Settings.UIProperties.NavSpeed).TotalMilliseconds;
         _timer.Start();
         await IterateToIndex(index, cts).ConfigureAwait(false);
     }

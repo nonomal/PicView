@@ -4,7 +4,6 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Metadata;
 using Avalonia.Threading;
-using PicView.Core.Config;
 
 namespace PicView.Avalonia.CustomControls;
 
@@ -121,7 +120,7 @@ public class IconButton : RepeatButton
                     continue;
                 }
 
-                if (SettingsHelper.Settings.Theme.GlassTheme)
+                if (Settings.Theme.GlassTheme)
                 {
                     if (!Application.Current.TryGetResource("SecondaryTextColor",
                             Application.Current.RequestedThemeVariant, out var secondaryAccentColor))
@@ -173,7 +172,7 @@ public class IconButton : RepeatButton
             // Revert brush to main text color on pointer exit
             PointerExited += delegate
             {
-                if (SettingsHelper.Settings.Theme.GlassTheme)
+                if (Settings.Theme.GlassTheme)
                 {
 return;
                 }

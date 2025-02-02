@@ -10,7 +10,6 @@ using PicView.Avalonia.Gallery;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
-using PicView.Core.Config;
 using PicView.Core.Gallery;
 using ReactiveUI;
 
@@ -104,7 +103,7 @@ public class GalleryAnimationControl : UserControl
         {
             return;
         }
-        await vm.GalleryItemStretchTask(SettingsHelper.Settings.Gallery.FullGalleryStretchMode);
+        await vm.GalleryItemStretchTask(Settings.Gallery.FullGalleryStretchMode);
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             IsVisible = true;
@@ -170,7 +169,7 @@ public class GalleryAnimationControl : UserControl
         {
             return;
         }
-        await vm.GalleryItemStretchTask(SettingsHelper.Settings.Gallery.BottomGalleryStretchMode);
+        await vm.GalleryItemStretchTask(Settings.Gallery.BottomGalleryStretchMode);
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             Height = 0;

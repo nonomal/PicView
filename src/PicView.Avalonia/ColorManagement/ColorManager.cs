@@ -1,6 +1,5 @@
 ﻿using Avalonia;
 using Avalonia.Media;
-using PicView.Core.Config;
 
 namespace PicView.Avalonia.ColorManagement;
 
@@ -15,19 +14,19 @@ public static class ColorManager
     /// <value>
     /// A <see cref="Color"/> value representing the logo accent color.
     /// </value>
-    public static Color GetLogoAccentColor => SettingsHelper.Settings.Theme.ColorTheme switch
+    public static Color GetLogoAccentColor => Settings.Theme.ColorTheme switch
     {
-        0 => SettingsHelper.Settings.Theme.Dark ? Color.FromRgb(255, 240, 90) : Color.FromRgb(225, 210, 80), // Blue
-        2 => SettingsHelper.Settings.Theme.Dark ? Color.FromRgb(255, 237, 38) : Color.FromRgb(250, 180, 38), // Pink
+        0 => Settings.Theme.Dark ? Color.FromRgb(255, 240, 90) : Color.FromRgb(225, 210, 80), // Blue
+        2 => Settings.Theme.Dark ? Color.FromRgb(255, 237, 38) : Color.FromRgb(250, 180, 38), // Pink
         3 => Color.FromRgb(248, 175, 60), // Orange
-        4 => SettingsHelper.Settings.Theme.Dark ? Color.FromRgb(209, 237, 93) : Color.FromRgb(175, 157, 38), // Green
+        4 => Settings.Theme.Dark ? Color.FromRgb(209, 237, 93) : Color.FromRgb(175, 157, 38), // Green
         5 => Color.FromRgb(250, 192, 92), // Red
         6 => Color.FromRgb(254, 172, 150), // Teal
         7 => Color.FromRgb(228, 209, 17), // Aqua
-        8 => SettingsHelper.Settings.Theme.Dark ? Color.FromRgb(255, 253, 42) : Color.FromRgb(226, 180, 224), // Golden
-        9 => SettingsHelper.Settings.Theme.Dark ? Color.FromRgb(237, 184, 135) : Color.FromRgb(226, 141, 223), // Purple
-        10 => SettingsHelper.Settings.Theme.Dark ? Color.FromRgb(255, 253, 66) : Color.FromRgb(215, 200, 70), // Cyan
-        11 => SettingsHelper.Settings.Theme.Dark ? Color.FromRgb(255, 237, 38) : Color.FromRgb(226, 141, 223), // Magenta
+        8 => Settings.Theme.Dark ? Color.FromRgb(255, 253, 42) : Color.FromRgb(226, 180, 224), // Golden
+        9 => Settings.Theme.Dark ? Color.FromRgb(237, 184, 135) : Color.FromRgb(226, 141, 223), // Purple
+        10 => Settings.Theme.Dark ? Color.FromRgb(255, 253, 66) : Color.FromRgb(215, 200, 70), // Cyan
+        11 => Settings.Theme.Dark ? Color.FromRgb(255, 237, 38) : Color.FromRgb(226, 141, 223), // Magenta
         12 => Color.FromRgb(255, 253, 42), // Lime
         _ => throw new ArgumentOutOfRangeException(nameof(GetLogoAccentColor))
     };
@@ -38,7 +37,7 @@ public static class ColorManager
     /// <value>
     /// A <see cref="Color"/> value representing the secondary accent color.
     /// </value>
-    public static Color GetSecondaryAccentColor => SettingsHelper.Settings.Theme.ColorTheme switch
+    public static Color GetSecondaryAccentColor => Settings.Theme.ColorTheme switch
     {
         0 => Color.FromArgb(0xF2, 0x0D, 0x80, 0xEE),  // Blue -> #F200ADEE
         2 => Color.FromArgb(0xF2, 0xFF, 0x86, 0xDB),  // Pink -> #F2FF86DB
@@ -61,7 +60,7 @@ public static class ColorManager
     /// <value>
     /// A <see cref="Color"/> value representing the primary accent color.
     /// </value>
-    public static Color GetPrimaryAccentColor => SettingsHelper.Settings.Theme.ColorTheme switch
+    public static Color GetPrimaryAccentColor => Settings.Theme.ColorTheme switch
     {
         0 => Color.FromRgb(26, 140, 240),  // Blue 
         2 => Color.FromRgb(255, 53, 197),  // Pink
@@ -84,7 +83,7 @@ public static class ColorManager
     /// <param name="colorTheme">The color theme index to apply.</param>
     public static void UpdateAccentColors(int colorTheme)
     {
-        SettingsHelper.Settings.Theme.ColorTheme = colorTheme;
+        Settings.Theme.ColorTheme = colorTheme;
 
         var primaryAccentColor = GetPrimaryAccentColor;
         var secondaryAccentColor = GetSecondaryAccentColor;
@@ -94,7 +93,7 @@ public static class ColorManager
         var secondaryBrush = new SolidColorBrush(secondaryAccentColor);
         var logoAccentBrush = new SolidColorBrush(logoAccentColor);
         
-        if (SettingsHelper.Settings.Theme.GlassTheme)
+        if (Settings.Theme.GlassTheme)
         {
             ThemeManager.GlassThemeUpdates();
         }

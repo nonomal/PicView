@@ -1,6 +1,5 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Input;
-using PicView.Core.Config;
 
 namespace PicView.Avalonia.CustomControls;
 public class CustomSlider : Slider
@@ -14,14 +13,14 @@ public class CustomSlider : Slider
 
     private void CustomSlider_PointerWheelChanged(object? sender, PointerWheelEventArgs e)
     {
-        if (SettingsHelper.Settings.Zoom.IsUsingTouchPad)
+        if (Settings.Zoom.IsUsingTouchPad)
         {
             // Don't scroll unintentionally
             return;
         }
 
         double indexChange;
-        if (SettingsHelper.Settings.Zoom.HorizontalReverseScroll)
+        if (Settings.Zoom.HorizontalReverseScroll)
         {
             indexChange = e.Delta.Y > 0 ? -TickFrequency : TickFrequency;
         }

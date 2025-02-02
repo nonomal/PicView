@@ -5,7 +5,6 @@ using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views.UC;
-using PicView.Core.Config;
 using PicView.Core.Gallery;
 
 namespace PicView.Avalonia.Gallery;
@@ -21,7 +20,7 @@ public static class GalleryLoad
         // TODO: Lazy load this when scrolling instead. Figure out how to support virtualization. 
         
         // Make sure height is set
-        if (SettingsHelper.Settings.Gallery.IsBottomGalleryShown && !GalleryFunctions.IsFullGalleryOpen)
+        if (Settings.Gallery.IsBottomGalleryShown && !GalleryFunctions.IsFullGalleryOpen)
         {
             vm.GetGalleryItemHeight = vm.GetBottomGalleryItemHeight;
         }

@@ -5,7 +5,6 @@ using Avalonia.Input;
 using Avalonia.Media;
 using PicView.Avalonia.DragAndDrop;
 using PicView.Avalonia.WindowBehavior;
-using PicView.Core.Config;
 
 namespace PicView.Avalonia.Views;
 
@@ -29,7 +28,7 @@ public partial class BottomBar : UserControl
                 DragAndDropHelper.RemoveDragDropView();
             };
 
-            if (SettingsHelper.Settings.Theme.GlassTheme)
+            if (Settings.Theme.GlassTheme)
             {
                 MainBottomBorder.Background = Brushes.Transparent;
                 MainBottomBorder.BorderThickness = new Thickness(0);
@@ -76,10 +75,10 @@ public partial class BottomBar : UserControl
             
             // TODO add interval to mainviewmodel
             NextButton.Interval =
-                (int)TimeSpan.FromSeconds(SettingsHelper.Settings.UIProperties.NavSpeed).TotalMilliseconds;
+                (int)TimeSpan.FromSeconds(Settings.UIProperties.NavSpeed).TotalMilliseconds;
 
             PreviousButton.Interval =
-                (int)TimeSpan.FromSeconds(SettingsHelper.Settings.UIProperties.NavSpeed).TotalMilliseconds;
+                (int)TimeSpan.FromSeconds(Settings.UIProperties.NavSpeed).TotalMilliseconds;
 
         };
     }

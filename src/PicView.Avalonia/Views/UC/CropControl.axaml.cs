@@ -3,7 +3,6 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using PicView.Avalonia.Crop;
-using PicView.Core.Config;
 
 namespace PicView.Avalonia.Views.UC;
 
@@ -32,7 +31,7 @@ public partial class CropControl : UserControl
 
     private void InitLoaded()
     {
-        if (SettingsHelper.Settings.Theme.GlassTheme)
+        if (Settings.Theme.GlassTheme)
         {
             var glassBrush = new SolidColorBrush(Color.FromArgb(120,225,225,225));
             var glassBrushAlt = new SolidColorBrush(Color.FromArgb(150,225,225,225));

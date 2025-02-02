@@ -15,7 +15,6 @@ using PicView.Avalonia.AnimatedImage;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
-using PicView.Core.Config;
 using PicView.Core.Navigation;
 using ReactiveUI;
 using Vector = Avalonia.Vector;
@@ -203,7 +202,7 @@ public class PicBox : Control
     private void RenderBasedOnSettings(DrawingContext context, IImage source)
     {
         var is1To1 = false; // TODO: replace with settings value
-        var isSideBySide = SettingsHelper.Settings.ImageScaling.ShowImageSideBySide;
+        var isSideBySide = Settings.ImageScaling.ShowImageSideBySide;
         var secondarySource = SecondarySource as IImage;
         
         var viewPort = DetermineViewPort();

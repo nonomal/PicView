@@ -1,7 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Media;
 using Avalonia.Styling;
-using PicView.Core.Config;
 
 namespace PicView.Avalonia.ColorManagement;
 public static class ThemeManager
@@ -24,23 +23,23 @@ public static class ThemeManager
         switch (theme)
         {
             default:
-                SettingsHelper.Settings.Theme.Dark = true;
-                SettingsHelper.Settings.Theme.GlassTheme = false;
+                Settings.Theme.Dark = true;
+                Settings.Theme.GlassTheme = false;
                 application.RequestedThemeVariant = ThemeVariant.Dark;
                 break;
             case Theme.Light:
-                SettingsHelper.Settings.Theme.Dark = false;
-                SettingsHelper.Settings.Theme.GlassTheme = false;
+                Settings.Theme.Dark = false;
+                Settings.Theme.GlassTheme = false;
                 application.RequestedThemeVariant = ThemeVariant.Light;
                 break;
             case Theme.Glass:
-                SettingsHelper.Settings.Theme.GlassTheme = true;
+                Settings.Theme.GlassTheme = true;
                 application.RequestedThemeVariant = ThemeVariant.Light;
                 GlassThemeUpdates();
                 break;
         }
         
-        ColorManager.UpdateAccentColors(SettingsHelper.Settings.Theme.ColorTheme);
+        ColorManager.UpdateAccentColors(Settings.Theme.ColorTheme);
     }
 
     public static void GlassThemeUpdates()
@@ -77,21 +76,21 @@ public static class ThemeManager
         if (!settingsExists)
         {
             application.RequestedThemeVariant = application.ActualThemeVariant;
-            SettingsHelper.Settings.Theme.Dark = application.RequestedThemeVariant == ThemeVariant.Dark;
+            Settings.Theme.Dark = application.RequestedThemeVariant == ThemeVariant.Dark;
         }
         else
         {
-            if (SettingsHelper.Settings.Theme.GlassTheme)
+            if (Settings.Theme.GlassTheme)
             {
                 application.RequestedThemeVariant = ThemeVariant.Light;
             }
-            else if (SettingsHelper.Settings.Theme.UseSystemTheme)
+            else if (Settings.Theme.UseSystemTheme)
             {
                 application.RequestedThemeVariant = ThemeVariant.Dark; // TODO : Figure out how to get the system theme
             }
             else
             {
-                application.RequestedThemeVariant = SettingsHelper.Settings.Theme.Dark ? ThemeVariant.Dark : ThemeVariant.Light;
+                application.RequestedThemeVariant = Settings.Theme.Dark ? ThemeVariant.Dark : ThemeVariant.Light;
             }
         }
     }

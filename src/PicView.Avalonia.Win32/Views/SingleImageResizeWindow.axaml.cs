@@ -3,7 +3,6 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
-using PicView.Core.Config;
 using PicView.Core.Localization;
 
 namespace PicView.Avalonia.Win32.Views;
@@ -18,7 +17,7 @@ public partial class SingleImageResizeWindow : Window
 
     private void StartUp()
     {
-        if (SettingsHelper.Settings.Theme.GlassTheme)
+        if (Settings.Theme.GlassTheme)
         {
             IconBorder.Background = Brushes.Transparent;
             IconBorder.BorderThickness = new Thickness(0);
@@ -44,7 +43,7 @@ public partial class SingleImageResizeWindow : Window
             MinimizeButton.Foreground = new SolidColorBrush(color);
             CloseButton.Foreground = new SolidColorBrush(color);
         }
-        else if (!SettingsHelper.Settings.Theme.Dark)
+        else if (!Settings.Theme.Dark)
         {
             ParentBorder.Background = new SolidColorBrush(Color.FromArgb(114, 132, 132, 132));
         }

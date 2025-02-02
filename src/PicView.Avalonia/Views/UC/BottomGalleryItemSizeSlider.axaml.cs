@@ -4,7 +4,6 @@ using PicView.Avalonia.Gallery;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
-using PicView.Core.Config;
 
 namespace PicView.Avalonia.Views.UC;
 
@@ -27,7 +26,7 @@ public partial class BottomGalleryItemSizeSlider : UserControl
         }
         vm.GetBottomGalleryItemHeight = e.NewValue;
         
-        if (SettingsHelper.Settings.Gallery.IsBottomGalleryShown && !GalleryFunctions.IsFullGalleryOpen)
+        if (Settings.Gallery.IsBottomGalleryShown && !GalleryFunctions.IsFullGalleryOpen)
         {
             vm.GetGalleryItemHeight = e.NewValue;
             UIHelper.GetGalleryView.Height = vm.GalleryHeight;
@@ -36,6 +35,6 @@ public partial class BottomGalleryItemSizeSlider : UserControl
         
         // Binding to height depends on timing of the update. Maybe find a cleaner mvvm solution one day
         // Maybe save this on close or some other way
-        SettingsHelper.Settings.Gallery.BottomGalleryItemSize = e.NewValue;
+        Settings.Gallery.BottomGalleryItemSize = e.NewValue;
     }
 }

@@ -8,7 +8,6 @@ using PicView.Avalonia.ColorManagement;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.Calculations;
-using PicView.Core.Config;
 
 namespace PicView.Avalonia.Views;
 
@@ -106,7 +105,7 @@ public partial class StartUpMenu : UserControl
         if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
             return;
         
-        if (SettingsHelper.Settings.WindowProperties.AutoFit)
+        if (Settings.WindowProperties.AutoFit)
         {
             ShowIcon();
             vm.TitleMaxWidth = logoWidth;

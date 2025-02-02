@@ -3,7 +3,6 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
-using PicView.Core.Config;
 using PicView.Core.Localization;
 
 namespace PicView.Avalonia.Win32.Views;
@@ -13,7 +12,7 @@ public partial class ExifWindow : Window
     public ExifWindow()
     {
         InitializeComponent();
-        if (SettingsHelper.Settings.Theme.GlassTheme)
+        if (Settings.Theme.GlassTheme)
         {
             BorderRectangle.Height = 0;
             
@@ -51,12 +50,12 @@ public partial class ExifWindow : Window
             OpenWithButton.Foreground = new SolidColorBrush(color);
             LocateOnDiskButton.Foreground = new SolidColorBrush(color);
         }
-        else if (!SettingsHelper.Settings.Theme.Dark)
+        else if (!Settings.Theme.Dark)
         {
             ParentBorder.Background = new SolidColorBrush(Color.FromArgb(114,132, 132, 132));
         }
 
-        if (SettingsHelper.Settings.Theme.GlassTheme || !SettingsHelper.Settings.Theme.Dark)
+        if (Settings.Theme.GlassTheme || !Settings.Theme.Dark)
         {
             RecycleButton.Classes.Remove("noBorderHover");
             RecycleButton.Classes.Add("hover");

@@ -5,7 +5,6 @@ using PicView.Avalonia.Gallery;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views.UC.Menus;
-using PicView.Core.Config;
 
 namespace PicView.Avalonia.ImageTransformations;
 public static class Rotation
@@ -37,7 +36,7 @@ public static class Rotation
         await RotateRight(vm);
         
         // Check if it should move the cursor
-        if (!SettingsHelper.Settings.WindowProperties.AutoFit)
+        if (!Settings.WindowProperties.AutoFit)
         {
             return;
         }
@@ -109,7 +108,7 @@ public static class Rotation
         await RotateLeft(vm);
         
         // Check if it should move the cursor
-        if (!SettingsHelper.Settings.WindowProperties.AutoFit)
+        if (!Settings.WindowProperties.AutoFit)
         {
             return;
         }

@@ -5,7 +5,6 @@ using Avalonia.Media;
 using PicView.Avalonia.DragAndDrop;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
-using PicView.Core.Config;
 
 namespace PicView.Avalonia.Win32.Views;
 
@@ -16,7 +15,7 @@ public partial class WinTitleBar : UserControl
         InitializeComponent();
         Loaded += (_, _) =>
         {
-            if (SettingsHelper.Settings.Theme.GlassTheme)
+            if (Settings.Theme.GlassTheme)
             {
                 TopWindowBorder.Background = Brushes.Transparent;
                 TopWindowBorder.BorderThickness = new Thickness(0);

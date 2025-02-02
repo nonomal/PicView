@@ -5,7 +5,6 @@ using PicView.Avalonia.DragAndDrop;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
-using PicView.Core.Config;
 
 namespace PicView.Avalonia.Win32.Views;
 
@@ -66,7 +65,7 @@ public partial class WinMainWindow : Window
             return;
         }
 
-        if (SettingsHelper.Settings.WindowProperties.AutoFit)
+        if (Settings.WindowProperties.AutoFit)
         {
             return;
         }

@@ -3,7 +3,6 @@ using Avalonia.Media.Imaging;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views.UC;
-using PicView.Core.Config;
 using PicView.Core.Localization;
 
 namespace PicView.Avalonia.Crop;
@@ -60,7 +59,7 @@ public static class CropFunctions
             return false;
         }
 
-        if (SettingsHelper.Settings.ImageScaling.ShowImageSideBySide)
+        if (Settings.ImageScaling.ShowImageSideBySide)
         {
             return false;
         }

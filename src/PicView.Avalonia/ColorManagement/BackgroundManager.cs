@@ -1,7 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Media;
 using PicView.Avalonia.ViewModels;
-using PicView.Core.Config;
 
 namespace PicView.Avalonia.ColorManagement;
 
@@ -15,7 +14,7 @@ public static class BackgroundManager
     /// Returns a brush corresponding to the current background color choice.
     /// Choices include solid colors, transparency, noise texture, and checkerboard patterns.
     /// </summary>
-    private static Brush BackgroundColorBrush => SettingsHelper.Settings.UIProperties.BgColorChoice switch
+    private static Brush BackgroundColorBrush => Settings.UIProperties.BgColorChoice switch
     {
         0 => new SolidColorBrush(Colors.Transparent),
         1 => GetNoiseTextureBrush(),
@@ -43,12 +42,12 @@ public static class BackgroundManager
         }
 
         // Cycle through background choices (0 to 9)
-        SettingsHelper.Settings.UIProperties.BgColorChoice =
-            (SettingsHelper.Settings.UIProperties.BgColorChoice + 1) % 10;
+        Settings.UIProperties.BgColorChoice =
+            (Settings.UIProperties.BgColorChoice + 1) % 10;
 
         // Update the background in the view model
         vm.ImageBackground = BackgroundColorBrush;
-        vm.BackgroundChoice = SettingsHelper.Settings.UIProperties.BgColorChoice;
+        vm.BackgroundChoice = Settings.UIProperties.BgColorChoice;
     }
 
     /// <summary>
@@ -67,7 +66,7 @@ public static class BackgroundManager
     /// <param name="choice">The background choice to set.</param>
     public static void SetBackground(MainViewModel vm, int choice)
     {
-        SettingsHelper.Settings.UIProperties.BgColorChoice = choice;
+        Settings.UIProperties.BgColorChoice = choice;
         vm.ImageBackground = BackgroundColorBrush;
     }
 

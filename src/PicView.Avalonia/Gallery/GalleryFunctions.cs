@@ -6,7 +6,6 @@ using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views.UC;
-using PicView.Core.Config;
 using PicView.Core.Gallery;
 using PicView.Core.Localization;
 
@@ -283,7 +282,7 @@ public static class GalleryFunctions
         }
 
         UIHelper.CloseMenus(vm);
-        if (SettingsHelper.Settings.Gallery.IsBottomGalleryShown)
+        if (Settings.Gallery.IsBottomGalleryShown)
         {
             // Showing bottom gallery is enabled
             IsBottomGalleryOpen = true;
@@ -321,7 +320,7 @@ public static class GalleryFunctions
         }
 
         _ = Task.Run(() => GalleryLoad.LoadGallery(vm, Path.GetDirectoryName(vm.ImageIterator.ImagePaths[0])));
-        await SettingsHelper.SaveSettingsAsync();
+        await SaveSettingsAsync();
     }
 
     public static async Task OpenCloseBottomGallery(MainViewModel vm)
@@ -333,27 +332,27 @@ public static class GalleryFunctions
 
         UIHelper.CloseMenus(vm);
 
-        if (SettingsHelper.Settings.Gallery.IsBottomGalleryShown)
+        if (Settings.Gallery.IsBottomGalleryShown)
         {
             vm.GalleryMode = GalleryMode.BottomToClosed;
             vm.GetIsShowingBottomGalleryTranslation = TranslationHelper.Translation.ShowBottomGallery;
-            SettingsHelper.Settings.Gallery.IsBottomGalleryShown = false;
+            Settings.Gallery.IsBottomGalleryShown = false;
             IsFullGalleryOpen = false;
             IsBottomGalleryOpen = false;
-            await SettingsHelper.SaveSettingsAsync();
+            await SaveSettingsAsync();
             return;
         }
 
         IsBottomGalleryOpen = true;
         IsFullGalleryOpen = false;
-        SettingsHelper.Settings.Gallery.IsBottomGalleryShown = true;
+        Settings.Gallery.IsBottomGalleryShown = true;
         if (NavigationHelper.CanNavigate(vm))
         {
             vm.GalleryMode = GalleryMode.ClosedToBottom;
         }
 
         vm.GetIsShowingBottomGalleryTranslation = TranslationHelper.Translation.HideBottomGallery;
-        await SettingsHelper.SaveSettingsAsync();
+        await SaveSettingsAsync();
         if (!NavigationHelper.CanNavigate(vm))
         {
             return;

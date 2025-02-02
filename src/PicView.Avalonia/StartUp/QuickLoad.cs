@@ -6,7 +6,6 @@ using PicView.Avalonia.Preloading;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
-using PicView.Core.Config;
 using PicView.Core.FileHandling;
 using PicView.Core.Gallery;
 
@@ -39,7 +38,7 @@ public static class QuickLoad
         vm.ImageSource = imageModel.Image;
         vm.ImageType = imageModel.ImageType;
         PreLoadValue? secondaryPreloadValue = null;
-        if (SettingsHelper.Settings.ImageScaling.ShowImageSideBySide)
+        if (Settings.ImageScaling.ShowImageSideBySide)
         {
             vm.ImageIterator = new ImageIterator(fileInfo, vm);
             secondaryPreloadValue = await vm.ImageIterator.GetNextPreLoadValueAsync();
@@ -49,7 +48,7 @@ public static class QuickLoad
         {
             vm.ImageViewer.SetTransform(imageModel.EXIFOrientation);
             WindowResizing.SetSize(imageModel.PixelWidth, imageModel.PixelHeight, secondaryPreloadValue?.ImageModel?.PixelWidth ?? 0, secondaryPreloadValue?.ImageModel?.PixelHeight ?? 0, imageModel.Rotation, vm);
-            if (SettingsHelper.Settings.WindowProperties.AutoFit)
+            if (Settings.WindowProperties.AutoFit)
             {
                 WindowFunctions.CenterWindowOnScreen();
             }
@@ -64,7 +63,7 @@ public static class QuickLoad
         vm.ImageIterator ??= new ImageIterator(fileInfo, vm);
         vm.GetIndex = vm.ImageIterator.CurrentIndex + 1;
 
-        if (SettingsHelper.Settings.ImageScaling.ShowImageSideBySide)
+        if (Settings.ImageScaling.ShowImageSideBySide)
         {
             SetTitleHelper.SetSideBySideTitle(vm, imageModel, secondaryPreloadValue?.ImageModel);
             
@@ -95,7 +94,7 @@ public static class QuickLoad
         
         if (vm.ImageIterator.ImagePaths.Count > 1)
         {
-            if (SettingsHelper.Settings.UIProperties.IsTaskbarProgressEnabled)
+            if (Settings.UIProperties.IsTaskbarProgressEnabled)
             {
                 await Dispatcher.UIThread.InvokeAsync(() =>
                 {
@@ -106,19 +105,19 @@ public static class QuickLoad
             tasks.Add(vm.ImageIterator.Preload());
         }
 
-        if (SettingsHelper.Settings.Gallery.IsBottomGalleryShown)
+        if (Settings.Gallery.IsBottomGalleryShown)
         {
             if (vm.IsUIShown)
             {
                 vm.GalleryMode = GalleryMode.BottomNoAnimation;
                 tasks.Add(GalleryLoad.LoadGallery(vm, fileInfo.DirectoryName));
             }
-            else if (SettingsHelper.Settings.Gallery.ShowBottomGalleryInHiddenUI)
+            else if (Settings.Gallery.ShowBottomGalleryInHiddenUI)
             {
                 vm.GalleryMode = GalleryMode.BottomNoAnimation;
                 tasks.Add(GalleryLoad.LoadGallery(vm, fileInfo.DirectoryName));
             }
-            else if (SettingsHelper.Settings.WindowProperties.Fullscreen)
+            else if (Settings.WindowProperties.Fullscreen)
             {
                 vm.GalleryMode = GalleryMode.BottomNoAnimation;
                 tasks.Add(GalleryLoad.LoadGallery(vm, fileInfo.DirectoryName));

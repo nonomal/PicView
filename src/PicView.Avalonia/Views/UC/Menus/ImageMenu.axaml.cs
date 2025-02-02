@@ -5,7 +5,6 @@ using PicView.Avalonia.Crop;
 using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.ViewModels;
-using PicView.Core.Config;
 using ReactiveUI;
 
 namespace PicView.Avalonia.Views.UC.Menus;
@@ -17,13 +16,13 @@ public partial class ImageMenu  : AnimatedMenu
         InitializeComponent();
         Loaded += delegate
         {
-            if (SettingsHelper.Settings.Theme.GlassTheme)
+            if (Settings.Theme.GlassTheme)
             {
                GoToPicButton.Classes.Remove("noBorderHover");
                GoToPicButton.Classes.Add("hover");
                GoToPicBox.Background = new SolidColorBrush(Color.FromArgb(90, 197, 197, 197));
             }
-            else if (!SettingsHelper.Settings.Theme.Dark)
+            else if (!Settings.Theme.Dark)
             {
                 TopBorder.Background = Brushes.White;
             }

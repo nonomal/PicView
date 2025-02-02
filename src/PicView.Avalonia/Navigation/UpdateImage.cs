@@ -8,7 +8,6 @@ using PicView.Avalonia.Preloading;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
-using PicView.Core.Config;
 using PicView.Core.Gallery;
 using PicView.Core.Navigation;
 
@@ -29,7 +28,7 @@ public static class UpdateImage
             preLoadValue.ImageModel = await GetImageModel.GetImageModelAsync(fileInfo).ConfigureAwait(false);
         }
 
-        if (SettingsHelper.Settings.ImageScaling.ShowImageSideBySide)
+        if (Settings.ImageScaling.ShowImageSideBySide)
         {
             nextPreloadValue ??= await vm.ImageIterator.GetNextPreLoadValueAsync().ConfigureAwait(false);
             if (nextPreloadValue.ImageModel?.Image is null && index == vm.ImageIterator.CurrentIndex)
@@ -54,7 +53,7 @@ public static class UpdateImage
                 return;
             }
             vm.ImageViewer.SetTransform(preLoadValue.ImageModel.EXIFOrientation);
-            if (SettingsHelper.Settings.ImageScaling.ShowImageSideBySide)
+            if (Settings.ImageScaling.ShowImageSideBySide)
             {
                 vm.SecondaryImageSource = nextPreloadValue.ImageModel.Image;
             }
@@ -76,7 +75,7 @@ public static class UpdateImage
 
         vm.IsLoading = false;
 
-        if (SettingsHelper.Settings.ImageScaling.ShowImageSideBySide)
+        if (Settings.ImageScaling.ShowImageSideBySide)
         {
             SetTitleHelper.SetSideBySideTitle(vm, preLoadValue.ImageModel, nextPreloadValue?.ImageModel);
         }
@@ -85,7 +84,7 @@ public static class UpdateImage
             SetTitleHelper.SetTitle(vm, preLoadValue.ImageModel);
         }
         
-        if (SettingsHelper.Settings.WindowProperties.KeepCentered)
+        if (Settings.WindowProperties.KeepCentered)
         {
             await Dispatcher.UIThread.InvokeAsync(() => { WindowFunctions.CenterWindowOnScreen(); });
         }
@@ -93,7 +92,7 @@ public static class UpdateImage
         if (vm.SelectedGalleryItemIndex != index)
         {
             vm.SelectedGalleryItemIndex = index;
-            if (SettingsHelper.Settings.Gallery.IsBottomGalleryShown)
+            if (Settings.Gallery.IsBottomGalleryShown)
             {
                 GalleryNavigation.CenterScrollToSelectedItem(vm);
             }
@@ -106,7 +105,7 @@ public static class UpdateImage
         vm.FileInfo = preLoadValue.ImageModel.FileInfo;
         vm.ZoomValue = 1;
         
-        if (SettingsHelper.Settings.ImageScaling.ShowImageSideBySide)
+        if (Settings.ImageScaling.ShowImageSideBySide)
         {
             // Fixes incorrect rendering in the side by side view
             // TODO: Improve and fix side by side and remove this hack 
@@ -194,7 +193,7 @@ public static class UpdateImage
     public static void LoadingPreview(MainViewModel vm, int index)
     {
         vm.SelectedGalleryItemIndex = index;
-        if (SettingsHelper.Settings.Gallery.IsBottomGalleryShown)
+        if (Settings.Gallery.IsBottomGalleryShown)
         {
             GalleryNavigation.CenterScrollToSelectedItem(vm);
         }

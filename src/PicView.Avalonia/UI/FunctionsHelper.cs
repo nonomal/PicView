@@ -13,7 +13,6 @@ using PicView.Avalonia.Navigation;
 using PicView.Avalonia.SettingsManagement;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
-using PicView.Core.Config;
 using PicView.Core.FileHandling;
 using PicView.Core.ImageDecoding;
 using PicView.Core.ProcessHandling;
@@ -707,7 +706,7 @@ public static class FunctionsHelper
         }
         
         BackgroundManager.ChangeBackground(Vm);
-        await SettingsHelper.SaveSettingsAsync();
+        await SaveSettingsAsync();
     }
     
     public static async Task SideBySide()

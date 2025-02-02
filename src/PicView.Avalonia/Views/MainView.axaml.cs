@@ -11,7 +11,6 @@ using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
-using PicView.Core.Config;
 using PicView.Core.Extensions;
 
 namespace PicView.Avalonia.Views;
@@ -103,7 +102,7 @@ public partial class MainView : UserControl
         {
             return;
         }
-        var isNavigatingWithCtrl = SettingsHelper.Settings.Zoom.CtrlZoom;
+        var isNavigatingWithCtrl = Settings.Zoom.CtrlZoom;
         vm.ChangeCtrlZoomImage = isNavigatingWithCtrl ? leftRightArrowsImage as DrawingImage : scanEyeImage as DrawingImage;
 
         // Update file history

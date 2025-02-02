@@ -11,7 +11,6 @@ using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
-using PicView.Core.Config;
 using PicView.Core.ImageDecoding;
 using PicView.Core.ImageTransformations;
 using Point = Avalonia.Point;
@@ -49,7 +48,7 @@ public partial class ImageViewer : UserControl
     
     public void TriggerScalingModeUpdate(bool invalidate)
     {
-        var scalingMode = SettingsHelper.Settings.ImageScaling.IsScalingSetToNearestNeighbor 
+        var scalingMode = Settings.ImageScaling.IsScalingSetToNearestNeighbor 
             ? BitmapInterpolationMode.LowQuality 
             : BitmapInterpolationMode.HighQuality;
 
@@ -76,7 +75,7 @@ public partial class ImageViewer : UserControl
         if (DataContext is not MainViewModel mainViewModel)
             return;
 
-        if (SettingsHelper.Settings.Zoom.IsUsingTouchPad)
+        if (Settings.Zoom.IsUsingTouchPad)
         {
             // Use touch gestures for zooming
             return;
@@ -85,11 +84,11 @@ public partial class ImageViewer : UserControl
         var shift = e.KeyModifiers == KeyModifiers.Shift;
         var reverse = e.Delta.Y < 0;
         
-        if (SettingsHelper.Settings.Zoom.ScrollEnabled)
+        if (Settings.Zoom.ScrollEnabled)
         {
             if (!shift)
             {
-                if (ctrl && !SettingsHelper.Settings.Zoom.CtrlZoom)
+                if (ctrl && !Settings.Zoom.CtrlZoom)
                 {
                     await LoadNextPic();
                     return;
@@ -114,7 +113,7 @@ public partial class ImageViewer : UserControl
             
         }
 
-        if (SettingsHelper.Settings.Zoom.CtrlZoom)
+        if (Settings.Zoom.CtrlZoom)
         {
             if (ctrl)
             {
@@ -154,7 +153,7 @@ public partial class ImageViewer : UserControl
 
         async Task ScrollOrNavigate()
         {
-            if (!SettingsHelper.Settings.Zoom.ScrollEnabled || e.KeyModifiers == KeyModifiers.Shift)
+            if (!Settings.Zoom.ScrollEnabled || e.KeyModifiers == KeyModifiers.Shift)
             {
                 await LoadNextPic();
             }
@@ -188,11 +187,11 @@ public partial class ImageViewer : UserControl
             bool next;
             if (reverse)
             {
-                next = SettingsHelper.Settings.Zoom.HorizontalReverseScroll;
+                next = Settings.Zoom.HorizontalReverseScroll;
             }
             else
             {
-                next = !SettingsHelper.Settings.Zoom.HorizontalReverseScroll;
+                next = !Settings.Zoom.HorizontalReverseScroll;
             }
 
             await NavigationHelper.Navigate(next, mainViewModel).ConfigureAwait(false);
@@ -247,7 +246,7 @@ public partial class ImageViewer : UserControl
             return;
         }
         var currentZoom = _scaleTransform.ScaleX;
-        var zoomSpeed = SettingsHelper.Settings.Zoom.ZoomSpeed;
+        var zoomSpeed = Settings.Zoom.ZoomSpeed;
         
         switch (currentZoom)
         {
@@ -276,7 +275,7 @@ public partial class ImageViewer : UserControl
         currentZoom += zoomSpeed;
         currentZoom = Math.Max(0.09, currentZoom); // Fix for zooming out too much
         TriggerScalingModeUpdate(false);
-        if (SettingsHelper.Settings.Zoom.AvoidZoomingOut && currentZoom < 1.0)
+        if (Settings.Zoom.AvoidZoomingOut && currentZoom < 1.0)
         {
             ResetZoom(true);
         }
@@ -437,7 +436,7 @@ public partial class ImageViewer : UserControl
         var newXproperty = _origin.X - dragMousePosition.X;
         var newYproperty = _origin.Y - dragMousePosition.Y;
 
-        if (!SettingsHelper.Settings.WindowProperties.AutoFit || SettingsHelper.Settings.WindowProperties.Fullscreen)
+        if (!Settings.WindowProperties.AutoFit || Settings.WindowProperties.Fullscreen)
         {
             // TODO: figure out how to pan when not auto fitting window while keeping it in bounds
             _translateTransform.Transitions = null;
@@ -615,7 +614,7 @@ public partial class ImageViewer : UserControl
 
         void Set()
         {
-            if (SettingsHelper.Settings.Zoom.ScrollEnabled)
+            if (Settings.Zoom.ScrollEnabled)
             {
                 ImageScrollViewer.ScrollToHome();
             }

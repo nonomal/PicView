@@ -1,5 +1,4 @@
 using Avalonia.Controls;
-using PicView.Core.Config;
 
 namespace PicView.Avalonia.Views;
 
@@ -10,7 +9,7 @@ public partial class GeneralSettingsView : UserControl
         InitializeComponent();
         Loaded += delegate
         {
-            ApplicationStartupBox.SelectedIndex = SettingsHelper.Settings.StartUp.OpenLastFile ? 1 : 0;
+            ApplicationStartupBox.SelectedIndex = Settings.StartUp.OpenLastFile ? 1 : 0;
             
             ApplicationStartupBox.SelectionChanged += async delegate
             {
@@ -18,14 +17,14 @@ public partial class GeneralSettingsView : UserControl
                 {
                     return;
                 }
-                SettingsHelper.Settings.StartUp.OpenLastFile = ApplicationStartupBox.SelectedIndex == 1;
-                await SettingsHelper.SaveSettingsAsync();
+                Settings.StartUp.OpenLastFile = ApplicationStartupBox.SelectedIndex == 1;
+                await SaveSettingsAsync();
             };
             ApplicationStartupBox.DropDownOpened += delegate
             {
                 if (ApplicationStartupBox.SelectedIndex == -1)
                 {
-                    ApplicationStartupBox.SelectedIndex = SettingsHelper.Settings.StartUp.OpenLastFile ? 0 : 1;
+                    ApplicationStartupBox.SelectedIndex = Settings.StartUp.OpenLastFile ? 0 : 1;
                 }
             };
         };

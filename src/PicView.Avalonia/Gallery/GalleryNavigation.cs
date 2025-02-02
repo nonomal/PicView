@@ -4,7 +4,6 @@ using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views.UC;
-using PicView.Core.Config;
 using PicView.Core.Gallery;
 
 namespace PicView.Avalonia.Gallery;
@@ -49,7 +48,7 @@ public static class GalleryNavigation
 
     public static void CenterScrollToSelectedItem(MainViewModel vm)
     {
-        if (SettingsHelper.Settings.WindowProperties.AutoFit)
+        if (Settings.WindowProperties.AutoFit)
         {
             // Use post to ensure the UI update takes place after resize
             Dispatcher.UIThread.Post(ScrollToSelected);;

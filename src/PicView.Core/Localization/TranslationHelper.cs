@@ -2,7 +2,6 @@
 using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using PicView.Core.Config;
 
 namespace PicView.Core.Localization;
 
@@ -83,7 +82,7 @@ public static class TranslationHelper
     public static async Task DetermineAndLoadLanguage()
     {
         var isoLanguageCode = DetermineCorrectLanguage();
-        SettingsHelper.Settings.UIProperties.UserLanguage = isoLanguageCode;
+        Settings.UIProperties.UserLanguage = isoLanguageCode;
         await LoadLanguage(isoLanguageCode).ConfigureAwait(false);
     }
 
@@ -105,9 +104,9 @@ public static class TranslationHelper
     {
         var choice = (Languages)language;
         var languageCode = choice.ToString().Replace('_', '-');
-        SettingsHelper.Settings.UIProperties.UserLanguage = languageCode;
+        Settings.UIProperties.UserLanguage = languageCode;
         await LoadLanguage(languageCode).ConfigureAwait(false);
-        await SettingsHelper.SaveSettingsAsync().ConfigureAwait(false);
+        await SaveSettingsAsync().ConfigureAwait(false);
     }
 
     /// <summary>

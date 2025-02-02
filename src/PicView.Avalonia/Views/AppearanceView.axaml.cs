@@ -5,7 +5,6 @@ using PicView.Avalonia.ColorManagement;
 using PicView.Avalonia.Gallery;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.ColorHandling;
-using PicView.Core.Config;
 using ReactiveUI;
 
 namespace PicView.Avalonia.Views;
@@ -27,35 +26,35 @@ public partial class AppearanceView : UserControl
         }
         GalleryStretchMode.DetermineStretchMode(vm);
 
-        if (SettingsHelper.Settings.Theme.GlassTheme)
+        if (Settings.Theme.GlassTheme)
         {
             ThemeBox.SelectedItem = GlassThemeBox;
         }
         else
         {
-            ThemeBox.SelectedItem = SettingsHelper.Settings.Theme.Dark ? DarkThemeBox : LightThemeBox;
+            ThemeBox.SelectedItem = Settings.Theme.Dark ? DarkThemeBox : LightThemeBox;
         }
         ThemeBox.SelectionChanged += delegate
         {
             // Adjust based on which theme is selected
             if (Equals(ThemeBox.SelectedItem, GlassThemeBox))
             {
-                SettingsHelper.Settings.Theme.GlassTheme = true;
+                Settings.Theme.GlassTheme = true;
             }
             else if (Equals(ThemeBox.SelectedItem, DarkThemeBox))
             {
-                SettingsHelper.Settings.Theme.GlassTheme = false;
-                SettingsHelper.Settings.Theme.Dark = true;
+                Settings.Theme.GlassTheme = false;
+                Settings.Theme.Dark = true;
             }
             else
             {
-                SettingsHelper.Settings.Theme.GlassTheme = false;
-                SettingsHelper.Settings.Theme.Dark = false;
+                Settings.Theme.GlassTheme = false;
+                Settings.Theme.Dark = false;
             }
 
-            var selectedTheme = SettingsHelper.Settings.Theme.GlassTheme
+            var selectedTheme = Settings.Theme.GlassTheme
                 ? ThemeManager.Theme.Glass
-                : SettingsHelper.Settings.Theme.Dark
+                : Settings.Theme.Dark
                     ? ThemeManager.Theme.Dark
                     : ThemeManager.Theme.Light;
 
@@ -63,7 +62,7 @@ public partial class AppearanceView : UserControl
         };
 
         ClearColorButtonsActiveState();
-        switch ((ColorOptions)SettingsHelper.Settings.Theme.ColorTheme)
+        switch ((ColorOptions)Settings.Theme.ColorTheme)
         {
             case ColorOptions.Aqua:
                 AquaButton.Classes.Add("active");
@@ -108,7 +107,7 @@ public partial class AppearanceView : UserControl
         
         // Subscribe to background color changes with ReactiveUI
         vm.WhenAnyValue(x => x.BackgroundChoice)
-            .Subscribe(_ => SetBackgroundTheme(SettingsHelper.Settings.UIProperties.BgColorChoice))
+            .Subscribe(_ => SetBackgroundTheme(Settings.UIProperties.BgColorChoice))
             .DisposeWith(_disposables);
     }
 

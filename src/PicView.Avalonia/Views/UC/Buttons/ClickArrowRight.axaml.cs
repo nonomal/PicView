@@ -1,7 +1,6 @@
 ﻿using Avalonia.Controls;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
-using PicView.Core.Config;
 
 namespace PicView.Avalonia.Views.UC.Buttons;
 public partial class ClickArrowRight : UserControl
@@ -20,7 +19,7 @@ public partial class ClickArrowRight : UserControl
             
             // TODO add interval to mainviewmodel
             PolyButton.Interval =
-                (int)TimeSpan.FromSeconds(SettingsHelper.Settings.UIProperties.NavSpeed).TotalMilliseconds;
+                (int)TimeSpan.FromSeconds(Settings.UIProperties.NavSpeed).TotalMilliseconds;
         };
     }
 }

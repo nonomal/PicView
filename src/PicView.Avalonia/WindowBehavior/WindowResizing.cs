@@ -8,7 +8,6 @@ using PicView.Avalonia.Preloading;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.Calculations;
-using PicView.Core.Config;
 using PicView.Core.Navigation;
 
 namespace PicView.Avalonia.WindowBehavior;
@@ -19,7 +18,7 @@ public static class WindowResizing
 
     public static void HandleWindowResize(Window window, AvaloniaPropertyChangedEventArgs<Size> size)
     {
-        if (!SettingsHelper.Settings.WindowProperties.AutoFit)
+        if (!Settings.WindowProperties.AutoFit)
         {
             return;
         }
@@ -82,7 +81,7 @@ public static class WindowResizing
             firstHeight = GetHeight(preloadValue);
         }
 
-        if (SettingsHelper.Settings.ImageScaling.ShowImageSideBySide)
+        if (Settings.ImageScaling.ShowImageSideBySide)
         {
             var secondaryPreloadValue = vm.ImageIterator?.GetNextPreLoadValue();
             double secondWidth, secondHeight;
@@ -171,7 +170,7 @@ public static class WindowResizing
         }
 
         ImageSizeCalculationHelper.ImageSize size;
-        if (SettingsHelper.Settings.ImageScaling.ShowImageSideBySide && secondWidth > 0 && secondHeight > 0)
+        if (Settings.ImageScaling.ShowImageSideBySide && secondWidth > 0 && secondHeight > 0)
         {
             size = ImageSizeCalculationHelper.GetImageSize(
                 width,
@@ -221,10 +220,10 @@ public static class WindowResizing
         vm.ScrollViewerWidth = size.ScrollViewerWidth;
         vm.ScrollViewerHeight = size.ScrollViewerHeight;
 
-        if (SettingsHelper.Settings.WindowProperties.AutoFit)
+        if (Settings.WindowProperties.AutoFit)
         {
-            if (SettingsHelper.Settings.WindowProperties.Fullscreen ||
-                SettingsHelper.Settings.WindowProperties.Maximized)
+            if (Settings.WindowProperties.Fullscreen ||
+                Settings.WindowProperties.Maximized)
             {
                 vm.GalleryWidth = double.NaN;
             }
@@ -245,7 +244,7 @@ public static class WindowResizing
 
     public static void SaveSize(Window window)
     {
-        if (SettingsHelper.Settings.WindowProperties.Maximized || SettingsHelper.Settings.WindowProperties.Fullscreen || SettingsHelper.Settings.WindowProperties.AutoFit)
+        if (Settings.WindowProperties.Maximized || Settings.WindowProperties.Fullscreen || Settings.WindowProperties.AutoFit)
             return;
             
         if (Dispatcher.UIThread.CheckAccess())
@@ -263,10 +262,10 @@ public static class WindowResizing
         {
             var top = window.Position.Y;
             var left = window.Position.X;
-            SettingsHelper.Settings.WindowProperties.Top = top;
-            SettingsHelper.Settings.WindowProperties.Left = left;
-            SettingsHelper.Settings.WindowProperties.Width = window.Width;
-            SettingsHelper.Settings.WindowProperties.Height = window.Height;
+            Settings.WindowProperties.Top = top;
+            Settings.WindowProperties.Left = left;
+            Settings.WindowProperties.Width = window.Width;
+            Settings.WindowProperties.Height = window.Height;
         }
     }
 
@@ -285,11 +284,11 @@ public static class WindowResizing
 
         void Set()
         {
-            var x = (int)SettingsHelper.Settings.WindowProperties.Left;
-            var y = (int)SettingsHelper.Settings.WindowProperties.Top;
+            var x = (int)Settings.WindowProperties.Left;
+            var y = (int)Settings.WindowProperties.Top;
             window.Position = new PixelPoint(x, y);
-            window.Width = SettingsHelper.Settings.WindowProperties.Width;
-            window.Height = SettingsHelper.Settings.WindowProperties.Height;
+            window.Width = Settings.WindowProperties.Width;
+            window.Height = Settings.WindowProperties.Height;
         }
     }
 

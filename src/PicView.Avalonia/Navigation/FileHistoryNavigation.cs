@@ -1,5 +1,4 @@
 ﻿using PicView.Avalonia.ViewModels;
-using PicView.Core.Config;
 using PicView.Core.Navigation;
 
 namespace PicView.Avalonia.Navigation;
@@ -73,9 +72,9 @@ public static class FileHistoryNavigation
         
         async Task LoadLastFileFromSettingsOrNotAsync()
         {
-            if (!string.IsNullOrWhiteSpace(SettingsHelper.Settings.StartUp.LastFile))
+            if (!string.IsNullOrWhiteSpace(Settings.StartUp.LastFile))
             {
-                await NavigationHelper.LoadPicFromStringAsync(SettingsHelper.Settings.StartUp.LastFile, vm);
+                await NavigationHelper.LoadPicFromStringAsync(Settings.StartUp.LastFile, vm);
             }
             else
             {
@@ -128,11 +127,11 @@ public static class FileHistoryNavigation
         string? nextEntry;
         if (next)
         {
-            nextEntry = await Task.FromResult(_fileHistory.GetNextEntry(SettingsHelper.Settings.UIProperties.Looping, index, imagePaths)).ConfigureAwait(false);
+            nextEntry = await Task.FromResult(_fileHistory.GetNextEntry(Settings.UIProperties.Looping, index, imagePaths)).ConfigureAwait(false);
         }
         else
         {
-            nextEntry = await Task.FromResult(_fileHistory.GetPreviousEntry(SettingsHelper.Settings.UIProperties.Looping, index, imagePaths)).ConfigureAwait(false);
+            nextEntry = await Task.FromResult(_fileHistory.GetPreviousEntry(Settings.UIProperties.Looping, index, imagePaths)).ConfigureAwait(false);
         }
 
         if (string.IsNullOrWhiteSpace(nextEntry))

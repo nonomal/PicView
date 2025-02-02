@@ -1,5 +1,4 @@
 ﻿using System.Runtime.InteropServices;
-using PicView.Core.Config;
 
 namespace PicView.Core.Calculations
 {
@@ -39,8 +38,8 @@ namespace PicView.Core.Calculations
             double maxWidth, maxHeight;
             var margin = 0d;
 
-            var fullscreen = SettingsHelper.Settings.WindowProperties.Fullscreen ||
-                             SettingsHelper.Settings.WindowProperties.Maximized;
+            var fullscreen = Settings.WindowProperties.Fullscreen ||
+                             Settings.WindowProperties.Maximized;
             
             var borderSpaceHeight = fullscreen ? 0 : uiTopSize + uiBottomSize + galleryHeight;
             var borderSpaceWidth = fullscreen ? 0 : padding;
@@ -48,7 +47,7 @@ namespace PicView.Core.Calculations
             var workAreaWidth = monitorWidth - borderSpaceWidth;
             var workAreaHeight = monitorHeight - borderSpaceHeight;
 
-            if (SettingsHelper.Settings.Zoom.ScrollEnabled)
+            if (Settings.Zoom.ScrollEnabled)
             {
                 workAreaWidth -= SizeDefaults.ScrollbarSize * dpiScaling;
                 containerWidth -= SizeDefaults.ScrollbarSize * dpiScaling;
@@ -56,32 +55,32 @@ namespace PicView.Core.Calculations
                 maxWidth = workAreaWidth - padding;
                 maxHeight = height;
             }
-            else if (SettingsHelper.Settings.WindowProperties.AutoFit)
+            else if (Settings.WindowProperties.AutoFit)
             {
-                maxWidth = SettingsHelper.Settings.ImageScaling.StretchImage
+                maxWidth = Settings.ImageScaling.StretchImage
                     ? workAreaWidth - padding
                     : Math.Min(workAreaWidth - padding, width);
                     
-                maxHeight = SettingsHelper.Settings.ImageScaling.StretchImage
+                maxHeight = Settings.ImageScaling.StretchImage
                     ? workAreaHeight - padding
                     : Math.Min(workAreaHeight - padding, height);
             }
             else
             {
-                maxWidth = SettingsHelper.Settings.ImageScaling.StretchImage
+                maxWidth = Settings.ImageScaling.StretchImage
                     ? containerWidth
                     : Math.Min(containerWidth, width);
 
-                maxHeight = SettingsHelper.Settings.ImageScaling.StretchImage
+                maxHeight = Settings.ImageScaling.StretchImage
                     ? containerHeight - galleryHeight
                     : Math.Min(containerHeight - galleryHeight, height);
             }
 
-            if (SettingsHelper.Settings.Gallery.IsBottomGalleryShown)
+            if (Settings.Gallery.IsBottomGalleryShown)
             {
-                if (!SettingsHelper.Settings.UIProperties.ShowInterface)
+                if (!Settings.UIProperties.ShowInterface)
                 {
-                    if (SettingsHelper.Settings.Gallery.ShowBottomGalleryInHiddenUI)
+                    if (Settings.Gallery.ShowBottomGalleryInHiddenUI)
                     {
                         margin = galleryHeight > 0 ? galleryHeight : 0;
                     }
@@ -122,9 +121,9 @@ namespace PicView.Core.Calculations
             // Fit image by aspect ratio calculation
             // and update values
             double scrollWidth, scrollHeight, xWidth, xHeight;
-            if (SettingsHelper.Settings.Zoom.ScrollEnabled)
+            if (Settings.Zoom.ScrollEnabled)
             {
-                if (SettingsHelper.Settings.WindowProperties.AutoFit)
+                if (Settings.WindowProperties.AutoFit)
                 {
                     xWidth = maxWidth - SizeDefaults.ScrollbarSize - 10;
                     xHeight = maxWidth * height / width;
@@ -200,9 +199,9 @@ namespace PicView.Core.Calculations
             // Combined width of both images
             var combinedWidth = xWidth1 + xWidth2;
 
-            if (SettingsHelper.Settings.WindowProperties.AutoFit)
+            if (Settings.WindowProperties.AutoFit)
             {
-                var widthPadding = SettingsHelper.Settings.ImageScaling.StretchImage ? 4 : padding;
+                var widthPadding = Settings.ImageScaling.StretchImage ? 4 : padding;
                 var availableWidth = monitorWidth - widthPadding;
                 var availableHeight = monitorHeight - (widthPadding + uiBottomSize + uiTopSize);
                 if (rotationAngle is 0 or 180)
@@ -261,18 +260,18 @@ namespace PicView.Core.Calculations
             }
 
             double scrollWidth, scrollHeight;
-            if (SettingsHelper.Settings.Zoom.ScrollEnabled)
+            if (Settings.Zoom.ScrollEnabled)
             {
-                if (SettingsHelper.Settings.WindowProperties.AutoFit)
+                if (Settings.WindowProperties.AutoFit)
                 {
                     combinedWidth -= SizeDefaults.ScrollbarSize;
                     scrollWidth = combinedWidth + SizeDefaults.ScrollbarSize + 8;
 
-                    var fullscreen = SettingsHelper.Settings.WindowProperties.Fullscreen ||
-                                     SettingsHelper.Settings.WindowProperties.Maximized;
+                    var fullscreen = Settings.WindowProperties.Fullscreen ||
+                                     Settings.WindowProperties.Maximized;
                     var borderSpaceHeight = fullscreen ? 0 : uiTopSize + uiBottomSize + galleryHeight;
                     var workAreaHeight = monitorHeight * dpiScaling - borderSpaceHeight;
-                    scrollHeight = SettingsHelper.Settings.ImageScaling.StretchImage
+                    scrollHeight = Settings.ImageScaling.StretchImage
                         ? workAreaHeight
                         : workAreaHeight - padding;
                 }
@@ -302,10 +301,10 @@ namespace PicView.Core.Calculations
             double monitorMinHeight, double interfaceSize, double containerWidth, double dpiScaling)
         {
             double titleMaxWidth;
-            var maximized = SettingsHelper.Settings.WindowProperties.Fullscreen ||
-                            SettingsHelper.Settings.WindowProperties.Maximized;
+            var maximized = Settings.WindowProperties.Fullscreen ||
+                            Settings.WindowProperties.Maximized;
 
-            if (SettingsHelper.Settings.WindowProperties.AutoFit && !maximized)
+            if (Settings.WindowProperties.AutoFit && !maximized)
             {
                 switch (rotationAngle)
                 {
@@ -330,7 +329,7 @@ namespace PicView.Core.Calculations
                     ? interfaceSize
                     : titleMaxWidth - interfaceSize;
 
-                if (SettingsHelper.Settings.Zoom.ScrollEnabled)
+                if (Settings.Zoom.ScrollEnabled)
                 {
                     titleMaxWidth += SizeDefaults.ScrollbarSize + 4;
                 }

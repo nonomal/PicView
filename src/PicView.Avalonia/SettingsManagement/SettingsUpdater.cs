@@ -8,7 +8,6 @@ using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
-using PicView.Core.Config;
 using PicView.Core.Gallery;
 using PicView.Core.Localization;
 
@@ -21,8 +20,8 @@ public static class SettingsUpdater
 
         try
         {
-            SettingsHelper.DeleteSettingFiles();
-            SettingsHelper.SetDefaults();
+            DeleteSettingFiles();
+            SetDefaults();
 
             ThemeManager.DetermineTheme(Application.Current, false);
         
@@ -38,14 +37,14 @@ public static class SettingsUpdater
             vm.GetBottomGalleryItemHeight = GalleryDefaults.DefaultBottomGalleryHeight;
             vm.GetFullGalleryItemHeight = GalleryDefaults.DefaultFullGalleryHeight;
         
-            if (string.IsNullOrWhiteSpace(SettingsHelper.Settings.Gallery.BottomGalleryStretchMode))
+            if (string.IsNullOrWhiteSpace(Settings.Gallery.BottomGalleryStretchMode))
             {
-                SettingsHelper.Settings.Gallery.BottomGalleryStretchMode = "UniformToFill";
+                Settings.Gallery.BottomGalleryStretchMode = "UniformToFill";
             }
 
-            if (string.IsNullOrWhiteSpace(SettingsHelper.Settings.Gallery.FullGalleryStretchMode))
+            if (string.IsNullOrWhiteSpace(Settings.Gallery.FullGalleryStretchMode))
             {
-                SettingsHelper.Settings.Gallery.FullGalleryStretchMode = "UniformToFill";
+                Settings.Gallery.FullGalleryStretchMode = "UniformToFill";
             }
         
             await TurnOffSubdirectories(vm);
@@ -66,7 +65,7 @@ public static class SettingsUpdater
                 WindowResizing.SetSize(vm);
             });
             
-            await SettingsHelper.SaveSettingsAsync();
+            await SaveSettingsAsync();
         }
         finally
         {
@@ -77,7 +76,7 @@ public static class SettingsUpdater
 
     public static async Task ToggleUsingTouchpad(MainViewModel vm)
     {
-        if (SettingsHelper.Settings.Zoom.IsUsingTouchPad)
+        if (Settings.Zoom.IsUsingTouchPad)
         {
             TurnOffUsingTouchpad(vm);
         }
@@ -86,26 +85,26 @@ public static class SettingsUpdater
             TurnOnUsingTouchpad(vm);
         }
     
-        await SettingsHelper.SaveSettingsAsync();
+        await SaveSettingsAsync();
     }
     
     public static void TurnOffUsingTouchpad(MainViewModel vm)
     {
-        SettingsHelper.Settings.Zoom.IsUsingTouchPad = false;
+        Settings.Zoom.IsUsingTouchPad = false;
         vm.GetIsUsingTouchpadTranslation = TranslationHelper.Translation.UsingMouse;
         vm.IsUsingTouchpad = false;
     }
     
     public static void TurnOnUsingTouchpad(MainViewModel vm)
     {
-        SettingsHelper.Settings.Zoom.IsUsingTouchPad = true;
+        Settings.Zoom.IsUsingTouchPad = true;
         vm.GetIsUsingTouchpadTranslation = TranslationHelper.Translation.UsingTouchpad;
         vm.IsUsingTouchpad = true;
     }
     
     public static async Task ToggleSubdirectories(MainViewModel vm)
     {
-        if (SettingsHelper.Settings.Sorting.IncludeSubDirectories)
+        if (Settings.Sorting.IncludeSubDirectories)
         {
             await TurnOffSubdirectories(vm);
         }
@@ -113,13 +112,13 @@ public static class SettingsUpdater
         {
             await TurnOnSubdirectories(vm);
         }
-        await SettingsHelper.SaveSettingsAsync();
+        await SaveSettingsAsync();
     }
     
     public static async Task TurnOffSubdirectories(MainViewModel vm)
     {
         vm.IsIncludingSubdirectories = false;
-        SettingsHelper.Settings.Sorting.IncludeSubDirectories = false;
+        Settings.Sorting.IncludeSubDirectories = false;
         
         await vm.ImageIterator.ReloadFileList();
         SetTitleHelper.SetTitle(vm);
@@ -128,7 +127,7 @@ public static class SettingsUpdater
     public static async Task TurnOnSubdirectories(MainViewModel vm)
     {
         vm.IsIncludingSubdirectories = true;
-        SettingsHelper.Settings.Sorting.IncludeSubDirectories = true;
+        Settings.Sorting.IncludeSubDirectories = true;
         
         await vm.ImageIterator.ReloadFileList();
         SetTitleHelper.SetTitle(vm);
@@ -136,9 +135,9 @@ public static class SettingsUpdater
     
     public static async Task ToggleTaskbarProgress(MainViewModel vm)
     {
-        if (SettingsHelper.Settings.UIProperties.IsTaskbarProgressEnabled)
+        if (Settings.UIProperties.IsTaskbarProgressEnabled)
         {
-            SettingsHelper.Settings.UIProperties.IsTaskbarProgressEnabled = false;
+            Settings.UIProperties.IsTaskbarProgressEnabled = false;
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 vm.PlatformService.StopTaskbarProgress();
@@ -146,7 +145,7 @@ public static class SettingsUpdater
         }
         else
         {
-            SettingsHelper.Settings.UIProperties.IsTaskbarProgressEnabled = true;
+            Settings.UIProperties.IsTaskbarProgressEnabled = true;
             if (NavigationHelper.CanNavigate(vm))
             {
                 await Dispatcher.UIThread.InvokeAsync(() =>
@@ -157,7 +156,7 @@ public static class SettingsUpdater
             }
         }
 
-        await SettingsHelper.SaveSettingsAsync();
+        await SaveSettingsAsync();
     }
     
     #region Image settings
@@ -169,7 +168,7 @@ public static class SettingsUpdater
             return;
         }
         
-        if (SettingsHelper.Settings.ImageScaling.ShowImageSideBySide)
+        if (Settings.ImageScaling.ShowImageSideBySide)
         {
             TurnOffSideBySide(vm);
         }
@@ -178,12 +177,12 @@ public static class SettingsUpdater
             await TurnOnSideBySide(vm);
         }
 
-        await SettingsHelper.SaveSettingsAsync();
+        await SaveSettingsAsync();
     }
 
     public static void TurnOffSideBySide(MainViewModel vm)
     {
-        SettingsHelper.Settings.ImageScaling.ShowImageSideBySide = false;
+        Settings.ImageScaling.ShowImageSideBySide = false;
         vm.IsShowingSideBySide = false;
         vm.SecondaryImageSource = null;
         WindowResizing.SetSize(vm);
@@ -191,7 +190,7 @@ public static class SettingsUpdater
     
     public static async Task TurnOnSideBySide(MainViewModel vm)
     {
-        SettingsHelper.Settings.ImageScaling.ShowImageSideBySide = true;
+        Settings.ImageScaling.ShowImageSideBySide = true;
         vm.IsShowingSideBySide = true;
         if (NavigationHelper.CanNavigate(vm))
         {
@@ -212,7 +211,7 @@ public static class SettingsUpdater
             return;
         }
         
-        if (SettingsHelper.Settings.Zoom.ScrollEnabled)
+        if (Settings.Zoom.ScrollEnabled)
         {
             TurnOffScroll(vm);
         }
@@ -223,7 +222,7 @@ public static class SettingsUpdater
 
         WindowResizing.SetSize(vm);
         
-        await SettingsHelper.SaveSettingsAsync();
+        await SaveSettingsAsync();
     }
     
     public static void TurnOffScroll(MainViewModel vm)
@@ -231,7 +230,7 @@ public static class SettingsUpdater
         vm.ToggleScrollBarVisibility = ScrollBarVisibility.Disabled;
         vm.GetIsScrollingTranslation = TranslationHelper.Translation.ScrollingDisabled;
         vm.IsScrollingEnabled = false;
-        SettingsHelper.Settings.Zoom.ScrollEnabled = false;
+        Settings.Zoom.ScrollEnabled = false;
     }
     
     public static void TurnOnScroll(MainViewModel vm)
@@ -239,7 +238,7 @@ public static class SettingsUpdater
         vm.ToggleScrollBarVisibility = ScrollBarVisibility.Visible;
         vm.GetIsScrollingTranslation = TranslationHelper.Translation.ScrollingEnabled;
         vm.IsScrollingEnabled = true;
-        SettingsHelper.Settings.Zoom.ScrollEnabled = true;
+        Settings.Zoom.ScrollEnabled = true;
     }
     
     public static async Task ToggleCtrlZoom(MainViewModel vm)
@@ -249,8 +248,8 @@ public static class SettingsUpdater
             return;
         }
         
-        SettingsHelper.Settings.Zoom.CtrlZoom = !SettingsHelper.Settings.Zoom.CtrlZoom;
-        vm.GetIsCtrlZoomTranslation = SettingsHelper.Settings.Zoom.CtrlZoom
+        Settings.Zoom.CtrlZoom = !Settings.Zoom.CtrlZoom;
+        vm.GetIsCtrlZoomTranslation = Settings.Zoom.CtrlZoom
             ? TranslationHelper.Translation.CtrlToZoom
             : TranslationHelper.Translation.ScrollToZoom;
         
@@ -263,14 +262,14 @@ public static class SettingsUpdater
         {
             return;
         }
-        var isNavigatingWithCtrl = SettingsHelper.Settings.Zoom.CtrlZoom;
+        var isNavigatingWithCtrl = Settings.Zoom.CtrlZoom;
         vm.ChangeCtrlZoomImage = isNavigatingWithCtrl ? leftRightArrowsImage as DrawingImage : scanEyeImage as DrawingImage;
-        await SettingsHelper.SaveSettingsAsync().ConfigureAwait(false);
+        await SaveSettingsAsync().ConfigureAwait(false);
     }
     
     public static void TurnOffCtrlZoom(MainViewModel vm)
     {
-        SettingsHelper.Settings.Zoom.CtrlZoom = false;
+        Settings.Zoom.CtrlZoom = false;
         vm.GetIsCtrlZoomTranslation = TranslationHelper.Translation.ScrollToZoom;
         if (!Application.Current.TryGetResource("ScanEyeImage", Application.Current.RequestedThemeVariant, out var scanEyeImage ))
         {
@@ -288,8 +287,8 @@ public static class SettingsUpdater
             return;
         }
         
-        var value = !SettingsHelper.Settings.UIProperties.Looping;
-        SettingsHelper.Settings.UIProperties.Looping = value;
+        var value = !Settings.UIProperties.Looping;
+        Settings.UIProperties.Looping = value;
         vm.GetIsLoopingTranslation = value
             ? TranslationHelper.Translation.LoopingEnabled
             : TranslationHelper.Translation.LoopingDisabled;
@@ -300,12 +299,12 @@ public static class SettingsUpdater
             : TranslationHelper.Translation.LoopingDisabled;
         await TooltipHelper.ShowTooltipMessageAsync(msg);
 
-        await SettingsHelper.SaveSettingsAsync();
+        await SaveSettingsAsync();
     }
     
     public static void TurnOffLooping(MainViewModel vm)
     {
-        SettingsHelper.Settings.UIProperties.Looping = false;
+        Settings.UIProperties.Looping = false;
         vm.GetIsLoopingTranslation = TranslationHelper.Translation.LoopingDisabled;
         vm.IsLooping = false;
     }

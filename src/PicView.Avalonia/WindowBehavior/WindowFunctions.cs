@@ -10,7 +10,6 @@ using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.ArchiveHandling;
 using PicView.Core.Calculations;
-using PicView.Core.Config;
 using PicView.Core.FileHandling;
 
 namespace PicView.Avalonia.WindowBehavior;
@@ -57,8 +56,8 @@ public static class WindowFunctions
             lastFile = !string.IsNullOrWhiteSpace(url) ? url : FileHistoryNavigation.GetLastFile();
         }
 
-        SettingsHelper.Settings.StartUp.LastFile = lastFile;
-        await SettingsHelper.SaveSettingsAsync();
+        Settings.StartUp.LastFile = lastFile;
+        await SaveSettingsAsync();
         await KeybindingManager.UpdateKeyBindingsFile(); // Save keybindings
         FileDeletionHelper.DeleteTempFiles();
         FileHistoryNavigation.WriteToFile();
@@ -83,52 +82,52 @@ public static class WindowFunctions
             return;
         }
 
-        if (SettingsHelper.Settings.WindowProperties.TopMost)
+        if (Settings.WindowProperties.TopMost)
         {
             vm.IsTopMost = false;
             desktop.MainWindow.Topmost = false;
-            SettingsHelper.Settings.WindowProperties.TopMost = false;
+            Settings.WindowProperties.TopMost = false;
         }
         else
         {
             vm.IsTopMost = true;
             desktop.MainWindow.Topmost = true;
-            SettingsHelper.Settings.WindowProperties.TopMost = true;
+            Settings.WindowProperties.TopMost = true;
         }
 
-        await SettingsHelper.SaveSettingsAsync().ConfigureAwait(false);
+        await SaveSettingsAsync().ConfigureAwait(false);
     }
 
     public static async Task ToggleAutoFit(MainViewModel vm)
     {
-        if (SettingsHelper.Settings.WindowProperties.AutoFit)
+        if (Settings.WindowProperties.AutoFit)
         {
             vm.SizeToContent = SizeToContent.Manual;
             vm.CanResize = true;
-            SettingsHelper.Settings.WindowProperties.AutoFit = false;
+            Settings.WindowProperties.AutoFit = false;
             vm.IsAutoFit = false;
         }
         else
         {
             vm.SizeToContent = SizeToContent.WidthAndHeight;
             vm.CanResize = false;
-            SettingsHelper.Settings.WindowProperties.AutoFit = true;
+            Settings.WindowProperties.AutoFit = true;
             vm.IsAutoFit = true;
         }
 
         WindowResizing.SetSize(vm);
         await Dispatcher.UIThread.InvokeAsync(() => CenterWindowOnScreen(false));
-        await SettingsHelper.SaveSettingsAsync().ConfigureAwait(false);
+        await SaveSettingsAsync().ConfigureAwait(false);
     }
 
     public static async Task AutoFitAndStretch(MainViewModel vm)
     {
-        if (SettingsHelper.Settings.WindowProperties.AutoFit)
+        if (Settings.WindowProperties.AutoFit)
         {
             vm.SizeToContent = SizeToContent.Manual;
             vm.CanResize = true;
-            SettingsHelper.Settings.WindowProperties.AutoFit = false;
-            SettingsHelper.Settings.ImageScaling.StretchImage = false;
+            Settings.WindowProperties.AutoFit = false;
+            Settings.ImageScaling.StretchImage = false;
             vm.IsStretched = false;
             vm.IsAutoFit = false;
         }
@@ -136,46 +135,46 @@ public static class WindowFunctions
         {
             vm.SizeToContent = SizeToContent.WidthAndHeight;
             vm.CanResize = false;
-            SettingsHelper.Settings.WindowProperties.AutoFit = true;
-            SettingsHelper.Settings.ImageScaling.StretchImage = true;
+            Settings.WindowProperties.AutoFit = true;
+            Settings.ImageScaling.StretchImage = true;
             vm.IsAutoFit = true;
             vm.IsStretched = true;
         }
 
         WindowResizing.SetSize(vm);
         await Dispatcher.UIThread.InvokeAsync(() => CenterWindowOnScreen(false));
-        await SettingsHelper.SaveSettingsAsync().ConfigureAwait(false);
+        await SaveSettingsAsync().ConfigureAwait(false);
     }
 
     public static async Task NormalWindow(MainViewModel vm)
     {
         vm.SizeToContent = SizeToContent.Manual;
         vm.CanResize = true;
-        SettingsHelper.Settings.WindowProperties.AutoFit = false;
+        Settings.WindowProperties.AutoFit = false;
         WindowResizing.SetSize(vm);
         vm.ImageViewer.MainImage.InvalidateVisual();
-        await SettingsHelper.SaveSettingsAsync().ConfigureAwait(false);
+        await SaveSettingsAsync().ConfigureAwait(false);
     }
 
     public static async Task NormalWindowStretch(MainViewModel vm)
     {
         vm.SizeToContent = SizeToContent.Manual;
         vm.CanResize = true;
-        SettingsHelper.Settings.WindowProperties.AutoFit = false;
-        SettingsHelper.Settings.ImageScaling.StretchImage = true;
+        Settings.WindowProperties.AutoFit = false;
+        Settings.ImageScaling.StretchImage = true;
         vm.IsStretched = true;
         WindowResizing.SetSize(vm);
         vm.ImageViewer.MainImage.InvalidateVisual();
-        await SettingsHelper.SaveSettingsAsync().ConfigureAwait(false);
+        await SaveSettingsAsync().ConfigureAwait(false);
     }
 
     public static async Task Stretch(MainViewModel vm)
     {
-        SettingsHelper.Settings.ImageScaling.StretchImage = true;
+        Settings.ImageScaling.StretchImage = true;
         vm.IsStretched = true;
         WindowResizing.SetSize(vm);
         vm.ImageViewer.MainImage.InvalidateVisual();
-        await SettingsHelper.SaveSettingsAsync().ConfigureAwait(false);
+        await SaveSettingsAsync().ConfigureAwait(false);
     }
 
     public static async Task ToggleFullscreen(MainViewModel vm, bool saveSettings = true)
@@ -185,14 +184,14 @@ public static class WindowFunctions
             return;
         }
 
-        if (SettingsHelper.Settings.WindowProperties.Fullscreen)
+        if (Settings.WindowProperties.Fullscreen)
         {
             vm.IsFullscreen = false;
             await Dispatcher.UIThread.InvokeAsync(() =>
                 desktop.MainWindow.WindowState = WindowState.Normal);
             if (saveSettings)
             {
-                SettingsHelper.Settings.WindowProperties.Fullscreen = false;
+                Settings.WindowProperties.Fullscreen = false;
             }
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -207,11 +206,11 @@ public static class WindowFunctions
             Fullscreen(vm, desktop);
             if (saveSettings)
             {
-                SettingsHelper.Settings.WindowProperties.Fullscreen = true;
+                Settings.WindowProperties.Fullscreen = true;
             }
         }
 
-        await SettingsHelper.SaveSettingsAsync().ConfigureAwait(false);
+        await SaveSettingsAsync().ConfigureAwait(false);
     }
 
     public static async Task MaximizeRestore()
@@ -230,7 +229,7 @@ public static class WindowFunctions
         // Maximize
         else
         {
-            if (!SettingsHelper.Settings.WindowProperties.AutoFit)
+            if (!Settings.WindowProperties.AutoFit)
             {
                 WindowResizing.SaveSize(desktop.MainWindow);
             }
@@ -238,18 +237,18 @@ public static class WindowFunctions
             Maximize();
         }
 
-        await SettingsHelper.SaveSettingsAsync().ConfigureAwait(false);
+        await SaveSettingsAsync().ConfigureAwait(false);
     }
 
     public static void Restore(MainViewModel vm, IClassicDesktopStyleApplicationLifetime desktop)
     {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            if (SettingsHelper.Settings.UIProperties.ShowInterface)
+            if (Settings.UIProperties.ShowInterface)
             {
                 vm.IsTopToolbarShown = true;
                 vm.TitlebarHeight = SizeDefaults.TitlebarHeight;
-                if (SettingsHelper.Settings.UIProperties.ShowBottomNavBar)
+                if (Settings.UIProperties.ShowBottomNavBar)
                 {
                     vm.IsBottomToolbarShown = true;
                     vm.BottombarHeight = SizeDefaults.BottombarHeight;
@@ -261,12 +260,12 @@ public static class WindowFunctions
 
         Dispatcher.UIThread.InvokeAsync(() =>
             desktop.MainWindow.WindowState = WindowState.Normal);
-        SettingsHelper.Settings.WindowProperties.Maximized = false;
-        SettingsHelper.Settings.WindowProperties.Fullscreen = false;
-        vm.IsUIShown = SettingsHelper.Settings.UIProperties.ShowInterface;
+        Settings.WindowProperties.Maximized = false;
+        Settings.WindowProperties.Fullscreen = false;
+        vm.IsUIShown = Settings.UIProperties.ShowInterface;
         InitializeWindowSizeAndPosition(desktop.MainWindow);
         WindowResizing.SetSize(vm);
-        if (SettingsHelper.Settings.WindowProperties.AutoFit)
+        if (Settings.WindowProperties.AutoFit)
         {
             vm.SizeToContent = SizeToContent.WidthAndHeight;
             vm.CanResize = false;
@@ -302,7 +301,7 @@ public static class WindowFunctions
             }
 
             var vm = desktop.MainWindow.DataContext as MainViewModel;
-            if (SettingsHelper.Settings.WindowProperties.AutoFit)
+            if (Settings.WindowProperties.AutoFit)
             {
                 vm.SizeToContent = SizeToContent.Manual;
                 vm.CanResize = true;
@@ -310,7 +309,7 @@ public static class WindowFunctions
 
             desktop.MainWindow.WindowState = WindowState.Maximized;
             WindowResizing.SetSize(desktop.MainWindow.DataContext as MainViewModel);
-            SettingsHelper.Settings.WindowProperties.Maximized = true;
+            Settings.WindowProperties.Maximized = true;
         }
     }
 
@@ -370,7 +369,7 @@ public static class WindowFunctions
         }
         else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {
-            if (SettingsHelper.Settings.WindowProperties.AutoFit)
+            if (Settings.WindowProperties.AutoFit)
             {
                 // TODO go to macOS fullscreen mode when auto fit is on
             }
@@ -453,19 +452,19 @@ public static class WindowFunctions
     {
         if (Dispatcher.UIThread.CheckAccess())
         {
-            window.Position = new PixelPoint((int)SettingsHelper.Settings.WindowProperties.Left,
-                (int)SettingsHelper.Settings.WindowProperties.Top);
-            window.Width = SettingsHelper.Settings.WindowProperties.Width;
-            window.Height = SettingsHelper.Settings.WindowProperties.Height;
+            window.Position = new PixelPoint((int)Settings.WindowProperties.Left,
+                (int)Settings.WindowProperties.Top);
+            window.Width = Settings.WindowProperties.Width;
+            window.Height = Settings.WindowProperties.Height;
         }
         else
         {
             Dispatcher.UIThread.InvokeAsync(() =>
             {
-                window.Position = new PixelPoint((int)SettingsHelper.Settings.WindowProperties.Left,
-                    (int)SettingsHelper.Settings.WindowProperties.Top);
-                window.Width = SettingsHelper.Settings.WindowProperties.Width;
-                window.Height = SettingsHelper.Settings.WindowProperties.Height;
+                window.Position = new PixelPoint((int)Settings.WindowProperties.Left,
+                    (int)Settings.WindowProperties.Top);
+                window.Width = Settings.WindowProperties.Width;
+                window.Height = Settings.WindowProperties.Height;
             });
         }
     }

@@ -1,4 +1,3 @@
-using System;
 using Avalonia.Controls;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;

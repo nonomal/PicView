@@ -1,6 +1,5 @@
 using Avalonia.Media;
 using PicView.Avalonia.CustomControls;
-using PicView.Core.Config;
 
 namespace PicView.Avalonia.Views.UC.Menus;
 
@@ -11,7 +10,7 @@ public partial class SettingsMenu : AnimatedMenu
         InitializeComponent();
         Loaded += (_, _) =>
         {
-            if (SettingsHelper.Settings.Theme.GlassTheme)
+            if (Settings.Theme.GlassTheme)
             {
                 SettingsButton.Classes.Remove("noBorderHover");
                 SettingsButton.Classes.Add("hover");
@@ -19,7 +18,7 @@ public partial class SettingsMenu : AnimatedMenu
                 AboutWindowButton.Classes.Remove("noBorderHover");
                 AboutWindowButton.Classes.Add("hover");
             }
-            else if (!SettingsHelper.Settings.Theme.Dark)
+            else if (!Settings.Theme.Dark)
             {
                 TopBorder.Background = Brushes.White;
             }

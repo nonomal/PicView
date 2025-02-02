@@ -1,7 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
-using PicView.Core.Config;
 using PicView.Core.Localization;
 
 namespace PicView.Avalonia.MacOS.Views;
@@ -11,7 +10,7 @@ public partial class KeybindingsWindow : Window
     public KeybindingsWindow()
     {
         InitializeComponent();
-        if (!SettingsHelper.Settings.Theme.Dark || SettingsHelper.Settings.Theme.GlassTheme)
+        if (!Settings.Theme.Dark || Settings.Theme.GlassTheme)
         {
             WindowBorder.Background = Brushes.Transparent;
             XKeybindingsView.Background = Brushes.Transparent;

@@ -6,7 +6,6 @@ using PicView.Avalonia.Gallery;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.Calculations;
-using PicView.Core.Config;
 using PicView.Core.FileHandling;
 using PicView.Core.Gallery;
 using StartUpMenu = PicView.Avalonia.Views.StartUpMenu;
@@ -37,11 +36,11 @@ public static class ErrorHandling
             if (vm.CurrentView is not StartUpMenu)
             {
                 var startUpMenu = new StartUpMenu();
-                if (SettingsHelper.Settings.WindowProperties.AutoFit)
+                if (Settings.WindowProperties.AutoFit)
                 {
                     startUpMenu.Width = SizeDefaults.WindowMinSize;
                     startUpMenu.Height = SizeDefaults.WindowMinSize;
-                    if (SettingsHelper.Settings.Gallery.IsBottomGalleryShown)
+                    if (Settings.Gallery.IsBottomGalleryShown)
                     {
                         vm.GalleryWidth = SizeDefaults.WindowMinSize;
                     }

@@ -11,7 +11,6 @@ using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views.UC;
 using PicView.Core.Calculations;
-using PicView.Core.Config;
 using PicView.Core.FileHandling;
 using PicView.Core.ProcessHandling;
 
@@ -70,7 +69,7 @@ public static class DragAndDropHelper
             }
         }
 
-        if (!SettingsHelper.Settings.UIProperties.OpenInSameWindow)
+        if (!Settings.UIProperties.OpenInSameWindow)
         {
             foreach (var file in storageItems.Skip(1))
             {

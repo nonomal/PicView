@@ -11,7 +11,6 @@ using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.ArchiveHandling;
-using PicView.Core.Config;
 using PicView.Core.Gallery;
 using PicView.Core.ImageDecoding;
 using PicView.Core.Localization;
@@ -375,7 +374,7 @@ public static class NavigationHelper
         }
         else
         {
-            if (SettingsHelper.Settings.UIProperties.IsTaskbarProgressEnabled)
+            if (Settings.UIProperties.IsTaskbarProgressEnabled)
             {
                 vm.PlatformService.StopTaskbarProgress();
             }
@@ -465,7 +464,7 @@ public static class NavigationHelper
                 vm.Title = displayProgress;
                 vm.TitleTooltip = displayProgress;
                 vm.WindowTitle = displayProgress;
-                if (SettingsHelper.Settings.UIProperties.IsTaskbarProgressEnabled)
+                if (Settings.UIProperties.IsTaskbarProgressEnabled)
                 {
                     vm.PlatformService.SetTaskbarProgress((ulong)totalBytesDownloaded, (ulong)totalFileSize);
                 }
@@ -571,7 +570,7 @@ public static class NavigationHelper
 
         _cancellationTokenSource = new CancellationTokenSource();
 
-        if (SettingsHelper.Settings.UIProperties.IsTaskbarProgressEnabled)
+        if (Settings.UIProperties.IsTaskbarProgressEnabled)
         {
             vm.PlatformService.StopTaskbarProgress();
         }
@@ -582,9 +581,9 @@ public static class NavigationHelper
         if (fileList.Count <= 0)
         {
             // Attempt to reload with subdirectories and reset the setting
-            if (!SettingsHelper.Settings.Sorting.IncludeSubDirectories)
+            if (!Settings.Sorting.IncludeSubDirectories)
             {
-                SettingsHelper.Settings.Sorting.IncludeSubDirectories = true;
+                Settings.Sorting.IncludeSubDirectories = true;
                 fileList = await Task.FromResult(vm.PlatformService.GetFiles(fileInfo)).ConfigureAwait(false);
                 if (fileList.Count <= 0)
                 {
@@ -592,7 +591,7 @@ public static class NavigationHelper
                     return;
                 }
 
-                SettingsHelper.Settings.Sorting.IncludeSubDirectories = false;
+                Settings.Sorting.IncludeSubDirectories = false;
             }
             else
             {
@@ -667,7 +666,7 @@ public static class NavigationHelper
             var parentFolder = Path.GetDirectoryName(currentFolder);
             var directories = Directory.GetDirectories(parentFolder, "*", SearchOption.TopDirectoryOnly);
             var directoryIndex = Array.IndexOf(directories, currentFolder);
-            if (SettingsHelper.Settings.UIProperties.Looping)
+            if (Settings.UIProperties.Looping)
             {
                 directoryIndex = (directoryIndex + indexChange + directories.Length) % directories.Length;
             }
@@ -734,7 +733,7 @@ public static class NavigationHelper
     /// <returns>A task representing the asynchronous operation.</returns>
     private static async Task CheckAndReloadGallery(FileInfo fileInfo, MainViewModel vm)
     {
-        if (SettingsHelper.Settings.Gallery.IsBottomGalleryShown || GalleryFunctions.IsFullGalleryOpen)
+        if (Settings.Gallery.IsBottomGalleryShown || GalleryFunctions.IsFullGalleryOpen)
         {
             GalleryFunctions.Clear();
 
@@ -779,7 +778,7 @@ public static class NavigationHelper
     /// <returns>A task representing the asynchronous operation.</returns>
     private static async Task ScrollToEndIfNecessary(bool last)
     {
-        if (last && SettingsHelper.Settings.Gallery.IsBottomGalleryShown)
+        if (last && Settings.Gallery.IsBottomGalleryShown)
         {
             await Dispatcher.UIThread.InvokeAsync(() => { UIHelper.GetGalleryView.GalleryListBox.ScrollToEnd(); });
         }

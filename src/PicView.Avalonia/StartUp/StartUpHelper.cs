@@ -15,7 +15,6 @@ using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Calculations;
-using PicView.Core.Config;
 using PicView.Core.Gallery;
 using PicView.Core.ProcessHandling;
 
@@ -34,7 +33,7 @@ public static class StartUpHelper
         }
         else
         {
-            if (SettingsHelper.Settings.UIProperties.OpenInSameWindow &&
+            if (Settings.UIProperties.OpenInSameWindow &&
                 ProcessHelper.CheckIfAnotherInstanceIsRunning())
             {
                 HandleMultipleInstances(args);
@@ -60,7 +59,7 @@ public static class StartUpHelper
         
         InitializeSettings(vm);
 
-        if (SettingsHelper.Settings.WindowProperties.Fullscreen)
+        if (Settings.WindowProperties.Fullscreen)
         {
             window.Show();
             WindowFunctions.Fullscreen(vm, desktop);
@@ -68,7 +67,7 @@ public static class StartUpHelper
 
         ScreenHelper.UpdateScreenSize(window);
         
-        if (SettingsHelper.Settings.WindowProperties.AutoFit && !SettingsHelper.Settings.WindowProperties.Fullscreen)
+        if (Settings.WindowProperties.AutoFit && !Settings.WindowProperties.Fullscreen)
         {
             window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             window.Width = SizeDefaults.WindowMinSize;
@@ -94,15 +93,15 @@ public static class StartUpHelper
         
         if (settingsExists)
         {
-            if (SettingsHelper.Settings.WindowProperties.Maximized && !SettingsHelper.Settings.WindowProperties.Fullscreen)
+            if (Settings.WindowProperties.Maximized && !Settings.WindowProperties.Fullscreen)
             {
                 WindowFunctions.Maximize();
             }
-            else if (SettingsHelper.Settings.WindowProperties.AutoFit && !SettingsHelper.Settings.WindowProperties.Fullscreen)
+            else if (Settings.WindowProperties.AutoFit && !Settings.WindowProperties.Fullscreen)
             {
                 HandleAutoFit(vm);
             }
-            else if (!SettingsHelper.Settings.WindowProperties.Fullscreen)
+            else if (!Settings.WindowProperties.Fullscreen)
             {
                 HandleNormalWindow(vm, window);
             }
@@ -116,14 +115,14 @@ public static class StartUpHelper
 
         Application.Current.Name = "PicView";
 
-        if (SettingsHelper.Settings.UIProperties.OpenInSameWindow)
+        if (Settings.UIProperties.OpenInSameWindow)
         {
             // No other instance is running, create named pipe server
             _ = IPC.StartListeningForArguments(vm);
         }
         
         // Fixes incorrect fullscreen window
-        if (SettingsHelper.Settings.WindowProperties.Fullscreen)
+        if (Settings.WindowProperties.Fullscreen)
         {
             Dispatcher.UIThread.InvokeAsync(() =>
             {
@@ -136,18 +135,18 @@ public static class StartUpHelper
 
     private static void HandleThemeUpdates(MainViewModel vm)
     {
-        if (SettingsHelper.Settings.Theme.GlassTheme)
+        if (Settings.Theme.GlassTheme)
         {
             ThemeManager.GlassThemeUpdates();
         }
 
         BackgroundManager.SetBackground(vm);
-        ColorManager.UpdateAccentColors(SettingsHelper.Settings.Theme.ColorTheme);
+        ColorManager.UpdateAccentColors(Settings.Theme.ColorTheme);
     }
 
     private static void HandleWindowControlSettings(MainViewModel vm, IClassicDesktopStyleApplicationLifetime desktop)
     {
-        if (SettingsHelper.Settings.Zoom.ScrollEnabled)
+        if (Settings.Zoom.ScrollEnabled)
         {
             vm.ToggleScrollBarVisibility = ScrollBarVisibility.Visible;
             vm.IsScrollingEnabled = true;
@@ -158,7 +157,7 @@ public static class StartUpHelper
             vm.IsScrollingEnabled = false;
         }
 
-        if (SettingsHelper.Settings.WindowProperties.TopMost)
+        if (Settings.WindowProperties.TopMost)
         {
             desktop.MainWindow.Topmost = true;
         }
@@ -171,9 +170,9 @@ public static class StartUpHelper
             vm.CurrentView = vm.ImageViewer;
             Task.Run(() => QuickLoad.QuickLoadAsync(vm, args[1]));
         }
-        else if (SettingsHelper.Settings.StartUp.OpenLastFile)
+        else if (Settings.StartUp.OpenLastFile)
         {
-            if (string.IsNullOrWhiteSpace(SettingsHelper.Settings.StartUp.LastFile))
+            if (string.IsNullOrWhiteSpace(Settings.StartUp.LastFile))
             {
                 vm.CurrentView = new StartUpMenu();
                 vm.IsLoading = false;
@@ -181,7 +180,7 @@ public static class StartUpHelper
             else
             {
                 vm.CurrentView = vm.ImageViewer;
-                Task.Run(() => QuickLoad.QuickLoadAsync(vm, SettingsHelper.Settings.StartUp.LastFile));
+                Task.Run(() => QuickLoad.QuickLoadAsync(vm, Settings.StartUp.LastFile));
             }
         }
         else
@@ -196,10 +195,10 @@ public static class StartUpHelper
         vm.CanResize = true;
         vm.IsAutoFit = false;
         WindowFunctions.InitializeWindowSizeAndPosition(window);
-        if (SettingsHelper.Settings.UIProperties.ShowInterface)
+        if (Settings.UIProperties.ShowInterface)
         {
             vm.IsTopToolbarShown = true;
-            vm.IsBottomToolbarShown = SettingsHelper.Settings.UIProperties.ShowBottomNavBar;
+            vm.IsBottomToolbarShown = Settings.UIProperties.ShowBottomNavBar;
         }
     }
 
@@ -208,10 +207,10 @@ public static class StartUpHelper
         vm.SizeToContent = SizeToContent.WidthAndHeight;
         vm.CanResize = false;
         vm.IsAutoFit = true;
-        if (SettingsHelper.Settings.UIProperties.ShowInterface)
+        if (Settings.UIProperties.ShowInterface)
         {
             vm.IsTopToolbarShown = true;
-            vm.IsBottomToolbarShown = SettingsHelper.Settings.UIProperties.ShowBottomNavBar;
+            vm.IsBottomToolbarShown = Settings.UIProperties.ShowBottomNavBar;
         }
     }
 
@@ -221,7 +220,7 @@ public static class StartUpHelper
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {
-            SettingsHelper.Settings.Zoom.IsUsingTouchPad = true;
+            Settings.Zoom.IsUsingTouchPad = true;
         }
     }
 
@@ -248,8 +247,8 @@ public static class StartUpHelper
 
     private static void ValidateGallerySettings(MainViewModel vm, bool settingsExists)
     {
-        vm.GetFullGalleryItemHeight = SettingsHelper.Settings.Gallery.ExpandedGalleryItemSize;
-        vm.GetBottomGalleryItemHeight = SettingsHelper.Settings.Gallery.BottomGalleryItemSize;
+        vm.GetFullGalleryItemHeight = Settings.Gallery.ExpandedGalleryItemSize;
+        vm.GetBottomGalleryItemHeight = Settings.Gallery.BottomGalleryItemSize;
         if (!settingsExists)
         {
             vm.GetBottomGalleryItemHeight = GalleryDefaults.DefaultBottomGalleryHeight;
@@ -274,52 +273,52 @@ public static class StartUpHelper
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(SettingsHelper.Settings.Gallery.BottomGalleryStretchMode))
+        if (string.IsNullOrWhiteSpace(Settings.Gallery.BottomGalleryStretchMode))
         {
-            SettingsHelper.Settings.Gallery.BottomGalleryStretchMode = "UniformToFill";
+            Settings.Gallery.BottomGalleryStretchMode = "UniformToFill";
         }
 
-        if (string.IsNullOrWhiteSpace(SettingsHelper.Settings.Gallery.FullGalleryStretchMode))
+        if (string.IsNullOrWhiteSpace(Settings.Gallery.FullGalleryStretchMode))
         {
-            SettingsHelper.Settings.Gallery.FullGalleryStretchMode = "UniformToFill";
+            Settings.Gallery.FullGalleryStretchMode = "UniformToFill";
         }
     }
     
     private static void InitializeSettings(MainViewModel vm)
     {
         vm.IsLoading = true;
-        vm.TitlebarHeight = SettingsHelper.Settings.WindowProperties.Fullscreen
-            || !SettingsHelper.Settings.UIProperties.ShowInterface
+        vm.TitlebarHeight = Settings.WindowProperties.Fullscreen
+            || !Settings.UIProperties.ShowInterface
             ? 0
             : SizeDefaults.TitlebarHeight;
-        vm.BottombarHeight = SettingsHelper.Settings.WindowProperties.Fullscreen
-                             || !SettingsHelper.Settings.UIProperties.ShowInterface
+        vm.BottombarHeight = Settings.WindowProperties.Fullscreen
+                             || !Settings.UIProperties.ShowInterface
             ? 0
             : SizeDefaults.BottombarHeight;
-        vm.GetNavSpeed = SettingsHelper.Settings.UIProperties.NavSpeed;
-        vm.GetSlideshowSpeed = SettingsHelper.Settings.UIProperties.SlideShowTimer;
-        vm.GetZoomSpeed = SettingsHelper.Settings.Zoom.ZoomSpeed;
-        vm.IsShowingSideBySide = SettingsHelper.Settings.ImageScaling.ShowImageSideBySide;
-        vm.IsGalleryShown = SettingsHelper.Settings.Gallery.ShowBottomGalleryInHiddenUI;
-        vm.IsAvoidingZoomingOut  = SettingsHelper.Settings.Zoom.AvoidZoomingOut;
-        vm.IsUIShown  = SettingsHelper.Settings.UIProperties.ShowInterface;
-        vm.IsTopToolbarShown  = SettingsHelper.Settings.UIProperties.ShowInterface;
-        vm.IsBottomToolbarShown   = SettingsHelper.Settings.UIProperties.ShowBottomNavBar &&
-                                    SettingsHelper.Settings.UIProperties.ShowInterface;
-        vm.IsBottomToolbarShownSetting = SettingsHelper.Settings.UIProperties.ShowBottomNavBar;
-        vm.IsShowingTaskbarProgress  = SettingsHelper.Settings.UIProperties.IsTaskbarProgressEnabled;
-        vm.IsFullscreen  = SettingsHelper.Settings.WindowProperties.Fullscreen;
-        vm.IsTopMost  = SettingsHelper.Settings.WindowProperties.TopMost;
-        vm.IsIncludingSubdirectories = SettingsHelper.Settings.Sorting.IncludeSubDirectories;
-        vm.IsStretched = SettingsHelper.Settings.ImageScaling.StretchImage;
-        vm.IsLooping  = SettingsHelper.Settings.UIProperties.Looping;
-        vm.IsAutoFit  = SettingsHelper.Settings.WindowProperties.AutoFit;
-        vm.IsStayingCentered  = SettingsHelper.Settings.WindowProperties.KeepCentered;
-        vm.IsOpeningInSameWindow  = SettingsHelper.Settings.UIProperties.OpenInSameWindow;
-        vm.IsShowingConfirmationOnEsc  = SettingsHelper.Settings.UIProperties.ShowConfirmationOnEsc;
-        vm.IsUsingTouchpad  = SettingsHelper.Settings.Zoom.IsUsingTouchPad;
-        vm.IsAscending  = SettingsHelper.Settings.Sorting.Ascending;
-        vm.BackgroundChoice = SettingsHelper.Settings.UIProperties.BgColorChoice;
+        vm.GetNavSpeed = Settings.UIProperties.NavSpeed;
+        vm.GetSlideshowSpeed = Settings.UIProperties.SlideShowTimer;
+        vm.GetZoomSpeed = Settings.Zoom.ZoomSpeed;
+        vm.IsShowingSideBySide = Settings.ImageScaling.ShowImageSideBySide;
+        vm.IsGalleryShown = Settings.Gallery.ShowBottomGalleryInHiddenUI;
+        vm.IsAvoidingZoomingOut  = Settings.Zoom.AvoidZoomingOut;
+        vm.IsUIShown  = Settings.UIProperties.ShowInterface;
+        vm.IsTopToolbarShown  = Settings.UIProperties.ShowInterface;
+        vm.IsBottomToolbarShown   = Settings.UIProperties.ShowBottomNavBar &&
+                                    Settings.UIProperties.ShowInterface;
+        vm.IsBottomToolbarShownSetting = Settings.UIProperties.ShowBottomNavBar;
+        vm.IsShowingTaskbarProgress  = Settings.UIProperties.IsTaskbarProgressEnabled;
+        vm.IsFullscreen  = Settings.WindowProperties.Fullscreen;
+        vm.IsTopMost  = Settings.WindowProperties.TopMost;
+        vm.IsIncludingSubdirectories = Settings.Sorting.IncludeSubDirectories;
+        vm.IsStretched = Settings.ImageScaling.StretchImage;
+        vm.IsLooping  = Settings.UIProperties.Looping;
+        vm.IsAutoFit  = Settings.WindowProperties.AutoFit;
+        vm.IsStayingCentered  = Settings.WindowProperties.KeepCentered;
+        vm.IsOpeningInSameWindow  = Settings.UIProperties.OpenInSameWindow;
+        vm.IsShowingConfirmationOnEsc  = Settings.UIProperties.ShowConfirmationOnEsc;
+        vm.IsUsingTouchpad  = Settings.Zoom.IsUsingTouchPad;
+        vm.IsAscending  = Settings.Sorting.Ascending;
+        vm.BackgroundChoice = Settings.UIProperties.BgColorChoice;
     }
 
     private static void SetWindowEventHandlers(Window w)

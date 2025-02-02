@@ -6,7 +6,6 @@ using Avalonia.Input;
 using Avalonia.Media;
 using PicView.Avalonia.Animations;
 using PicView.Avalonia.UI;
-using PicView.Core.Config;
 
 namespace PicView.Avalonia.CustomControls;
 
@@ -42,7 +41,7 @@ public class AnimatedPopUp : ContentControl
         _partOverlay.Opacity = 0;
         _partBorder.Opacity = 0;
 
-        if (SettingsHelper.Settings.Theme.GlassTheme)
+        if (Settings.Theme.GlassTheme)
         {
             if (Application.Current.TryGetResource("MenuBackgroundColor",
                     Application.Current.RequestedThemeVariant, out var bgColor))

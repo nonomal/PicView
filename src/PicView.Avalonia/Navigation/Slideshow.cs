@@ -5,7 +5,6 @@ using PicView.Avalonia.Input;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
-using PicView.Core.Config;
 using PicView.Core.Gallery;
 using Timer = System.Timers.Timer;
 
@@ -23,7 +22,7 @@ public static class Slideshow
             return;
         }
         
-        await Start(vm, TimeSpan.FromSeconds(SettingsHelper.Settings.UIProperties.SlideShowTimer).TotalMilliseconds);
+        await Start(vm, TimeSpan.FromSeconds(Settings.UIProperties.SlideShowTimer).TotalMilliseconds);
     }
 
     public static async Task StartSlideshow(MainViewModel vm, int milliseconds)
@@ -43,16 +42,16 @@ public static class Slideshow
             return;
         }
 
-        if (!SettingsHelper.Settings.WindowProperties.Fullscreen)
+        if (!Settings.WindowProperties.Fullscreen)
         {
             WindowFunctions.Restore(vm, Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime);
-            if (SettingsHelper.Settings.WindowProperties.AutoFit)
+            if (Settings.WindowProperties.AutoFit)
             {
                 WindowFunctions.CenterWindowOnScreen();
             }
         }
 
-        if (SettingsHelper.Settings.Gallery.IsBottomGalleryShown)
+        if (Settings.Gallery.IsBottomGalleryShown)
         {
             vm.GalleryMode = GalleryMode.ClosedToBottom;
         }
@@ -106,12 +105,12 @@ public static class Slideshow
 
         UIHelper.CloseMenus(vm);
 
-        if (!SettingsHelper.Settings.WindowProperties.Fullscreen)
+        if (!Settings.WindowProperties.Fullscreen)
         {
             await WindowFunctions.ToggleFullscreen(vm, false);
         }
 
-        if (GalleryFunctions.IsFullGalleryOpen || SettingsHelper.Settings.Gallery.IsBottomGalleryShown)
+        if (GalleryFunctions.IsFullGalleryOpen || Settings.Gallery.IsBottomGalleryShown)
         {
             vm.GalleryMode = GalleryMode.BottomToClosed;
         }

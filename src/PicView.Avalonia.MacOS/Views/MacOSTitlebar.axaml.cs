@@ -1,11 +1,8 @@
-using System;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
-using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.WindowBehavior;
-using PicView.Core.Config;
 
 namespace PicView.Avalonia.MacOS.Views;
 
@@ -16,7 +13,7 @@ public partial class MacOSTitlebar : UserControl
         InitializeComponent();
         Loaded += (_, _) =>
         {
-            if (SettingsHelper.Settings.Theme.GlassTheme)
+            if (Settings.Theme.GlassTheme)
             {
                 TopWindowBorder.Background = Brushes.Transparent;
             

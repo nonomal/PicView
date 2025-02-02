@@ -2,7 +2,6 @@
 using Avalonia.Media;
 using PicView.Avalonia.Gallery;
 using PicView.Avalonia.ViewModels;
-using PicView.Core.Config;
 
 namespace PicView.Avalonia.Views;
 
@@ -45,17 +44,17 @@ public partial class GalleryView : UserControl
             }
             else
             {
-                if (SettingsHelper.Settings.Gallery.FullGalleryStretchMode.Equals("Square",
+                if (Settings.Gallery.FullGalleryStretchMode.Equals("Square",
                         StringComparison.OrdinalIgnoreCase))
                 {
                     FullGalleryComboBox.SelectedIndex = 4;
                 }
-                else if (SettingsHelper.Settings.Gallery.FullGalleryStretchMode.Equals("FillSquare",
+                else if (Settings.Gallery.FullGalleryStretchMode.Equals("FillSquare",
                              StringComparison.OrdinalIgnoreCase))
                 {
                     FullGalleryComboBox.SelectedIndex = 5;
                 }
-                else if (Enum.TryParse<Stretch>(SettingsHelper.Settings.Gallery.FullGalleryStretchMode,
+                else if (Enum.TryParse<Stretch>(Settings.Gallery.FullGalleryStretchMode,
                              out var stretchMode))
                 {
                     FullGalleryComboBox.SelectedIndex = stretchMode switch
@@ -95,17 +94,17 @@ public partial class GalleryView : UserControl
             }
             else
             {
-                if (SettingsHelper.Settings.Gallery.BottomGalleryStretchMode.Equals("Square",
+                if (Settings.Gallery.BottomGalleryStretchMode.Equals("Square",
                         StringComparison.OrdinalIgnoreCase))
                 {
                     BottomGalleryComboBox.SelectedIndex = 4;
                 }
-                else if (SettingsHelper.Settings.Gallery.BottomGalleryStretchMode.Equals("FillSquare",
+                else if (Settings.Gallery.BottomGalleryStretchMode.Equals("FillSquare",
                              StringComparison.OrdinalIgnoreCase))
                 {
                     BottomGalleryComboBox.SelectedIndex = 5;
                 }
-                else if (Enum.TryParse<Stretch>(SettingsHelper.Settings.Gallery.BottomGalleryStretchMode,
+                else if (Enum.TryParse<Stretch>(Settings.Gallery.BottomGalleryStretchMode,
                              out var stretchMode))
                 {
                     BottomGalleryComboBox.SelectedIndex = stretchMode switch
