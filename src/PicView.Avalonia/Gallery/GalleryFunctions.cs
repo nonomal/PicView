@@ -160,7 +160,7 @@ public static class GalleryFunctions
                 {
                     if (IsFullGalleryOpen)
                     {
-                        await ToggleGallery(vm);
+                        ToggleGallery(vm);
                     }
 
                     await NavigationHelper.Navigate(vm.ImageIterator.ImagePaths.IndexOf(fileInfo.FullName), vm).ConfigureAwait(false);
@@ -274,7 +274,7 @@ public static class GalleryFunctions
     public static bool IsFullGalleryOpen { get; private set; }
     public static bool IsBottomGalleryOpen { get; private set; }
 
-    public static async Task ToggleGallery(MainViewModel vm)
+    public static void ToggleGallery(MainViewModel vm)
     {
         if (vm is null || !NavigationHelper.CanNavigate(vm))
         {
@@ -319,11 +319,11 @@ public static class GalleryFunctions
             }
         }
 
+        
         _ = Task.Run(() => GalleryLoad.LoadGallery(vm, Path.GetDirectoryName(vm.ImageIterator.ImagePaths[0])));
-        await SaveSettingsAsync();
     }
 
-    public static async Task OpenCloseBottomGallery(MainViewModel vm)
+    public static void OpenCloseBottomGallery(MainViewModel vm)
     {
         if (vm is null)
         {
@@ -339,7 +339,6 @@ public static class GalleryFunctions
             Settings.Gallery.IsBottomGalleryShown = false;
             IsFullGalleryOpen = false;
             IsBottomGalleryOpen = false;
-            await SaveSettingsAsync();
             return;
         }
 
@@ -352,13 +351,12 @@ public static class GalleryFunctions
         }
 
         vm.GetIsShowingBottomGalleryTranslation = TranslationHelper.Translation.HideBottomGallery;
-        await SaveSettingsAsync();
         if (!NavigationHelper.CanNavigate(vm))
         {
             return;
         }
 
-        await Task.Run(() => GalleryLoad.LoadGallery(vm, Path.GetDirectoryName(vm.ImageIterator.ImagePaths[0])));
+        Task.Run(() => GalleryLoad.LoadGallery(vm, Path.GetDirectoryName(vm.ImageIterator.ImagePaths[0])));
     }
 
     public static void OpenBottomGallery(MainViewModel vm)
@@ -368,15 +366,15 @@ public static class GalleryFunctions
         vm.GalleryVerticalAlignment = VerticalAlignment.Bottom;
     }
 
-    public static async Task CloseGallery(MainViewModel vm)
+    public static void CloseGallery(MainViewModel vm)
     {
         if (IsFullGalleryOpen)
         {
-            await ToggleGallery(vm);
+            ToggleGallery(vm);
         }
         else
         {
-            await OpenCloseBottomGallery(vm);
+            OpenCloseBottomGallery(vm);
         }
     }
 

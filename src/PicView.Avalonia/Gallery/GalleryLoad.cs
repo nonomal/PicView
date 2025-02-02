@@ -106,7 +106,7 @@ public static class GalleryLoad
                     {
                         if (GalleryFunctions.IsFullGalleryOpen)
                         {
-                            await GalleryFunctions.ToggleGallery(vm);
+                            GalleryFunctions.ToggleGallery(vm);
                         }
                         await NavigationHelper.Navigate(vm.ImageIterator.ImagePaths.IndexOf(fileInfos[i1].FullName), vm).ConfigureAwait(false);
                     };

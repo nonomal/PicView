@@ -383,19 +383,22 @@ public static class FunctionsHelper
 
     #region Gallery functions
 
-    public static async Task ToggleGallery()
+    public static Task ToggleGallery()
     {
-        await GalleryFunctions.ToggleGallery(Vm).ConfigureAwait(false);
+        GalleryFunctions.ToggleGallery(Vm);
+        return Task.CompletedTask;
     }
 
-    public static async Task OpenCloseBottomGallery()
+    public static Task OpenCloseBottomGallery()
     {
-        await GalleryFunctions.OpenCloseBottomGallery(Vm).ConfigureAwait(false);
+        GalleryFunctions.OpenCloseBottomGallery(Vm);
+        return Task.CompletedTask;
     }
     
-    public static async Task CloseGallery()
+    public static Task CloseGallery()
     {
-        await GalleryFunctions.CloseGallery(Vm);
+        GalleryFunctions.CloseGallery(Vm);
+        return Task.CompletedTask;
     }
     
     public static async Task GalleryClick()
