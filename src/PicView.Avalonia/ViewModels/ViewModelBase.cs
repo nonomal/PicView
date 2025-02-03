@@ -267,9 +267,16 @@ public class ViewModelBase : ReactiveObject
         Posterize = TranslationHelper.Translation.Posterize;
         ClearEffects = TranslationHelper.Translation.ClearEffects;
         Solarize = TranslationHelper.Translation.Solarize;
+        Maximize = TranslationHelper.Translation.Maximize;
     }
 
     #region Strings
+    
+    public string? Maximize
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
     
     public string? Solarize
     {

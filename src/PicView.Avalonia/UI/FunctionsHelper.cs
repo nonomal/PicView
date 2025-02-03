@@ -77,6 +77,7 @@ public static class FunctionsHelper
             "ToggleInterface" => ToggleInterface,
             "NewWindow" => NewWindow,
             "Center" => Center,
+            "Maximize" => Maximize,
 
             // Windows
             "AboutWindow" => AboutWindow,
@@ -433,6 +434,11 @@ public static class FunctionsHelper
         {
             UIHelper.Center(Vm);
         });
+    }
+    
+    public static async Task Maximize()
+    {
+        await WindowFunctions.MaximizeRestore();
     }
 
     public static async Task NewWindow()

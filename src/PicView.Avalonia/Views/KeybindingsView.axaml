@@ -750,49 +750,6 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding ToggleFullscreen}"
-                Width="170" />
-            <customControls:KeybindTextBox
-                Classes="hover TStyle"
-                MethodName="Fullscreen"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip,
-                                              Mode=OneWay}"
-                Width="140" />
-            <TextBox
-                Background="{DynamicResource DisabledBackgroundColor}"
-                Classes="hover TStyle"
-                Foreground="{DynamicResource DisabledTextColor}"
-                IsReadOnly="True"
-                Width="140"
-                x:Name="FullscreenBox" />
-        </StackPanel>
-
-        <StackPanel Margin="15,0,10,10" Orientation="Horizontal">
-            <TextBlock
-                Classes="txt"
-                FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding ToggleFullscreen,
-                                       Mode=OneWay}"
-                Width="170" />
-            <customControls:KeybindTextBox
-                Alt="True"
-                Classes="hover TStyle"
-                MethodName="Fullscreen"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip,
-                                              Mode=OneWay}"
-                Width="140" />
-            <TextBox
-                Background="{DynamicResource DisabledBackgroundColor}"
-                Classes="hover TStyle"
-                Foreground="{DynamicResource DisabledTextColor}"
-                IsReadOnly="True"
-                Width="140" />
-        </StackPanel>
-
-        <StackPanel Margin="15,5,10,10" Orientation="Horizontal">
-            <TextBlock
-                Classes="txt"
-                FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
                 Text="{CompiledBinding Slideshow}"
                 Width="170" />
             <customControls:KeybindTextBox
@@ -1408,6 +1365,68 @@
                 Classes="TStyle"
                 Foreground="{DynamicResource DisabledTextColor}"
                 IsReadOnly="True"
+                Width="140" />
+        </StackPanel>
+
+        <StackPanel Margin="15,5,10,10" Orientation="Horizontal">
+            <TextBlock
+                Classes="txt"
+                FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
+                Text="{CompiledBinding ToggleFullscreen}"
+                Width="170" />
+            <customControls:KeybindTextBox
+                Classes="hover TStyle"
+                MethodName="Fullscreen"
+                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip,
+                                              Mode=OneWay}"
+                Width="140" />
+            <TextBox
+                Background="{DynamicResource DisabledBackgroundColor}"
+                Classes="hover TStyle"
+                Foreground="{DynamicResource DisabledTextColor}"
+                IsReadOnly="True"
+                Width="140"
+                x:Name="FullscreenBox" />
+        </StackPanel>
+
+        <StackPanel Margin="15,0,10,10" Orientation="Horizontal">
+            <TextBlock
+                Classes="txt"
+                FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
+                Text="{CompiledBinding ToggleFullscreen,
+                                       Mode=OneWay}"
+                Width="170" />
+            <customControls:KeybindTextBox
+                Alt="True"
+                Classes="hover TStyle"
+                MethodName="Fullscreen"
+                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip,
+                                              Mode=OneWay}"
+                Width="140" />
+            <TextBox
+                Background="{DynamicResource DisabledBackgroundColor}"
+                Classes="hover TStyle"
+                Foreground="{DynamicResource DisabledTextColor}"
+                IsReadOnly="True"
+                Width="140" />
+        </StackPanel>
+
+        <StackPanel Margin="15,5,10,10" Orientation="Horizontal">
+            <TextBlock
+                Classes="txt"
+                FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
+                Text="{CompiledBinding Maximize}"
+                Width="170" />
+            <customControls:KeybindTextBox
+                Classes="hover TStyle"
+                MethodName="Maximize"
+                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                Width="140" />
+            <customControls:KeybindTextBox
+                Alt="True"
+                Classes="hover TStyle"
+                MethodName="Maximize"
+                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
