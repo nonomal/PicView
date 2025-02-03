@@ -7,7 +7,6 @@
     SizeToContent="{CompiledBinding SizeToContent}"
     Title="{CompiledBinding WindowTitle,
                             Mode=OneWay}"
-    TransparencyBackgroundFallback="{StaticResource MenuBackgroundColor}"
     TransparencyLevelHint="AcrylicBlur"
     x:Class="PicView.Avalonia.Win32.Views.WinMainWindow"
     x:DataType="viewModels:MainViewModel"
