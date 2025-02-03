@@ -30,13 +30,11 @@ public static class InputHelper
             case Key.NumPad9:
             case Key.Back:
             case Key.Delete:
-                break; // Allow numbers and basic operations
-
             case Key.Left:
             case Key.Right:
             case Key.Tab:
             case Key.OemBackTab:
-                break; // Allow navigation keys
+                break; // Allow numbers and basic operations
 
             case Key.A:
             case Key.C:
