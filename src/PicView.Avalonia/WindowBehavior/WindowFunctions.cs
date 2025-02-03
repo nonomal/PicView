@@ -276,6 +276,7 @@ public static class WindowFunctions
             vm.SizeToContent = SizeToContent.Manual;
             vm.CanResize = true;
         }
+        SetMargin();
     }
 
     public static void Maximize()
@@ -308,8 +309,28 @@ public static class WindowFunctions
             }
 
             desktop.MainWindow.WindowState = WindowState.Maximized;
-            WindowResizing.SetSize(desktop.MainWindow.DataContext as MainViewModel);
             Settings.WindowProperties.Maximized = true;
+            WindowResizing.SetSize(desktop.MainWindow.DataContext as MainViewModel);
+            SetMargin();
+        }
+    }
+    
+    private static void SetMargin()
+    {
+        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            return;
+        }
+        if (Settings.WindowProperties.Maximized)
+        {
+            UIHelper.GetTitlebar.Margin = desktop.MainWindow.OffScreenMargin;
+            UIHelper.GetBottomBar. Margin = desktop.MainWindow.OffScreenMargin;
+        }
+        else
+        {
+            var noMargin = new Thickness(0);
+            UIHelper.GetTitlebar.Margin = noMargin;
+            UIHelper.GetBottomBar.Margin = noMargin;
         }
     }
 
