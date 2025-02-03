@@ -11,6 +11,16 @@ public static class CropFunctions
 {
     public static bool IsCropping {get; private set;} 
     
+    /// <summary>
+    /// Initializes the cropping functionality by setting up the ImageCropperViewModel 
+    /// and adding the CropControl to the main view.
+    /// </summary>
+    /// <param name="vm">The main view model instance containing image properties and state.</param>
+    /// <remarks>
+    /// This method checks if cropping can be enabled and if the image source is valid.
+    /// If conditions are met, it configures the crop control with the appropriate dimensions
+    /// and updates the view model's title and tooltip to reflect the cropping state.
+    /// </remarks>
     public static void Init(MainViewModel vm)
     {
         if (!DetermineIfShouldBeEnabled(vm))
