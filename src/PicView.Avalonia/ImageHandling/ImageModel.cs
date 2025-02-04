@@ -2,7 +2,7 @@
 
 namespace PicView.Avalonia.ImageHandling;
 
-public record ImageModel
+public class ImageModel
 {
     public object? Image { get; set; }
     public FileInfo? FileInfo { get; set; }

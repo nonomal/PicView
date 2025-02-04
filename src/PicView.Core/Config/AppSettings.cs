@@ -1,6 +1,6 @@
 ﻿namespace PicView.Core.Config;
 
-public record AppSettings
+public class AppSettings
 {
     public double Version { get; set; } = 1.3;
     public WindowProperties? WindowProperties { get; set; }
@@ -13,7 +13,7 @@ public record AppSettings
     public StartUp? StartUp { get; set; }
 }
 
-public record WindowProperties
+public class WindowProperties
 {
     public double Top { get; set; } = 0;
     public double Left { get; set; } = 0;
@@ -26,7 +26,7 @@ public record WindowProperties
     public bool KeepCentered { get; set; } = false;
 }
 
-public record UIProperties
+public class UIProperties
 {
     public string UserLanguage { get; set; } = "en";
     public bool ShowInterface { get; set; } = true;
@@ -41,7 +41,7 @@ public record UIProperties
     public bool ShowConfirmationOnEsc { get; set; } = false;
 }
 
-public record Theme
+public class Theme
 {
     public bool Dark { get; set; } = true;
     public int ColorTheme { get; set; } = 3;
@@ -50,7 +50,7 @@ public record Theme
     public bool GlassTheme { get; set; } = false;
 }
 
-public record Gallery
+public class Gallery
 {
     public bool IsBottomGalleryShown { get; set; } = false;
     public bool ShowBottomGalleryInHiddenUI { get; set; } = false;
@@ -60,7 +60,7 @@ public record Gallery
     public string BottomGalleryStretchMode { get; set; } = "Uniform";
 }
 
-public record ImageScaling
+public class ImageScaling
 {
     public bool StretchImage { get; set; } = false;
     public bool IsScalingSetToNearestNeighbor { get; set; } = false;
@@ -68,7 +68,7 @@ public record ImageScaling
     public bool ShowImageSideBySide { get; set; } = false;
 }
 
-public record Zoom
+public class Zoom
 {
     public double ZoomSpeed { get; set; } = 0.3;
     public bool AvoidZoomingOut { get; set; } = false;
@@ -78,7 +78,7 @@ public record Zoom
     public bool IsUsingTouchPad { get; set; } = false;
 }
 
-public record Sorting
+public class Sorting
 {
     public bool Name { get; set; } = true;
     public bool Size { get; set; } = false;
@@ -92,7 +92,7 @@ public record Sorting
     public bool IncludeSubDirectories { get; set; } = false;
 }
 
-public record StartUp
+public class StartUp
 {
     public bool OpenLastFile { get; set; } = false;
     public bool OpenSpecificFile { get; set; } = false;
