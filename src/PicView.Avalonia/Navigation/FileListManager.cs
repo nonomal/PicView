@@ -10,6 +10,8 @@ namespace PicView.Avalonia.Navigation;
 
 public static class FileListManager
 {
+    private static CancellationTokenSource? _cancellationTokenSource;
+    
     public static List<string> SortIEnumerable(IEnumerable<string> files, IPlatformSpecificService? platformService)
     {
         var sortFilesBy = FileListHelper.GetSortOrder();
@@ -73,23 +75,8 @@ public static class FileListManager
         {
             return;
         }
-        var files = await Task.FromResult(platformSpecificService.GetFiles(vm.FileInfo)).ConfigureAwait(false);
-        if (files is { Count: > 0 })
-        {
-            vm.ImageIterator.UpdateFileListAndIndex(files, files.IndexOf(vm.FileInfo.FullName));
-            SetTitleHelper.SetTitle(vm);
-        }
-        else return;
 
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            // Fixes the text alignment
-            // TODO: Find a better solution
-            UIHelper.GetEditableTitlebar.TextBlock.TextAlignment = TextAlignment.Left;
-            UIHelper.GetEditableTitlebar.TextBlock.TextAlignment = TextAlignment.Center;
-        });
-
-        await GalleryLoad.ReloadGalleryAsync(vm, vm.FileInfo.DirectoryName);
+        await UpdateFileList(platformSpecificService, vm);
     }
 
     public static async Task UpdateFileList(IPlatformSpecificService? platformSpecificService, MainViewModel vm, bool ascending)
@@ -99,14 +86,45 @@ public static class FileListManager
         {
             return;
         }
-        var files = await Task.FromResult(platformSpecificService.GetFiles(vm.FileInfo)).ConfigureAwait(false);
-        if (files is { Count: > 0 })
+        await UpdateFileList(platformSpecificService, vm);
+    }
+
+    private static async Task UpdateFileList(IPlatformSpecificService? platformSpecificService, MainViewModel vm)
+    {
+        if (_cancellationTokenSource is not null)
         {
-            vm.ImageIterator.UpdateFileListAndIndex(files, files.IndexOf(vm.FileInfo.FullName));
-            SetTitleHelper.SetTitle(vm);
+            await _cancellationTokenSource.CancelAsync().ConfigureAwait(false);
         }
-        else return;
-        
+
+        _cancellationTokenSource = new CancellationTokenSource();
+        var success = await Task.Run(() =>
+        {
+            try
+            {
+                var files = platformSpecificService.GetFiles(vm.FileInfo);
+                if (files is not { Count: > 0 })
+                {
+                    return false;
+                }
+
+                vm.ImageIterator.UpdateFileListAndIndex(files, files.IndexOf(vm.FileInfo.FullName));
+                SetTitleHelper.SetTitle(vm);
+                return true;
+            }
+            catch (Exception e)
+            {
+#if DEBUG
+                Console.WriteLine($"{nameof(UpdateFileList)} exception:\n{e.Message}");
+#endif
+                return false;
+            }
+
+        }, _cancellationTokenSource.Token);
+        if (!success)
+        {
+            return;
+        }
+
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             // Fixes the text alignment
@@ -115,7 +133,9 @@ public static class FileListManager
             UIHelper.GetEditableTitlebar.TextBlock.TextAlignment = TextAlignment.Center;
         });
 
-
-        await GalleryLoad.ReloadGalleryAsync(vm, vm.FileInfo.DirectoryName);
+        if (!_cancellationTokenSource.IsCancellationRequested)
+        {
+            await GalleryLoad.ReloadGalleryAsync(vm, vm.FileInfo.DirectoryName);
+        }
     }
 }
