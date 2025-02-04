@@ -321,17 +321,14 @@ public static class WindowFunctions
         {
             return;
         }
-        if (Settings.WindowProperties.Maximized)
+
+        if (desktop.MainWindow.DataContext is not MainViewModel vm)
         {
-            UIHelper.GetTitlebar.Margin = desktop.MainWindow.OffScreenMargin;
-            UIHelper.GetBottomBar. Margin = desktop.MainWindow.OffScreenMargin;
+            return;
         }
-        else
-        {
-            var noMargin = new Thickness(0);
-            UIHelper.GetTitlebar.Margin = noMargin;
-            UIHelper.GetBottomBar.Margin = noMargin;
-        }
+        vm.ScreenMargin = Settings.WindowProperties.Maximized ? 
+            desktop.MainWindow.OffScreenMargin :
+            new Thickness(0);
     }
 
     public static void Fullscreen(MainViewModel vm, IClassicDesktopStyleApplicationLifetime desktop)

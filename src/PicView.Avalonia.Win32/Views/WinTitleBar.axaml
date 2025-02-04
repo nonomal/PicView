@@ -3,6 +3,8 @@
                              Mode=OneWay}"
     IsVisible="{CompiledBinding IsTopToolbarShown,
                                 Mode=OneWay}"
+    Margin="{CompiledBinding ScreenMargin,
+                             Mode=OneWay}"
     x:Class="PicView.Avalonia.Win32.Views.WinTitleBar"
     x:DataType="vm:MainViewModel"
     xmlns="https://github.com/avaloniaui"

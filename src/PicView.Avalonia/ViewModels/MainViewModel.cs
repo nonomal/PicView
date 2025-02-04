@@ -628,6 +628,12 @@ public class MainViewModel : ViewModelBase
     }
 
     #endregion Booleans
+
+    public Thickness ScreenMargin
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
     
     public int BackgroundChoice
     {
