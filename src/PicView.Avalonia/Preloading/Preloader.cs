@@ -51,34 +51,27 @@ public sealed class PreLoader : IAsyncDisposable
             return false;
         }
 
-
         var preLoadValue = new PreLoadValue(imageModel);
+        if (!_preLoadList.TryAdd(index, preLoadValue))
+            return false;
+
+        preLoadValue.IsLoading = true;
         try
         {
-            if (_preLoadList.TryAdd(index, preLoadValue))
+            if (imageModel?.Image == null)
             {
-                preLoadValue.IsLoading = true;
-                if (imageModel == null)
-                {
-                    var fileInfo = new FileInfo(list[index]);
-                    imageModel = await GetImageModel.GetImageModelAsync(fileInfo).ConfigureAwait(false);
-                }
-                else if (imageModel.Image == null)
-                {
-                    imageModel = await GetImageModel.GetImageModelAsync(imageModel.FileInfo).ConfigureAwait(false);
-                }
+                var fileInfo = imageModel?.FileInfo ?? new FileInfo(list[index]);
+                imageModel = await GetImageModel.GetImageModelAsync(fileInfo).ConfigureAwait(false);
+            }
 
-                preLoadValue.ImageModel = imageModel;
-                imageModel.EXIFOrientation ??= EXIFHelper.GetImageOrientation(imageModel.FileInfo);
+            preLoadValue.ImageModel = imageModel;
+            imageModel.EXIFOrientation ??= EXIFHelper.GetImageOrientation(imageModel.FileInfo);
 
 #if DEBUG
-                if (ShowAddRemove)
-                {
-                    Trace.WriteLine($"{imageModel.FileInfo.Name} added at {index}");
-                }
+            if (ShowAddRemove)
+                Trace.WriteLine($"{imageModel.FileInfo.Name} added at {index}");
 #endif
-                return true;
-            }
+            return true;
         }
         catch (Exception ex)
         {
@@ -91,8 +84,6 @@ public sealed class PreLoader : IAsyncDisposable
         {
             preLoadValue.IsLoading = false;
         }
-
-        return false;
     }
 
     /// <summary>
@@ -203,7 +194,20 @@ public sealed class PreLoader : IAsyncDisposable
     /// </remarks>
     public async Task ClearAsync()
     {
-        await _cancellationTokenSource?.CancelAsync();
+        try
+        {
+            if (_cancellationTokenSource is not null)
+            {
+                await _cancellationTokenSource?.CancelAsync();
+            }
+        }
+        catch (Exception e)
+        {
+#if DEBUG
+            Trace.WriteLine($"{nameof(PreLoader)}.{nameof(ClearAsync)} exception: \n{e.StackTrace}");
+#endif
+        }
+        
         Clear();
     }
 
@@ -269,10 +273,18 @@ public sealed class PreLoader : IAsyncDisposable
     /// <returns>True if the key was removed; otherwise, false.</returns>
     public bool Remove(int key, List<string> list)
     {
-        if (list == null || key < 0 || key >= list.Count || !Contains(key, list))
+        if (list == null || key < 0 || key >= list.Count)
         {
 #if DEBUG
             Trace.WriteLine($"{nameof(PreLoader)}.{nameof(Remove)} invalid parameters: \n{key}");
+#endif
+            return false;
+        }
+
+        if (!Contains(key, list))
+        {
+#if DEBUG
+            Trace.WriteLine($"{nameof(PreLoader)}.{nameof(Remove)} key does not exist: \n{key}");
 #endif
             return false;
         }
@@ -289,7 +301,6 @@ public sealed class PreLoader : IAsyncDisposable
 
                 if (item.ImageModel is not null)
                 {
-                    item.ImageModel.Image = null;
                     item.ImageModel.FileInfo = null;
                 }
 
@@ -333,16 +344,19 @@ public sealed class PreLoader : IAsyncDisposable
         {
             return;
         }
+        
+#if DEBUG
+        if (ShowAddRemove)
+        {
+            Trace.WriteLine($"\nPreLoading started at {currentIndex}\n");
+        }
+#endif
             
         _cancellationTokenSource ??= new CancellationTokenSource();
 
         try
         {
-            await PreLoadInternalAsync(currentIndex, reverse, list, _cancellationTokenSource.Token);
-        }
-        catch (OperationCanceledException)
-        {
-            // Handle cancellation gracefully
+            await PreLoadInternalAsync(currentIndex, reverse, list, _cancellationTokenSource.Token).ConfigureAwait(false);
         }
         catch (Exception exception)
         {
@@ -351,7 +365,7 @@ public sealed class PreLoader : IAsyncDisposable
 #endif
         }
     }
-
+    
     private async Task PreLoadInternalAsync(int currentIndex, bool reverse, List<string> list,
         CancellationToken token)
     {
@@ -371,35 +385,31 @@ public sealed class PreLoader : IAsyncDisposable
             prevStartingIndex = currentIndex - 1;
         }
 
-        var array = new int[PreLoaderConfig.MaxCount];
-
-#if DEBUG
-        if (ShowAddRemove)
-        {
-            Trace.WriteLine($"\nPreLoading started at {currentIndex}\n");
-        }
-#endif
-
         var options = new ParallelOptions
         {
             MaxDegreeOfParallelism = _config.MaxParallelism,
             CancellationToken = token
         };
+        
+        var isParallel = _preLoadList.Count <= 1;
 
         try
         {
             if (reverse)
             {
-                await LoopAsync(options, false);
-                await LoopAsync(options, true);
+                await LoopAsync(options, false, isParallel);
+                await LoopAsync(options, true, isParallel);
             }
             else
             {
-                await LoopAsync(options, true);
-                await LoopAsync(options, false);
+                await LoopAsync(options, true, isParallel);
+                await LoopAsync(options, false, isParallel);
             }
 
-            RemoveLoop();
+            if (!isParallel)
+            {
+                RemoveLoop();
+            }
         }
         finally
         {
@@ -408,58 +418,42 @@ public sealed class PreLoader : IAsyncDisposable
 
         return;
             
-        async Task LoopAsync(ParallelOptions parallelOptions, bool positive)
+        async Task LoopAsync(ParallelOptions parallelOptions, bool positive, bool parallel)
         {
-            await Parallel.ForAsync(0, PreLoaderConfig.PositiveIterations, parallelOptions, async (i, _) =>
+            if (parallel)
             {
-                var index = positive ? (nextStartingIndex + i) % count : (prevStartingIndex - i + count) % count;
-                var isAdded = await AddAsync(index, list);
-                if (isAdded)
+                await Parallel.ForAsync(0, PreLoaderConfig.PositiveIterations, parallelOptions, async (i, _) =>
                 {
-                    array[i] = index;
+                    var index = positive ? (nextStartingIndex + i) % count : (prevStartingIndex - i + count) % count;
+                    await AddAsync(index, list);
+                });
+            }
+            else
+            {
+                for (var i = 0; i < PreLoaderConfig.PositiveIterations; i++)
+                {
+                    var index = positive ? (nextStartingIndex + i) % count : (prevStartingIndex - i + count) % count;
+                    await AddAsync(index, list);
                 }
-            });
+            }
         }
 
         void RemoveLoop()
         {
-            // Iterate through the _preLoadList and remove items outside the preload range
-
+            // Remove items outside the preload range
             if (list.Count <= PreLoaderConfig.MaxCount + PreLoaderConfig.NegativeIterations ||
                 _preLoadList.Count <= PreLoaderConfig.MaxCount)
             {
                 return;
             }
 
-            var deleteCount = _preLoadList.Count - PreLoaderConfig.MaxCount < PreLoaderConfig.MaxCount
-                ? PreLoaderConfig.MaxCount
-                : _preLoadList.Count - PreLoaderConfig.MaxCount;
-            for (var i = 0; i < deleteCount; i++)
+            do
             {
-                var removeIndex = reverse ? _preLoadList.Keys.Max() : _preLoadList.Keys.Min();
-                if (i >= array.Length)
-                {
-                    return;
-                }
-
-                if (array[i] == removeIndex || removeIndex == currentIndex)
-                {
-                    continue;
-                }
-
-                if (removeIndex > currentIndex + 2 || removeIndex < currentIndex - 2)
-                {
-                    Remove(removeIndex, list);
-                }
-            }
-
-            if (deleteCount > 1)
-            {
-                // Collect unmanaged memory, prevent memory leak
-                Collect(0, GCCollectionMode.Optimized, false);
-            }
+                Remove(reverse ? _preLoadList.Keys.Max() : _preLoadList.Keys.Min(), list);
+            } while (_preLoadList.Count > PreLoaderConfig.MaxCount);
         }
     }
+
 
     #region IDisposable
 
@@ -468,7 +462,6 @@ public sealed class PreLoader : IAsyncDisposable
     public void Dispose()
     {
         Dispose(true);
-        SuppressFinalize(this);
         Collect(MaxGeneration, GCCollectionMode.Optimized, false);
     }
 
@@ -494,9 +487,13 @@ public sealed class PreLoader : IAsyncDisposable
             return;
         }
 
-        await ClearAsync().ConfigureAwait(false);
+        if (_cancellationTokenSource is not null)
+        {
+            await ClearAsync().ConfigureAwait(false);
+        }
 
         Dispose(false);
+        SuppressFinalize(this);
     }
 
     ~PreLoader()
