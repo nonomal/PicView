@@ -673,7 +673,6 @@ public sealed class ImageIterator : IAsyncDisposable
     public void Dispose()
     {
         Dispose(true);
-        GC.SuppressFinalize(this);
     }
     
     public async ValueTask DisposeAsync()
@@ -701,6 +700,7 @@ public sealed class ImageIterator : IAsyncDisposable
         }
 
         _disposed = true;
+        GC.SuppressFinalize(this);
     }
     
 
