@@ -576,31 +576,43 @@ public static class NavigationHelper
         }
 
         fileInfo ??= new FileInfo(file);
-        vm.ImageIterator?.Dispose();
-        var fileList = await Task.FromResult(vm.PlatformService.GetFiles(fileInfo)).ConfigureAwait(false);
-        if (fileList.Count <= 0)
+        if (vm.ImageIterator is not null)
         {
-            // Attempt to reload with subdirectories and reset the setting
-            if (!Settings.Sorting.IncludeSubDirectories)
-            {
-                Settings.Sorting.IncludeSubDirectories = true;
-                fileList = await Task.FromResult(vm.PlatformService.GetFiles(fileInfo)).ConfigureAwait(false);
-                if (fileList.Count <= 0)
-                {
-                    await ErrorHandling.ReloadAsync(vm).ConfigureAwait(false);
-                    return;
-                }
-
-                Settings.Sorting.IncludeSubDirectories = false;
-            }
-            else
-            {
-                await ErrorHandling.ReloadAsync(vm).ConfigureAwait(false);
-                return;
-            }
+            await vm.ImageIterator.DisposeAsync();
         }
+        
+        var newFileList = await Task.Run(() =>
+        {
+            var fileList = vm.PlatformService.GetFiles(fileInfo);
+            if (fileList.Count > 0)
+            {
+                return fileList;
+            }
 
-        vm.ImageIterator = new ImageIterator(fileInfo, fileList, 0, vm);
+            // Attempt to reload with subdirectories and reset the setting
+            if (Settings.Sorting.IncludeSubDirectories)
+            {
+                return null;
+            }
+
+            Settings.Sorting.IncludeSubDirectories = true;
+            fileList = vm.PlatformService.GetFiles(fileInfo);
+            if (fileList.Count <= 0)
+            {
+                return null;
+            }
+
+            Settings.Sorting.IncludeSubDirectories = false;
+            return fileList;
+        });
+
+        if (newFileList is null)
+        {
+            await ErrorHandling.ReloadAsync(vm).ConfigureAwait(false);
+            return;
+        }
+        
+        vm.ImageIterator = new ImageIterator(fileInfo, newFileList, 0, vm);
         await vm.ImageIterator.IterateToIndex(0, _cancellationTokenSource).ConfigureAwait(false);
         await CheckAndReloadGallery(fileInfo, vm);
     }
