@@ -23,15 +23,22 @@ public static class GetThumbnails
             {
                 return await CreateThumbAsync(magick, path, height, fileInfo).ConfigureAwait(false);
             }
-
-            var byteArray = thumbnail.ToByteArray();
-            var stream = new MemoryStream(byteArray);
-            return new Bitmap(stream);
+            
+            return thumbnail.ToWriteableBitmap();
         }
         catch (Exception)
         {
             return null;
         }
+    }
+
+    public static WriteableBitmap? GetExifThumb(string path)
+    {
+        using var magick = new MagickImage();
+        magick.Ping(path);
+        var profile = magick.GetExifProfile();
+        var thumbnail = profile?.CreateThumbnail();
+        return thumbnail?.ToWriteableBitmap();
     }
 
     public static async Task<Bitmap?> CreateThumbAsync(MagickImage magick, string path, uint height,

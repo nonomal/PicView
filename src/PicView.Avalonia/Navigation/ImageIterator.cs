@@ -627,8 +627,16 @@ public sealed class ImageIterator : IAsyncDisposable
         {
             SetTitleHelper.SetLoadingTitle(_vm);
             _vm.IsLoading = true;
-            _vm.ImageSource = null;
-            _vm.SecondaryImageSource = null;
+            _vm.ImageSource = GetThumbnails.GetExifThumb(ImagePaths[index]);
+            if (Settings.ImageScaling.ShowImageSideBySide)
+            {
+                _vm.SecondaryImageSource = GetThumbnails.GetExifThumb(ImagePaths[NextIndex]);
+            }
+            else
+            {
+                _vm.SecondaryImageSource = null;
+            }
+            
         }
     }
 
