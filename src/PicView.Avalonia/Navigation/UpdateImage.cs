@@ -9,6 +9,7 @@ using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Gallery;
+using PicView.Core.ImageDecoding;
 using PicView.Core.Navigation;
 
 namespace PicView.Avalonia.Navigation;
@@ -189,9 +190,45 @@ public static class UpdateImage
         vm.PixelWidth = width;
         vm.PixelHeight = height;
     }
+    
+    public static void SetTiffImage(TiffManager.TiffNavigationInfo tiffNavigationInfo, string name, MainViewModel vm)
+    {
+        var source = tiffNavigationInfo.Pages[tiffNavigationInfo.CurrentPage].ToWriteableBitmap();
+        vm.ImageSource = source;
+        vm.SecondaryImageSource = null;
+        vm.ImageType = ImageType.Bitmap;
+        var width = source?.PixelSize.Width ?? 0;
+        var height = source?.PixelSize.Height ?? 0;
+        
+        name = name.Insert(name.LastIndexOf('.'), $" [{tiffNavigationInfo.CurrentPage}/{tiffNavigationInfo.PageCount - 1}]");
+
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            WindowResizing.SetSize(width, height, 0, 0, 0, vm);
+        }, DispatcherPriority.Send);
+        
+        if (vm.RotationAngle != 0)
+        {
+            vm.ImageViewer.Rotate(vm.RotationAngle);
+        }
+
+        var singeImageWindowTitles = ImageTitleFormatter.GenerateTitleForSingleImage(width, height, name, 1);
+        vm.WindowTitle = singeImageWindowTitles.TitleWithAppName;
+        vm.Title = singeImageWindowTitles.BaseTitle; 
+        vm.TitleTooltip = singeImageWindowTitles.BaseTitle;
+        vm.GalleryMargin = new Thickness(0, 0, 0, 0);
+
+        vm.PlatformService.StopTaskbarProgress();
+        
+        vm.PixelWidth = width;
+        vm.PixelHeight = height;
+    }
 
     public static void LoadingPreview(MainViewModel vm, int index)
     {
+        SetTitleHelper.SetLoadingTitle(vm);
+        vm.IsLoading = true;
+        
         vm.SelectedGalleryItemIndex = index;
         if (Settings.Gallery.IsBottomGalleryShown)
         {
@@ -200,17 +237,17 @@ public static class UpdateImage
 
         using var image = new MagickImage();
         image.Ping(vm.ImageIterator.ImagePaths[index]);
-        var thumb = image.GetExifProfile()?.CreateThumbnail();
+        var thumb = image.GetExifProfile()?.CreateThumbnail().ToWriteableBitmap();
 
-        var byteArray = thumb?.ToByteArray();
-        if (byteArray is null)
+        vm.ImageSource = thumb;
+        if (Settings.ImageScaling.ShowImageSideBySide)
         {
-            return;
+            vm.SecondaryImageSource = GetThumbnails.GetExifThumb(vm.ImageIterator.ImagePaths[vm.ImageIterator.NextIndex]);
         }
-
-        var stream = new MemoryStream(byteArray);
-        vm.ImageSource = new Bitmap(stream);
-        vm.ImageType = ImageType.Bitmap;
+        else
+        {
+            vm.SecondaryImageSource = null;
+        }
     }
 
     #endregion

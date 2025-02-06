@@ -486,13 +486,18 @@ public sealed class ImageIterator : IAsyncDisposable
             return;
         }
 
+        await NextIteration(index, cts).ConfigureAwait(false);
+    }
+    
+    public async Task NextIteration(int iteration, CancellationTokenSource cts)
+    {
         if (!MainKeyboardShortcuts.IsKeyHeldDown)
         {
-            await IterateToIndex(index, cts).ConfigureAwait(false);
+            await IterateToIndex(iteration, cts).ConfigureAwait(false);
         }
         else
         {
-            await TimerIteration(index, cts).ConfigureAwait(false);
+            await TimerIteration(iteration, cts).ConfigureAwait(false);
         }
     }
 
@@ -521,7 +526,7 @@ public sealed class ImageIterator : IAsyncDisposable
                 // Wait for image to load
                 if (preloadValue is { IsLoading: true, ImageModel.Image: not null })
                 {
-                    TryShowPreview();
+                    UpdateImage.LoadingPreview(_vm, CurrentIndex);
 
                     do
                     {
@@ -537,7 +542,7 @@ public sealed class ImageIterator : IAsyncDisposable
             }
             else
             {
-                TryShowPreview();
+                UpdateImage.LoadingPreview(_vm, CurrentIndex);
                 preloadValue = await PreLoader.GetAsync(CurrentIndex, ImagePaths).ConfigureAwait(false);
             }
 
@@ -622,22 +627,6 @@ public sealed class ImageIterator : IAsyncDisposable
         }
 
         return;
-
-        void TryShowPreview()
-        {
-            SetTitleHelper.SetLoadingTitle(_vm);
-            _vm.IsLoading = true;
-            _vm.ImageSource = GetThumbnails.GetExifThumb(ImagePaths[index]);
-            if (Settings.ImageScaling.ShowImageSideBySide)
-            {
-                _vm.SecondaryImageSource = GetThumbnails.GetExifThumb(ImagePaths[NextIndex]);
-            }
-            else
-            {
-                _vm.SecondaryImageSource = null;
-            }
-            
-        }
     }
 
     private static Timer? _timer;

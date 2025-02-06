@@ -24,6 +24,8 @@ namespace PicView.Avalonia.Navigation;
 public static class NavigationHelper
 {
     private static CancellationTokenSource? _cancellationTokenSource;
+    
+    public static TiffManager.TiffNavigationInfo? TiffNavigationInfo { get; private set; }
 
     #region Navigation
 
@@ -56,11 +58,47 @@ public static class NavigationHelper
         if (GalleryFunctions.IsFullGalleryOpen)
         {
             await ScrollGallery(next);
+            return;
+        }
+
+        var navigateTo = next ? NavigateTo.Next : NavigateTo.Previous;
+        var nextIteration = vm.ImageIterator.GetIteration(vm.ImageIterator.CurrentIndex, navigateTo);
+        var currentFileName = vm.ImageIterator.ImagePaths[vm.ImageIterator.CurrentIndex];
+        if (!TiffManager.IsTiff(currentFileName) || vm.ImageIterator.IsReversed)
+        {
+            await CheckCancellationAndStartIterateToIndex(nextIteration, vm).ConfigureAwait(false);
+            return;
+        }
+
+        if (TiffNavigationInfo is null)
+        {
+            var tiffPages = await Task.FromResult(TiffManager.LoadTiffPages(currentFileName)).ConfigureAwait(false);
+            if (tiffPages.Count < 1)
+            {
+                await CheckCancellationAndStartIterateToIndex(nextIteration, vm).ConfigureAwait(false);
+                return;
+            }
+            TiffNavigationInfo = new TiffManager.TiffNavigationInfo
+            {
+                CurrentPage = 1, // Skip first page since it has already been shown
+                PageCount = tiffPages.Count,
+                Pages = tiffPages
+            };
         }
         else
         {
-            var navigateTo = next ? NavigateTo.Next : NavigateTo.Previous;
-            await CheckCancellationAndStartNextIteration(navigateTo, vm).ConfigureAwait(false);
+            TiffNavigationInfo.CurrentPage += 1;
+        }
+                
+        if (TiffNavigationInfo.CurrentPage >= TiffNavigationInfo.PageCount)
+        {
+            TiffNavigationInfo.Dispose();
+            TiffNavigationInfo = null;
+            await CheckCancellationAndStartIterateToIndex(nextIteration, vm).ConfigureAwait(false);
+        }
+        else
+        {
+            UpdateImage.SetTiffImage(TiffNavigationInfo, Path.GetFileName(currentFileName), vm);
         }
     }
 
@@ -157,11 +195,6 @@ public static class NavigationHelper
     /// <returns>A task representing the asynchronous operation.</returns>
     public static async Task Iterate(bool next, MainViewModel vm)
     {
-        if (!CanNavigate(vm))
-        {
-            return;
-        }
-
         if (GalleryFunctions.IsFullGalleryOpen)
         {
             GalleryNavigation.NavigateGallery(next ? Direction.Right : Direction.Left, vm);
@@ -622,27 +655,6 @@ public static class NavigationHelper
     #region Private helpers
     
     /// <summary>
-    /// Checks if the previous iteration has been cancelled and starts the next iteration in a new task.
-    /// </summary>
-    /// <param name="navigateTo">The direction to navigate.</param>
-    /// <param name="vm">The main view model instance.</param>
-    /// <returns>A task representing the asynchronous operation.</returns>
-    private static async Task CheckCancellationAndStartNextIteration(NavigateTo navigateTo, MainViewModel vm)
-    {
-        await Task.Run(() =>
-        {
-            if (_cancellationTokenSource is not null)
-            {
-                _ = _cancellationTokenSource.CancelAsync().ConfigureAwait(false);
-            }
-
-            _cancellationTokenSource = new CancellationTokenSource();
-            _ = vm.ImageIterator.NextIteration(navigateTo, _cancellationTokenSource).ConfigureAwait(false);
-            _cancellationTokenSource.CancelAfter(TimeSpan.FromMinutes(5));
-        }).ConfigureAwait(false);
-    }
-    
-    /// <summary>
     /// Checks if the previous iteration has been cancelled and starts the iteration at the given index in a new task.
     /// </summary>
     /// <param name="index">The index to iterate to.</param>
@@ -736,6 +748,8 @@ public static class NavigationHelper
                 WindowResizing.SetSize(imageModel.PixelWidth, imageModel.PixelHeight, 0, 0, imageModel.Rotation, vm);
             });
         }
+
+        vm.IsLoading = false; //Don't show loading indicator
         
         await vm.ImageIterator.DisposeAsync();
 
