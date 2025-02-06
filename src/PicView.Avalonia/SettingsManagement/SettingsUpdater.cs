@@ -106,11 +106,11 @@ public static class SettingsUpdater
     {
         if (Settings.Sorting.IncludeSubDirectories)
         {
-            await TurnOffSubdirectories(vm);
+            await TurnOffSubdirectories(vm).ConfigureAwait(false);
         }
         else
         {
-            await TurnOnSubdirectories(vm);
+            await TurnOnSubdirectories(vm).ConfigureAwait(false);
         }
         await SaveSettingsAsync();
     }
@@ -120,7 +120,7 @@ public static class SettingsUpdater
         vm.IsIncludingSubdirectories = false;
         Settings.Sorting.IncludeSubDirectories = false;
         
-        await vm.ImageIterator.ReloadFileList();
+        await vm.ImageIterator.ReloadFileList().ConfigureAwait(false);
         SetTitleHelper.SetTitle(vm);
     }
     
