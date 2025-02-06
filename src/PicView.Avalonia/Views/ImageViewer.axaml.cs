@@ -179,11 +179,6 @@ public partial class ImageViewer : UserControl
 
         async Task LoadNextPic()
         {
-            if (!NavigationHelper.CanNavigate(mainViewModel))
-            {
-                return;
-            }
-
             bool next;
             if (reverse)
             {

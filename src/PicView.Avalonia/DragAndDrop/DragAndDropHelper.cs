@@ -46,27 +46,28 @@ public static class DragAndDropHelper
         }
         else if (path.IsSupported())
         {
-            await NavigationHelper.LoadPicFromStringAsync(path, vm).ConfigureAwait(false);
             if (vm.CurrentView != vm.ImageViewer)
             {
                 await Dispatcher.UIThread.InvokeAsync(() => vm.CurrentView = vm.ImageViewer);
             }
+            await NavigationHelper.LoadPicFromStringAsync(path, vm).ConfigureAwait(false);
         }
         else if (Directory.Exists(path))
         {
-            await NavigationHelper.LoadPicFromDirectoryAsync(path, vm).ConfigureAwait(false);
             if (vm.CurrentView != vm.ImageViewer)
             {
                 await Dispatcher.UIThread.InvokeAsync(() => vm.CurrentView = vm.ImageViewer);
             }
+            await NavigationHelper.LoadPicFromDirectoryAsync(path, vm).ConfigureAwait(false);
+
         }
         else if (path.IsArchive())
         {
-            await NavigationHelper.LoadPicFromArchiveAsync(path, vm).ConfigureAwait(false);
             if (vm.CurrentView != vm.ImageViewer)
             {
                 await Dispatcher.UIThread.InvokeAsync(() => vm.CurrentView = vm.ImageViewer);
             }
+            await NavigationHelper.LoadPicFromArchiveAsync(path, vm).ConfigureAwait(false);
         }
 
         if (!Settings.UIProperties.OpenInSameWindow)

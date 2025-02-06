@@ -9,7 +9,6 @@ using Avalonia.Media.Imaging;
 using Avalonia.Metadata;
 using Avalonia.Rendering.Composition;
 using Avalonia.Svg.Skia;
-using Avalonia.Utilities;
 using ImageMagick;
 using PicView.Avalonia.AnimatedImage;
 using PicView.Avalonia.ImageHandling;
@@ -447,8 +446,8 @@ public class PicBox : Control
         var isConstrainedHeight = !double.IsPositiveInfinity(destinationSize.Height);
 
         // Compute scaling factors for both axes
-        var scaleX = MathUtilities.IsZero(sourceSize.Width) ? 0.0 : destinationSize.Width / sourceSize.Width;
-        var scaleY = MathUtilities.IsZero(sourceSize.Height) ? 0.0 : destinationSize.Height / sourceSize.Height;
+        var scaleX = Math.Abs(sourceSize.Width) < double.Epsilon ? 0.0 : destinationSize.Width / sourceSize.Width;
+        var scaleY = Math.Abs(sourceSize.Height) < double.Epsilon ? 0.0 : destinationSize.Height / sourceSize.Height;
 
         if (!isConstrainedWidth)
         {
