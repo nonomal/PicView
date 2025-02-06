@@ -51,7 +51,7 @@ public partial class ImageViewer : UserControl
         var scalingMode = Settings.ImageScaling.IsScalingSetToNearestNeighbor 
             ? BitmapInterpolationMode.LowQuality 
             : BitmapInterpolationMode.HighQuality;
-
+        
         RenderOptions.SetBitmapInterpolationMode(MainImage,scalingMode);
         if (invalidate)
         {
@@ -216,12 +216,12 @@ public partial class ImageViewer : UserControl
 
     public void ZoomIn(PointerWheelEventArgs e)
     {
-        ZoomTo(e.GetPosition(ImageScrollViewer), true);
+        ZoomTo(e, true);
     }
 
     public void ZoomOut(PointerWheelEventArgs e)
     {
-        ZoomTo(e.GetPosition(ImageScrollViewer), false);
+        ZoomTo(e, false);
     }
 
     public void ZoomIn()
@@ -232,6 +232,26 @@ public partial class ImageViewer : UserControl
     public void ZoomOut()
     {
         ZoomTo(_current, false);
+    }
+
+    public void ZoomTo(PointerWheelEventArgs e, bool isZoomIn)
+    {
+        Point relativePosition;
+        if (!MainImage.IsPointerOver)
+        {
+            // Get center of the ImageViewer control
+            var centerX = Bounds.Width / 2;
+            var centerY = Bounds.Height / 2;
+        
+            // Convert to MainImage's coordinate space
+            relativePosition = this.TranslatePoint(new Point(centerX, centerY), MainImage) 
+                               ?? new Point(MainImage.Bounds.Width / 2, MainImage.Bounds.Height / 2);
+        }
+        else
+        {
+            relativePosition = e.GetPosition(MainImage);
+        }
+        ZoomTo(relativePosition, isZoomIn);
     }
 
     public void ZoomTo(Point point, bool isZoomIn)
@@ -269,7 +289,6 @@ public partial class ImageViewer : UserControl
 
         currentZoom += zoomSpeed;
         currentZoom = Math.Max(0.09, currentZoom); // Fix for zooming out too much
-        TriggerScalingModeUpdate(false);
         if (Settings.Zoom.AvoidZoomingOut && currentZoom < 1.0)
         {
             ResetZoom(true);
@@ -701,8 +720,5 @@ public partial class ImageViewer : UserControl
     }
 
     #endregion Events
-
-    
-
     
 }
