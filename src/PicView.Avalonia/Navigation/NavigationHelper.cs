@@ -64,13 +64,19 @@ public static class NavigationHelper
         var navigateTo = next ? NavigateTo.Next : NavigateTo.Previous;
         var nextIteration = vm.ImageIterator.GetIteration(vm.ImageIterator.CurrentIndex, navigateTo);
         var currentFileName = vm.ImageIterator.ImagePaths[vm.ImageIterator.CurrentIndex];
-        if (!TiffManager.IsTiff(currentFileName) || vm.ImageIterator.IsReversed)
+        if (!TiffManager.IsTiff(currentFileName))
         {
             await CheckCancellationAndStartIterateToIndex(nextIteration, vm).ConfigureAwait(false);
-            return;
         }
+        else
+        {
+            await TiffNavigation(vm, currentFileName, nextIteration).ConfigureAwait(false);
+        }
+    }
 
-        if (TiffNavigationInfo is null)
+    private static async Task TiffNavigation(MainViewModel vm, string currentFileName, int nextIteration)
+    {
+        if (TiffNavigationInfo is null && !vm.ImageIterator.IsReversed)
         {
             var tiffPages = await Task.FromResult(TiffManager.LoadTiffPages(currentFileName)).ConfigureAwait(false);
             if (tiffPages.Count < 1)
@@ -80,25 +86,45 @@ public static class NavigationHelper
             }
             TiffNavigationInfo = new TiffManager.TiffNavigationInfo
             {
-                CurrentPage = 1, // Skip first page since it has already been shown
+                CurrentPage = 0,
                 PageCount = tiffPages.Count,
                 Pages = tiffPages
             };
         }
-        else
+
+        if (TiffNavigationInfo is null)
         {
-            TiffNavigationInfo.CurrentPage += 1;
-        }
-                
-        if (TiffNavigationInfo.CurrentPage >= TiffNavigationInfo.PageCount)
-        {
-            TiffNavigationInfo.Dispose();
-            TiffNavigationInfo = null;
             await CheckCancellationAndStartIterateToIndex(nextIteration, vm).ConfigureAwait(false);
         }
         else
         {
-            UpdateImage.SetTiffImage(TiffNavigationInfo, Path.GetFileName(currentFileName), vm);
+            if (vm.ImageIterator.IsReversed)
+            {
+                if (TiffNavigationInfo.CurrentPage - 1 <= 0)
+                {
+                    await CheckCancellationAndStartIterateToIndex(vm.ImageIterator.CurrentIndex, vm).ConfigureAwait(false);
+                    TiffNavigationInfo.Dispose();
+                    TiffNavigationInfo = null;
+                    return;
+                }
+
+                TiffNavigationInfo.CurrentPage -= 1;
+            }
+            else
+            {
+                TiffNavigationInfo.CurrentPage += 1;
+            }
+                
+            if (TiffNavigationInfo.CurrentPage >= TiffNavigationInfo.PageCount || TiffNavigationInfo.CurrentPage <= 0)
+            {
+                await CheckCancellationAndStartIterateToIndex(nextIteration, vm).ConfigureAwait(false);
+                TiffNavigationInfo.Dispose();
+                TiffNavigationInfo = null;
+            }
+            else
+            {
+                UpdateImage.SetTiffImage(TiffNavigationInfo, Path.GetFileName(currentFileName), vm);
+            }
         }
     }
 

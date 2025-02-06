@@ -200,7 +200,7 @@ public static class UpdateImage
         var width = source?.PixelSize.Width ?? 0;
         var height = source?.PixelSize.Height ?? 0;
         
-        name = name.Insert(name.LastIndexOf('.'), $" [{tiffNavigationInfo.CurrentPage}/{tiffNavigationInfo.PageCount - 1}]");
+        name = name.Insert(name.LastIndexOf('.'), $" [{tiffNavigationInfo.CurrentPage + 1}/{tiffNavigationInfo.PageCount}]");
 
         Dispatcher.UIThread.Invoke(() =>
         {
