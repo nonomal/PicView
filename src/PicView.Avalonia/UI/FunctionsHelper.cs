@@ -348,22 +348,22 @@ public static class FunctionsHelper
 
     public static async Task ChangeCtrlZoom()
     {
-        await SettingsUpdater.ToggleCtrlZoom(Vm);
+        await SettingsUpdater.ToggleCtrlZoom(Vm).ConfigureAwait(false);
     }
 
     public static async Task ToggleLooping()
     {
-        await SettingsUpdater.ToggleLooping(Vm);
+        await SettingsUpdater.ToggleLooping(Vm).ConfigureAwait(false);
     }
     
     public static async Task ToggleInterface()
     {
-        await HideInterfaceLogic.ToggleUI(Vm);
+        await HideInterfaceLogic.ToggleUI(Vm).ConfigureAwait(false);
     }
     
     public static async Task ToggleSubdirectories()
     {
-        await SettingsUpdater.ToggleSubdirectories(vm: Vm);
+        await SettingsUpdater.ToggleSubdirectories(vm: Vm).ConfigureAwait(false);
     }
     
     public static async Task ToggleBottomToolbar()
@@ -372,12 +372,12 @@ public static class FunctionsHelper
         {
             return;
         }
-        await HideInterfaceLogic.ToggleBottomToolbar(Vm);
+        await HideInterfaceLogic.ToggleBottomToolbar(Vm).ConfigureAwait(false);
     }
     
     public static async Task ToggleTaskbarProgress()
     {
-        await SettingsUpdater.ToggleTaskbarProgress(Vm);
+        await SettingsUpdater.ToggleTaskbarProgress(Vm).ConfigureAwait(false);
     }
     
     #endregion
