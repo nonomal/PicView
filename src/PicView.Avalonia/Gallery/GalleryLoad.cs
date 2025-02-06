@@ -17,7 +17,8 @@ public static class GalleryLoad
 
     public static async Task LoadGallery(MainViewModel vm, string currentDirectory)
     {
-        // TODO: Lazy load this when scrolling instead. Figure out how to support virtualization. 
+        // TODO: When list larger than 500, lazy load this when scrolling instead.
+        // Figure out how to support virtualization. 
 
         if (vm.ImageIterator?.ImagePaths.Count == 0 || IsLoading || vm.ImageIterator is null)
         {
