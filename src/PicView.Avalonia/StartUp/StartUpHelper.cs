@@ -75,6 +75,7 @@ public static class StartUpHelper
         }
         window.Show();
         vm.ImageViewer = new ImageViewer();
+        
         ResourceLimits.LimitMemory(new Percentage(90));
         HandleStartUpMenuOrImage(vm, args);
         Task.Run(async () =>
@@ -285,7 +286,13 @@ public static class StartUpHelper
     }
     
     private static void InitializeSettings(MainViewModel vm)
-    {
+    {    
+        // Set corner radius on macOS
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            vm.BottomCornerRadius = new CornerRadius(0, 0, 8, 8);
+        }
+        
         vm.IsLoading = true;
         vm.TitlebarHeight = Settings.WindowProperties.Fullscreen
             || !Settings.UIProperties.ShowInterface

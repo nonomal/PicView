@@ -635,6 +635,12 @@ public class MainViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref field, value);
     }
     
+    public CornerRadius BottomCornerRadius
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
+    
     public int BackgroundChoice
     {
         get;

@@ -163,6 +163,7 @@
         Background="{DynamicResource WindowBackgroundColor}"
         BorderBrush="{DynamicResource MainBorderColor}"
         BorderThickness="0,1,0,0"
+        CornerRadius="{CompiledBinding BottomCornerRadius}"
         Height="{CompiledBinding BottombarHeight,
                                  Mode=OneWay}"
         x:Name="MainBottomBorder">

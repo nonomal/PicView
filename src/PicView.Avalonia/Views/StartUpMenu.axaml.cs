@@ -124,7 +124,7 @@ public partial class StartUpMenu : UserControl
 
         vm.TitleMaxWidth = ImageSizeCalculationHelper.GetTitleMaxWidth(vm.RotationAngle, width, height,
             desktop.MainWindow.MinWidth, desktop.MainWindow.MinHeight, ImageSizeCalculationHelper.GetInterfaceSize(),
-            desktop.MainWindow.Width, ScreenHelper.ScreenSize.Scaling);
+            desktop.MainWindow.Width);
         
         return;
 

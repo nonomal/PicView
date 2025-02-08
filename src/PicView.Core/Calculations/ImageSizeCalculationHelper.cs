@@ -150,7 +150,7 @@ public static class ImageSizeCalculationHelper
         }
 
         var titleMaxWidth = GetTitleMaxWidth(rotationAngle, xWidth, xHeight, monitorMinWidth, monitorMinHeight,
-            interfaceSize, containerWidth, dpiScaling);
+            interfaceSize, containerWidth);
 
         return new ImageSize(xWidth, xHeight, 0, scrollWidth, scrollHeight, titleMaxWidth, margin, aspectRatio);
     }
@@ -289,7 +289,7 @@ public static class ImageSizeCalculationHelper
         }
 
         var titleMaxWidth = GetTitleMaxWidth(rotationAngle, combinedWidth, xHeight, monitorMinWidth,
-            monitorMinHeight, interfaceSize, containerWidth, dpiScaling);
+            monitorMinHeight, interfaceSize, containerWidth);
 
         var margin = firstSize.Height > secondSize.Height ? firstSize.Margin : secondSize.Margin;
         return new ImageSize(combinedWidth, xHeight, xWidth2, scrollWidth, scrollHeight, titleMaxWidth, margin,
@@ -298,7 +298,7 @@ public static class ImageSizeCalculationHelper
 
 
     public static double GetTitleMaxWidth(double rotationAngle, double width, double height, double monitorMinWidth,
-        double monitorMinHeight, double interfaceSize, double containerWidth, double dpiScaling)
+        double monitorMinHeight, double interfaceSize, double containerWidth)
     {
         double titleMaxWidth;
         var maximized = Settings.WindowProperties.Fullscreen ||
