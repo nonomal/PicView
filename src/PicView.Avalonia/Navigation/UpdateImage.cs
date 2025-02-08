@@ -235,11 +235,7 @@ public static class UpdateImage
             GalleryNavigation.CenterScrollToSelectedItem(vm);
         }
 
-        using var image = new MagickImage();
-        image.Ping(vm.ImageIterator.ImagePaths[index]);
-        var thumb = image.GetExifProfile()?.CreateThumbnail().ToWriteableBitmap();
-
-        vm.ImageSource = thumb;
+        vm.ImageSource = GetThumbnails.GetExifThumb(vm.ImageIterator.ImagePaths[index]);
         if (Settings.ImageScaling.ShowImageSideBySide)
         {
             vm.SecondaryImageSource = GetThumbnails.GetExifThumb(vm.ImageIterator.ImagePaths[vm.ImageIterator.NextIndex]);
