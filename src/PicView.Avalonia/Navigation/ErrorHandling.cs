@@ -66,6 +66,8 @@ public static class ErrorHandling
 
     public static async Task ReloadAsync(MainViewModel vm)
     {
+        vm.IsLoading = true;
+        
         if (vm.ImageSource is null)
         {
             await Dispatcher.UIThread.InvokeAsync(() =>
@@ -89,11 +91,25 @@ public static class ErrorHandling
             });
             return;
         }
-        
-        await vm.ImageIterator.ClearAsync().ConfigureAwait(false);
-        await vm.ImageIterator.ReloadFileList().ConfigureAwait(false);
-        var index = vm.ImageIterator.ImagePaths.IndexOf(vm.FileInfo.FullName);
-        await NavigationHelper.Navigate(index, vm).ConfigureAwait(false);
+
+        try
+        {
+            var index = vm.ImageIterator.CurrentIndex;
+            await vm.ImageIterator.DisposeAsync().ConfigureAwait(false);
+            vm.ImageIterator = new ImageIterator(vm.FileInfo, vm.ImageIterator.ImagePaths, index, vm);
+            await NavigationHelper.Navigate(index, vm).ConfigureAwait(false);
+        }
+        catch (Exception e)
+        {
+#if DEBUG
+            Console.WriteLine(e);
+#endif
+            await Dispatcher.UIThread.InvokeAsync(() => { ShowStartUpMenu(vm); });
+        }
+        finally
+        {
+            vm.IsLoading = false;
+        }
     }
     
     public static async Task ReloadImageAsync(MainViewModel vm)
