@@ -295,7 +295,14 @@ public partial class ImageViewer : UserControl
         }
         else
         {
-            ZoomTo(point, currentZoom, true);
+            if (currentZoom is > 0.95 and < 1.05 or > 1.0 and < 1.05)
+            {
+                ResetZoom(true);
+            }
+            else
+            {
+                ZoomTo(point, currentZoom, true);
+            }
         }
     }
 
@@ -342,7 +349,7 @@ public partial class ImageViewer : UserControl
         if (_isZoomed)
         {
             SetTitleHelper.SetTitle(vm);
-            TooltipHelper.ShowTooltipMessage($"{Math.Floor(zoomValue * 100)}%", center: true);
+            _ = TooltipHelper.ShowTooltipMessageAsync($"{Math.Floor(zoomValue * 100)}%", center: true, TimeSpan.FromSeconds(1));
         }
     }
 
