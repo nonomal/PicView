@@ -165,7 +165,7 @@ public static class ExifHandling
         {
             #if DEBUG
             Console.WriteLine(e);
-            TooltipHelper.ShowTooltipMessage(e);
+            _ = TooltipHelper.ShowTooltipMessageAsync(e);
             #endif
         }
     }

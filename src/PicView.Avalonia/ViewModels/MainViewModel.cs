@@ -1279,7 +1279,7 @@ public class MainViewModel : ViewModelBase
                 var errorMsg = FileDeletionHelper.DeleteFileWithErrorMsg(path, recycle: false);
                 if (!string.IsNullOrWhiteSpace(errorMsg))
                 {
-                    TooltipHelper.ShowTooltipMessage(errorMsg);
+                    _ = TooltipHelper.ShowTooltipMessageAsync(errorMsg);
                 }
                 else
                 {
@@ -1288,7 +1288,7 @@ public class MainViewModel : ViewModelBase
             }
             catch (Exception e)
             {
-                TooltipHelper.ShowTooltipMessage(e);
+                _ = TooltipHelper.ShowTooltipMessageAsync(e);
 #if DEBUG
                 Console.WriteLine(e);
 #endif
