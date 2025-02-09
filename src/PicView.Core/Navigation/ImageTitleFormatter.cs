@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using Cysharp.Text;
 using PicView.Core.Extensions;
 using PicView.Core.ImageDecoding;
@@ -39,7 +40,7 @@ public static class ImageTitleFormatter
     /// </summary>
     internal const string AppName = "PicView";
 
-    /// <summary>
+      /// <summary>
     /// Generates the title strings based on the specified parameters, including image properties
     /// such as width, height, file name, zoom level, and current index in the file list.
     /// </summary>
@@ -50,37 +51,50 @@ public static class ImageTitleFormatter
     /// <param name="zoomValue">The current zoom level of the image.</param>
     /// <param name="filesList">The list of image file paths.</param>
     /// <returns>A <see cref="WindowTitles"/> struct containing the generated titles.</returns>
-    public static WindowTitles GenerateTitleStrings(int width, int height, int index, FileInfo? fileInfo, double zoomValue,
-        List<string> filesList)
+    public static WindowTitles GenerateTitleStrings(int width, int height, int index, FileInfo? fileInfo, double zoomValue, List<string> filesList)
     {
-        if (index < 0 || index >= filesList.Count)
+        if (!TryValidateAndGetFileInfo(index, filesList, fileInfo, out var validatedFileInfo, out var errorTitle))
         {
-            return GenerateErrorTitle($"{nameof(ImageTitleFormatter)}:{nameof(GenerateTitleStrings)} - index invalid");
+            return errorTitle;
         }
 
-        if (fileInfo == null)
-        {
-            try
-            {
-                fileInfo = new FileInfo(filesList[index]);
-            }
-            catch (Exception e)
-            {
-                return GenerateErrorTitle(
-                    $"{nameof(ImageTitleFormatter)}:{nameof(GenerateTitleStrings)} - FileInfo exception \n{e.Message}");
-            }
-        }
+        var namePart = validatedFileInfo.Name;
+        return GenerateTitleStringsCore(width, height, validatedFileInfo, zoomValue, filesList, index, namePart);
+    }
 
-        if (!fileInfo.Exists)
+    /// <summary>
+    /// Generates the title strings for TIFF images, including page navigation information.
+    /// </summary>
+    /// <param name="width">The width of the image in pixels.</param>
+    /// <param name="height">The height of the image in pixels.</param>
+    /// <param name="index">The index of the image in the list.</param>
+    /// <param name="fileInfo">The <see cref="FileInfo"/> object representing the image file.</param>
+    /// <param name="tiffNavigationInfo">The TIFF navigation information containing page details.</param>
+    /// <param name="zoomValue">The current zoom level of the image.</param>
+    /// <param name="filesList">The list of image file paths.</param>
+    /// <returns>A <see cref="WindowTitles"/> struct containing the generated titles.</returns>
+    public static WindowTitles GenerateTiffTitleStrings(int width, int height, int index, FileInfo fileInfo, TiffManager.TiffNavigationInfo tiffNavigationInfo, double zoomValue, List<string> filesList)
+    {
+        if (tiffNavigationInfo == null)
         {
             return GenerateErrorTitle(
-                $"{nameof(ImageTitleFormatter)}:{nameof(GenerateTitleStrings)} - FileInfo does not exist");
+                $"{nameof(ImageTitleFormatter)}:{nameof(GenerateTiffTitleStrings)} - TiffNavigationInfo is null");
         }
 
+        if (!TryValidateAndGetFileInfo(index, filesList, fileInfo, out var validatedFileInfo, out var errorTitle))
+        {
+            return errorTitle;
+        }
+
+        var namePart = $"{validatedFileInfo.Name} [{tiffNavigationInfo.CurrentPage + 1}/{tiffNavigationInfo.PageCount}]";
+        return GenerateTitleStringsCore(width, height, validatedFileInfo, zoomValue, filesList, index, namePart);
+    }
+
+    private static WindowTitles GenerateTitleStringsCore(int width, int height, FileInfo fileInfo, double zoomValue, List<string> filesList, int index, string namePart)
+    {
         using var sb = ZString.CreateStringBuilder(true);
-        
-        // Build the base title (common parts)
-        sb.Append(fileInfo.Name);
+
+        sb.Append(namePart);
         sb.Append(' ');
         sb.Append(index + 1);
         sb.Append('/');
@@ -94,7 +108,6 @@ public static class ImageTitleFormatter
         sb.Append(FormatAspectRatio(width, height));
         sb.Append(fileInfo.Length.GetReadableFileSize());
 
-        // Add zoom information if applicable
         var zoomString = FormatZoomPercentage(zoomValue);
         if (zoomString is not null)
         {
@@ -104,10 +117,7 @@ public static class ImageTitleFormatter
 
         var baseTitle = sb.ToString();
 
-        // Full title with AppName
         var fullTitle = $"{baseTitle} - {AppName}";
-
-        // Title with file path instead of file name
         var filePathTitle = baseTitle.Replace(fileInfo.Name, fileInfo.FullName);
 
         return new WindowTitles
@@ -117,80 +127,42 @@ public static class ImageTitleFormatter
             FilePathTitle = filePathTitle
         };
     }
-    
-        public static WindowTitles GenerateTiffTitleStrings(int width, int height, int index, FileInfo fileInfo, TiffManager.TiffNavigationInfo tiffNavigationInfo, double zoomValue,
-        List<string> filesList)
+
+    private static bool TryValidateAndGetFileInfo(int index, List<string> filesList, FileInfo? fileInfo, out FileInfo? validatedFileInfo, out WindowTitles errorTitle, [CallerMemberName] string callerName = "")
     {
+        validatedFileInfo = null;
+        errorTitle = default;
+
         if (index < 0 || index >= filesList.Count)
         {
-            return GenerateErrorTitle($"{nameof(ImageTitleFormatter)}:{nameof(GenerateTitleStrings)} - index invalid");
+            errorTitle = GenerateErrorTitle($"{nameof(ImageTitleFormatter)}:{callerName} - index invalid");
+            return false;
         }
 
-        if (tiffNavigationInfo == null)
-        {
-            return GenerateErrorTitle(
-                $"{nameof(ImageTitleFormatter)}:{nameof(GenerateTitleStrings)} - TiffNavigationInfo is null");
-        }
-        
-        if (fileInfo == null)
+        if (fileInfo is null)
         {
             try
             {
-                fileInfo = new FileInfo(filesList[index]);
+                validatedFileInfo = new FileInfo(filesList[index]);
             }
             catch (Exception e)
             {
-                return GenerateErrorTitle(
-                    $"{nameof(ImageTitleFormatter)}:{nameof(GenerateTitleStrings)} - FileInfo exception \n{e.Message}");
+                errorTitle = GenerateErrorTitle($"{nameof(ImageTitleFormatter)}:{callerName} - FileInfo exception \n{e.Message}");
+                return false;
             }
         }
-
-        if (!fileInfo.Exists)
+        else
         {
-            return GenerateErrorTitle(
-                $"{nameof(ImageTitleFormatter)}:{nameof(GenerateTitleStrings)} - FileInfo does not exist");
+            validatedFileInfo = fileInfo;
         }
 
-        using var sb = ZString.CreateStringBuilder(true);
-        
-        
-        // Build the base title (common parts)
-        sb.Append(fileInfo.Name + $" [{tiffNavigationInfo.CurrentPage + 1}/{tiffNavigationInfo.PageCount}]");
-        sb.Append(' ');
-        sb.Append(index + 1);
-        sb.Append('/');
-        sb.Append(filesList.Count);
-        sb.Append(' ');
-        sb.Append(filesList.Count == 1 ? TranslationHelper.Translation.File : TranslationHelper.Translation.Files);
-        sb.Append(" (");
-        sb.Append(width);
-        sb.Append(" x ");
-        sb.Append(height);
-        sb.Append(FormatAspectRatio(width, height));
-        sb.Append(fileInfo.Length.GetReadableFileSize());
-
-        // Add zoom information if applicable
-        var zoomString = FormatZoomPercentage(zoomValue);
-        if (zoomString is not null)
+        if (validatedFileInfo.Exists)
         {
-            sb.Append(", ");
-            sb.Append(zoomString);
+            return true;
         }
 
-        var baseTitle = sb.ToString();
-
-        // Full title with AppName
-        var fullTitle = $"{baseTitle} - {AppName}";
-
-        // Title with file path instead of file name
-        var filePathTitle = baseTitle.Replace(fileInfo.Name, fileInfo.FullName);
-
-        return new WindowTitles
-        {
-            BaseTitle = baseTitle,
-            TitleWithAppName = fullTitle,
-            FilePathTitle = filePathTitle
-        };
+        errorTitle = GenerateErrorTitle($"{nameof(ImageTitleFormatter)}:{callerName} - FileInfo does not exist");
+        return false;
     }
 
 
