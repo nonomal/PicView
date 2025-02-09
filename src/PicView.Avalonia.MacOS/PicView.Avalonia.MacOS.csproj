@@ -37,11 +37,7 @@
   <PropertyGroup Condition="'$(Platform)' == 'arm64'">
     <PlatformTarget>ARM64</PlatformTarget>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Avalonia.Desktop" Version="11.2.3" />
-    <PackageReference Include="Avalonia.Themes.Simple" Version="11.2.3" />
-  </ItemGroup>
+  
 
   <ItemGroup>
     <ProjectReference Include="..\PicView.Avalonia\PicView.Avalonia.csproj" />
