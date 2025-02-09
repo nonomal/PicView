@@ -25,7 +25,7 @@ public static class NavigationHelper
 {
     private static CancellationTokenSource? _cancellationTokenSource;
     
-    public static TiffManager.TiffNavigationInfo? TiffNavigationInfo { get; private set; }
+    public static TiffManager.TiffNavigationInfo? TiffNavigationInfo { get; set; }
 
     #region Navigation
 
@@ -102,7 +102,8 @@ public static class NavigationHelper
             {
                 if (TiffNavigationInfo.CurrentPage - 1 <= 0)
                 {
-                    await CheckCancellationAndStartIterateToIndex(vm.ImageIterator.CurrentIndex, vm).ConfigureAwait(false);
+                    var index = TiffManager.IsTiff(currentFileName) ? vm.ImageIterator.NextIndex : vm.ImageIterator.CurrentIndex;
+                    await CheckCancellationAndStartIterateToIndex(index, vm).ConfigureAwait(false);
                     TiffNavigationInfo.Dispose();
                     TiffNavigationInfo = null;
                     return;
@@ -123,7 +124,7 @@ public static class NavigationHelper
             }
             else
             {
-                UpdateImage.SetTiffImage(TiffNavigationInfo, Path.GetFileName(currentFileName), vm);
+                UpdateImage.SetTiffImage(TiffNavigationInfo, nextIteration, vm.FileInfo, vm);
             }
         }
     }

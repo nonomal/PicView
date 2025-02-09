@@ -8,6 +8,7 @@ using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.FileHandling;
 using PicView.Core.Gallery;
+using PicView.Core.ImageDecoding;
 
 namespace PicView.Avalonia.StartUp;
 
@@ -76,7 +77,14 @@ public static class QuickLoad
         }
         else
         {
-            SetTitleHelper.SetTitle(vm, imageModel);
+            if (TiffManager.IsTiff(imageModel.FileInfo.FullName))
+            {
+                SetTitleHelper.TrySetTiffTitle(imageModel.PixelWidth, imageModel.PixelHeight, vm.ImageIterator.CurrentIndex, fileInfo, vm);
+            }
+            else
+            {
+                SetTitleHelper.SetTitle(vm, imageModel);
+            }
         }
         
         vm.ExifOrientation = imageModel.EXIFOrientation;

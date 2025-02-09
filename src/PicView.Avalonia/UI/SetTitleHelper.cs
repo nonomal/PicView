@@ -1,6 +1,7 @@
 ﻿using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.FileHandling;
+using PicView.Core.ImageDecoding;
 using PicView.Core.Localization;
 using PicView.Core.Navigation;
 
@@ -86,6 +87,34 @@ public static class SetTitleHelper
             vm.WindowTitle =
                 vm.Title =
                     vm.TitleTooltip = TranslationHelper.GetTranslation("UnableToRender");
+        }
+    }
+    
+    public static void SetTiffTitle(TiffManager.TiffNavigationInfo tiffNavigationInfo, int width, int height, int index, FileInfo fileInfo, MainViewModel vm)
+    {
+        var name = tiffNavigationInfo.Pages[tiffNavigationInfo.CurrentPage].FileName + $" [{tiffNavigationInfo.CurrentPage + 1}/{tiffNavigationInfo.PageCount}]";
+        var singeImageWindowTitles = ImageTitleFormatter.GenerateTiffTitleStrings(width, height, index, fileInfo, tiffNavigationInfo, 1, vm.ImageIterator.ImagePaths);
+        vm.WindowTitle = singeImageWindowTitles.TitleWithAppName;
+        vm.Title = singeImageWindowTitles.BaseTitle; 
+        vm.TitleTooltip = singeImageWindowTitles.BaseTitle;
+    }
+    
+    public static void TrySetTiffTitle(int width, int height, int index, FileInfo fileInfo, MainViewModel vm)
+    {
+        if (TiffManager.GetTiffPageCount(fileInfo.FullName) is { } pageCount and > 1)
+        {
+            var tiffNavigationInfo = new TiffManager.TiffNavigationInfo
+            {
+                CurrentPage = 0,
+                PageCount = pageCount,
+                Pages = TiffManager.LoadTiffPages(fileInfo.FullName)
+            };
+            SetTiffTitle(tiffNavigationInfo, width, height,
+                vm.ImageIterator.CurrentIndex, fileInfo, vm);
+        }
+        else
+        {
+            SetTitle(vm);
         }
     }
     

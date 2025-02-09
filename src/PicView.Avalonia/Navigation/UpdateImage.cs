@@ -82,7 +82,21 @@ public static class UpdateImage
         }
         else
         {
-            SetTitleHelper.SetTitle(vm, preLoadValue.ImageModel);
+            if (TiffManager.IsTiff(preLoadValue.ImageModel.FileInfo.FullName))
+            {
+                if (TiffManager.IsTiff(preLoadValue.ImageModel.FileInfo.FullName))
+                {
+                    SetTitleHelper.TrySetTiffTitle(preLoadValue.ImageModel.PixelWidth, preLoadValue.ImageModel.PixelHeight, vm.ImageIterator.CurrentIndex, preLoadValue.ImageModel.FileInfo, vm);
+                }
+                else
+                {
+                    SetTitleHelper.SetTitle(vm, preLoadValue.ImageModel);
+                }
+            }
+            else
+            {
+                SetTitleHelper.SetTitle(vm, preLoadValue.ImageModel);
+            }
         }
         
         if (Settings.WindowProperties.KeepCentered)
@@ -191,7 +205,7 @@ public static class UpdateImage
         vm.PixelHeight = height;
     }
     
-    public static void SetTiffImage(TiffManager.TiffNavigationInfo tiffNavigationInfo, string name, MainViewModel vm)
+    public static void SetTiffImage(TiffManager.TiffNavigationInfo tiffNavigationInfo, int index, FileInfo fileInfo, MainViewModel vm)
     {
         var source = tiffNavigationInfo.Pages[tiffNavigationInfo.CurrentPage].ToWriteableBitmap();
         vm.ImageSource = source;
@@ -199,8 +213,6 @@ public static class UpdateImage
         vm.ImageType = ImageType.Bitmap;
         var width = source?.PixelSize.Width ?? 0;
         var height = source?.PixelSize.Height ?? 0;
-        
-        name = name.Insert(name.LastIndexOf('.'), $" [{tiffNavigationInfo.CurrentPage + 1}/{tiffNavigationInfo.PageCount}]");
 
         Dispatcher.UIThread.Invoke(() =>
         {
@@ -212,13 +224,7 @@ public static class UpdateImage
             vm.ImageViewer.Rotate(vm.RotationAngle);
         }
 
-        var singeImageWindowTitles = ImageTitleFormatter.GenerateTitleForSingleImage(width, height, name, 1);
-        vm.WindowTitle = singeImageWindowTitles.TitleWithAppName;
-        vm.Title = singeImageWindowTitles.BaseTitle; 
-        vm.TitleTooltip = singeImageWindowTitles.BaseTitle;
-        vm.GalleryMargin = new Thickness(0, 0, 0, 0);
-
-        vm.PlatformService.StopTaskbarProgress();
+        SetTitleHelper.SetTiffTitle(tiffNavigationInfo, width, height, index, fileInfo, vm);
         
         vm.PixelWidth = width;
         vm.PixelHeight = height;

@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using Cysharp.Text;
 using PicView.Core.Extensions;
+using PicView.Core.ImageDecoding;
 using PicView.Core.Localization;
 
 namespace PicView.Core.Navigation;
@@ -80,6 +81,81 @@ public static class ImageTitleFormatter
         
         // Build the base title (common parts)
         sb.Append(fileInfo.Name);
+        sb.Append(' ');
+        sb.Append(index + 1);
+        sb.Append('/');
+        sb.Append(filesList.Count);
+        sb.Append(' ');
+        sb.Append(filesList.Count == 1 ? TranslationHelper.Translation.File : TranslationHelper.Translation.Files);
+        sb.Append(" (");
+        sb.Append(width);
+        sb.Append(" x ");
+        sb.Append(height);
+        sb.Append(FormatAspectRatio(width, height));
+        sb.Append(fileInfo.Length.GetReadableFileSize());
+
+        // Add zoom information if applicable
+        var zoomString = FormatZoomPercentage(zoomValue);
+        if (zoomString is not null)
+        {
+            sb.Append(", ");
+            sb.Append(zoomString);
+        }
+
+        var baseTitle = sb.ToString();
+
+        // Full title with AppName
+        var fullTitle = $"{baseTitle} - {AppName}";
+
+        // Title with file path instead of file name
+        var filePathTitle = baseTitle.Replace(fileInfo.Name, fileInfo.FullName);
+
+        return new WindowTitles
+        {
+            BaseTitle = baseTitle,
+            TitleWithAppName = fullTitle,
+            FilePathTitle = filePathTitle
+        };
+    }
+    
+        public static WindowTitles GenerateTiffTitleStrings(int width, int height, int index, FileInfo fileInfo, TiffManager.TiffNavigationInfo tiffNavigationInfo, double zoomValue,
+        List<string> filesList)
+    {
+        if (index < 0 || index >= filesList.Count)
+        {
+            return GenerateErrorTitle($"{nameof(ImageTitleFormatter)}:{nameof(GenerateTitleStrings)} - index invalid");
+        }
+
+        if (tiffNavigationInfo == null)
+        {
+            return GenerateErrorTitle(
+                $"{nameof(ImageTitleFormatter)}:{nameof(GenerateTitleStrings)} - TiffNavigationInfo is null");
+        }
+        
+        if (fileInfo == null)
+        {
+            try
+            {
+                fileInfo = new FileInfo(filesList[index]);
+            }
+            catch (Exception e)
+            {
+                return GenerateErrorTitle(
+                    $"{nameof(ImageTitleFormatter)}:{nameof(GenerateTitleStrings)} - FileInfo exception \n{e.Message}");
+            }
+        }
+
+        if (!fileInfo.Exists)
+        {
+            return GenerateErrorTitle(
+                $"{nameof(ImageTitleFormatter)}:{nameof(GenerateTitleStrings)} - FileInfo does not exist");
+        }
+
+        using var sb = ZString.CreateStringBuilder(true);
+        
+        
+        // Build the base title (common parts)
+        sb.Append(fileInfo.Name + $" [{tiffNavigationInfo.CurrentPage + 1}/{tiffNavigationInfo.PageCount}]");
         sb.Append(' ');
         sb.Append(index + 1);
         sb.Append('/');

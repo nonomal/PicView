@@ -27,6 +27,18 @@ public static class TiffManager
 
         return pageCollection;
     }
+    
+    public static int? GetTiffPageCount(string path)
+    {
+        using var image = new MagickImage();
+        image.Ping(path);
+        var settings = new MagickReadSettings
+        {
+            // Specify that we want to read a TIFF format image
+            Format = MagickFormat.Tiff
+        };
+        return new MagickImageCollection(path, settings).Count;
+    }
 
     public class TiffNavigationInfo : IDisposable
     {
