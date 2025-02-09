@@ -446,10 +446,10 @@ public partial class ImageViewer : UserControl
         }
 
         var dragMousePosition = _start - e.GetPosition(this);
-        
+    
         var newXproperty = _origin.X - dragMousePosition.X;
         var newYproperty = _origin.Y - dragMousePosition.Y;
-
+        
         if (!Settings.WindowProperties.AutoFit || Settings.WindowProperties.Fullscreen)
         {
             // TODO: figure out how to pan when not auto fitting window while keeping it in bounds
@@ -459,7 +459,8 @@ public partial class ImageViewer : UserControl
             e.Handled = true;
             return;
         }
-        
+    
+
         var actualScrollWidth = ImageScrollViewer.Bounds.Width;
         var actualBorderWidth = MainBorder.Bounds.Width;
         var actualScrollHeight = ImageScrollViewer.Bounds.Height;
@@ -469,23 +470,23 @@ public partial class ImageViewer : UserControl
         var isYOutOfBorder = actualScrollHeight < actualBorderHeight * _scaleTransform.ScaleY;
         var maxX = actualScrollWidth - actualBorderWidth * _scaleTransform.ScaleX;
         var maxY = actualScrollHeight - actualBorderHeight * _scaleTransform.ScaleY;
-        
-        if (isXOutOfBorder && newXproperty < maxX || isXOutOfBorder == false && newXproperty > maxX)
+    
+        // Clamp X translation
+        if ((isXOutOfBorder && newXproperty < maxX) || (!isXOutOfBorder && newXproperty > maxX))
         {
             newXproperty = maxX;
         }
-
-        if (isXOutOfBorder && newYproperty < maxY || isXOutOfBorder == false && newYproperty > maxY)
-        {
-            newYproperty = maxY;
-        }
-
-        if (isXOutOfBorder && newXproperty > 0 || isXOutOfBorder == false && newXproperty < 0)
+        if ((isXOutOfBorder && newXproperty > 0) || (!isXOutOfBorder && newXproperty < 0))
         {
             newXproperty = 0;
         }
 
-        if (isYOutOfBorder && newYproperty > 0 || isYOutOfBorder == false && newYproperty < 0)
+        // Clamp Y translation
+        if ((isYOutOfBorder && newYproperty < maxY) || (!isYOutOfBorder && newYproperty > maxY))
+        {
+            newYproperty = maxY;
+        }
+        if ((isYOutOfBorder && newYproperty > 0) || (!isYOutOfBorder && newYproperty < 0))
         {
             newYproperty = 0;
         }
