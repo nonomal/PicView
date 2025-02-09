@@ -48,7 +48,11 @@ public static class QuickLoad
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             vm.ImageViewer.SetTransform(imageModel.EXIFOrientation);
-            WindowResizing.SetSize(imageModel.PixelWidth, imageModel.PixelHeight, secondaryPreloadValue?.ImageModel?.PixelWidth ?? 0, secondaryPreloadValue?.ImageModel?.PixelHeight ?? 0, imageModel.Rotation, vm);
+            if (!Settings.Zoom.ScrollEnabled)
+            {
+                WindowResizing.SetSize(imageModel.PixelWidth, imageModel.PixelHeight, secondaryPreloadValue?.ImageModel?.PixelWidth ?? 0, secondaryPreloadValue?.ImageModel?.PixelHeight ?? 0, imageModel.Rotation, vm);
+            }
+
             if (Settings.WindowProperties.AutoFit)
             {
                 WindowFunctions.CenterWindowOnScreen();
@@ -88,6 +92,22 @@ public static class QuickLoad
         }
         
         vm.ExifOrientation = imageModel.EXIFOrientation;
+        
+        if (Settings.Zoom.ScrollEnabled)
+        {
+            // Bad fix for scrolling
+            // TODO: Implement proper startup scrolling fix
+            Settings.Zoom.ScrollEnabled = false;
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                WindowResizing.SetSize(imageModel.PixelWidth, imageModel.PixelHeight, secondaryPreloadValue?.ImageModel?.PixelWidth ?? 0, secondaryPreloadValue?.ImageModel?.PixelHeight ?? 0, imageModel.Rotation, vm);
+            }, DispatcherPriority.Background);
+            Settings.Zoom.ScrollEnabled = true;
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                WindowResizing.SetSize(imageModel.PixelWidth, imageModel.PixelHeight, secondaryPreloadValue?.ImageModel?.PixelWidth ?? 0, secondaryPreloadValue?.ImageModel?.PixelHeight ?? 0, imageModel.Rotation, vm);
+            }, DispatcherPriority.Send);
+        }
         
         // Add recent files, except when browsing archive
         if (string.IsNullOrWhiteSpace(TempFileHelper.TempFilePath))

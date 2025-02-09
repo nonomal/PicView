@@ -67,12 +67,16 @@ public static class WindowResizing
                     return;
                 }
             }
-            else
+            else if (vm.FileInfo?.Exists != null)
             {
                 var magickImage = new MagickImage();
                 magickImage.Ping(vm.FileInfo);
                 firstWidth = magickImage.Width;
                 firstHeight = magickImage.Height;
+            }
+            else
+            {
+                return;
             }
         }
         else

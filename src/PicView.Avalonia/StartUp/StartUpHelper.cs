@@ -76,20 +76,20 @@ public static class StartUpHelper
         window.Show();
         vm.ImageViewer = new ImageViewer();
         
-        ResourceLimits.LimitMemory(new Percentage(90));
         HandleStartUpMenuOrImage(vm, args);
-        Task.Run(async () =>
+        
+        ResourceLimits.LimitMemory(new Percentage(90));
+
+        Task.Run(() => LanguageUpdater.UpdateLanguageAsync(vm, settingsExists));
+        if (settingsExists)
         {
-            await LanguageUpdater.UpdateLanguageAsync(vm, settingsExists).ConfigureAwait(false);
-            if (settingsExists)
-            {
-                await KeybindingManager.LoadKeybindings(vm.PlatformService).ConfigureAwait(false);
-            }
-            else
-            {
-                await KeybindingManager.SetDefaultKeybindings(vm.PlatformService).ConfigureAwait(false);
-            }
-        });
+            Task.Run(() => KeybindingManager.LoadKeybindings(vm.PlatformService));
+        }
+        else
+        {
+            Task.Run(() => KeybindingManager.SetDefaultKeybindings(vm.PlatformService));
+        }
+
         HandleThemeUpdates(vm);
         
         if (settingsExists)

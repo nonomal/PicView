@@ -331,7 +331,7 @@ public static class ImageSizeCalculationHelper
 
             if (Settings.Zoom.ScrollEnabled)
             {
-                titleMaxWidth += SizeDefaults.ScrollbarSize + 4;
+                titleMaxWidth += SizeDefaults.ScrollbarSize + 10;
             }
         }
         else
