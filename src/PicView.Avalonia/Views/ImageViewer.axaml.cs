@@ -393,6 +393,7 @@ public partial class ImageViewer : UserControl
         }
         vm.ZoomValue = 1;
         vm.RotationAngle = 0;
+        TooltipHelper.StopTooltipMessage();
         SetTitleHelper.SetTitle(vm);
         _isZoomed = false;
     }

@@ -84,4 +84,15 @@ public static class TooltipHelper
     {
         await ShowTooltipMessageAsync(message, center, TimeSpan.FromSeconds(2));
     }
+    
+    public static void StopTooltipMessage()
+    {
+        if (!_isRunning)
+        {
+            return;
+        }
+        _cancellationTokenSource?.Cancel();
+        _isRunning = false;
+        Dispatcher.UIThread.Invoke(() => UIHelper.GetToolTipMessage.IsVisible = false);
+    }
 }
