@@ -36,9 +36,9 @@
             HorizontalAlignment="Center"
             IsSnapToTickEnabled="True"
             Margin="0,1,0,1"
-            Maximum="1.7"
+            Maximum="1.5"
             Minimum=".1"
-            TickFrequency=".1"
+            TickFrequency=".05"
             TickPlacement="BottomRight"
             Value="{CompiledBinding GetZoomSpeed}"
             Width="300" />
