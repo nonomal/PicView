@@ -4,7 +4,6 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using ImageMagick;
-using PicView.Avalonia.Preloading;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.Calculations;
@@ -81,8 +80,8 @@ public static class WindowResizing
         }
         else
         {
-            firstWidth = GetWidth(preloadValue);
-            firstHeight = GetHeight(preloadValue);
+            firstWidth = GetWidth();
+            firstHeight = GetHeight();
         }
 
         if (Settings.ImageScaling.ShowImageSideBySide)
@@ -91,8 +90,8 @@ public static class WindowResizing
             double secondWidth, secondHeight;
             if (secondaryPreloadValue != null)
             {
-                secondWidth = GetWidth(secondaryPreloadValue);
-                secondHeight = GetHeight(secondaryPreloadValue);
+                secondWidth = GetWidth();
+                secondHeight = GetHeight();
             }
             else if (vm.ImageIterator is not null)
             {
@@ -133,12 +132,12 @@ public static class WindowResizing
 
         return;
 
-        double GetWidth(PreLoadValue preloadValue)
+        double GetWidth()
         {
             return preloadValue?.ImageModel?.PixelWidth ?? vm.ImageWidth;
         }
 
-        double GetHeight(PreLoadValue preloadValue)
+        double GetHeight()
         {
             return preloadValue?.ImageModel?.PixelHeight ?? vm.ImageHeight;
         }
