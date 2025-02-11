@@ -19,12 +19,31 @@ public static class ImageHelper
     
     public static async Task<string> ConvertToCommonSupportedFormatAsync(string path, MainViewModel vm)
     {
-        if (NavigationHelper.CanNavigate(vm) && vm.EffectConfig is not null && !string.IsNullOrEmpty(path))
+        Bitmap? source = null;
+        
+        if (vm.EffectConfig is not null)
         {
-            Bitmap? source = null;
-            if (path == vm.FileInfo.FullName)
+            if (vm.ImageSource is Bitmap bmp)
+            {
+                source = bmp;
+            }
+        }
+        else if (NavigationHelper.CanNavigate(vm) && !string.IsNullOrEmpty(path))
+        {
+            if (vm.EffectConfig is not null && vm.FileInfo.FullName == path)
             {
                 if (vm.ImageSource is Bitmap bmp)
+                {
+                    source = bmp;
+                }
+            }
+            else if (path == vm.FileInfo.FullName)
+            {
+                if (path.IsCommon())
+                {
+                    return path;
+                }
+                if (vm.ImageSource is Bitmap bmp && vm.FileInfo.FullName.IsSupported())
                 {
                     source = bmp;
                 }
@@ -38,14 +57,15 @@ public static class ImageHelper
                     source = bitmap;
                 }
             }
-
-            if (source is not null)
-            {
-                var tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + "bmp");
-                source.Save(tempPath);
-                return tempPath;
-            }
         }
+        var tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".png");
+        
+        if (source is not null)
+        {
+            await Task.Run(() => source.Save(tempPath));
+            return tempPath;
+        }
+        
         var url = path.GetURL();
         if (!string.IsNullOrWhiteSpace(url))
         {
@@ -65,26 +85,10 @@ public static class ImageHelper
         if (!File.Exists(path))
             return string.Empty;
         
-        var ext = Path.GetExtension(path).ToLower();
-        switch (ext)
-        {
-            case ".gif": // Don't know what to do if animated?
-            case ".png":
-            case ".jpg":
-            case ".jpeg":
-            case ".jpe":
-            case ".bmp":
-            case ".jfif":
-                return path;
-
-            default:
-                var tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ext);
-                // Save image to temp path
-                var success = await SaveImageFileHelper.SaveImageAsync(null, path, tempPath, null, null, null, ".png");
-                return !success ? string.Empty : tempPath;
-        }
-        
-
+        // Convert the image to a common supported format
+        // Save image to temp path
+        var success = await SaveImageFileHelper.SaveImageAsync(null, path, tempPath, null, null, null, ".png");
+        return !success ? string.Empty : tempPath;
     }
     
     
