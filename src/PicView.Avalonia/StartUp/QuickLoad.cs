@@ -38,6 +38,9 @@ public static class QuickLoad
         }
         vm.ImageSource = imageModel.Image;
         vm.ImageType = imageModel.ImageType;
+        vm.ZoomValue = 1;
+        vm.PixelWidth = imageModel.PixelWidth;
+        vm.PixelHeight = imageModel.PixelHeight;
         PreLoadValue? secondaryPreloadValue = null;
         if (Settings.ImageScaling.ShowImageSideBySide)
         {
@@ -57,13 +60,25 @@ public static class QuickLoad
             {
                 WindowFunctions.CenterWindowOnScreen();
             }
+            else
+            {
+                // Fixes bug with incorrect image size
+                vm.ImageViewer.Width = imageModel.PixelWidth;
+                vm.ImageViewer.Height = imageModel.PixelHeight;
+            }
         }, DispatcherPriority.Send);
+        
+        if (!Settings.WindowProperties.AutoFit)
+        {
+            // Revert back to auto sizing
+            Dispatcher.UIThread.Post(() =>
+            {
+                vm.ImageViewer.Width = double.NaN;
+                vm.ImageViewer.Height = double.NaN;
+            });
+        }
 
         vm.IsLoading = false;
-        
-        vm.ZoomValue = 1;
-        vm.PixelWidth = imageModel.PixelWidth;
-        vm.PixelHeight = imageModel.PixelHeight;
         
         vm.ImageIterator ??= new ImageIterator(fileInfo, vm);
         vm.GetIndex = vm.ImageIterator.CurrentIndex + 1;
