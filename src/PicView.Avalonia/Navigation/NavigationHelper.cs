@@ -777,8 +777,11 @@ public static class NavigationHelper
         }
 
         vm.IsLoading = false; //Don't show loading indicator
-        
-        await vm.ImageIterator.DisposeAsync();
+
+        if (vm.ImageIterator is not null)
+        {
+            await vm.ImageIterator.DisposeAsync();
+        }
 
         // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
         if (files is null)
