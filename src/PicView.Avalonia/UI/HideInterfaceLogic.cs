@@ -63,7 +63,7 @@ public static class HideInterfaceLogic
             {
                 if (Settings.Gallery.IsBottomGalleryShown)
                 {
-                    if (NavigationHelper.CanNavigate(vm))
+                    if (NavigationManager.CanNavigate(vm))
                     {
                         await Dispatcher.UIThread.InvokeAsync(() =>
                         {

@@ -239,14 +239,14 @@ public partial class SingleImageResizeView : UserControl
     {
         if (destination == file)
         {
-            if (NavigationHelper.CanNavigate(vm) && vm.ImageIterator is not null)
+            if (NavigationManager.CanNavigate(vm) && vm.ImageIterator is not null)
             {
                 await vm.ImageIterator.QuickReload().ConfigureAwait(false);
             }
         }
         else if (Path.GetDirectoryName(file) == Path.GetDirectoryName(destination))
         {
-            await NavigationHelper.LoadPicFromFile(destination, vm).ConfigureAwait(false);
+            await NavigationManager.LoadPicFromFile(destination, vm).ConfigureAwait(false);
         }
     }
 

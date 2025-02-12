@@ -50,7 +50,7 @@ public static class ClipboardHelper
 
     public static async Task Duplicate(MainViewModel vm)
     {
-        if (!NavigationHelper.CanNavigate(vm))
+        if (!NavigationManager.CanNavigate(vm))
         {
             return;
         }
@@ -64,7 +64,7 @@ public static class ClipboardHelper
             return;
         }
         await vm.ImageIterator.ClearAsync();
-        await NavigationHelper.LoadPicFromFile(duplicatedPath, vm);
+        await NavigationManager.LoadPicFromFile(duplicatedPath, vm);
     }
     
     public static async Task CopyTextToClipboard(string text)
@@ -187,7 +187,7 @@ public static class ClipboardHelper
                     // load the first file
                     var firstFile = storageItems[0];
                     var firstPath = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? firstFile.Path.AbsolutePath : firstFile.Path.LocalPath;
-                    await NavigationHelper.LoadPicFromStringAsync(firstPath, vm).ConfigureAwait(false);
+                    await NavigationManager.LoadPicFromStringAsync(firstPath, vm).ConfigureAwait(false);
 
                     // Open consecutive files in a new process
                     foreach (var file in storageItems.Skip(1))
@@ -200,7 +200,7 @@ public static class ClipboardHelper
             else if (files is IStorageItem singleFile)
             {
                 var path = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? singleFile.Path.AbsolutePath : singleFile.Path.LocalPath;
-                await NavigationHelper.LoadPicFromStringAsync(path, vm).ConfigureAwait(false);
+                await NavigationManager.LoadPicFromStringAsync(path, vm).ConfigureAwait(false);
             }
             return;
         }
@@ -208,7 +208,7 @@ public static class ClipboardHelper
         var text = await clipboard.GetTextAsync();
         if (!string.IsNullOrWhiteSpace(text))
         {   
-            await NavigationHelper.LoadPicFromStringAsync(text, vm).ConfigureAwait(false);
+            await NavigationManager.LoadPicFromStringAsync(text, vm).ConfigureAwait(false);
             return;
         }
         

@@ -90,7 +90,7 @@ public partial class BatchResizeView : UserControl
 
             };
 
-            if (!NavigationHelper.CanNavigate(vm))
+            if (!NavigationManager.CanNavigate(vm))
             {
                 return;
             }
@@ -136,7 +136,7 @@ public partial class BatchResizeView : UserControl
             return;
         }
 
-        if (!NavigationHelper.CanNavigate(vm))
+        if (!NavigationManager.CanNavigate(vm))
         {
             return;
         }

@@ -224,7 +224,7 @@ public sealed class ImageIterator : IAsyncDisposable
                 return;
             }
 
-            await NavigationHelper.Iterate(false, _vm);
+            await NavigationManager.Iterate(false, _vm);
         }
         else
         {

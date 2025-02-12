@@ -67,14 +67,14 @@ public static class FileHistoryNavigation
             return;
         }
 
-        await NavigationHelper.LoadPicFromStringAsync(entry, vm);
+        await NavigationManager.LoadPicFromStringAsync(entry, vm);
         return;
         
         async Task LoadLastFileFromSettingsOrNotAsync()
         {
             if (!string.IsNullOrWhiteSpace(Settings.StartUp.LastFile))
             {
-                await NavigationHelper.LoadPicFromStringAsync(Settings.StartUp.LastFile, vm);
+                await NavigationManager.LoadPicFromStringAsync(Settings.StartUp.LastFile, vm);
             }
             else
             {
@@ -85,7 +85,7 @@ public static class FileHistoryNavigation
 
     public static async Task NextAsync(MainViewModel vm)
     {
-        if (!NavigationHelper.CanNavigate(vm))
+        if (!NavigationManager.CanNavigate(vm))
         {
             await OpenLastFileAsync(vm).ConfigureAwait(false);
             return;
@@ -103,7 +103,7 @@ public static class FileHistoryNavigation
 
     public static async Task PrevAsync(MainViewModel vm)
     {
-        if (!NavigationHelper.CanNavigate(vm))
+        if (!NavigationManager.CanNavigate(vm))
         {
             await OpenLastFileAsync(vm).ConfigureAwait(false);
             return;
@@ -146,10 +146,10 @@ public static class FileHistoryNavigation
                 return;
             }
 
-            await NavigationHelper.Navigate(imagePaths.IndexOf(nextEntry), vm).ConfigureAwait(false);
+            await NavigationManager.Navigate(imagePaths.IndexOf(nextEntry), vm).ConfigureAwait(false);
             return;
         }
-        await NavigationHelper.LoadPicFromStringAsync(nextEntry, vm);
+        await NavigationManager.LoadPicFromStringAsync(nextEntry, vm);
     }
     
     public static void WriteToFile()

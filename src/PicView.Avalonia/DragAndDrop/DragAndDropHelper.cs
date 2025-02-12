@@ -50,7 +50,7 @@ public static class DragAndDropHelper
             {
                 await Dispatcher.UIThread.InvokeAsync(() => vm.CurrentView = vm.ImageViewer);
             }
-            await NavigationHelper.LoadPicFromStringAsync(path, vm).ConfigureAwait(false);
+            await NavigationManager.LoadPicFromStringAsync(path, vm).ConfigureAwait(false);
         }
         else if (Directory.Exists(path))
         {
@@ -58,7 +58,7 @@ public static class DragAndDropHelper
             {
                 await Dispatcher.UIThread.InvokeAsync(() => vm.CurrentView = vm.ImageViewer);
             }
-            await NavigationHelper.LoadPicFromDirectoryAsync(path, vm).ConfigureAwait(false);
+            await NavigationManager.LoadPicFromDirectoryAsync(path, vm).ConfigureAwait(false);
 
         }
         else if (path.IsArchive())
@@ -67,7 +67,7 @@ public static class DragAndDropHelper
             {
                 await Dispatcher.UIThread.InvokeAsync(() => vm.CurrentView = vm.ImageViewer);
             }
-            await NavigationHelper.LoadPicFromArchiveAsync(path, vm).ConfigureAwait(false);
+            await NavigationManager.LoadPicFromArchiveAsync(path, vm).ConfigureAwait(false);
         }
 
         if (!Settings.UIProperties.OpenInSameWindow)
@@ -94,7 +94,7 @@ public static class DragAndDropHelper
             var url = dataStr.Split((char)10).FirstOrDefault();
             if (url != null)
             {
-                await NavigationHelper.LoadPicFromUrlAsync(url, vm).ConfigureAwait(false);
+                await NavigationManager.LoadPicFromUrlAsync(url, vm).ConfigureAwait(false);
             }
         }
     }

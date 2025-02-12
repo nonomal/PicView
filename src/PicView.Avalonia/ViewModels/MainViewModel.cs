@@ -1208,7 +1208,7 @@ public class MainViewModel : ViewModelBase
         var newPath = await ConversionHelper.ConvertTask(FileInfo, index);
         if (!string.IsNullOrWhiteSpace(newPath))
         {
-            await NavigationHelper.LoadPicFromStringAsync(newPath, this);
+            await NavigationManager.LoadPicFromStringAsync(newPath, this);
         }
     }
     
@@ -1596,12 +1596,12 @@ public class MainViewModel : ViewModelBase
 
         NextButtonCommand = ReactiveCommand.CreateFromTask(async () =>
         {
-           await NavigationHelper.NavigateAndPositionCursor(next:true, arrow: false, vm: this);
+           await NavigationManager.NavigateAndPositionCursor(next:true, arrow: false, vm: this);
         });
         
         NextArrowButtonCommand = ReactiveCommand.CreateFromTask(async () =>
         {
-            await NavigationHelper.NavigateAndPositionCursor(next:true, arrow: true, vm: this);
+            await NavigationManager.NavigateAndPositionCursor(next:true, arrow: true, vm: this);
         });
         
         NextFolderCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.NextFolder);
@@ -1610,12 +1610,12 @@ public class MainViewModel : ViewModelBase
 
         PreviousButtonCommand = ReactiveCommand.CreateFromTask(async () =>
         {
-            await NavigationHelper.NavigateAndPositionCursor(next:false, arrow: false, vm: this);
+            await NavigationManager.NavigateAndPositionCursor(next:false, arrow: false, vm: this);
         });
         
         PreviousArrowButtonCommand = ReactiveCommand.CreateFromTask(async () =>
         {
-            await NavigationHelper.NavigateAndPositionCursor(next:false, arrow: true, vm: this);
+            await NavigationManager.NavigateAndPositionCursor(next:false, arrow: true, vm: this);
         });
         
         PreviousFolderCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.PrevFolder);

@@ -163,7 +163,7 @@ public static class GalleryFunctions
                         ToggleGallery(vm);
                     }
 
-                    await NavigationHelper.Navigate(vm.ImageIterator.ImagePaths.IndexOf(fileInfo.FullName), vm).ConfigureAwait(false);
+                    await NavigationManager.Navigate(vm.ImageIterator.ImagePaths.IndexOf(fileInfo.FullName), vm).ConfigureAwait(false);
                 };
                 galleryListBox.Items.Insert(index, galleryItem);
                 var isSvg = fileInfo.Extension.Equals(".svg", StringComparison.OrdinalIgnoreCase) ||
@@ -276,7 +276,7 @@ public static class GalleryFunctions
 
     public static void ToggleGallery(MainViewModel vm)
     {
-        if (vm is null || !NavigationHelper.CanNavigate(vm))
+        if (vm is null || !NavigationManager.CanNavigate(vm))
         {
             return;
         }
@@ -345,13 +345,13 @@ public static class GalleryFunctions
         IsBottomGalleryOpen = true;
         IsFullGalleryOpen = false;
         Settings.Gallery.IsBottomGalleryShown = true;
-        if (NavigationHelper.CanNavigate(vm))
+        if (NavigationManager.CanNavigate(vm))
         {
             vm.GalleryMode = GalleryMode.ClosedToBottom;
         }
 
         vm.GetIsShowingBottomGalleryTranslation = TranslationHelper.Translation.HideBottomGallery;
-        if (!NavigationHelper.CanNavigate(vm))
+        if (!NavigationManager.CanNavigate(vm))
         {
             return;
         }

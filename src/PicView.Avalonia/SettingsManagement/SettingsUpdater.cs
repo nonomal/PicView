@@ -57,7 +57,7 @@ public static class SettingsUpdater
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 vm.PlatformService.StopTaskbarProgress();
-                if (NavigationHelper.CanNavigate(vm))
+                if (NavigationManager.CanNavigate(vm))
                 {
                     vm.PlatformService.SetTaskbarProgress((ulong)vm.ImageIterator?.CurrentIndex!,
                         (ulong)vm.ImageIterator?.ImagePaths?.Count!);
@@ -146,7 +146,7 @@ public static class SettingsUpdater
         else
         {
             Settings.UIProperties.IsTaskbarProgressEnabled = true;
-            if (NavigationHelper.CanNavigate(vm))
+            if (NavigationManager.CanNavigate(vm))
             {
                 await Dispatcher.UIThread.InvokeAsync(() =>
                 {
@@ -192,7 +192,7 @@ public static class SettingsUpdater
     {
         Settings.ImageScaling.ShowImageSideBySide = true;
         vm.IsShowingSideBySide = true;
-        if (NavigationHelper.CanNavigate(vm))
+        if (NavigationManager.CanNavigate(vm))
         {
             var preloadValue = await vm.ImageIterator?.GetNextPreLoadValueAsync();
             vm.SecondaryImageSource = preloadValue?.ImageModel.Image;

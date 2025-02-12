@@ -39,7 +39,7 @@ public static class WindowFunctions
 
         var vm = window.DataContext as MainViewModel;
         string lastFile;
-        if (NavigationHelper.CanNavigate(vm))
+        if (NavigationManager.CanNavigate(vm))
         {
             if (!string.IsNullOrEmpty(ArchiveExtraction.LastOpenedArchive))
             {

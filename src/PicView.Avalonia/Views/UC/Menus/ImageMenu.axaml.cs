@@ -52,7 +52,7 @@ public partial class ImageMenu  : AnimatedMenu
                 return;
             }
 
-            if (!NavigationHelper.CanNavigate(vm))
+            if (!NavigationManager.CanNavigate(vm))
             {
                 return;
             }
@@ -75,7 +75,7 @@ public partial class ImageMenu  : AnimatedMenu
                 number--;
             }
 
-            await NavigationHelper.Navigate(number, vm).ConfigureAwait(false);
+            await NavigationManager.Navigate(number, vm).ConfigureAwait(false);
         }
     }
 }

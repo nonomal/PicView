@@ -27,7 +27,7 @@ public static class FilePicker
             return;
         }
         
-        await Task.Run(() => NavigationHelper.LoadPicFromStringAsync(file, vm));
+        await Task.Run(() => NavigationManager.LoadPicFromStringAsync(file, vm));
     }
 
     public static async Task<string?> SelectFile()

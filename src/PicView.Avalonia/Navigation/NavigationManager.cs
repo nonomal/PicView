@@ -21,7 +21,7 @@ namespace PicView.Avalonia.Navigation;
 /// <summary>
 ///     Helper class for navigation and image loading functionalities in the application.
 /// </summary>
-public static class NavigationHelper
+public static class NavigationManager
 {
     private static CancellationTokenSource? _cancellationTokenSource;
 

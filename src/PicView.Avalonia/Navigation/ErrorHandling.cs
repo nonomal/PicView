@@ -77,7 +77,7 @@ public static class ErrorHandling
             return;
         }
         
-        if (!NavigationHelper.CanNavigate(vm))
+        if (!NavigationManager.CanNavigate(vm))
         {
             await FileHistoryNavigation.OpenLastFileAsync(vm);
             return;
@@ -97,7 +97,7 @@ public static class ErrorHandling
             var index = vm.ImageIterator.CurrentIndex;
             await vm.ImageIterator.DisposeAsync().ConfigureAwait(false);
             vm.ImageIterator = new ImageIterator(vm.FileInfo, vm.ImageIterator.ImagePaths, index, vm);
-            await NavigationHelper.Navigate(index, vm).ConfigureAwait(false);
+            await NavigationManager.Navigate(index, vm).ConfigureAwait(false);
         }
         catch (Exception e)
         {
@@ -119,7 +119,7 @@ public static class ErrorHandling
             return;
         }
 
-        if (NavigationHelper.CanNavigate(vm))
+        if (NavigationManager.CanNavigate(vm))
         {
             var preloadValue = await vm.ImageIterator.GetPreLoadValueAsync(vm.ImageIterator.CurrentIndex).ConfigureAwait(false);
             if (preloadValue?.ImageModel.Image is not null)
@@ -132,7 +132,7 @@ public static class ErrorHandling
             var url = vm.Title.GetURL();
             if (!string.IsNullOrEmpty(url))
             {
-                await NavigationHelper.LoadPicFromUrlAsync(url, vm).ConfigureAwait(false);
+                await NavigationManager.LoadPicFromUrlAsync(url, vm).ConfigureAwait(false);
             }
             else 
             {

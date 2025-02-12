@@ -19,13 +19,13 @@ public static class QuickLoad
         var fileInfo = new FileInfo(file);
         if (!fileInfo.Exists) // If not file, try to load if URL, base64 or directory
         {
-            await NavigationHelper.LoadPicFromStringAsync(file, vm).ConfigureAwait(false);
+            await NavigationManager.LoadPicFromStringAsync(file, vm).ConfigureAwait(false);
             return;
         }
 
         if (file.IsArchive()) // Handle if file exist and is an archive
         {
-            await NavigationHelper.LoadPicFromArchiveAsync(file, vm).ConfigureAwait(false);
+            await NavigationManager.LoadPicFromArchiveAsync(file, vm).ConfigureAwait(false);
             return;
         }
         vm.FileInfo = fileInfo;

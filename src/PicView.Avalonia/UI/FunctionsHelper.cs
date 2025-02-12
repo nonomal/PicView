@@ -209,52 +209,52 @@ public static class FunctionsHelper
 
     public static async Task Next()
     {
-        await NavigationHelper.Iterate(next: true, Vm);
+        await NavigationManager.Iterate(next: true, Vm);
     }
     
     public static async Task NextFolder()
     {
-        await NavigationHelper.GoToNextFolder(true, Vm);
+        await NavigationManager.GoToNextFolder(true, Vm);
     }
     
     public static async Task Last()
     {
-        await NavigationHelper.NavigateFirstOrLast(last: true, Vm);
+        await NavigationManager.NavigateFirstOrLast(last: true, Vm);
     }
 
     public static async Task Prev()
     {
-        await NavigationHelper.Iterate(next: false, Vm);
+        await NavigationManager.Iterate(next: false, Vm);
     }
     
     public static async Task PrevFolder()
     {
-        await NavigationHelper.GoToNextFolder(false, Vm);
+        await NavigationManager.GoToNextFolder(false, Vm);
     }
 
     public static async Task First()
     {
-        await NavigationHelper.NavigateFirstOrLast(last: false, Vm);
+        await NavigationManager.NavigateFirstOrLast(last: false, Vm);
     }
     
     public static async Task Next10()
     {
-        await NavigationHelper.Next10(Vm).ConfigureAwait(false);
+        await NavigationManager.Next10(Vm).ConfigureAwait(false);
     }
     
     public static async Task Next100()
     {
-        await NavigationHelper.Next100(Vm).ConfigureAwait(false);
+        await NavigationManager.Next100(Vm).ConfigureAwait(false);
     }
     
     public static async Task Prev10()
     {
-        await NavigationHelper.Prev10(Vm).ConfigureAwait(false);
+        await NavigationManager.Prev10(Vm).ConfigureAwait(false);
     }
     
     public static async Task Prev100()
     {
-        await NavigationHelper.Prev100(Vm).ConfigureAwait(false);
+        await NavigationManager.Prev100(Vm).ConfigureAwait(false);
     }
     
 

@@ -113,7 +113,7 @@ public static class GalleryLoad
                             GalleryFunctions.ToggleGallery(vm);
                         }
 
-                        await NavigationHelper.Navigate(vm.ImageIterator.ImagePaths.IndexOf(fileInfos[i1].FullName), vm)
+                        await NavigationManager.Navigate(vm.ImageIterator.ImagePaths.IndexOf(fileInfos[i1].FullName), vm)
                             .ConfigureAwait(false);
                     };
                     galleryListBox.Items.Add(galleryItem);

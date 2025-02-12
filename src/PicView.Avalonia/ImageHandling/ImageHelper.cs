@@ -28,7 +28,7 @@ public static class ImageHelper
                 source = bmp;
             }
         }
-        else if (NavigationHelper.CanNavigate(vm) && !string.IsNullOrEmpty(path))
+        else if (NavigationManager.CanNavigate(vm) && !string.IsNullOrEmpty(path))
         {
             if (vm.EffectConfig is not null && vm.FileInfo.FullName == path)
             {
@@ -125,7 +125,7 @@ public static class ImageHelper
         {
             return;
         }
-        if (!NavigationHelper.CanNavigate(vm))
+        if (!NavigationManager.CanNavigate(vm))
         {
             return;
         }

@@ -153,7 +153,7 @@ public partial class MainView : UserControl
         
             item.Click += async delegate
             {
-                await NavigationHelper.LoadPicFromStringAsync(fileLocation, vm).ConfigureAwait(false);
+                await NavigationManager.LoadPicFromStringAsync(fileLocation, vm).ConfigureAwait(false);
             };
         
             ToolTip.SetTip(item, fileLocation);

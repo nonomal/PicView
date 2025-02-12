@@ -71,7 +71,7 @@ public static class FileListManager
     public static async Task UpdateFileList(IPlatformSpecificService? platformSpecificService, MainViewModel vm, FileListHelper.SortFilesBy sortFilesBy)
     {
         Settings.Sorting.SortPreference = (int)sortFilesBy;
-        if (!NavigationHelper.CanNavigate(vm))
+        if (!NavigationManager.CanNavigate(vm))
         {
             return;
         }
@@ -82,7 +82,7 @@ public static class FileListManager
     public static async Task UpdateFileList(IPlatformSpecificService? platformSpecificService, MainViewModel vm, bool ascending)
     {
         Settings.Sorting.Ascending = ascending;
-        if (!NavigationHelper.CanNavigate(vm))
+        if (!NavigationManager.CanNavigate(vm))
         {
             return;
         }

@@ -144,7 +144,7 @@ public partial class EditableTitlebar : UserControl
         if (Path.GetDirectoryName(oldPath) != Path.GetDirectoryName(newPath))
         {
             vm.ImageIterator?.RemoveCurrentItemFromPreLoader();
-            await NavigationHelper.Navigate(true, vm);
+            await NavigationManager.Navigate(true, vm);
             FileHelper.RenameFile(oldPath, newPath);
             return;
         }
