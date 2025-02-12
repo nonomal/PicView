@@ -671,9 +671,11 @@ public static class NavigationHelper
             await ErrorHandling.ReloadAsync(vm).ConfigureAwait(false);
             return;
         }
-        
         vm.ImageIterator = new ImageIterator(fileInfo, newFileList, 0, vm);
-        await vm.ImageIterator.IterateToIndex(0, _cancellationTokenSource).ConfigureAwait(false);
+        var preloadValue = await vm.ImageIterator.GetPreLoadValueAsync(0).ConfigureAwait(false);
+        await UpdateImage.UpdateSource(vm, 0, newFileList, false, preloadValue)
+    .       ConfigureAwait(false);
+        
         await CheckAndReloadGallery(fileInfo, vm);
     }
 
