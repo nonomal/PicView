@@ -69,7 +69,7 @@ public sealed class PreLoader : IAsyncDisposable
 
 #if DEBUG
             if (ShowAddRemove)
-                Trace.WriteLine($"{imageModel.FileInfo.Name} added at {index}");
+                Trace.WriteLine($"{imageModel?.FileInfo?.Name} added at {index}");
 #endif
             return true;
         }
@@ -293,7 +293,6 @@ public sealed class PreLoader : IAsyncDisposable
         {
             if (_preLoadList.TryGetValue(key, out var item))
             {
-                // Ensure proper Bitmap disposal
                 if (item.ImageModel?.Image is Bitmap bitmap)
                 {
                     bitmap.Dispose();
