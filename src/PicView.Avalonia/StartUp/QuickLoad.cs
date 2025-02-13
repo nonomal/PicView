@@ -60,23 +60,7 @@ public static class QuickLoad
             {
                 WindowFunctions.CenterWindowOnScreen();
             }
-            else
-            {
-                // Fixes bug with incorrect image size
-                vm.ImageViewer.Width = imageModel.PixelWidth;
-                vm.ImageViewer.Height = imageModel.PixelHeight;
-            }
         }, DispatcherPriority.Send);
-        
-        if (!Settings.WindowProperties.AutoFit)
-        {
-            // Revert back to auto sizing
-            Dispatcher.UIThread.Post(() =>
-            {
-                vm.ImageViewer.Width = double.NaN;
-                vm.ImageViewer.Height = double.NaN;
-            });
-        }
 
         vm.IsLoading = false;
         
