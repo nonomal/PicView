@@ -1599,18 +1599,16 @@ public class MainViewModel : ViewModelBase
         
         NextButtonCommand = ReactiveCommand.Create(() =>
         {
-            Task.Run(async () =>
-            {
-                await NavigationManager.NavigateAndPositionCursor(next: true, arrow: false, vm: this);
-            });
+            Task.Run(() =>
+               NavigationManager.NavigateAndPositionCursor(next: true, arrow: false, vm: this)
+            );
         });
         
         NextArrowButtonCommand = ReactiveCommand.Create( () =>
         {
-            Task.Run(async () =>
-            {
-                await NavigationManager.NavigateAndPositionCursor(next:true, arrow: true, vm: this);
-            });
+            Task.Run(() =>
+                NavigationManager.NavigateAndPositionCursor(next:true, arrow: true, vm: this)
+            );
         });
         
         NextFolderCommand = ReactiveCommand.Create(() =>
@@ -1625,18 +1623,16 @@ public class MainViewModel : ViewModelBase
         
         PreviousButtonCommand = ReactiveCommand.Create( () =>
         {
-            Task.Run(async () =>
-            {
-                await NavigationManager.NavigateAndPositionCursor(next:false, arrow: false, vm: this);
-            });
+            Task.Run(() =>
+                NavigationManager.NavigateAndPositionCursor(next:false, arrow: false, vm: this)
+            );
         });
         
         PreviousArrowButtonCommand = ReactiveCommand.Create( () =>
         {
-            Task.Run(async () =>
-            {
-                await NavigationManager.NavigateAndPositionCursor(next:false, arrow: true, vm: this);
-            });
+            Task.Run(() =>
+                NavigationManager.NavigateAndPositionCursor(next:false, arrow: true, vm: this)
+            );
         });
         
         PreviousFolderCommand = ReactiveCommand.Create(() =>
