@@ -17,6 +17,10 @@ public partial class DragDropView : UserControl
 
     private const int MaxSize = SizeDefaults.WindowMinSize - 30;
     
+    public bool IsLinkChainVisible => _linkChain != null && ParentPanel.Children.Contains(_linkChain);
+    public bool IsDirectoryIconVisible => _directoryIcon != null && ParentPanel.Children.Contains(_directoryIcon);
+    public bool IsZipIconVisible => _zipIcon != null && ParentPanel.Children.Contains(_zipIcon);
+    
     public DragDropView()
     {
         InitializeComponent();

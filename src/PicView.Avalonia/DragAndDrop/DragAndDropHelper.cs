@@ -2,7 +2,6 @@
 using System.Text;
 using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using PicView.Avalonia.ImageHandling;
@@ -102,25 +101,16 @@ public static class DragAndDropHelper
     public static async Task DragEnter(DragEventArgs e, MainViewModel vm, Control control)
     {
         var files = e.Data.GetFiles();
-        if (files == null)
-        {
-            var handledFromUrl = await HandleDragEnterFromUrl(e, vm);
-            if (!handledFromUrl)
-            {
-                RemoveDragDropView();
-            }
-        }
 
         await HandleDragEnter(files, e, vm, control);
     }
 
     private static async Task HandleDragEnter(IEnumerable<IStorageItem> files, DragEventArgs e, MainViewModel vm, Control control)
     {
-        var fileArray = files as IStorageItem[] ?? files.ToArray();
-        if (fileArray is null || fileArray.Length < 1)
+        IStorageItem[]? fileArray = null;
+        if (files is not null)
         {
-            RemoveDragDropView();
-            return;
+           fileArray = files as IStorageItem[] ?? files.ToArray();
         }
 
         await Dispatcher.UIThread.InvokeAsync(() =>
@@ -141,6 +131,15 @@ public static class DragAndDropHelper
                 _dragDropView.RemoveThumbnail();
             }
         });
+        if (fileArray is null)
+        {
+            var handledFromUrl = await HandleDragEnterFromUrl(e, vm);
+            if (!handledFromUrl)
+            {
+                RemoveDragDropView();
+            }
+            return;
+        }
         var firstFile = fileArray[0];
         var path = RuntimeInformation.IsOSPlatform(OSPlatform.OSX)
             ? firstFile.Path.AbsolutePath
@@ -179,15 +178,7 @@ public static class DragAndDropHelper
                     var thumb = await GetThumbnails.GetThumbAsync(path, SizeDefaults.WindowMinSize - 30)
                         .ConfigureAwait(false);
 
-                    await Dispatcher.UIThread.InvokeAsync(() => { _dragDropView?.UpdateThumbnail(thumb as Bitmap); });
-                }
-            }
-            else
-            {
-                var handledFromUrl = await HandleDragEnterFromUrl(e, vm);
-                if (!handledFromUrl)
-                {
-                    RemoveDragDropView();
+                    await Dispatcher.UIThread.InvokeAsync(() => { _dragDropView?.UpdateThumbnail(thumb); });
                 }
             }
         }
@@ -197,28 +188,22 @@ public static class DragAndDropHelper
     {
         if (urlObject is null)
         {
+            _dragDropView.RemoveThumbnail();
             return false;
         }
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
-            if (_dragDropView == null)
+            _dragDropView ??= new DragDropView { DataContext = vm };
+            if (!_dragDropView.IsLinkChainVisible)
             {
-                _dragDropView = new DragDropView { DataContext = vm };
                 _dragDropView.AddLinkChain();
-                UIHelper.GetMainView.MainGrid.Children.Add(_dragDropView);
             }
-            else
+            if (!UIHelper.GetMainView.MainGrid.Children.Contains(_dragDropView))
             {
-                _dragDropView.RemoveThumbnail();
+                UIHelper.GetMainView.MainGrid.Children.Add(_dragDropView);
             }
         });
         return true;
-    }
-
-    private static async Task<bool> HandleDragEnterFromUrl(DragEventArgs e, MainViewModel vm)
-    {
-        var urlObject = e.Data.Get("text/x-moz-url");
-        return await HandleDragEnterFromUrl(urlObject, vm);
     }
 
     public static void DragLeave(DragEventArgs e, Control control)
