@@ -1592,33 +1592,57 @@ public class MainViewModel : ViewModelBase
 
         #region Navigation Commands
 
-        NextCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.Next);
-
-        NextButtonCommand = ReactiveCommand.CreateFromTask(async () =>
+        NextCommand = ReactiveCommand.Create(() =>
         {
-           await NavigationManager.NavigateAndPositionCursor(next:true, arrow: false, vm: this);
+            Task.Run(FunctionsHelper.Next);
         });
         
-        NextArrowButtonCommand = ReactiveCommand.CreateFromTask(async () =>
+        NextButtonCommand = ReactiveCommand.Create(() =>
         {
-            await NavigationManager.NavigateAndPositionCursor(next:true, arrow: true, vm: this);
+            Task.Run(async () =>
+            {
+                await NavigationManager.NavigateAndPositionCursor(next: true, arrow: false, vm: this);
+            });
         });
         
-        NextFolderCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.NextFolder);
-
-        PreviousCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.Prev);
-
-        PreviousButtonCommand = ReactiveCommand.CreateFromTask(async () =>
+        NextArrowButtonCommand = ReactiveCommand.Create( () =>
         {
-            await NavigationManager.NavigateAndPositionCursor(next:false, arrow: false, vm: this);
+            Task.Run(async () =>
+            {
+                await NavigationManager.NavigateAndPositionCursor(next:true, arrow: true, vm: this);
+            });
         });
         
-        PreviousArrowButtonCommand = ReactiveCommand.CreateFromTask(async () =>
+        NextFolderCommand = ReactiveCommand.Create(() =>
         {
-            await NavigationManager.NavigateAndPositionCursor(next:false, arrow: true, vm: this);
+            Task.Run(FunctionsHelper.NextFolder);
         });
         
-        PreviousFolderCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.PrevFolder);
+        PreviousCommand = ReactiveCommand.Create(() =>
+        {
+            Task.Run(FunctionsHelper.Prev);
+        });
+        
+        PreviousButtonCommand = ReactiveCommand.Create( () =>
+        {
+            Task.Run(async () =>
+            {
+                await NavigationManager.NavigateAndPositionCursor(next:false, arrow: false, vm: this);
+            });
+        });
+        
+        PreviousArrowButtonCommand = ReactiveCommand.Create( () =>
+        {
+            Task.Run(async () =>
+            {
+                await NavigationManager.NavigateAndPositionCursor(next:false, arrow: true, vm: this);
+            });
+        });
+        
+        PreviousFolderCommand = ReactiveCommand.Create(() =>
+        {
+            Task.Run(FunctionsHelper.PrevFolder);
+        });
         
         Skip10Command = ReactiveCommand.CreateFromTask(FunctionsHelper.Next10);
 
@@ -1706,10 +1730,16 @@ public class MainViewModel : ViewModelBase
         #endregion Image commands
 
         #region File commands
-
-        OpenFileCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.Open);
-
-        OpenLastFileCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.OpenLastFile);
+        
+        OpenFileCommand = ReactiveCommand.Create( () =>
+        {
+            Task.Run(FunctionsHelper.Open);
+        });
+        
+        OpenLastFileCommand = ReactiveCommand.Create( () =>
+        {
+            Task.Run(FunctionsHelper.OpenLastFile);
+        });
 
         SaveFileCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.Save);
 
@@ -1726,8 +1756,11 @@ public class MainViewModel : ViewModelBase
         CopyBase64Command = ReactiveCommand.CreateFromTask<string>(CopyBase64Task);
 
         CutCommand = ReactiveCommand.CreateFromTask<string>(CutFileTask);
-
-        PasteCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.Paste);
+        
+        PasteCommand = ReactiveCommand.Create( () =>
+        {
+            Task.Run(FunctionsHelper.Paste);
+        });
 
         OpenWithCommand = ReactiveCommand.CreateFromTask<string>(OpenWithTask);
 
