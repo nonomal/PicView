@@ -1,4 +1,4 @@
-name: Build and Sign PicView on Windows
+name: Test Sign PicView on Windows
 run-name: workflow test signing with SignPath
 
 on: workflow_dispatch
