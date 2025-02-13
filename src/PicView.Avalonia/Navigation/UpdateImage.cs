@@ -16,8 +16,16 @@ namespace PicView.Avalonia.Navigation;
 
 public static class UpdateImage
 {
-    #region Update Source and Preview
-
+    /// <summary>
+    ///     Updates the image source in the main view model based on the specified index and preloaded values.
+    /// </summary>
+    /// <param name="vm">The main view model instance.</param>
+    /// <param name="index">The index of the image to update.</param>
+    /// <param name="imagePaths">The list of image paths to navigate through.</param>
+    /// <param name="isReversed">Indicates if the navigation is in reverse order.</param>
+    /// <param name="preLoadValue">The preloaded value of the current image.</param>
+    /// <param name="nextPreloadValue">Optional: The preloaded value of the next image, used for side-by-side display.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
     public static async Task UpdateSource(MainViewModel vm, int index, List<string> imagePaths, bool isReversed,
         PreLoadValue? preLoadValue,
         PreLoadValue? nextPreloadValue = null)
@@ -41,7 +49,7 @@ public static class UpdateImage
                 nextPreloadValue.ImageModel = await GetImageModel.GetImageModelAsync(fileInfo).ConfigureAwait(false);
             }
         }
-        
+
         if (index != vm.ImageIterator.CurrentIndex)
         {
             return;
@@ -53,6 +61,7 @@ public static class UpdateImage
             {
                 return;
             }
+
             vm.ImageViewer.SetTransform(preLoadValue.ImageModel.EXIFOrientation);
             if (Settings.ImageScaling.ShowImageSideBySide)
             {
@@ -70,7 +79,7 @@ public static class UpdateImage
             WindowResizing.SetSize(preLoadValue.ImageModel.PixelWidth, preLoadValue.ImageModel.PixelHeight,
                 nextPreloadValue?.ImageModel?.PixelWidth ?? 0, nextPreloadValue?.ImageModel?.PixelHeight ?? 0,
                 preLoadValue.ImageModel.Rotation, vm);
-            
+
             UIHelper.GetToolTipMessage.IsVisible = false;
         }, DispatcherPriority.Send);
 
@@ -86,7 +95,9 @@ public static class UpdateImage
             {
                 if (TiffManager.IsTiff(preLoadValue.ImageModel.FileInfo.FullName))
                 {
-                    SetTitleHelper.TrySetTiffTitle(preLoadValue.ImageModel.PixelWidth, preLoadValue.ImageModel.PixelHeight, vm.ImageIterator.CurrentIndex, preLoadValue.ImageModel.FileInfo, vm);
+                    SetTitleHelper.TrySetTiffTitle(preLoadValue.ImageModel.PixelWidth,
+                        preLoadValue.ImageModel.PixelHeight, vm.ImageIterator.CurrentIndex,
+                        preLoadValue.ImageModel.FileInfo, vm);
                 }
                 else
                 {
@@ -98,12 +109,12 @@ public static class UpdateImage
                 SetTitleHelper.SetTitle(vm, preLoadValue.ImageModel);
             }
         }
-        
+
         if (Settings.WindowProperties.KeepCentered)
         {
             await Dispatcher.UIThread.InvokeAsync(() => { WindowFunctions.CenterWindowOnScreen(); });
         }
-        
+
         if (vm.SelectedGalleryItemIndex != index)
         {
             vm.SelectedGalleryItemIndex = index;
@@ -119,23 +130,22 @@ public static class UpdateImage
         vm.ExifOrientation = preLoadValue.ImageModel.EXIFOrientation;
         vm.FileInfo = preLoadValue.ImageModel.FileInfo;
         vm.ZoomValue = 1;
-        
+
         if (Settings.ImageScaling.ShowImageSideBySide)
         {
             // Fixes incorrect rendering in the side by side view
             // TODO: Improve and fix side by side and remove this hack 
-            Dispatcher.UIThread.Post(() =>
-            {
-                vm.ImageViewer?.MainImage?.InvalidateVisual();
-            });
+            Dispatcher.UIThread.Post(() => { vm.ImageViewer?.MainImage?.InvalidateVisual(); });
         }
 
         // Reset effects
         vm.EffectConfig = null;
     }
 
+    #region Single Image
+
     /// <summary>
-    /// Sets the given image as the single image displayed in the view.
+    ///     Sets the given image as the single image displayed in the view.
     /// </summary>
     /// <param name="source">The source of the image to display.</param>
     /// <param name="imageType"></param>
@@ -143,7 +153,46 @@ public static class UpdateImage
     /// <param name="vm">The main view model instance.</param>
     public static void SetSingleImage(object source, ImageType imageType, string name, MainViewModel vm)
     {
-        Dispatcher.UIThread.Invoke(() =>
+        ExecuteSetSingleImageAsync(
+            source,
+            imageType,
+            name,
+            vm,
+            (action, priority) =>
+            {
+                Dispatcher.UIThread.Invoke(action, priority);
+                return Task.CompletedTask;
+            }).GetAwaiter().GetResult();
+    }
+
+    /// <inheritdoc cref="SetSingleImage" />
+    public static async Task SetSingleImageAsync(object source, ImageType imageType, string name, MainViewModel vm)
+    {
+        await ExecuteSetSingleImageAsync(
+            source,
+            imageType,
+            name,
+            vm,
+            async (action, priority) => { await Dispatcher.UIThread.InvokeAsync(action, priority); });
+    }
+
+    /// <summary>
+    ///     Internal method that sets a single image as the source of the image viewer.
+    /// </summary>
+    /// <param name="source">The source of the image to display.</param>
+    /// <param name="imageType">The type of the image.</param>
+    /// <param name="name">The name of the image.</param>
+    /// <param name="vm">The main view model instance.</param>
+    /// <param name="dispatchAction">A function that dispatches an action to the UI thread.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    private static async Task ExecuteSetSingleImageAsync(
+        object source,
+        ImageType imageType,
+        string name,
+        MainViewModel vm,
+        Func<Action, DispatcherPriority, Task> dispatchAction)
+    {
+        await dispatchAction(() =>
         {
             if (vm.CurrentView != vm.ImageViewer)
             {
@@ -174,38 +223,37 @@ public static class UpdateImage
 
         if (GalleryFunctions.IsBottomGalleryOpen)
         {
-            Dispatcher.UIThread.Invoke(() =>
-            {
-                // Trigger animation
-                vm.GalleryMode = GalleryMode.BottomToClosed;
-            });
-            // Set to closed to ensure next gallery mode changing is fired
+            await dispatchAction(() => { vm.GalleryMode = GalleryMode.BottomToClosed; }, DispatcherPriority.Render);
             vm.GalleryMode = GalleryMode.Closed;
         }
 
-        Dispatcher.UIThread.Invoke(() =>
-        {
-            WindowResizing.SetSize(width, height, 0, 0, 0, vm);
-        });
-        
-        if (vm.RotationAngle != 0)
-        {
-            vm.ImageViewer.Rotate(vm.RotationAngle);
-        }
+        await dispatchAction(() => { WindowResizing.SetSize(width, height, 0, 0, 0, vm); }, DispatcherPriority.Render);
 
         var singeImageWindowTitles = ImageTitleFormatter.GenerateTitleForSingleImage(width, height, name, 1);
         vm.WindowTitle = singeImageWindowTitles.TitleWithAppName;
-        vm.Title = singeImageWindowTitles.BaseTitle; 
+        vm.Title = singeImageWindowTitles.BaseTitle;
         vm.TitleTooltip = singeImageWindowTitles.BaseTitle;
         vm.GalleryMargin = new Thickness(0, 0, 0, 0);
 
         vm.PlatformService.StopTaskbarProgress();
-        
+
         vm.PixelWidth = width;
         vm.PixelHeight = height;
+
+        await dispatchAction(() => { UIHelper.GetGalleryView.IsVisible = false; }, DispatcherPriority.Render);
     }
-    
-    public static void SetTiffImage(TiffManager.TiffNavigationInfo tiffNavigationInfo, int index, FileInfo fileInfo, MainViewModel vm)
+
+    #endregion
+
+    /// <summary>
+    ///     Sets the image displayed in the view to the given TIFF image based on the given navigation info.
+    /// </summary>
+    /// <param name="tiffNavigationInfo">The navigation info for the TIFF image.</param>
+    /// <param name="index">The index of the image to display.</param>
+    /// <param name="fileInfo">The FileInfo object representing the file containing the image.</param>
+    /// <param name="vm">The main view model instance.</param>
+    public static void SetTiffImage(TiffManager.TiffNavigationInfo tiffNavigationInfo, int index, FileInfo fileInfo,
+        MainViewModel vm)
     {
         var source = tiffNavigationInfo.Pages[tiffNavigationInfo.CurrentPage].ToWriteableBitmap();
         vm.ImageSource = source;
@@ -214,27 +262,30 @@ public static class UpdateImage
         var width = source?.PixelSize.Width ?? 0;
         var height = source?.PixelSize.Height ?? 0;
 
-        Dispatcher.UIThread.Invoke(() =>
-        {
-            WindowResizing.SetSize(width, height, 0, 0, 0, vm);
-        }, DispatcherPriority.Send);
-        
+        Dispatcher.UIThread.Invoke(() => { WindowResizing.SetSize(width, height, 0, 0, 0, vm); },
+            DispatcherPriority.Send);
+
         if (vm.RotationAngle != 0)
         {
             vm.ImageViewer.Rotate(vm.RotationAngle);
         }
 
         SetTitleHelper.SetTiffTitle(tiffNavigationInfo, width, height, index, fileInfo, vm);
-        
+
         vm.PixelWidth = width;
         vm.PixelHeight = height;
     }
 
+    /// <summary>
+    ///     Shows the preview of the image at the given index and sets the view model to a loading state.
+    /// </summary>
+    /// <param name="vm">The main view model instance.</param>
+    /// <param name="index">The index of the image to preview.</param>
     public static void LoadingPreview(MainViewModel vm, int index)
     {
         SetTitleHelper.SetLoadingTitle(vm);
         vm.IsLoading = true;
-        
+
         vm.SelectedGalleryItemIndex = index;
         if (Settings.Gallery.IsBottomGalleryShown)
         {
@@ -244,13 +295,12 @@ public static class UpdateImage
         vm.ImageSource = GetThumbnails.GetExifThumb(vm.ImageIterator.ImagePaths[index]);
         if (Settings.ImageScaling.ShowImageSideBySide)
         {
-            vm.SecondaryImageSource = GetThumbnails.GetExifThumb(vm.ImageIterator.ImagePaths[vm.ImageIterator.NextIndex]);
+            vm.SecondaryImageSource =
+                GetThumbnails.GetExifThumb(vm.ImageIterator.ImagePaths[vm.ImageIterator.NextIndex]);
         }
         else
         {
             vm.SecondaryImageSource = null;
         }
     }
-
-    #endregion
 }

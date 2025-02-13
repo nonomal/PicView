@@ -57,6 +57,8 @@ public static class GalleryLoad
         {
             return;
         }
+        // Make sure gallery is visible
+        await Dispatcher.UIThread.InvokeAsync(() => UIHelper.GetGalleryView.IsVisible = true);
 
         // Make sure height is set
         if (Settings.Gallery.IsBottomGalleryShown && !GalleryFunctions.IsFullGalleryOpen)

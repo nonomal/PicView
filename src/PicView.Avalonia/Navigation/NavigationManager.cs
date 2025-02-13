@@ -534,7 +534,7 @@ public static class NavigationManager
         }
 
         var imageModel = await GetImageModel.GetImageModelAsync(fileInfo).ConfigureAwait(false);
-        UpdateImage.SetSingleImage(imageModel.Image, imageModel.ImageType, url, vm);
+        await UpdateImage.SetSingleImageAsync(imageModel.Image, imageModel.ImageType, url, vm);
         vm.FileInfo = fileInfo;
         vm.ExifOrientation = imageModel.EXIFOrientation;
         FileHistoryNavigation.Add(url);
@@ -573,7 +573,7 @@ public static class NavigationManager
                     PixelHeight = bitmap?.PixelSize.Height ?? 0,
                     ImageType = ImageType.Bitmap
                 };
-                UpdateImage.SetSingleImage(imageModel.Image, imageModel.ImageType,
+                await UpdateImage.SetSingleImageAsync(imageModel.Image, imageModel.ImageType,
                     TranslationHelper.Translation.Base64Image, vm);
             }
             catch (Exception e)
