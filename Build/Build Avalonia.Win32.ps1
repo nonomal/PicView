@@ -44,10 +44,4 @@ if (Test-Path $pdbPath) {
     Remove-Item -Path $pdbPath -Force
 }
 
-#Remove uninstended space
-Rename-Item -path $outputPath -NewName $outputPath.Replace(" ","")
-
-#remove uninstended double dashes
-Rename-Item -path $outputPath -NewName $outputPath.Replace("--","-")
-
 

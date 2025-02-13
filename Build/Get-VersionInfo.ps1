@@ -11,6 +11,9 @@ $fileVersion = $xml.Project.PropertyGroup.FileVersion
 # Combine VersionPrefix and VersionSuffix
 $fullVersion = "$versionPrefix-$versionSuffix"
 
+# Replace double dashes with a single dash
+$fullVersion = $fullVersion -replace '--', '-'
+
 # Output the results for GitHub Actions
 Write-Output "::set-output name=version::$fullVersion"
 Write-Output "::set-output name=file-version::$fileVersion"
