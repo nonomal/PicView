@@ -13,6 +13,7 @@ $fullVersion = "$versionPrefix-$versionSuffix"
 
 # Replace double dashes with a single dash
 $fullVersion = $fullVersion -replace '--', '-'
+$fileVersion = $fileVersion -replace '--', '-'
 
 # Output the results for GitHub Actions
 Write-Output "::set-output name=version::$fullVersion"
