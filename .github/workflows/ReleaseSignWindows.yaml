@@ -1,4 +1,4 @@
-name: Release Signing on Windows
+name: Release signing on Windows
 run-name: workflow release signing with SignPath
 
 on: workflow_dispatch
@@ -18,6 +18,7 @@ jobs:
         with:
           dotnet-version: '9.x'
 
+
       # Step 3: Get version from Directory.Build.props using PowerShell
       - name: Get version from Directory.Build.props
         id: get-version
@@ -34,7 +35,7 @@ jobs:
         uses: Minionguyjpro/Inno-Setup-Action@v1.2.5
         with:
           path: .\Build\install.iss
-          options: /O+ /DMyAppVersion=${{steps.get-version.outputs.file-version}} /DMyAppOutputDir=${{ github.workspace }}\Build\install /DMyFileSource=${{ github.workspace }}\Build\PicView-v${{steps.[...]
+          options: /O+ /DMyAppVersion=${{steps.get-version.outputs.file-version}} /DMyAppOutputDir=${{ github.workspace }}\Build\install /DMyFileSource=${{ github.workspace }}\Build\PicView-v${{steps.get-version.outputs.version}}-win-x64 /DAppIcon=${{ github.workspace }}\src\PicView.Avalonia.Win32\icon.ico /DLicenseFile=${{ github.workspace }}\src\PicView.Core\Licenses\LICENSE.txt /DMyAppOutputName=Setup-PicView-v${{steps.get-version.outputs.version}}-win-x64
 
       # Step 6 (arm64): Publish arm64 version
       - name: Publish arm64 version
@@ -42,20 +43,16 @@ jobs:
           pwsh -File "${{ github.workspace }}\Build\Build Avalonia.Win32.ps1" -Platform "arm64" -outputPath "${{ github.workspace }}\Build\PicView-v${{steps.get-version.outputs.version}}-win-arm64"
         shell: pwsh
 
+
       # Step 7 (arm64): Compile .ISS to .EXE Installer for arm64
       - name: Compile .ISS to .EXE Installer (arm64)
         uses: Minionguyjpro/Inno-Setup-Action@v1.2.5
         with:
           path: .\Build\install.iss
-          options: /O+ /DMyAppVersion=${{steps.get-version.outputs.file-version}} /DMyAppOutputDir=${{ github.workspace }}\Build\install /DMyFileSource=${{ github.workspace }}\Build\PicView-v${{steps.[...]
+          options: /O+ /DMyAppVersion=${{steps.get-version.outputs.file-version}} /DMyAppOutputDir=${{ github.workspace }}\Build\install /DMyFileSource=${{ github.workspace }}\Build\PicView-v${{steps.get-version.outputs.version}}-win-arm64 /DAppIcon=${{ github.workspace }}\src\PicView.Avalonia.Win32\icon.ico /DLicenseFile=${{ github.workspace }}\src\PicView.Core\Licenses\LICENSE.txt /DMyAppOutputName=Setup-PicView-v${{steps.get-version.outputs.version}}-win-arm64
 
-      # Step 8: Rename files with double hyphens to single hyphen
-      - name: Rename files with double hyphens
-        run: |
-          Get-ChildItem -Path "${{ github.workspace }}\Build" -Recurse -Filter "*--*" | Rename-Item -NewName { $_.Name -replace '--', '-' }
-        shell: pwsh
 
-      # Step 9: Upload unsigned artifact
+      # Step 8: Upload unsigned artifact
       - name: upload-unsigned-artifact
         id: upload-unsigned-artifact
         uses: actions/upload-artifact@v4
@@ -69,7 +66,7 @@ jobs:
             ${{ github.workspace }}\Build\install\Setup-PicView-v${{steps.get-version.outputs.version}}-win-arm64.exe
           retention-days: 1
       
-      # Step 10: Sign the binaries
+      # Step 9: Sign the binaries
       - name: Sign files
         uses: signpath/github-action-submit-signing-request@v1
         with:
@@ -81,7 +78,7 @@ jobs:
           wait-for-completion: true
           output-artifact-directory: 'PicView-${{steps.get-version.outputs.version}}-signed'
 
-      # Step 11: Upload signed binaries
+      # Step 10: Upload signed binaries
       - name: upload-signed-artifact
         uses: actions/upload-artifact@v4
         with:
