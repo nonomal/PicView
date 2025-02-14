@@ -683,7 +683,7 @@ public static class NavigationManager
             }
 
             _cancellationTokenSource = new CancellationTokenSource();
-            _ = vm.ImageIterator.IterateToIndex(index, _cancellationTokenSource).ConfigureAwait(false);
+            _ = vm.ImageIterator.NextIteration(index, _cancellationTokenSource).ConfigureAwait(false);
             _cancellationTokenSource.CancelAfter(TimeSpan.FromMinutes(5));
         }).ConfigureAwait(false);
     }
