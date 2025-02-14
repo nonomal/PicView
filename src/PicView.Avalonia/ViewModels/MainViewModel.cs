@@ -1599,6 +1599,13 @@ public class MainViewModel : ViewModelBase
         
         NextButtonCommand = ReactiveCommand.Create(() =>
         {
+            var button = UIHelper.GetBottomBar?.NextButton;
+            if (button != null)
+            {
+                button.Interval =
+                    (int)TimeSpan.FromSeconds(SettingsHelper.Settings.UIProperties.NavSpeed).TotalMilliseconds;
+            }
+
             Task.Run(() =>
                NavigationManager.NavigateAndPositionCursor(next: true, arrow: false, vm: this)
             );
@@ -1606,6 +1613,13 @@ public class MainViewModel : ViewModelBase
         
         NextArrowButtonCommand = ReactiveCommand.Create( () =>
         {
+            var button = UIHelper.GetMainView?.ClickArrowRight?.PolyButton;
+            if (button != null)
+            {
+                button.Interval =
+                    (int)TimeSpan.FromSeconds(SettingsHelper.Settings.UIProperties.NavSpeed).TotalMilliseconds;
+            }
+
             Task.Run(() =>
                 NavigationManager.NavigateAndPositionCursor(next:true, arrow: true, vm: this)
             );
@@ -1623,6 +1637,13 @@ public class MainViewModel : ViewModelBase
         
         PreviousButtonCommand = ReactiveCommand.Create( () =>
         {
+            var button = UIHelper.GetBottomBar?.PreviousButton;
+            if (button != null)
+            {
+                button.Interval =
+                    (int)TimeSpan.FromSeconds(SettingsHelper.Settings.UIProperties.NavSpeed).TotalMilliseconds;
+            }
+
             Task.Run(() =>
                 NavigationManager.NavigateAndPositionCursor(next:false, arrow: false, vm: this)
             );
@@ -1630,6 +1651,13 @@ public class MainViewModel : ViewModelBase
         
         PreviousArrowButtonCommand = ReactiveCommand.Create( () =>
         {
+            var button = UIHelper.GetMainView?.ClickArrowLeft?.PolyButton;
+            if (button != null)
+            {
+                button.Interval =
+                    (int)TimeSpan.FromSeconds(SettingsHelper.Settings.UIProperties.NavSpeed).TotalMilliseconds;
+            }
+
             Task.Run(() =>
                 NavigationManager.NavigateAndPositionCursor(next:false, arrow: true, vm: this)
             );

@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -66,14 +65,6 @@ public partial class BottomBar : UserControl
                 NextButton.Foreground = new SolidColorBrush(color);
                 PreviousButton.Foreground = new SolidColorBrush(color);
             }
-            
-            // TODO add interval to mainviewmodel
-            NextButton.Interval =
-                (int)TimeSpan.FromSeconds(Settings.UIProperties.NavSpeed).TotalMilliseconds;
-
-            PreviousButton.Interval =
-                (int)TimeSpan.FromSeconds(Settings.UIProperties.NavSpeed).TotalMilliseconds;
-
         };
     }
 

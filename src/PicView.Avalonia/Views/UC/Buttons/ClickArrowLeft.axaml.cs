@@ -16,10 +16,6 @@ public partial class ClickArrowLeft : UserControl
             }
             HideInterfaceLogic.AddHoverButtonEvents(this, PolyButton, vm);
             PointerWheelChanged += async (_, e) => await vm.ImageViewer.PreviewOnPointerWheelChanged(this, e);
-            
-            // TODO add interval to mainviewmodel
-            PolyButton.Interval =
-                (int)TimeSpan.FromSeconds(Settings.UIProperties.NavSpeed).TotalMilliseconds;
         };
     }
 }
