@@ -16,7 +16,7 @@
         <StackPanel.Styles>
             <Styles>
                 <Style Selector="TextBlock.btnTxt">
-                    <Setter Property="MaxWidth" Value="137" />
+                    <Setter Property="MaxWidth" Value="105" />
                     <Setter Property="VerticalAlignment" Value="Center" />
                     <Setter Property="Foreground" Value="{DynamicResource MainTextColor}" />
                 </Style>
