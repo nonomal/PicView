@@ -628,8 +628,14 @@ public class MainViewModel : ViewModelBase
     }
 
     #endregion Booleans
+    
+    public Thickness TopScreenMargin
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
 
-    public Thickness ScreenMargin
+    public Thickness BottomScreenMargin
     {
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);
@@ -1325,7 +1331,14 @@ public class MainViewModel : ViewModelBase
         {
             await Task.Run(() =>
             {
-                FileHelper.DuplicateAndReturnFileName(path);
+                try
+                {
+                    FileHelper.DuplicateAndReturnFileName(path);
+                }
+                catch (Exception e)
+                {
+                    _ = TooltipHelper.ShowTooltipMessageAsync(e);
+                }
             });
         }
         IsLoading = false;

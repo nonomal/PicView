@@ -1,7 +1,7 @@
 <UserControl
     Height="{CompiledBinding BottombarHeight}"
     IsVisible="{CompiledBinding IsBottomToolbarShown}"
-    Margin="{CompiledBinding ScreenMargin,
+    Margin="{CompiledBinding BottomScreenMargin,
                              Mode=OneWay}"
     x:Class="PicView.Avalonia.Views.BottomBar"
     x:DataType="viewModels:MainViewModel"

@@ -12,6 +12,8 @@ using PicView.Core.ArchiveHandling;
 using PicView.Core.Calculations;
 using PicView.Core.FileHandling;
 
+// ReSharper disable CompareOfFloatsByEqualityOperator
+
 namespace PicView.Avalonia.WindowBehavior;
 
 public static class WindowFunctions
@@ -335,9 +337,16 @@ public static class WindowFunctions
         }
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            vm.ScreenMargin = Settings.WindowProperties.Maximized ? 
-                desktop.MainWindow.OffScreenMargin :
-                new Thickness(0);
+            if (Settings.WindowProperties.Maximized)
+            {
+                vm.TopScreenMargin = new Thickness(desktop.MainWindow.OffScreenMargin.Left, desktop.MainWindow.OffScreenMargin.Top, desktop.MainWindow.OffScreenMargin.Right, 0);
+                vm.BottomScreenMargin = new Thickness(desktop.MainWindow.OffScreenMargin.Left, 0, desktop.MainWindow.OffScreenMargin.Right, desktop.MainWindow.OffScreenMargin.Bottom);
+            }
+            else
+            {
+                vm.TopScreenMargin = new Thickness(0);
+                vm.BottomScreenMargin = new Thickness(0);
+            }
         }
         else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {
@@ -522,15 +531,19 @@ public static class WindowFunctions
         var currentScreen = ScreenHelper.ScreenSize;
         window.BeginMoveDrag(e);
         var screen = window.Screens.ScreenFromVisual(window);
-        if (screen != null)
+        if (screen == null)
         {
-            if (screen.WorkingArea.Width != currentScreen.WorkingAreaWidth ||
-                screen.WorkingArea.Height != currentScreen.WorkingAreaHeight || screen.Scaling != currentScreen.Scaling)
-            {
-                ScreenHelper.UpdateScreenSize(window);
-                WindowResizing.SetSize(window.DataContext as MainViewModel);
-            }
+            return;
         }
+        
+        if (screen.WorkingArea.Width == currentScreen.WorkingAreaWidth &&
+            screen.WorkingArea.Height == currentScreen.WorkingAreaHeight && screen.Scaling == currentScreen.Scaling)
+        {
+            return;
+        }
+
+        ScreenHelper.UpdateScreenSize(window);
+        WindowResizing.SetSize(window.DataContext as MainViewModel);
     }
 
     public static void WindowDragBehavior(Window window, PointerPressedEventArgs e)
@@ -538,15 +551,19 @@ public static class WindowFunctions
         var currentScreen = ScreenHelper.ScreenSize;
         window.BeginMoveDrag(e);
         var screen = window.Screens.ScreenFromVisual(window);
-        if (screen != null)
+        if (screen == null)
         {
-            if (screen.WorkingArea.Width != currentScreen.WorkingAreaWidth ||
-                screen.WorkingArea.Height != currentScreen.WorkingAreaHeight || screen.Scaling != currentScreen.Scaling)
-            {
-                ScreenHelper.UpdateScreenSize(window);
-                WindowResizing.SetSize(window.DataContext as MainViewModel);
-            }
+            return;
         }
+
+        if (screen.WorkingArea.Width == currentScreen.WorkingAreaWidth &&
+            screen.WorkingArea.Height == currentScreen.WorkingAreaHeight && screen.Scaling == currentScreen.Scaling)
+        {
+            return;
+        }
+
+        ScreenHelper.UpdateScreenSize(window);
+        WindowResizing.SetSize(window.DataContext as MainViewModel);
     }
 
     #endregion
