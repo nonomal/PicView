@@ -139,9 +139,9 @@ public static partial class FileHelper
     {
         try
         {
-            var newFile = GenerateUniqueFileName(currentFile);
             fileInfo ??= new FileInfo(currentFile);
             await using var fileStream = GetOptimizedFileStream(fileInfo, true);
+            var newFile = GenerateUniqueFileName(currentFile);
             await fileStream.CopyToAsync(new FileStream(newFile, FileMode.CreateNew)).ConfigureAwait(false);
             return newFile;
         }
