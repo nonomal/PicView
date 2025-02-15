@@ -56,9 +56,11 @@ public static class ClipboardHelper
         }
         vm.IsLoading = true;
         var oldPath = vm.FileInfo.FullName;
-        var duplicatedPathTask = Task.FromResult(FileHelper.DuplicateAndReturnFileName(oldPath));
-        await Task.WhenAll(CopyAnimation(), duplicatedPathTask);
-        var duplicatedPath = await duplicatedPathTask;
+        var duplicatedPath = await FileHelper.DuplicateAndReturnFileNameAsync(oldPath, vm.FileInfo);
+        if (!string.IsNullOrWhiteSpace(duplicatedPath))
+        {
+            await CopyAnimation();
+        }
         if (!File.Exists(duplicatedPath))
         {
             return;

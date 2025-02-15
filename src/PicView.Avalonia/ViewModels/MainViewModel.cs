@@ -1329,17 +1329,11 @@ public class MainViewModel : ViewModelBase
         }
         else
         {
-            await Task.Run(() =>
+            var duplicatedPath = await FileHelper.DuplicateAndReturnFileNameAsync(path);
+            if (!string.IsNullOrWhiteSpace(duplicatedPath))
             {
-                try
-                {
-                    FileHelper.DuplicateAndReturnFileName(path);
-                }
-                catch (Exception e)
-                {
-                    _ = TooltipHelper.ShowTooltipMessageAsync(e);
-                }
-            });
+                await ClipboardHelper.CopyAnimation();
+            }
         }
         IsLoading = false;
     }
