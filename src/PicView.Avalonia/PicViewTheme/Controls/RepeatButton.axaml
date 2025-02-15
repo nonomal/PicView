@@ -3,6 +3,7 @@
     <ControlTheme TargetType="RepeatButton" x:Key="{x:Type RepeatButton}">
         <Setter Property="Focusable" Value="False" />
         <Setter Property="Interval" Value="-1" />
+        <Setter Property="ClickMode" Value="Press" />
 
         <Setter Property="RepeatButton.Template">
             <ControlTemplate TargetType="RepeatButton">
