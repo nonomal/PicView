@@ -312,7 +312,6 @@ public static class StartUpHelper
         vm.IsTopToolbarShown  = Settings.UIProperties.ShowInterface;
         vm.IsBottomToolbarShown   = Settings.UIProperties.ShowBottomNavBar &&
                                     Settings.UIProperties.ShowInterface;
-        vm.IsBottomToolbarShownSetting = Settings.UIProperties.ShowBottomNavBar;
         vm.IsShowingTaskbarProgress  = Settings.UIProperties.IsTaskbarProgressEnabled;
         vm.IsFullscreen  = Settings.WindowProperties.Fullscreen;
         vm.IsTopMost  = Settings.WindowProperties.TopMost;

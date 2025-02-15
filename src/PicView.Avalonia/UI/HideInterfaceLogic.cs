@@ -100,14 +100,12 @@ public static class HideInterfaceLogic
         {
             vm.IsBottomToolbarShown = false;
             Settings.UIProperties.ShowBottomNavBar = false;
-            vm.IsBottomToolbarShownSetting = false;
             vm.GetIsShowingBottomToolbarTranslation = TranslationHelper.Translation.ShowBottomToolbar;
         }
         else
         {
             vm.IsBottomToolbarShown = true;
             Settings.UIProperties.ShowBottomNavBar = true;
-            vm.IsBottomToolbarShownSetting = true;
             vm.BottombarHeight = SizeDefaults.BottombarHeight;
             vm.GetIsShowingBottomToolbarTranslation = TranslationHelper.Translation.HideBottomToolbar;
         }

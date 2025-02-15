@@ -523,12 +523,6 @@ public class MainViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    public bool IsBottomToolbarShownSetting
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    } 
-
     public bool IsShowingTaskbarProgress
     {
         get;
@@ -542,6 +536,7 @@ public class MainViewModel : ViewModelBase
         {
             this.RaiseAndSetIfChanged(ref field, value);
             ShouldRestore = IsFullscreen || IsMaximized;
+            ShouldMaximizeBeShown = !IsFullscreen && !IsMaximized;
         }
     }
     
@@ -552,6 +547,7 @@ public class MainViewModel : ViewModelBase
         {
             this.RaiseAndSetIfChanged(ref field, value);
             ShouldRestore = IsFullscreen || IsMaximized;
+            ShouldMaximizeBeShown = !IsFullscreen && !IsMaximized;
         }
     }
     
@@ -560,6 +556,12 @@ public class MainViewModel : ViewModelBase
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);
     }
+
+    public bool ShouldMaximizeBeShown
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    } = true;
 
     public bool IsTopMost
     {

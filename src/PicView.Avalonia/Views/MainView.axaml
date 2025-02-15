@@ -988,7 +988,7 @@
                 Command="{CompiledBinding MaximizeCommand}"
                 Header="{CompiledBinding Maximize,
                                          Mode=OneWay}"
-                IsVisible="{CompiledBinding !IsMaximized,
+                IsVisible="{CompiledBinding ShouldMaximizeBeShown,
                                             Mode=OneWay}"
                 x:Name="MaximizeMenuItem">
                 <MenuItem.Icon>
