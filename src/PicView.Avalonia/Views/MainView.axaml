@@ -982,11 +982,30 @@
                         Width="12" />
                 </MenuItem.Icon>
             </MenuItem>
+
+            <!--  Maximize  -->
             <MenuItem
-                Command="{CompiledBinding ToggleFullscreenCommand}"
+                Command="{CompiledBinding MaximizeCommand}"
+                Header="{CompiledBinding Maximize,
+                                         Mode=OneWay}"
+                IsVisible="{CompiledBinding !IsMaximized,
+                                            Mode=OneWay}"
+                x:Name="MaximizeMenuItem">
+                <MenuItem.Icon>
+                    <Image
+                        Height="12"
+                        Source="{StaticResource SquareImage}"
+                        Stretch="Fill"
+                        Width="12" />
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <!--  Restore  -->
+            <MenuItem
+                Command="{CompiledBinding RestoreCommand}"
                 Header="{CompiledBinding RestoreDown,
                                          Mode=OneWay}"
-                IsVisible="{CompiledBinding IsFullscreen,
+                IsVisible="{CompiledBinding ShouldRestore,
                                             Mode=OneWay}">
                 <MenuItem.Icon>
                     <Path

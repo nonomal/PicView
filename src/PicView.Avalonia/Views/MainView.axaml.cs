@@ -37,6 +37,8 @@ public partial class MainView : UserControl
             {
                 // TODO Implement setting as wallpaper for macOS
                 WallpaperMenuItem.IsEnabled = false;
+                
+                MaximizeMenuItem.IsVisible = false;
             }
             
             if (DataContext is not MainViewModel vm)

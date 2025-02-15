@@ -252,6 +252,16 @@ public static class WindowFunctions
         await SaveSettingsAsync().ConfigureAwait(false);
     }
 
+    public static void Restore()
+    {
+        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop || desktop.MainWindow.DataContext is not MainViewModel vm)
+        {
+            return;
+        }
+
+        Restore(vm, desktop);
+    }
+
     public static void Restore(MainViewModel vm, IClassicDesktopStyleApplicationLifetime desktop)
     {
         if (Settings.UIProperties.ShowInterface)
@@ -286,6 +296,8 @@ public static class WindowFunctions
             vm.CanResize = true;
         }
         SetMargin();
+        vm.IsMaximized = false;
+        vm.IsFullscreen = false;
     }
 
     public static void Maximize()
@@ -321,6 +333,8 @@ public static class WindowFunctions
             Settings.WindowProperties.Maximized = true;
             WindowResizing.SetSize(desktop.MainWindow.DataContext as MainViewModel);
             SetMargin();
+            vm.IsMaximized = true;
+            vm.IsFullscreen = false;
         }
     }
     
@@ -360,6 +374,7 @@ public static class WindowFunctions
     {
         vm.SizeToContent = SizeToContent.Manual;
         vm.IsFullscreen = true;
+        vm.IsMaximized = false;
         vm.CanResize = false;
         if (Dispatcher.UIThread.CheckAccess())
         {

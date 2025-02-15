@@ -359,6 +359,7 @@ public class MainViewModel : ViewModelBase
     public ReactiveCommand<Unit, Unit>? MinimizeCommand { get; }
     public ReactiveCommand<Unit, Unit>? MaximizeCommand { get; }
     
+    public ReactiveCommand<Unit, Unit>? RestoreCommand { get; }
     public ReactiveCommand<Unit, Unit>? ToggleFullscreenCommand { get; }
     public ReactiveCommand<Unit, Unit>? NextCommand { get; }
     public ReactiveCommand<Unit, Unit>? NextButtonCommand { get; }
@@ -535,6 +536,26 @@ public class MainViewModel : ViewModelBase
     }
 
     public bool IsFullscreen
+    {
+        get;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref field, value);
+            ShouldRestore = IsFullscreen || IsMaximized;
+        }
+    }
+    
+    public bool IsMaximized
+    {
+        get;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref field, value);
+            ShouldRestore = IsFullscreen || IsMaximized;
+        }
+    }
+    
+    public bool ShouldRestore
     {
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);
@@ -1585,6 +1606,7 @@ public class MainViewModel : ViewModelBase
         ExitCommand = ReactiveCommand.CreateFromTask(WindowFunctions.Close);
         MinimizeCommand = ReactiveCommand.CreateFromTask(WindowFunctions.Minimize);
         MaximizeCommand = ReactiveCommand.CreateFromTask(WindowFunctions.MaximizeRestore);
+        RestoreCommand = ReactiveCommand.Create(WindowFunctions.Restore);
         ToggleFullscreenCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.ToggleFullscreen);
         NewWindowCommand = ReactiveCommand.Create(ProcessHelper.StartNewProcess);
 
