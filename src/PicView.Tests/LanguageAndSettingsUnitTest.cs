@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-using PicView.Core.Config;
 using PicView.Core.Localization;
 using PicView.Tests.LanguageTests;
 
@@ -10,9 +9,9 @@ public class LanguageAndSettingsUnitTest
     [Fact]
     public async Task CheckIfSettingsWorks()
     {
-        await SettingsHelper.LoadSettingsAsync();
-        Assert.NotNull(SettingsHelper.Settings);
-        var testSave = await SettingsHelper.SaveSettingsAsync();
+        await LoadSettingsAsync();
+        Assert.NotNull(Settings);
+        var testSave = await SaveSettingsAsync();
         Assert.True(testSave);
     }
 
@@ -44,6 +43,7 @@ public class LanguageAndSettingsUnitTest
         }
     
         await CheckDanishLanguage();
+        await CheckDutchLanguage();
         await CheckEnglishLanguage();
         await CheckGermanLanguage();
         await CheckFrenchLanguage();
@@ -78,8 +78,8 @@ public class LanguageAndSettingsUnitTest
     [Fact]
     public async Task ChangeLanguage()
     {
-        await SettingsHelper.LoadSettingsAsync();
-        Assert.NotNull(SettingsHelper.Settings);
+        await LoadSettingsAsync();
+        Assert.NotNull(Settings);
 
         var exists = await TranslationHelper.LoadLanguage("en");
         Assert.True(exists);
@@ -93,6 +93,12 @@ public class LanguageAndSettingsUnitTest
     public async Task CheckDanishLanguage()
     {
         await DanishUnitTest.CheckDanishLanguage();
+    }
+    
+    [Fact]
+    public async Task CheckDutchLanguage()
+    {
+        await DutchUnitTest.CheckDutchLanguage();
     }
     
     [Fact]
