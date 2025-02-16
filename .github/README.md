@@ -19,7 +19,7 @@ Enjoy a clean, free, and fast experience with no bloated UI or annoying pop-ups.
 
 # Downloads
 
-[![](https://img.shields.io/badge/Windows-x64-blue?style=flat-square&logo=windows&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/3.0.0-Final/Setup-PicView-v3.0.0-Final-win-x64.exe) [![](https://img.shields.io/badge/Windows-arm64-blue?style=flat-square&logo=windows&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/3.0.0-Final/Setup-PicView-v3.0.0-Final-win-arm64.exe)
+[![](https://img.shields.io/badge/Windows-x64-blue?style=flat-square&logo=windows&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/3.0.2/Setup-PicView-v3.0.2-win-x64.exe) [![](https://img.shields.io/badge/Windows-arm64-blue?style=flat-square&logo=windows&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/3.0.2/Setup-PicView-v3.0.2-win-arm64.exee)
 
 [Latest releases at PicView.org](https://picview.org/download)
 
@@ -194,7 +194,8 @@ Improvements to the current code or bug fixes are also welcome!
 
 
 ## Translators/Languages
-Chinese by <a href="https://github.com/Crystal-RainSlide">Crystal-RainSlide</a>, <a href="https://github.com/wcxu21">wcxu21</a><br>
+Simplified Chinese by <a href="https://github.com/Crystal-RainSlide">Crystal-RainSlide</a><br>
+Traditional Chinese by <a href="https://github.com/wcxu21">wcxu21</a><br>
 Spanish by <a href="https://github.com/lk-KEVIN">lk.KEVIN</a> <i>(needs updates)</i><br>
 Korean by <a href="https://github.com/VenusGirl">VenusGirl</a><br>
 German by <a href="https://github.com/Brotbox">Brotbox</a>, [uDEV2019](https://github.com/uDEV2019)<br>
@@ -205,6 +206,7 @@ Russian by <a href="https://github.com/andude10">andude10</a> <br>
 Romanian by <a href="https://crowdin.com/profile/lmg">M. Gabriel Lup</a> <br>
 Swedish by <a href="https://github.com/sparmark">Stefan Parmark</a> <br>
 Brazilian Portuguese by <a href="https://github.com/andercard0">Anderson Cardoso</a> <br>
+Dutch by <a href="https://github.com/Lien5">Lien5</a> <br>
 English and Danish by me<br>
 
 **Looking for translators!**
