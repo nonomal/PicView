@@ -11,15 +11,16 @@
     xmlns:viewModels="clr-namespace:PicView.Avalonia.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Button
-        Background="{StaticResource AltBackgroundColor}"
+        Background="{DynamicResource AltBackgroundColor}"
         BorderThickness="1,0,0,1"
         Classes="ButtonBorder noBorderHover"
+        ClickMode="Release"
         Command="{CompiledBinding ExitCommand}"
         CornerRadius="0,0,0,0"
         DockPanel.Dock="Right"
         Height="30"
         HorizontalAlignment="Right"
-        IsVisible="{CompiledBinding !IsInterfaceShown}"
+        IsVisible="{CompiledBinding !IsUIShown}"
         ToolTip.Tip="{Binding Close, Mode=OneWay}"
         VerticalAlignment="Top"
         Width="35"
@@ -27,7 +28,7 @@
         x:Name="XButton">
         <Path
             Data="{StaticResource CloseGeometry}"
-            Fill="{StaticResource MainIconColor}"
+            Fill="{DynamicResource MainTextColor}"
             Height="12"
             Margin="0,0,0,3"
             Stretch="Fill"

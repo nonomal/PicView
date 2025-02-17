@@ -111,31 +111,49 @@ public static class ProcessHelper
 
     public static void OpenWith(string path)
     {
-        if (string.IsNullOrWhiteSpace(path))
+        try
         {
-            return;
-        }
-        using var process = new Process();
-        process.StartInfo.FileName = "openwith";
-        process.StartInfo.Arguments = $"\"{path}\"";
-        process.StartInfo.ErrorDialog = true;
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                return;
+            }
+            using var process = new Process();
+            process.StartInfo.FileName = "openwith";
+            process.StartInfo.Arguments = $"\"{path}\"";
+            process.StartInfo.ErrorDialog = true;
 
-        process.Start();
+            process.Start();
+        }
+        catch (Exception e)
+        {
+#if DEBUG
+            Console.WriteLine(e);
+#endif
+        }
     }
 
     public static void Print(string? path)
     {
-        if (string.IsNullOrWhiteSpace(path))
+        try
         {
-            return;
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                return;
+            }
+            using var process = new Process();
+            process.StartInfo = new ProcessStartInfo(path)
+            {
+                Verb = "print",
+                UseShellExecute = true,
+            };
+            process.Start();
         }
-        using var process = new Process();
-        process.StartInfo = new ProcessStartInfo(path)
+        catch (Exception e)
         {
-            Verb = "print",
-            UseShellExecute = true,
-        };
-        process.Start();
+#if DEBUG
+            Console.WriteLine(e);
+#endif
+        }
     }
 
     public static void OpenLink(string link)

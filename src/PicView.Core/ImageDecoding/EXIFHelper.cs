@@ -8,32 +8,30 @@ namespace PicView.Core.ImageDecoding;
 
 public static class EXIFHelper
 {
+    // https://exiftool.org/TagNames/EXIF.html
+    // 1 = Horizontal (normal)
+    // 2 = Mirror horizontal
+    // 3 = Rotate 180
+    // 4 = Mirror vertical
+    // 5 = Mirror horizontal and rotate 270 CW
+    // 6 = Rotate 90 CW
+    // 7 = Mirror horizontal and rotate 90 CW
+    // 8 = Rotate 270 CW
     public enum EXIFOrientation
     {
         None = 0,
-        Normal = 1,
-        Flipped = 2,
-        Rotated180 = 3,
-        Rotated180Flipped = 4,
-        Rotated270Flipped = 5,
-        Rotated90 = 6,
-        Rotated90Flipped = 7,
-        Rotated270 = 8
+        Horizontal = 1,
+        MirrorHorizontal = 2,
+        Rotate180 = 3,
+        MirrorVertical = 4,
+        MirrorHorizontalRotate270Cw = 5,
+        Rotate90Cw = 6,
+        MirrorHorizontalRotate90Cw = 7,
+        Rotated270Cw = 8
     }
 
-    // 0 = none
-    // 1 = 0 degrees
-    // 2 = 0 degrees, flipped
-    // 3 = 180 degrees
-    // 4 = 180 degrees, flipped
-    // 5 = 270 degrees, flipped
-    // 6 = 90 degrees
-    // 7 = 90 degrees, flipped
-    // 8 = 270 degrees, flipped
-    public static EXIFOrientation GetImageOrientation(string filePath)
+    public static EXIFOrientation GetImageOrientation(MagickImage magickImage)
     {
-        using var magickImage = new MagickImage();
-        magickImage.Ping(filePath);
         var profile = magickImage.GetExifProfile();
 
         var orientationValue = profile?.GetValue(ExifTag.Orientation);
@@ -44,16 +42,24 @@ public static class EXIFHelper
 
         return orientationValue.Value switch
         {
-            1 => EXIFOrientation.Normal,
-            2 => EXIFOrientation.Flipped,
-            3 => EXIFOrientation.Rotated180,
-            4 => EXIFOrientation.Rotated180Flipped,
-            5 => EXIFOrientation.Rotated270Flipped,
-            6 => EXIFOrientation.Rotated90,
-            7 => EXIFOrientation.Rotated90Flipped,
-            8 => EXIFOrientation.Rotated270,
+            0 => EXIFOrientation.None,
+            1 => EXIFOrientation.Horizontal,
+            2 => EXIFOrientation.MirrorHorizontal,
+            3 => EXIFOrientation.Rotate180,
+            4 => EXIFOrientation.MirrorVertical,
+            5 => EXIFOrientation.MirrorHorizontalRotate270Cw,
+            6 => EXIFOrientation.Rotate90Cw,
+            7 => EXIFOrientation.MirrorHorizontalRotate90Cw,
+            8 => EXIFOrientation.Rotated270Cw,
             _ => EXIFOrientation.None
         };
+    }
+    
+    public static EXIFOrientation GetImageOrientation(string filePath)
+    {
+        using var magickImage = new MagickImage();
+        magickImage.Ping(filePath);
+        return GetImageOrientation(magickImage);
     }
     
     public static EXIFOrientation GetImageOrientation(FileInfo fileInfo)
@@ -458,7 +464,7 @@ public static class EXIFHelper
         return exifVersion is null ? string.Empty : Encoding.ASCII.GetString(exifVersion);
     }
 
-    public static string? GetTitle(IExifProfile? profile)
+    public static string GetTitle(IExifProfile? profile)
     {
         var xPTitle = profile?.GetValue(ExifTag.XPTitle)?.Value;
         var title = xPTitle is null ? string.Empty : Encoding.ASCII.GetString(xPTitle);
@@ -468,5 +474,17 @@ public static class EXIFHelper
         }
         var titleTag = profile?.GetValue(ExifTag.ImageDescription)?.Value;
         return titleTag ?? string.Empty;
+    }
+
+    public static string GetSubject(IExifProfile? profile)
+    {
+        var xPSubject = profile?.GetValue(ExifTag.XPSubject)?.Value;
+        var subject = xPSubject is null ? string.Empty : Encoding.ASCII.GetString(xPSubject);
+        if (!string.IsNullOrEmpty(subject))
+        {
+            return subject;
+        }
+        var subjectTag = profile?.GetValue(ExifTag.XPSubject)?.Value;
+        return subjectTag?.GetValue(0)?.ToString() ?? string.Empty;
     }
 }

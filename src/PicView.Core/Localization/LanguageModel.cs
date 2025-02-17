@@ -1,11 +1,14 @@
 ﻿namespace PicView.Core.Localization;
 
-public class LanguageModel
+public record LanguageModel
 {
     public string? Loading { get; set; }
     public string? NoImage { get; set; }
     public string? Files { get; set; }
     public string? File { get; set; }
+    
+    public string? Cut { get; set; }
+    public string? SelectAll { get; set; }
     public string? PercentComplete { get; set; }
     public string? CropMessage { get; set; }
     public string? ClipboardImage { get; set; }
@@ -61,18 +64,6 @@ public class LanguageModel
     public string? MoveWindow { get; set; }
     public string? CenterWindow { get; set; }
     public string? HighlightColor { get; set; }
-    public string? Blue { get; set; }
-    public string? Cyan { get; set; }
-    public string? Aqua { get; set; }
-    public string? Teal { get; set; }
-    public string? Lime { get; set; }
-    public string? Green { get; set; }
-    public string? Golden { get; set; }
-    public string? Orange { get; set; }
-    public string? Red { get; set; }
-    public string? Pink { get; set; }
-    public string? Magenta { get; set; }
-    public string? Purple { get; set; }
     public string? Theme { get; set; }
     public string? DarkTheme { get; set; }
     public string? LightTheme { get; set; }
@@ -95,8 +86,11 @@ public class LanguageModel
     public string? SearchSubdirectory { get; set; }
     public string? StayTopMost { get; set; }
     public string? StayCentered { get; set; }
-    public string? ColoredWindowBorder { get; set; }
-    public string? ShowButtonsInHiddenUI { get; set; }
+    public string? ShowFadeInButtonsOnHover { get; set; }
+    public string? DisableFadeInButtonsOnHover { get; set; }
+    
+    public string? UsingTouchpad { get; set; }
+    public string? UsingMouse { get; set; }
     public string? Apply { get; set; }
     public string? AdjustTimingForSlideshow { get; set; }
     public string? AdjustTimingForZoom { get; set; }
@@ -108,6 +102,7 @@ public class LanguageModel
     public string? ToggleTaskbarProgress { get; set; }
     public string? ShowFileSavingDialog { get; set; }
     public string? ShowBottomToolbar { get; set; }
+    public string? HideBottomToolbar { get; set; }
     public string? BottomGalleryItemSize { get; set; }
     public string? ExpandedGalleryItemSize { get; set; }
     public string? ShowBottomGalleryWhenUiIsHidden { get; set; }
@@ -118,29 +113,8 @@ public class LanguageModel
     public string? BlackAndWhite { get; set; }
     public string? ColorTone { get; set; }
     public string? OldMovie { get; set; }
-    public string? Bloom { get; set; }
-    public string? Gloom { get; set; }
-    public string? Monochrome { get; set; }
-    public string? WaveWarper { get; set; }
-    public string? Underwater { get; set; }
-    public string? BandedSwirl { get; set; }
-    public string? Swirl { get; set; }
-    public string? Ripple { get; set; }
-    public string? RippleAlt { get; set; }
+    public string? Posterize { get; set; }
     public string? Blur { get; set; }
-    public string? DirectionalBlur { get; set; }
-    public string? TelescopicBlur { get; set; }
-    public string? Pixelate { get; set; }
-    public string? Embossed { get; set; }
-    public string? SmoothMagnify { get; set; }
-    public string? Pivot { get; set; }
-    public string? PaperFold { get; set; }
-    public string? PencilSketch { get; set; }
-    public string? Sketch { get; set; }
-    public string? ToneMapping { get; set; }
-    public string? FrostyOutline { get; set; }
-    public string? Bands { get; set; }
-    public string? GlassTile { get; set; }
     public string? Navigation { get; set; }
     public string? NextImage { get; set; }
     public string? PrevImage { get; set; }
@@ -163,7 +137,6 @@ public class LanguageModel
     public string? OpenLastFile { get; set; }
     public string? ShowInFolder { get; set; }
     public string? Save { get; set; }
-    public string? SaveImage { get; set; }
     public string? Print { get; set; }
     public string? RecentFiles { get; set; }
     public string? FileProperties { get; set; }
@@ -186,7 +159,8 @@ public class LanguageModel
     public string? Scrolling { get; set; }
     public string? Looping { get; set; }
     public string? FitToWindow { get; set; }
-    public string? ShowHideUI { get; set; }
+    public string? ShowUI { get; set; }
+    public string? HideUI { get; set; }
     public string? ChangeBackground { get; set; }
     public string? ChangeBackgroundTooltip { get; set; }
     public string? Copy { get; set; }
@@ -201,7 +175,6 @@ public class LanguageModel
     public string? CopiedImage { get; set; }
     public string? CopyImageTooltip { get; set; }
     public string? FilePaste { get; set; }
-    public string? FileCut { get; set; }
     public string? ImageInfo { get; set; }
     public string? Image { get; set; }
     public string? Width { get; set; }
@@ -263,7 +236,6 @@ public class LanguageModel
     public string? PasswordArchive { get; set; }
     public string? SentFileToRecycleBin { get; set; }
     public string? DeletedFile { get; set; }
-    public string? AnErrorOccuredWhenDeleting { get; set; }
     public string? ScrollingEnabled { get; set; }
     public string? ScrollingDisabled { get; set; }
     public string? ConvertedToBase64 { get; set; }
@@ -303,6 +275,8 @@ public class LanguageModel
     public string? Lossless { get; set; }
     public string? Lossy { get; set; }
     public string? Quality { get; set; }
+    
+    public string? SaveAs { get; set; }
     public string? Percentage { get; set; }
     public string? GenerateThumbnails { get; set; }
     public string? Thumbnail { get; set; }
@@ -385,6 +359,30 @@ public class LanguageModel
     public string? GallerySettings { get; set; }
     public string? GalleryThumbnailStretch { get; set; }
     public string? BottomGalleryThumbnailStretch { get; set; }
+    public string? DeleteFilePermanently { get; set; }
     public string? SideBySide { get; set; }
     public string? SideBySideTooltip { get; set; }
+    public string? GlassTheme { get; set; }
+    
+    public string? Reset { get; set; }
+    public string? AdvanceBy10Images { get; set; }
+    public string? AdvanceBy100Images { get; set; }
+    public string? GoBackBy10Images { get; set; }
+    public string? GoBackBy100Images { get; set; }
+    
+    public string? WidthAndHeight { get; set; }
+    
+    public string? CloseWindowPrompt { get; set; }
+    
+    public string? ShowConfirmationOnEsc { get; set; }
+    
+    public string? PermanentlyDelete { get; set; }
+    
+    public string? Lighting { get; set; }
+    
+    public string? ActionProgram { get; set; }
+    
+    public string? ClearEffects { get; set; }
+    public string? Solarize { get; set; }
+    public string? PencilSketch { get; set; }
 }

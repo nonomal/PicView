@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using PicView.Core.Config;
 
 namespace PicView.Core.FileHandling;
 
@@ -48,7 +47,7 @@ public static class FileListHelper
 
     public static SortFilesBy GetSortOrder()
     {
-        return SettingsHelper.Settings.Sorting.SortPreference switch
+        return Settings.Sorting.SortPreference switch
         {
             0 => SortFilesBy.Name,
             1 => SortFilesBy.FileSize,
@@ -77,7 +76,7 @@ public static class FileListHelper
         string[] enumerable;
         // Check if the subdirectories are to be included in the search
         var recurseSubdirectories =
-            SettingsHelper.Settings.Sorting.IncludeSubDirectories && string.IsNullOrWhiteSpace(TempFileHelper.TempFilePath);
+            Settings.Sorting.IncludeSubDirectories && string.IsNullOrWhiteSpace(TempFileHelper.TempFilePath);
         try
         {
             // Get the list of files in the directory

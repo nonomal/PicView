@@ -1,33 +1,20 @@
-using System.Runtime.InteropServices;
+using System.Reactive.Disposables;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Media;
-using Avalonia.Threading;
+using PicView.Avalonia.ColorManagement;
 using PicView.Avalonia.Gallery;
 using PicView.Avalonia.ViewModels;
-using PicView.Core.Config;
+using PicView.Core.ColorHandling;
+using ReactiveUI;
 
 namespace PicView.Avalonia.Views;
 
 public partial class AppearanceView : UserControl
 {
+    private readonly CompositeDisposable _disposables = new();
     public AppearanceView()
     {
         InitializeComponent();
-        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-        {
-            if (Dispatcher.UIThread.CheckAccess())
-            {
-                TaskBarToggleButton.IsVisible = false;
-            }
-            else
-            {
-                Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    TaskBarToggleButton.IsVisible = false;
-                });
-            }
-        }
         Loaded += AppearanceView_Loaded;
     }
 
@@ -38,168 +25,265 @@ public partial class AppearanceView : UserControl
             return;
         }
         GalleryStretchMode.DetermineStretchMode(vm);
-        
-        if (vm.IsUniformFullChecked)
+
+        if (Settings.Theme.GlassTheme)
         {
-            FullGalleryComboBox.SelectedIndex = 0;
-        }
-        else if (vm.IsUniformToFillFullChecked)
-        {
-            FullGalleryComboBox.SelectedIndex = 1;
-        }
-        else if (vm.IsFillFullChecked)
-        {
-            FullGalleryComboBox.SelectedIndex = 2;
-        }
-        else if (vm.IsNoneFullChecked)
-        {
-            FullGalleryComboBox.SelectedIndex = 3;
-        }
-        else if (vm.IsSquareFullChecked)
-        {
-            FullGalleryComboBox.SelectedIndex = 4;
-        }
-        else if (vm.IsFillSquareFullChecked)
-        {
-            FullGalleryComboBox.SelectedIndex = 5;
+            ThemeBox.SelectedItem = GlassThemeBox;
         }
         else
         {
-            if (SettingsHelper.Settings.Gallery.FullGalleryStretchMode.Equals("Square", StringComparison.OrdinalIgnoreCase))
+            ThemeBox.SelectedItem = Settings.Theme.Dark ? DarkThemeBox : LightThemeBox;
+        }
+        ThemeBox.SelectionChanged += delegate
+        {
+            // Adjust based on which theme is selected
+            if (Equals(ThemeBox.SelectedItem, GlassThemeBox))
             {
-                FullGalleryComboBox.SelectedIndex = 4;
+                Settings.Theme.GlassTheme = true;
             }
-            else if (SettingsHelper.Settings.Gallery.FullGalleryStretchMode.Equals("FillSquare", StringComparison.OrdinalIgnoreCase))
+            else if (Equals(ThemeBox.SelectedItem, DarkThemeBox))
             {
-                FullGalleryComboBox.SelectedIndex = 5;
+                Settings.Theme.GlassTheme = false;
+                Settings.Theme.Dark = true;
             }
-            else if (Enum.TryParse<Stretch>(SettingsHelper.Settings.Gallery.FullGalleryStretchMode, out var stretchMode))
+            else
             {
-                FullGalleryComboBox.SelectedIndex = stretchMode switch
-                {
-                    Stretch.Uniform => 0,
-                    Stretch.UniformToFill => 1,
-                    Stretch.Fill => 2,
-                    Stretch.None => 3,
-                    _ => FullGalleryComboBox.SelectedIndex
-                };
+                Settings.Theme.GlassTheme = false;
+                Settings.Theme.Dark = false;
             }
+
+            var selectedTheme = Settings.Theme.GlassTheme
+                ? ThemeManager.Theme.Glass
+                : Settings.Theme.Dark
+                    ? ThemeManager.Theme.Dark
+                    : ThemeManager.Theme.Light;
+
+            ThemeManager.SetTheme(selectedTheme);
+        };
+
+        ClearColorButtonsActiveState();
+        switch ((ColorOptions)Settings.Theme.ColorTheme)
+        {
+            case ColorOptions.Aqua:
+                AquaButton.Classes.Add("active");
+                break;
+            case ColorOptions.Teal:
+                TealButton.Classes.Add("active");
+                break;
+            case ColorOptions.Lime:
+                LimeButton.Classes.Add("active");
+                break;
+            case ColorOptions.Golden:
+                GoldButton.Classes.Add("active");
+                break;
+            case ColorOptions.Orange:
+                OrangeButton.Classes.Add("active");
+                break;
+            case ColorOptions.Pink:
+                PinkButton.Classes.Add("active");
+                break;
+            case ColorOptions.Purple:
+                PurpleButton.Classes.Add("active");
+                break;
+            case ColorOptions.Red:
+                RedButton.Classes.Add("active");
+                break;
+            case ColorOptions.Green:
+                GreenButton.Classes.Add("active");
+                break;
+            case ColorOptions.Magenta:
+                MagentaButton.Classes.Add("active");
+                break;
+            case ColorOptions.Blue:
+                BlueButton.Classes.Add("active");
+                break;
+            case ColorOptions.Cyan:
+                CyanButton.Classes.Add("active");
+                break;
         }
         
-        if (vm.IsUniformBottomChecked)
-        {
-            BottomGalleryComboBox.SelectedIndex = 0;
-        }
-        else if (vm.IsUniformToFillBottomChecked)
-        {
-            BottomGalleryComboBox.SelectedIndex = 1;
-        }
-        else if (vm.IsFillBottomChecked)
-        {
-            BottomGalleryComboBox.SelectedIndex = 2;
-        }
-        else if (vm.IsNoneBottomChecked)
-        {
-            BottomGalleryComboBox.SelectedIndex = 3;
-        }
-        else if (vm.IsSquareBottomChecked)
-        {
-            BottomGalleryComboBox.SelectedIndex = 4;
-        }
-        else if (vm.IsFillSquareBottomChecked)
-        {
-            BottomGalleryComboBox.SelectedIndex = 5;
-        }
-        else
-        {
-            if (SettingsHelper.Settings.Gallery.BottomGalleryStretchMode.Equals("Square", StringComparison.OrdinalIgnoreCase))
-            {
-                BottomGalleryComboBox.SelectedIndex = 4;
-            }
-            else if (SettingsHelper.Settings.Gallery.BottomGalleryStretchMode.Equals("FillSquare", StringComparison.OrdinalIgnoreCase))
-            {
-                BottomGalleryComboBox.SelectedIndex = 5;
-            }
-            else if (Enum.TryParse<Stretch>(SettingsHelper.Settings.Gallery.BottomGalleryStretchMode, out var stretchMode))
-            {
-                BottomGalleryComboBox.SelectedIndex = stretchMode switch
-                {
-                    Stretch.Uniform => 0,
-                    Stretch.UniformToFill => 1,
-                    Stretch.Fill => 2,
-                    Stretch.None => 3,
-                    _ => FullGalleryComboBox.SelectedIndex
-                };
-            }
-        }
+        CheckerboardButton.Background = BackgroundManager.CreateCheckerboardBrush(default, default,10);
+        CheckerboardAltButton.Background = BackgroundManager.CreateCheckerboardBrushAlt(25);
         
-        FullGalleryComboBox.SelectionChanged += async (_, _) => await FullGalleryComboBox_SelectionChanged();
-        BottomGalleryComboBox.SelectionChanged += async (_, _) => await BottomGalleryComboBox_SelectionChanged();
-    }
-    
-    private async Task FullGalleryComboBox_SelectionChanged()
-    {
-        if (DataContext is not MainViewModel vm)
-        {
-            return;
-        }
-        
-        if (FullGalleryUniformItem.IsSelected)
-        {
-            await GalleryStretchMode.ChangeFullGalleryItemStretch(vm, Stretch.Uniform);
-        }
-        else if (FullGalleryUniformToFillItem.IsSelected)
-        {
-            await GalleryStretchMode.ChangeFullGalleryItemStretch(vm, Stretch.UniformToFill);
-        }
-        else if (FullGalleryFillItem.IsSelected)
-        {
-            await GalleryStretchMode.ChangeFullGalleryItemStretch(vm, Stretch.Fill);
-        }
-        else if (FullGalleryNoneItem.IsSelected)
-        {
-            await GalleryStretchMode.ChangeFullGalleryItemStretch(vm, Stretch.None);
-        }
-        else if (FullGallerySquareItem.IsSelected)
-        {
-            await GalleryStretchMode.ChangeFullGalleryStretchSquare(vm);
-        }
-        else if (FullGalleryFillSquareItem.IsSelected)
-        {
-            await GalleryStretchMode.ChangeFullGalleryStretchSquareFill(vm);
-        }
+        // Subscribe to background color changes with ReactiveUI
+        vm.WhenAnyValue(x => x.BackgroundChoice)
+            .Subscribe(_ => SetBackgroundTheme(Settings.UIProperties.BgColorChoice))
+            .DisposeWith(_disposables);
     }
 
-    private async Task BottomGalleryComboBox_SelectionChanged()
+    private void ClearColorButtonsActiveState()
     {
+        var buttons = new List<Button>
+        {
+            BlueButton, CyanButton, GreenButton, MagentaButton, RedButton, AquaButton,
+            TealButton, LimeButton, GoldButton, OrangeButton, PinkButton, PurpleButton
+        };
+
+        foreach (var button in buttons)
+        {
+            button.Classes.Remove("active");
+        }
+    }
+    
+    private void SetColorTheme(ColorOptions colorTheme)
+    {
+        ClearColorButtonsActiveState();
+        switch (colorTheme)
+        {
+            default:
+                BlueButton.Classes.Add("active");
+                break;
+            case ColorOptions.Pink:
+                PinkButton.Classes.Add("active");
+                break;
+            case ColorOptions.Orange:
+                OrangeButton.Classes.Add("active");
+                break;
+            case ColorOptions.Green:
+                GreenButton.Classes.Add("active");
+                break;
+            case ColorOptions.Red:
+                RedButton.Classes.Add("active");
+                break;
+            case ColorOptions.Teal:
+                TealButton.Classes.Add("active");
+                break;
+            case ColorOptions.Aqua:
+                AquaButton.Classes.Add("active");
+                break;
+            case ColorOptions.Golden:
+                GoldButton.Classes.Add("active");
+                break;
+            case ColorOptions.Purple:
+                PurpleButton.Classes.Add("active");
+                break;
+            case ColorOptions.Cyan:
+                CyanButton.Classes.Add("active");
+                break;
+            case ColorOptions.Magenta:
+                MagentaButton.Classes.Add("active");
+                break;
+            case ColorOptions.Lime:
+                LimeButton.Classes.Add("active");
+                break;
+        }
+
+        ColorManager.UpdateAccentColors((int)colorTheme);
+    }
+
+    private void ColorButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        if (sender is not Button clickedButton)
+        {
+            return;
+        }
+
+        // Map the button to the corresponding ColorOptions enum
+        var selectedColor = clickedButton.Name switch
+        {
+            nameof(BlueButton) => ColorOptions.Blue,
+            nameof(CyanButton) => ColorOptions.Cyan,
+            nameof(GreenButton) => ColorOptions.Green,
+            nameof(MagentaButton) => ColorOptions.Magenta,
+            nameof(RedButton) => ColorOptions.Red,
+            nameof(AquaButton) => ColorOptions.Aqua,
+            nameof(TealButton) => ColorOptions.Teal,
+            nameof(LimeButton) => ColorOptions.Lime,
+            nameof(GoldButton) => ColorOptions.Golden,
+            nameof(OrangeButton) => ColorOptions.Orange,
+            nameof(PinkButton) => ColorOptions.Pink,
+            nameof(PurpleButton) => ColorOptions.Purple,
+            _ => ColorOptions.Blue
+        };
+
+        // Set the new active theme
+        SetColorTheme(selectedColor);
+    }
+    
+    private void BgButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        if (sender is not Button clickedButton)
+        {
+            return;
+        }
+
+        // Map the button to the corresponding ColorOptions enum
+        var selectedBg = clickedButton.Name switch
+        {
+            nameof(TransparentBgButton) => 0,
+            nameof(NoiseTextureButton) => 1,
+            nameof(CheckerboardButton) => 2,
+            nameof(CheckerboardAltButton) => 3,
+            nameof(WhiteBgButton) => 4,
+            nameof(GrayBgButton) => 5,
+            nameof(DarkGrayBgButton) => 6,
+            nameof(DarkGraySemiTransparentBgButton) => 7,
+            nameof(DarkGraySemiTransparentAltBgButton) => 8,
+            nameof(BlackBgButton) => 9,
+            _ => 0
+        };
+
+        // Set the new active theme
+        SetBackgroundTheme(selectedBg);
+    }
+    
+    private void SetBackgroundTheme(int selectedBg)
+    {
+        ClearBackgroundButtonsActiveState();
+        switch (selectedBg)
+        {
+            default:
+                TransparentBgButton.Classes.Add("active");
+                break;
+            case 1:
+                NoiseTextureButton.Classes.Add("active");
+                break;
+            case 2:
+                CheckerboardButton.Classes.Add("active");
+                break;
+            case 3:
+                CheckerboardAltButton.Classes.Add("active");
+                break;
+            case 4:
+                WhiteBgButton.Classes.Add("active");
+                break;
+            case 5:
+                GrayBgButton.Classes.Add("active");
+                break;
+            case 6:
+                DarkGrayBgButton.Classes.Add("active");
+                break;
+            case 7:
+                DarkGraySemiTransparentBgButton.Classes.Add("active");
+                break;
+            case 8:
+                DarkGraySemiTransparentAltBgButton.Classes.Add("active");
+                break;
+            case 9:
+                BlackBgButton.Classes.Add("active");
+                break;
+        }
+
         if (DataContext is not MainViewModel vm)
         {
             return;
         }
         
-        if (BottomGalleryUniformItem.IsSelected)
+        BackgroundManager.SetBackground(vm, selectedBg);
+    }
+
+    private void ClearBackgroundButtonsActiveState()
+    {
+        var buttons = new List<Button>
         {
-            await GalleryStretchMode.ChangeBottomGalleryItemStretch(vm, Stretch.Uniform);
-        }
-        else if (BottomGalleryUniformToFillItem.IsSelected)
+            TransparentBgButton, NoiseTextureButton, CheckerboardButton, CheckerboardAltButton,
+            WhiteBgButton, GrayBgButton, DarkGrayBgButton, DarkGraySemiTransparentBgButton,
+            DarkGraySemiTransparentAltBgButton, BlackBgButton
+        };
+
+        foreach (var button in buttons)
         {
-            await GalleryStretchMode.ChangeBottomGalleryItemStretch(vm, Stretch.UniformToFill);
-        }
-        else if (BottomGalleryFillItem.IsSelected)
-        {
-            await GalleryStretchMode.ChangeBottomGalleryItemStretch(vm, Stretch.Fill);
-        }
-        else if (BottomGalleryNoneItem.IsSelected)
-        {
-            await GalleryStretchMode.ChangeBottomGalleryItemStretch(vm, Stretch.None);
-        }
-        else if (BottomGallerySquareItem.IsSelected)
-        {
-            await GalleryStretchMode.ChangeBottomGalleryStretchSquare(vm);
-        }
-        else if (BottomGalleryFillSquareItem.IsSelected)
-        {
-            await GalleryStretchMode.ChangeBottomGalleryStretchSquareFill(vm);
+            button.Classes.Remove("active");
         }
     }
 }

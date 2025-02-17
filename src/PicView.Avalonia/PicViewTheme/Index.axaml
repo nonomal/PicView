@@ -1,0 +1,51 @@
+<Styles xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Styles.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="ResourceDictionaries/AccentColors.axaml" />
+                <ResourceInclude Source="ResourceDictionaries/MainColors.axaml" />
+                <ResourceInclude Source="ResourceDictionaries/Variables.axaml" />
+                <ResourceInclude Source="Icons.axaml" />
+
+                <ResourceInclude Source="Controls/AnimatedPopUp.axaml" />
+                <ResourceInclude Source="Controls/AutoScrollViewer.axaml" />
+                <ResourceInclude Source="Controls/Border.axaml" />
+                <ResourceInclude Source="Controls/Button.axaml" />
+                <ResourceInclude Source="Controls/ButtonSpinner.axaml" />
+                <ResourceInclude Source="Controls/CheckBox.axaml" />
+                <ResourceInclude Source="Controls/ComboBox.axaml" />
+                <ResourceInclude Source="Controls/ComboBoxItem.axaml" />
+                <ResourceInclude Source="Controls/Expander.axaml" />
+                <ResourceInclude Source="Controls/FlyoutPresenter.axaml" />
+                <ResourceInclude Source="Controls/ListBox.axaml" />
+                <ResourceInclude Source="Controls/ListBoxItem.axaml" />
+                <ResourceInclude Source="Controls/Menu.axaml" />
+                <ResourceInclude Source="Controls/MenuFlyoutPresenter.axaml" />
+                <ResourceInclude Source="Controls/NumericUpDown.axaml" />
+                <ResourceInclude Source="Controls/PathIcon.axaml" />
+                <ResourceInclude Source="Controls/ProgressBar.axaml" />
+                <ResourceInclude Source="Controls/RadioButton.axaml" />
+                <ResourceInclude Source="Controls/RepeatButton.axaml" />
+                <ResourceInclude Source="Controls/Scrollbar.axaml" />
+                <ResourceInclude Source="Controls/Slider.axaml" />
+                <ResourceInclude Source="Controls/SplitButton.axaml" />
+                <ResourceInclude Source="Controls/TabItem.axaml" />
+                <ResourceInclude Source="Controls/TextBlock.axaml" />
+                <ResourceInclude Source="Controls/TextBox.axaml" />
+                <ResourceInclude Source="Controls/ToggleButton.axaml" />
+                <ResourceInclude Source="Controls/ToolTip.axaml" />
+                <ResourceInclude Source="Controls/Window.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Styles.Resources>
+    <Style Selector="Window">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="ExtendClientAreaChromeHints" Value="NoChrome" />
+        <Setter Property="ExtendClientAreaTitleBarHeightHint" Value="32" />
+        <Setter Property="ExtendClientAreaToDecorationsHint" Value="True" />
+        <Setter Property="TransparencyLevelHint" Value="AcrylicBlur" />
+    </Style>
+
+    <StyleInclude Source="Classes.axaml" />
+
+</Styles>

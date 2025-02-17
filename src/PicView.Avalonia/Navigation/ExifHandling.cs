@@ -1,7 +1,7 @@
-﻿using System.Globalization;
-using Avalonia.Media.Imaging;
+﻿using Avalonia.Media.Imaging;
 using ImageMagick;
 using PicView.Avalonia.ImageHandling;
+using PicView.Avalonia.Resizing;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.ImageDecoding;
@@ -12,84 +12,7 @@ namespace PicView.Avalonia.Navigation;
 
 public static class ExifHandling
 {
-    public static void SetImageModel(ImageModel imageModel, MainViewModel vm)
-    {
-        vm.FileInfo = imageModel?.FileInfo ?? null;
-        if (imageModel?.EXIFOrientation.HasValue ?? false)
-        {
-            switch (imageModel.EXIFOrientation.Value)
-            {
-                default:
-                    vm.ScaleX = 1;
-                    vm.RotationAngle = 0;
-                    vm.GetOrientation =  string.Empty;
-                    break;
-                
-                case EXIFHelper.EXIFOrientation.Normal:
-                    vm.ScaleX = 1;
-                    vm.RotationAngle = 0;
-                    vm.GetOrientation = TranslationHelper.Translation.Normal;
-                    break;
-
-                case EXIFHelper.EXIFOrientation.Flipped:
-                    vm.ScaleX = -1;
-                    vm.RotationAngle = 0;
-                    vm.GetOrientation = TranslationHelper.Translation.Flipped;
-                    break;
-
-                case EXIFHelper.EXIFOrientation.Rotated180:
-                    vm.RotationAngle = 180;
-                    vm.ScaleX = 1;
-                    vm.GetOrientation = $"{TranslationHelper.Translation.Rotated} 180\u00b0";
-                    break;
-
-                case EXIFHelper.EXIFOrientation.Rotated180Flipped:
-                    vm.RotationAngle = 180;
-                    vm.ScaleX = -1;
-                    vm.GetOrientation =
-                        $"{TranslationHelper.Translation.Rotated} 180\u00b0, {TranslationHelper.Translation.Flipped}";
-                    break;
-
-                case EXIFHelper.EXIFOrientation.Rotated270Flipped:
-                    vm.RotationAngle = 270;
-                    vm.ScaleX = -1;
-                    vm.GetOrientation =
-                        $"{TranslationHelper.Translation.Rotated} 270\u00b0, {TranslationHelper.Translation.Flipped}";
-                    break;
-
-                case EXIFHelper.EXIFOrientation.Rotated90:
-                    vm.RotationAngle = 90;
-                    vm.ScaleX = 1;
-                    vm.GetOrientation = $"{TranslationHelper.Translation.Rotated} 90\u00b0";
-                    break;
-
-                case EXIFHelper.EXIFOrientation.Rotated90Flipped:
-                    vm.RotationAngle = 90;
-                    vm.ScaleX = -1;
-                    vm.GetOrientation =
-                        $"{TranslationHelper.Translation.Rotated} 90\u00b0, {TranslationHelper.Translation.Flipped}";
-                    break;
-
-                case EXIFHelper.EXIFOrientation.Rotated270:
-                    vm.RotationAngle = 270;
-                    vm.ScaleX = 1;
-                    vm.GetOrientation = $"{TranslationHelper.Translation.Rotated} 270\u00b0";
-                    break;
-            }
-        }
-        else
-        {
-            vm.ScaleX = 1;
-            vm.RotationAngle = 0;
-            vm.GetOrientation = string.Empty;
-        }
-
-        vm.ZoomValue = 1;
-        vm.PixelWidth = imageModel?.PixelWidth ?? 0;
-        vm.PixelHeight = imageModel?.PixelHeight ?? 0;
-    }
-    
-    public static void UpdateExifValues(ImageModel imageModel, MainViewModel vm)
+    public static void UpdateExifValues(MainViewModel vm)
     {
         if (vm.FileInfo is null || vm is { PixelWidth: <= 0, PixelHeight: <= 0 })
         {
@@ -122,22 +45,32 @@ public static class ExifHandling
                 }
             }
 
-            if (vm.DpiX is 0 && imageModel.ImageType is ImageType.Bitmap or ImageType.AnimatedGif or ImageType.AnimatedWebp)
+            if (vm.DpiX is 0 && vm.ImageType is ImageType.Bitmap or ImageType.AnimatedGif or ImageType.AnimatedWebp)
             {
-                if (imageModel.Image is Bitmap bmp)
+                if (vm.ImageSource is Bitmap bmp)
                 {
                     vm.DpiX = bmp?.Dpi.X ?? 0;
                     vm.DpiY = bmp?.Dpi.Y ?? 0;
                 }
             }
 
+            vm.GetOrientation = vm.ExifOrientation switch
+            {
+                EXIFHelper.EXIFOrientation.Horizontal => TranslationHelper.Translation.Normal,
+                EXIFHelper.EXIFOrientation.MirrorHorizontal => TranslationHelper.Translation.Flipped,
+                EXIFHelper.EXIFOrientation.Rotate180 => $"{TranslationHelper.Translation.Rotated} 180\u00b0",
+                EXIFHelper.EXIFOrientation.MirrorVertical =>
+                    $"{TranslationHelper.Translation.Rotated} 180\u00b0, {TranslationHelper.Translation.Flipped}",
+                EXIFHelper.EXIFOrientation.MirrorHorizontalRotate270Cw =>
+                    $"{TranslationHelper.Translation.Rotated} 270\u00b0, {TranslationHelper.Translation.Flipped}",
+                EXIFHelper.EXIFOrientation.Rotate90Cw => $"{TranslationHelper.Translation.Rotated} 90\u00b0",
+                EXIFHelper.EXIFOrientation.MirrorHorizontalRotate90Cw =>
+                    $"{TranslationHelper.Translation.Rotated} 90\u00b0, {TranslationHelper.Translation.Flipped}",
+                EXIFHelper.EXIFOrientation.Rotated270Cw => $"{TranslationHelper.Translation.Rotated} 270\u00b0",
+                _ => string.Empty
+            };
+
             var meter = TranslationHelper.Translation.Meter;
-            var cm = TranslationHelper.Translation.Centimeters;
-            var mp = TranslationHelper.Translation.MegaPixels;
-            var inches = TranslationHelper.Translation.Inches;
-            var square = TranslationHelper.Translation.Square;
-            var landscape = TranslationHelper.Translation.Landscape;
-            var portrait = TranslationHelper.Translation.Portrait;
 
             if (string.IsNullOrEmpty(vm.GetBitDepth))
             {
@@ -148,42 +81,21 @@ public static class ExifHandling
             {
                 vm.GetPrintSizeCm = vm.GetPrintSizeInch = vm.GetSizeMp = vm.GetResolution = string.Empty;
             }
-            else
+            else 
             {
-                var inchesWidth = vm.PixelWidth / vm.DpiX;
-                var inchesHeight = vm.PixelHeight / vm.DpiY;
-                vm.GetPrintSizeInch =
-                    $"{inchesWidth.ToString("0.##", CultureInfo.CurrentCulture)} x {inchesHeight.ToString("0.##", CultureInfo.CurrentCulture)} {inches}";
+                var printSizes = AspectRatioHelper.GetPrintSizes( vm.PixelWidth, vm.PixelHeight, vm.DpiX, vm.DpiY);
 
-                var cmWidth = vm.PixelWidth / vm.DpiX * 2.54;
-                var cmHeight = vm.PixelHeight / vm.DpiY * 2.54;
-                vm.GetPrintSizeCm =
-                    $"{cmWidth.ToString("0.##", CultureInfo.CurrentCulture)} x {cmHeight.ToString("0.##", CultureInfo.CurrentCulture)} {cm}";
-                vm.GetSizeMp =
-                    $"{((float)vm.PixelHeight * vm.PixelWidth / 1000000).ToString("0.##", CultureInfo.CurrentCulture)} {mp}";
+                vm.GetPrintSizeCm = printSizes.PrintSizeCm;
+                vm.GetPrintSizeInch = printSizes.PrintSizeInch;
+                vm.GetSizeMp = printSizes.SizeMp;
 
                 vm.GetResolution = $"{vm.DpiX} x {vm.DpiY} {TranslationHelper.Translation.Dpi}";
             }
 
-            var gcd = TitleHelper.GCD(vm.PixelWidth, vm.PixelHeight);
+            var gcd = ImageTitleFormatter.GCD(vm.PixelWidth, vm.PixelHeight);
             if (gcd != 0) // Check for zero before division
             {
-                var firstRatio = vm.PixelWidth / gcd;
-                var secondRatio = vm.PixelHeight / gcd;
-
-                if (firstRatio == secondRatio)
-                {
-                    vm.GetAspectRatio = $"{firstRatio}:{secondRatio} ({square})";
-                }
-                else if (firstRatio > secondRatio)
-                {
-                    vm.GetAspectRatio =
-                        $"{firstRatio}:{secondRatio} ({landscape})";
-                }
-                else
-                {
-                    vm.GetAspectRatio = $"{firstRatio}:{secondRatio} ({portrait})";
-                }
+                vm.GetAspectRatio = AspectRatioHelper.GetFormattedAspectRatio(gcd, vm.PixelWidth, vm.PixelHeight);
             }
             else
             {
@@ -216,7 +128,7 @@ public static class ExifHandling
             vm.GetDateTaken = EXIFHelper.GetDateTaken(profile);
             vm.GetCopyright = profile?.GetValue(ExifTag.Copyright)?.Value ?? string.Empty;
             vm.GetTitle = EXIFHelper.GetTitle(profile);
-            vm.GetSubject = profile?.GetValue(ExifTag.XPSubject)?.Value.ToString() ?? string.Empty;
+            vm.GetSubject = EXIFHelper.GetSubject(profile);
             vm.GetSoftware = profile?.GetValue(ExifTag.Software)?.Value ?? string.Empty;
             vm.GetResolutionUnit = EXIFHelper.GetResolutionUnit(profile);
             vm.GetColorRepresentation = EXIFHelper.GetColorSpace(profile);
@@ -253,7 +165,7 @@ public static class ExifHandling
         {
             #if DEBUG
             Console.WriteLine(e);
-            TooltipHelper.ShowTooltipMessage(e);
+            _ = TooltipHelper.ShowTooltipMessageAsync(e);
             #endif
         }
     }

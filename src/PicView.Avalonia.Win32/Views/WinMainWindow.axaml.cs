@@ -1,10 +1,10 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using PicView.Avalonia.DragAndDrop;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
-using PicView.Core.Config;
-using ReactiveUI;
+using PicView.Avalonia.WindowBehavior;
 
 namespace PicView.Avalonia.Win32.Views;
 
@@ -23,30 +23,16 @@ public partial class WinMainWindow : Window
             // Keep window position when resizing
             ClientSizeProperty.Changed.Subscribe(size =>
             {
-                WindowHelper.HandleWindowResize(this, size);
+                WindowResizing.HandleWindowResize(this, size);
             });
-            
-            this.WhenAnyValue(x => x.WindowState).Subscribe(state =>
+            ScalingChanged += (_, _) =>
             {
-                switch (state)
-                {
-                    case WindowState.Normal:
-                        SettingsHelper.Settings.WindowProperties.Maximized = false;
-                        SettingsHelper.Settings.WindowProperties.Fullscreen = false;
-                        break;
-                    case WindowState.Minimized:
-                        break;
-                    case WindowState.Maximized:
-                        WindowHelper.Maximize();
-                        break;
-                    case WindowState.FullScreen:
-                        //WindowHelper.Fullscreen(DataContext as MainViewModel, Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime);
-                        break;
-                }
-            });
+                ScreenHelper.UpdateScreenSize(this);
+                WindowResizing.SetSize(DataContext as MainViewModel);
+            };
             PointerExited += (_, _) =>
             {
-                MainView.RemoveDragDropView();
+                DragAndDropHelper.RemoveDragDropView();
             };
         };
         if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
@@ -56,14 +42,14 @@ public partial class WinMainWindow : Window
 
         desktop.ShutdownRequested += async (_, e) =>
         {
-            await WindowHelper.WindowClosingBehavior(this);
+            await WindowFunctions.WindowClosingBehavior(this);
         };
     }
 
     protected override async void OnClosing(WindowClosingEventArgs e)
     {
         e.Cancel = true;
-        await WindowHelper.WindowClosingBehavior(this);
+        await WindowFunctions.WindowClosingBehavior(this);
         base.OnClosing(e);
     }
 
@@ -79,11 +65,11 @@ public partial class WinMainWindow : Window
             return;
         }
 
-        if (SettingsHelper.Settings.WindowProperties.AutoFit)
+        if (Settings.WindowProperties.AutoFit)
         {
             return;
         }
         var wm = (MainViewModel)DataContext;
-        WindowHelper.SetSize(wm);
+        WindowResizing.SetSize(wm);
     }
 }

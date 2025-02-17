@@ -1,6 +1,8 @@
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 using PicView.Core.Localization;
 
 namespace PicView.Avalonia.Win32.Views;
@@ -10,10 +12,40 @@ public partial class SettingsWindow : Window
     public SettingsWindow()
     {
         InitializeComponent();
+        if (Settings.Theme.GlassTheme)
+        {
+            TopWindowBorder.Background = Brushes.Transparent;
+            TopWindowBorder.BorderThickness = new Thickness(0);
+            
+            CloseButton.Background = Brushes.Transparent;
+            CloseButton.BorderThickness = new Thickness(0);
+            MinimizeButton.Background = Brushes.Transparent;
+            MinimizeButton.BorderThickness = new Thickness(0);
+            
+            TitleText.Background = Brushes.Transparent;
+            
+            if (!Application.Current.TryGetResource("SecondaryTextColor",
+                    Application.Current.RequestedThemeVariant, out var textColor))
+            {
+                return;
+            }
+
+            if (textColor is not Color color)
+            {
+                return;
+            }
+            
+            TitleText.Foreground = new SolidColorBrush(color);
+            MinimizeButton.Foreground = new SolidColorBrush(color);
+            CloseButton.Foreground = new SolidColorBrush(color);
+        }
+        else if (!Settings.Theme.Dark)
+        {
+            ParentBorder.Background = new SolidColorBrush(Color.FromArgb(114,132, 132, 132));
+        }
         Loaded += delegate
         {
-            MinWidth = MaxWidth = Width;
-            Height = 500;
+            MinWidth = Width;
             Title = TranslationHelper.GetTranslation("Settings") + " - PicView";
         };
         KeyDown += (_, e) =>
@@ -22,6 +54,12 @@ public partial class SettingsWindow : Window
             {
                 Close();
             }
+        };
+
+        Closing += async delegate
+        {
+            Hide();
+            await SaveSettingsAsync();
         };
     }
 

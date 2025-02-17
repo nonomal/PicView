@@ -1,9 +1,8 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using PicView.Avalonia.Gallery;
-using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
-using PicView.Core.Config;
+using PicView.Avalonia.WindowBehavior;
 
 namespace PicView.Avalonia.Views.UC;
 
@@ -25,15 +24,15 @@ public partial class FullGalleryItemSizeSlider : UserControl
         {
             return;
         }
-        WindowHelper.SetSize(vm);
+        vm.GetFullGalleryItemHeight = e.NewValue;
         if (GalleryFunctions.IsFullGalleryOpen)
         {
             vm.GetGalleryItemHeight = vm.GetFullGalleryItemHeight;
+            WindowResizing.SetSize(vm);
         }
         // Binding to height depends on timing of the update. Maybe find a cleaner mvvm solution one day
-
+        
         // Maybe save this on close or some other way
-        SettingsHelper.Settings.Gallery.ExpandedGalleryItemSize = e.NewValue;
-        _ = SettingsHelper.SaveSettingsAsync();
+        Settings.Gallery.ExpandedGalleryItemSize = e.NewValue;
     }
 }

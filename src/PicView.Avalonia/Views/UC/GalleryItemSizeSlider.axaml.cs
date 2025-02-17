@@ -1,11 +1,9 @@
-﻿using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
+﻿using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using PicView.Avalonia.Gallery;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
-using PicView.Core.Config;
+using PicView.Avalonia.WindowBehavior;
 
 namespace PicView.Avalonia.Views.UC;
 
@@ -37,47 +35,45 @@ public partial class GalleryItemSizeSlider : UserControl
 
     private void RangeBase_OnValueChanged(object? sender, RangeBaseValueChangedEventArgs e)
     {
-        if (DataContext is not MainViewModel vm ||
-            Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+        if (DataContext is not MainViewModel vm)
         {
             return;
         }
 
         if (GalleryFunctions.IsFullGalleryOpen)
         {
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
+            if (vm.GetFullGalleryItemHeight == e.NewValue)
+            {
+                return;
+            }
+            vm.GetFullGalleryItemHeight = e.NewValue;
+            vm.GetGalleryItemHeight = vm.GetFullGalleryItemHeight;
+            WindowResizing.SetSize(vm);
+            // Binding to height depends on timing of the update. Maybe find a cleaner mvvm solution one day
+        
+            // Maybe save this on close or some other way
+            Settings.Gallery.ExpandedGalleryItemSize = e.NewValue;
             
         }
-        else if (GalleryFunctions.IsBottomGalleryOpen)
+        else if (Settings.Gallery.IsBottomGalleryShown)
         {
-            // Change the sizes of the bottom gallery items
             // ReSharper disable once CompareOfFloatsByEqualityOperator
             if (vm.GetBottomGalleryItemHeight == e.NewValue)
             {
                 return;
             }
-            SettingsHelper.Settings.Gallery.BottomGalleryItemSize = e.NewValue;
+            vm.GetBottomGalleryItemHeight = e.NewValue;
+        
             vm.GetGalleryItemHeight = e.NewValue;
-            var mainView = desktop.MainWindow.GetControl<MainView>("MainView");
-            var gallery = mainView.GalleryView;
-            gallery.Height = vm.GalleryHeight;
-            WindowHelper.SetSize(vm);
-        }
-        else
-        {
-            // ReSharper disable once CompareOfFloatsByEqualityOperator
-            if (vm.GetGalleryItemHeight == e.NewValue)
-            {
-                return;
-            }
-            vm.GetFullGalleryItemHeight = e.NewValue;
-            if (GalleryFunctions.IsFullGalleryOpen)
-            {
-                WindowHelper.SetSize(vm);
-                vm.GetGalleryItemHeight = e.NewValue;
-            }
-            SettingsHelper.Settings.Gallery.ExpandedGalleryItemSize = e.NewValue;
+            UIHelper.GetGalleryView.Height = vm.GalleryHeight;
+            WindowResizing.SetSize(vm);
+        
+            // Binding to height depends on timing of the update. Maybe find a cleaner mvvm solution one day
+            // Maybe save this on close or some other way
+            Settings.Gallery.BottomGalleryItemSize = e.NewValue;
         }
        
-        _ = SettingsHelper.SaveSettingsAsync();
+        _ = SaveSettingsAsync();
     }
 }

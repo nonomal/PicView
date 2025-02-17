@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Media;
 using PicView.Core.Localization;
 
 namespace PicView.Avalonia.MacOS.Views;
@@ -9,6 +10,11 @@ public partial class SettingsWindow : Window
     public SettingsWindow()
     {
         InitializeComponent();
+        if (!Settings.Theme.Dark || Settings.Theme.GlassTheme)
+        {
+            TitleText.Background = Brushes.Transparent;
+            XSettingsView.Background = Brushes.Transparent;
+        }
         Loaded += delegate
         {
             MinWidth = MaxWidth = Width;
@@ -21,6 +27,12 @@ public partial class SettingsWindow : Window
             {
                 Close();
             }
+        };
+        
+        Closing += async delegate
+        {
+            Hide();
+            await SaveSettingsAsync();
         };
     }
 

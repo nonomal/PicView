@@ -1,8 +1,11 @@
 ﻿using PicView.Avalonia.ViewModels;
-using PicView.Core.Config;
 using PicView.Core.Navigation;
 
 namespace PicView.Avalonia.Navigation;
+
+
+// TODO: This file needs to me removed and the FileHistory class needs to use interfaces instead.
+
 
 public static class FileHistoryNavigation
 {
@@ -64,14 +67,14 @@ public static class FileHistoryNavigation
             return;
         }
 
-        await NavigationHelper.LoadPicFromStringAsync(entry, vm);
+        await NavigationManager.LoadPicFromStringAsync(entry, vm);
         return;
         
         async Task LoadLastFileFromSettingsOrNotAsync()
         {
-            if (!string.IsNullOrWhiteSpace(SettingsHelper.Settings.StartUp.LastFile))
+            if (!string.IsNullOrWhiteSpace(Settings.StartUp.LastFile))
             {
-                await NavigationHelper.LoadPicFromStringAsync(SettingsHelper.Settings.StartUp.LastFile, vm);
+                await NavigationManager.LoadPicFromStringAsync(Settings.StartUp.LastFile, vm);
             }
             else
             {
@@ -82,7 +85,7 @@ public static class FileHistoryNavigation
 
     public static async Task NextAsync(MainViewModel vm)
     {
-        if (!NavigationHelper.CanNavigate(vm))
+        if (!NavigationManager.CanNavigate(vm))
         {
             await OpenLastFileAsync(vm).ConfigureAwait(false);
             return;
@@ -100,7 +103,7 @@ public static class FileHistoryNavigation
 
     public static async Task PrevAsync(MainViewModel vm)
     {
-        if (!NavigationHelper.CanNavigate(vm))
+        if (!NavigationManager.CanNavigate(vm))
         {
             await OpenLastFileAsync(vm).ConfigureAwait(false);
             return;
@@ -124,11 +127,11 @@ public static class FileHistoryNavigation
         string? nextEntry;
         if (next)
         {
-            nextEntry = await Task.FromResult(_fileHistory.GetNextEntry(SettingsHelper.Settings.UIProperties.Looping, index, imagePaths)).ConfigureAwait(false);
+            nextEntry = await Task.FromResult(_fileHistory.GetNextEntry(Settings.UIProperties.Looping, index, imagePaths)).ConfigureAwait(false);
         }
         else
         {
-            nextEntry = await Task.FromResult(_fileHistory.GetPreviousEntry(SettingsHelper.Settings.UIProperties.Looping, index, imagePaths)).ConfigureAwait(false);
+            nextEntry = await Task.FromResult(_fileHistory.GetPreviousEntry(Settings.UIProperties.Looping, index, imagePaths)).ConfigureAwait(false);
         }
 
         if (string.IsNullOrWhiteSpace(nextEntry))
@@ -143,10 +146,10 @@ public static class FileHistoryNavigation
                 return;
             }
 
-            await vm.ImageIterator.IterateToIndex(imagePaths.IndexOf(nextEntry)).ConfigureAwait(false);
+            await NavigationManager.Navigate(imagePaths.IndexOf(nextEntry), vm).ConfigureAwait(false);
             return;
         }
-        await NavigationHelper.LoadPicFromStringAsync(nextEntry, vm);
+        await NavigationManager.LoadPicFromStringAsync(nextEntry, vm);
     }
     
     public static void WriteToFile()

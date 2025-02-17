@@ -7,7 +7,6 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using PicView.Avalonia.Gallery;
 using PicView.Avalonia.Views.UC;
-using PicView.Core.Config;
 
 namespace PicView.Avalonia.CustomControls;
 
@@ -20,7 +19,6 @@ public class GalleryListBox : ListBox
     
     public GalleryListBox()
     {
-        SelectionMode = SelectionMode.Single;
         AddHandler(PointerPressedEvent, PreviewPointerPressedEvent, RoutingStrategies.Tunnel);
     }
 
@@ -134,7 +132,7 @@ public class GalleryListBox : ListBox
 
         if (e.Delta.Y > 0)
         {
-            if (SettingsHelper.Settings.Zoom.HorizontalReverseScroll)
+            if (Settings.Zoom.HorizontalReverseScroll)
             {
                 _autoScrollViewer.Offset -= new Vector(speed, speed);
             }
@@ -145,7 +143,7 @@ public class GalleryListBox : ListBox
         }
         else
         {
-            if (SettingsHelper.Settings.Zoom.HorizontalReverseScroll)
+            if (Settings.Zoom.HorizontalReverseScroll)
             {
                 _autoScrollViewer.Offset -= new Vector(-speed, -speed);
             }
@@ -160,6 +158,12 @@ public class GalleryListBox : ListBox
     {
         _autoScrollViewer.Offset = new Vector(double.PositiveInfinity, double.PositiveInfinity);
         _autoScrollViewer.ScrollToEnd();
+    }
+    
+    public void ScrollToHome()
+    {
+        _autoScrollViewer.Offset = new Vector(double.NegativeInfinity, double.NegativeInfinity);
+        _autoScrollViewer.ScrollToHome();
     }
 
     public void PageLeft()

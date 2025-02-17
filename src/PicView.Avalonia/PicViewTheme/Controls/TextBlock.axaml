@@ -1,0 +1,16 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ControlTheme TargetType="TextBlock" x:Key="{x:Type TextBlock}">
+
+        <Setter Property="Button.Template">
+            <ControlTemplate TargetType="TextBlock">
+                <ContentPresenter
+                    Padding="{TemplateBinding Padding}"
+                    RecognizesAccessKey="True"
+                    UseLayoutRounding="False"
+                    x:Name="PART_ContentPresenter" />
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
+</ResourceDictionary>

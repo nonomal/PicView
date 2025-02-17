@@ -14,14 +14,9 @@
     <Design.DataContext>
         <viewModels:MainViewModel />
     </Design.DataContext>
-    <UserControl.Transitions>
-        <Transitions>
-            <DoubleTransition Duration="0:0:1.75" Property="Opacity" />
-        </Transitions>
-    </UserControl.Transitions>
     <Border
-        Background="{StaticResource SecondaryBackgroundColor}"
-        BorderBrush="{StaticResource MainBorderColor}"
+        Background="{DynamicResource SecondaryBackgroundColor}"
+        BorderBrush="{DynamicResource MainBorderColor}"
         BorderThickness="1"
         CornerRadius="6">
 
@@ -29,6 +24,7 @@
             Classes="txt"
             FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
             FontSize="14"
+            MaxWidth="{CompiledBinding TitleMaxWidth}"
             Padding="12"
             x:Name="ToolTipMessageText" />
     </Border>

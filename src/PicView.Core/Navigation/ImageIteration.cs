@@ -1,6 +1,4 @@
-﻿using PicView.Core.Config;
-
-namespace PicView.Core.Navigation;
+﻿namespace PicView.Core.Navigation;
 
 public enum NavigateTo
 {
@@ -20,7 +18,7 @@ public static class ImageIteration
             case NavigateTo.Previous:
                 var indexChange = navigateTo == NavigateTo.Next ? 1 : -1;
 
-                if (SettingsHelper.Settings.UIProperties.Looping || loop)
+                if (Settings.UIProperties.Looping || loop)
                 {
                     return (index + indexChange + list.Count) % list.Count;
                 }

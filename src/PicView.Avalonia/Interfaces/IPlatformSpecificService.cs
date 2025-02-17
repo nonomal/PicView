@@ -1,10 +1,15 @@
-﻿namespace PicView.Avalonia.Interfaces;
+﻿using Avalonia.Media.Imaging;
+
+namespace PicView.Avalonia.Interfaces;
 
 public interface IPlatformSpecificService
 {
     void SetTaskbarProgress(ulong progress, ulong maximum);
     void StopTaskbarProgress();
     void SetCursorPos(int x, int y);
+    
+    void DisableScreensaver();
+    void EnableScreensaver();
 
     List<string> GetFiles(FileInfo fileInfo);
 
@@ -26,15 +31,25 @@ public interface IPlatformSpecificService
     
     void ShowEffectsWindow();
     
-    void ShowResizeWindow();
+    void ShowSingleImageResizeWindow();
+    
+    void ShowBatchResizeWindow();
     
     void Print(string path);
     
     void SetAsWallpaper(string path, int wallpaperStyle);
     
-    void SetAsLockScreen(string path);
+    bool SetAsLockScreen(string path);
     
-    void CopyFile(string path);
+    bool CopyFile(string path);
+    
+    bool CutFile(string path);
+    
+    Task CopyImageToClipboard(Bitmap bitmap);
+    
+    Task<Bitmap?> GetImageFromClipboard();
     
     Task<bool> ExtractWithLocalSoftwareAsync(string path, string tempDirectory);
+
+    string DefaultJsonKeyMap();
 }

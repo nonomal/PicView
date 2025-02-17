@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace PicView.Core.FileHandling;
@@ -7,12 +6,12 @@ namespace PicView.Core.FileHandling;
 public static partial class FileHelper
 {
     /// <summary>
-    /// Renames a file by moving it to a new path. Creates the destination directory if it does not exist.
+    ///     Renames a file by moving it to a new path. Creates the destination directory if it does not exist.
     /// </summary>
     /// <param name="path">The current path of the file.</param>
     /// <param name="newPath">The new path to which the file will be moved.</param>
     /// <returns>
-    /// <c>true</c> if the file is successfully renamed; otherwise, <c>false</c>.
+    ///     <c>true</c> if the file is successfully renamed; otherwise, <c>false</c>.
     /// </returns>
     public static bool RenameFile(string path, string newPath)
     {
@@ -33,52 +32,13 @@ public static partial class FileHelper
         return true;
     }
 
-    /// <summary>
-    /// Returns the human-readable file size for an arbitrary, 64-bit file size
-    /// The default format is "0.## XB", e.g. "4.2 KB" or "1.43 GB"
-    /// </summary>
-    /// <param name="fileSize">FileInfo.Length</param>
-    /// <returns>E.g. "3.34 MB"</returns>
-    /// Credits to http://www.somacon.com/p576.php
-    public static string GetReadableFileSize(this long fileSize)
-    {
-        const int kilobyte = 1024;
-        double value;
-        char prefix;
-
-        switch (fileSize)
-        {
-            // Gigabyte
-            case >= 0x40000000:
-                prefix = 'G';
-                value = fileSize >> 20;
-                break;
-            // Megabyte
-            case >= 0x100000:
-                prefix = 'M';
-                value = fileSize >> 10;
-                break;
-            // Kilobyte
-            case >= 0x400:
-                prefix = 'K';
-                value = fileSize;
-                break;
-
-            default:
-                return fileSize.ToString("0 B", CultureInfo.CurrentCulture); // Byte
-        }
-
-        value /= kilobyte; // Divide by 1024 to get fractional value
-
-        return value.ToString($"0.## {prefix}B", CultureInfo.CurrentCulture);
-    }
 
     [GeneratedRegex(@"\b(?:https?://|www\.)\S+\b", RegexOptions.IgnoreCase | RegexOptions.Compiled, "en-US")]
     private static partial Regex URLregex();
 
     /// <summary>
-    /// Returns the URL contained in the given string `value` by matching it against a regex pattern.
-    /// If there's an exception thrown, returns an empty string.
+    ///     Returns the URL contained in the given string `value` by matching it against a regex pattern.
+    ///     If there's an exception thrown, returns an empty string.
     /// </summary>
     /// <param name="value">The string to find the URL in</param>
     /// <returns>The URL contained in the string, or an empty string if no URL is found or an exception is thrown</returns>
@@ -99,13 +59,13 @@ public static partial class FileHelper
     }
 
     /// <summary>
-    /// Generates a new filename with an incremented number inside parentheses to avoid duplication.
+    ///     Generates a new filename with an incremented number inside parentheses to avoid duplication.
     /// </summary>
     /// <param name="currentFile">The path of the current file.</param>
     /// <returns>
-    /// The path of the new file with an incremented number inside parentheses to avoid duplication.
+    ///     The path of the new file with an incremented number inside parentheses to avoid duplication.
     /// </returns>
-    public static string DuplicateAndReturnFileName(string currentFile)
+    private static string GenerateUniqueFileName(string currentFile)
     {
         string newFile;
         var dir = Path.GetDirectoryName(currentFile);
@@ -135,76 +95,72 @@ public static partial class FileHelper
             newFile = Path.Combine(dir, $"{fileNameWithoutExtension}({i++}){extension}");
         } while (File.Exists(newFile));
 
-        // Copy the file to the new location
-        File.Copy(currentFile, newFile);
         return newFile;
     }
 
-    [GeneratedRegex(@"(\d+)\s*([KMGTP]B)", RegexOptions.IgnoreCase, "en-US")]
-    private static partial Regex MyRegex();
-    public static string? ExtractFileSize(this string input)
+
+    /// <summary>
+    ///     Duplicates a file with an incremented number inside parentheses to avoid name conflicts,
+    ///     and returns the path of the new file. If any exception occurs, returns an empty string.
+    /// </summary>
+    /// <param name="currentFile">The path of the file to be duplicated.</param>
+    /// <returns>The path of the new file, or an empty string if any exception occurs.</returns>
+    public static string DuplicateAndReturnFileName(string currentFile)
     {
-        // Define a regular expression pattern to match file size formats like "2GB", "100MB", etc.
-        var regex = MyRegex();
-
-        var match = regex.Match(input);
-
-        return match.Success ? match.Value : null;
-    }
-
-    public static long GetFileSizeFromString(string input)
-    {
-        // Define a regular expression pattern to match file size formats like "2GB", "100MB", etc.
-        var regex = MyRegex();
-
-        var match = regex.Match(input);
-
-        if (!match.Success)
+        try
         {
-            return -1;
+            var newFile = GenerateUniqueFileName(currentFile);
+            File.Copy(currentFile, newFile);
+            return newFile;
         }
-
-        // Extract the size and unit from the matched groups
-        var size = long.Parse(match.Groups[1].Value);
-        var unit = match.Groups[2].Value.ToUpper();
-
-        // Convert the size to bytes based on the unit
-        switch (unit)
+        catch (Exception e)
         {
-            case "KB":
-                size *= 1024;
-                break;
-
-            case "MB":
-                size *= 1024 * 1024;
-                break;
-
-            case "GB":
-                size *= 1024 * 1024 * 1024;
-                break;
-
-            case "TB":
-                size *= 1024L * 1024 * 1024 * 1024;
-                break;
-
-            case "PB":
-                size *= 1024L * 1024 * 1024 * 1024 * 1024;
-                break;
+#if DEBUG
+            Trace.WriteLine($"{nameof(DuplicateAndReturnFileName)} {currentFile} exception, \n {e.StackTrace}");
+#endif
+            return string.Empty;
         }
-
-        return size;
-
-        // If no match is found, return an appropriate value (e.g., -1 indicating an error)
     }
 
     /// <summary>
-    /// Checks if the given directory is empty.
+    ///     Asynchronously duplicates a file by creating a copy with an incremented number inside parentheses
+    ///     to avoid name conflicts, and returns the path of the new file. If any exception occurs, returns an empty string.
     /// </summary>
-    public static bool IsDirectoryEmpty(string path)
+    /// <param name="currentFile">The path of the file to be duplicated.</param>
+    /// <param name="fileInfo">
+    ///     Optional: The <see cref="FileInfo" /> object representing the file to be duplicated. Defaults to
+    ///     null.
+    /// </param>
+    /// <returns>
+    ///     A task representing the asynchronous operation, with the path of the new file as the result, or an empty
+    ///     string if any exception occurs.
+    /// </returns>
+    public static async Task<string> DuplicateAndReturnFileNameAsync(string currentFile, FileInfo? fileInfo = null)
     {
-        return !Directory.EnumerateFileSystemEntries(path).Any();
+        try
+        {
+            fileInfo ??= new FileInfo(currentFile);
+            await using var fileStream = GetOptimizedFileStream(fileInfo, true);
+            var newFile = GenerateUniqueFileName(currentFile);
+            await fileStream.CopyToAsync(new FileStream(newFile, FileMode.CreateNew)).ConfigureAwait(false);
+            return newFile;
+        }
+        catch (Exception e)
+        {
+#if DEBUG
+            Trace.WriteLine($"{nameof(DuplicateAndReturnFileNameAsync)} {currentFile} exception, \n {e.StackTrace}");
+#endif
+            return string.Empty;
+        }
     }
 
+    /// <summary>
+    ///     Checks if a file is currently in use by another process.
+    /// </summary>
+    /// <param name="filePath">The path of the file to check.</param>
+    /// <returns>
+    ///     <c>true</c> if the file is in use by another process; otherwise, <c>false</c>.
+    /// </returns>
     public static bool IsFileInUse(string filePath)
     {
         try
@@ -220,37 +176,54 @@ public static partial class FileHelper
         }
     }
 
-    public static async Task<byte[]> GetBytesFromFile(FileInfo fileInfo)
+    /// <summary>
+    ///     Opens a <see cref="FileStream" /> for the given <see cref="FileInfo" /> with optimized settings
+    ///     for reading or writing based on the file size. The buffer size and file options are adjusted
+    ///     to improve performance for different file sizes.
+    /// </summary>
+    /// <param name="fileInfo">The <see cref="FileInfo" /> object representing the file to be opened.</param>
+    /// <param name="writeAccess">Specifies whether to open the file with write access. Defaults to <c>false</c>.</param>
+    /// <returns>
+    ///     A <see cref="FileStream" /> object configured for optimal file reading or writing,
+    ///     with different settings based on the file size.
+    /// </returns>
+    /// <remarks>
+    ///     - For files smaller than 1 MB, a buffer size of 4 KB is used, with asynchronous file access enabled.
+    ///     - For files between 1 MB and 100 MB, a buffer size of 16 KB is used, with asynchronous file access enabled.
+    ///     - For files larger than 100 MB, a buffer size of 16 KB is used, with <see cref="FileOptions.SequentialScan" />
+    ///     enabled to optimize for large, sequential file reads.
+    /// </remarks>
+    public static FileStream GetOptimizedFileStream(FileInfo fileInfo, bool writeAccess = false)
     {
-        return await GetBytesFromFile(fileInfo.FullName, useAsync: fileInfo.Length > 1e7).ConfigureAwait(false);
-    }
+        // Define thresholds for file size and buffer sizes
+        var fileSize = fileInfo.Length;
+        FileOptions options;
+        int bufferSize;
 
-    public static async Task<byte[]> GetBytesFromFile(string filePath, bool useAsync = false)
-    {
-        const int bufferSize = 4096;
-        await using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, bufferSize, useAsync: useAsync);
-        if (fs.Length >= int.MaxValue)
+        switch (fileSize)
         {
-            var bytes = new List<byte>();
-            var buffer = new byte[bufferSize]; // Buffer size for reading chunks from the file
-            int bytesRead;
-            while ((bytesRead = await fs.ReadAsync(buffer).ConfigureAwait(false)) > 0)
-            {
-                bytes.AddRange(buffer.Take(bytesRead));
-            }
-            return bytes.ToArray();
+            case <= 1048576L: // Less than 1 MB
+                bufferSize = 4096;
+                options = FileOptions.Asynchronous;
+                break;
+            case <= 104857600L: // Less than 100 MB
+                bufferSize = 16384;
+                options = FileOptions.Asynchronous;
+                break;
+            default: // Files larger than 100 MB
+                bufferSize = 16384;
+                options = FileOptions.SequentialScan;
+                break;
         }
-        else
-        {
-            var length = (int)fs.Length;
-            var bytes = new byte[length];
-            var writeIndex = 0;
-            while (writeIndex < length)
-            {
-                var readBytes = await fs.ReadAsync(bytes.AsMemory(writeIndex, length - writeIndex)).ConfigureAwait(false);
-                writeIndex += readBytes;
-            }
-            return bytes;
-        }
+
+        // Open a FileStream with the selected buffer size and options
+        return new FileStream(
+            fileInfo.FullName,
+            writeAccess ? FileMode.OpenOrCreate : FileMode.Open,
+            writeAccess ? FileAccess.ReadWrite : FileAccess.Read,
+            FileShare.ReadWrite,
+            bufferSize,
+            options
+        );
     }
 }

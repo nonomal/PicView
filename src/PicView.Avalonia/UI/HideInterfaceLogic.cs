@@ -4,9 +4,10 @@ using PicView.Avalonia.Animations;
 using PicView.Avalonia.Gallery;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.ViewModels;
+using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Calculations;
-using PicView.Core.Config;
 using PicView.Core.Gallery;
+using PicView.Core.Localization;
 
 namespace PicView.Avalonia.UI;
 
@@ -19,15 +20,16 @@ public static class HideInterfaceLogic
     /// <param name="vm">The view model. </param>
     public static async Task ToggleUI(MainViewModel vm)
     {
-        if (SettingsHelper.Settings.UIProperties.ShowInterface)
+        if (Settings.UIProperties.ShowInterface)
         {
-            vm.IsInterfaceShown = false;
-            SettingsHelper.Settings.UIProperties.ShowInterface = false;
+            vm.IsUIShown = false;
+            Settings.UIProperties.ShowInterface = false;
             vm.IsTopToolbarShown = false;
             vm.IsBottomToolbarShown = false;
+            vm.GetIsShowingUITranslation = TranslationHelper.Translation.ShowUI;
             if (!GalleryFunctions.IsFullGalleryOpen)
             {
-                if (!SettingsHelper.Settings.Gallery.ShowBottomGalleryInHiddenUI)
+                if (!Settings.Gallery.ShowBottomGalleryInHiddenUI)
                 {
                     vm.GalleryMode = GalleryMode.Closed;
                     await Dispatcher.UIThread.InvokeAsync(() =>
@@ -41,26 +43,27 @@ public static class HideInterfaceLogic
                 }
                 else
                 {
-                    vm.IsGalleryShown = SettingsHelper.Settings.Gallery.ShowBottomGalleryInHiddenUI;
+                    vm.IsGalleryShown = Settings.Gallery.ShowBottomGalleryInHiddenUI;
                 }
             }
         }
         else
         {
-            vm.IsInterfaceShown = true;
+            vm.IsUIShown = true;
             vm.IsTopToolbarShown = true;
-            if (SettingsHelper.Settings.UIProperties.ShowBottomNavBar)
+            vm.GetIsShowingUITranslation = TranslationHelper.Translation.HideUI;
+            if (Settings.UIProperties.ShowBottomNavBar)
             {
                 vm.IsBottomToolbarShown = true;
                 vm.BottombarHeight = SizeDefaults.BottombarHeight;
             }
-            SettingsHelper.Settings.UIProperties.ShowInterface = true;
+            Settings.UIProperties.ShowInterface = true;
             vm.TitlebarHeight = SizeDefaults.TitlebarHeight;
             if (!GalleryFunctions.IsFullGalleryOpen)
             {
-                if (SettingsHelper.Settings.Gallery.IsBottomGalleryShown)
+                if (Settings.Gallery.IsBottomGalleryShown)
                 {
-                    if (NavigationHelper.CanNavigate(vm))
+                    if (NavigationManager.CanNavigate(vm))
                     {
                         await Dispatcher.UIThread.InvokeAsync(() =>
                         {
@@ -82,9 +85,9 @@ public static class HideInterfaceLogic
             }
         }
         
-        WindowHelper.SetSize(vm);
+        WindowResizing.SetSize(vm);
         UIHelper.CloseMenus(vm);
-        await SettingsHelper.SaveSettingsAsync();
+        await SaveSettingsAsync();
     }
     
     /// <summary>
@@ -93,21 +96,25 @@ public static class HideInterfaceLogic
     /// <param name="vm">The view model. </param>
     public static async Task ToggleBottomToolbar(MainViewModel vm)
     {
-        if (SettingsHelper.Settings.UIProperties.ShowBottomNavBar)
+        if (Settings.UIProperties.ShowBottomNavBar)
         {
             vm.IsBottomToolbarShown = false;
-            SettingsHelper.Settings.UIProperties.ShowBottomNavBar = false;
-            vm.IsBottomToolbarShownSetting = false;
+            Settings.UIProperties.ShowBottomNavBar = false;
+            vm.GetIsShowingBottomToolbarTranslation = TranslationHelper.Translation.ShowBottomToolbar;
         }
         else
         {
             vm.IsBottomToolbarShown = true;
-            SettingsHelper.Settings.UIProperties.ShowBottomNavBar = true;
-            vm.IsBottomToolbarShownSetting = true;
+            Settings.UIProperties.ShowBottomNavBar = true;
             vm.BottombarHeight = SizeDefaults.BottombarHeight;
+            vm.GetIsShowingBottomToolbarTranslation = TranslationHelper.Translation.HideBottomToolbar;
         }
-        WindowHelper.SetSize(vm);
-        await SettingsHelper.SaveSettingsAsync();
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            WindowResizing.SetSize(vm);
+        });
+        
+        await SaveSettingsAsync();
     }
     
     #endregion
@@ -130,6 +137,11 @@ public static class HideInterfaceLogic
     {
         childControl.PointerEntered += delegate
         {
+            if (!Settings.UIProperties.ShowAltInterfaceButtons)
+            {
+                return;
+            }
+            
             if (vm.ImageIterator is null)
             {
                 parent.Opacity = 0;
@@ -152,6 +164,11 @@ public static class HideInterfaceLogic
         };
         parent.PointerEntered += async delegate
         {
+            if (!Settings.UIProperties.ShowAltInterfaceButtons)
+            {
+                return;
+            }
+            
             await DoHoverButtonAnimation(isShown:true, parent, childControl, vm);
         };
         parent.PointerExited += async delegate
@@ -187,7 +204,7 @@ public static class HideInterfaceLogic
     
     private static async Task DoHoverButtonAnimation(bool isShown, Control parent, MainViewModel vm)
     {
-        if (_isHoverButtonAnimationRunning)
+        if (_isHoverButtonAnimationRunning || !Settings.UIProperties.ShowAltInterfaceButtons)
         {
             return;
         }
@@ -213,7 +230,7 @@ public static class HideInterfaceLogic
     }
     private static async Task DoHoverButtonAnimation(bool isShown, Control parent, Control childControl, MainViewModel vm)
     {
-        if (_isHoverButtonAnimationRunning)
+        if (_isHoverButtonAnimationRunning || !Settings.UIProperties.ShowAltInterfaceButtons)
         {
             return;
         }
@@ -244,23 +261,35 @@ public static class HideInterfaceLogic
 
     public static async Task ToggleBottomGalleryShownInHiddenUI(MainViewModel vm)
     {
-        SettingsHelper.Settings.Gallery.ShowBottomGalleryInHiddenUI = !SettingsHelper.Settings.Gallery
+        Settings.Gallery.ShowBottomGalleryInHiddenUI = !Settings.Gallery
             .ShowBottomGalleryInHiddenUI;
-        vm.IsBottomGalleryShownInHiddenUI = SettingsHelper.Settings.Gallery.ShowBottomGalleryInHiddenUI;
+        vm.IsBottomGalleryShownInHiddenUI = Settings.Gallery.ShowBottomGalleryInHiddenUI;
 
         if (!GalleryFunctions.IsFullGalleryOpen)
         {
-            if (!SettingsHelper.Settings.UIProperties.ShowInterface && !SettingsHelper.Settings.Gallery
+            if (!Settings.UIProperties.ShowInterface && !Settings.Gallery
                     .ShowBottomGalleryInHiddenUI)
             {
                 vm.IsGalleryShown = false;
             }
             else
             {
-                vm.IsGalleryShown = SettingsHelper.Settings.Gallery.IsBottomGalleryShown;
+                vm.IsGalleryShown = Settings.Gallery.IsBottomGalleryShown;
             }
         }
         
-        await SettingsHelper.SaveSettingsAsync();
+        await SaveSettingsAsync();
+    }
+
+    public static async Task ToggleFadeInButtonsOnHover(MainViewModel vm)
+    {
+        Settings.UIProperties.ShowAltInterfaceButtons = !Settings
+            .UIProperties.ShowAltInterfaceButtons;
+        
+        vm.GetIsShowingFadingUIButtonsTranslation = Settings.UIProperties.ShowAltInterfaceButtons
+            ? TranslationHelper.Translation.DisableFadeInButtonsOnHover
+            : TranslationHelper.Translation.ShowFadeInButtonsOnHover;
+        
+        await SaveSettingsAsync();
     }
 }

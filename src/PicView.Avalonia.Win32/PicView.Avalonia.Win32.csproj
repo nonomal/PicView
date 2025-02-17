@@ -12,9 +12,8 @@
     <Trimming>full</Trimming>
     <TrimmerRemoveSymbols>true</TrimmerRemoveSymbols>
     <OptimizationPreference>Speed</OptimizationPreference>
-    <EnableUnsafeUTF7Encoding>false</EnableUnsafeUTF7Encoding>
     <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
-    <PlatformTarget>x64</PlatformTarget>
+    <Platforms>x64;arm64</Platforms>
     <ImplicitUsings>enable</ImplicitUsings>
     <Product>PicView</Product>
     <Company>Ruben Hyldgaard Negendahl</Company>
@@ -23,8 +22,6 @@
     <AssemblyName>PicView</AssemblyName>
     <StartupObject>PicView.Avalonia.Win32.Program</StartupObject>
     <LangVersion>preview</LangVersion>
-    <AssemblyVersion>3.0</AssemblyVersion>
-    <FileVersion>3.0</FileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DebugType>none</DebugType>
@@ -35,15 +32,23 @@
     </AvaloniaResource>
   </ItemGroup>
 
+  <PropertyGroup Condition="'$(Platform)' == 'x64'">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Platform)' == 'arm64'">
+    <PlatformTarget>ARM64</PlatformTarget>
+  </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="Avalonia.Desktop" Version="11.2.999-cibuild0051810-alpha" />
-    <PackageReference Include="Avalonia.Themes.Simple" Version="11.2.999-cibuild0051810-alpha" />
+    <PackageReference Include="Avalonia.Themes.Simple" Version="11.2.4" />
+    <PackageReference Include="Clowd.Clipboard.Avalonia" Version="1.1.4" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\PicView.Avalonia\PicView.Avalonia.csproj" />
     <ProjectReference Include="..\PicView.Core\PicView.Core.csproj" />
-    <ProjectReference Include="..\PicView.Windows\PicView.Windows.csproj" />
+    <ProjectReference Include="..\PicView.WindowsNT\PicView.WindowsNT.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -58,6 +63,14 @@
     </Compile>
     <Compile Update="Views\WinTitleBar.axaml.cs">
       <DependentUpon>WinTitleBar.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\BatchResizeResizeWindow.axaml.cs">
+      <DependentUpon>BatchResizeResizeWindow.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\EffectsWindow.axaml.cs">
+      <DependentUpon>EffectsWindow.axaml</DependentUpon>
+      <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
 
