@@ -5,6 +5,7 @@ using PicView.Avalonia.DragAndDrop;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
+using ReactiveUI;
 
 namespace PicView.Avalonia.Win32.Views;
 
@@ -13,6 +14,12 @@ public partial class WinMainWindow : Window
     public WinMainWindow()
     {
         InitializeComponent();
+        
+        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            return;
+        }
+        
         Loaded += delegate
         {
             if (DataContext == null)
@@ -34,11 +41,36 @@ public partial class WinMainWindow : Window
             {
                 DragAndDropHelper.RemoveDragDropView();
             };
+            
+            this.WhenAnyValue(x => x.WindowState).Subscribe(state =>
+            {
+                if (DataContext is not MainViewModel vm)
+                {
+                    return;
+                }
+                switch (state)
+                {
+                    case WindowState.FullScreen:
+                        if (!Settings.WindowProperties.Fullscreen)
+                        {
+                            WindowFunctions.Fullscreen(vm, desktop);
+                        }
+                        break;
+                    case WindowState.Maximized:
+                        if (!Settings.WindowProperties.Maximized)
+                        {
+                            WindowFunctions.Maximize();
+                        }
+                        break;
+                    case WindowState.Normal:
+                        if (Settings.WindowProperties.Fullscreen || Settings.WindowProperties.Maximized)
+                        {
+                            WindowFunctions.Restore(vm, desktop);
+                        }
+                        break;
+                }
+            });
         };
-        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            return;
-        }
 
         desktop.ShutdownRequested += async (_, e) =>
         {

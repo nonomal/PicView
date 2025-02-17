@@ -264,6 +264,12 @@ public static class WindowFunctions
 
     public static void Restore(MainViewModel vm, IClassicDesktopStyleApplicationLifetime desktop)
     {
+        Settings.WindowProperties.Maximized = false;
+        Settings.WindowProperties.Fullscreen = false;
+        SetMargin();
+        vm.IsMaximized = false;
+        vm.IsFullscreen = false;
+        
         if (Settings.UIProperties.ShowInterface)
         {
             vm.IsTopToolbarShown = true;
@@ -279,11 +285,9 @@ public static class WindowFunctions
 
         Dispatcher.UIThread.InvokeAsync(() =>
             desktop.MainWindow.WindowState = WindowState.Normal);
-        Settings.WindowProperties.Maximized = false;
-        Settings.WindowProperties.Fullscreen = false;
         vm.IsUIShown = Settings.UIProperties.ShowInterface;
         InitializeWindowSizeAndPosition(desktop.MainWindow);
-        WindowResizing.SetSize(vm);
+        
         if (Settings.WindowProperties.AutoFit)
         {
             vm.SizeToContent = SizeToContent.WidthAndHeight;
@@ -295,9 +299,7 @@ public static class WindowFunctions
             vm.SizeToContent = SizeToContent.Manual;
             vm.CanResize = true;
         }
-        SetMargin();
-        vm.IsMaximized = false;
-        vm.IsFullscreen = false;
+        WindowResizing.SetSize(vm);
     }
 
     public static void Maximize()
@@ -353,8 +355,12 @@ public static class WindowFunctions
         {
             if (Settings.WindowProperties.Maximized)
             {
-                vm.TopScreenMargin = new Thickness(desktop.MainWindow.OffScreenMargin.Left, desktop.MainWindow.OffScreenMargin.Top, desktop.MainWindow.OffScreenMargin.Right, 0);
-                vm.BottomScreenMargin = new Thickness(desktop.MainWindow.OffScreenMargin.Left, 0, desktop.MainWindow.OffScreenMargin.Right, desktop.MainWindow.OffScreenMargin.Bottom);
+                var left = desktop.MainWindow.OffScreenMargin.Left is 0 ? 7 : desktop.MainWindow.OffScreenMargin.Left;
+                var top = desktop.MainWindow.OffScreenMargin.Top is 0 ? 7 : desktop.MainWindow.OffScreenMargin.Top;
+                var right = desktop.MainWindow.OffScreenMargin.Right is 0 ? 7 : desktop.MainWindow.OffScreenMargin.Right;
+                var bottom = desktop.MainWindow.OffScreenMargin.Bottom is 0 ? 7 : desktop.MainWindow.OffScreenMargin.Bottom;
+                vm.TopScreenMargin = new Thickness(left, top, right, 0);
+                vm.BottomScreenMargin = new Thickness(left, 0, right, bottom);
             }
             else
             {

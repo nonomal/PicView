@@ -98,6 +98,10 @@ public static class StartUpHelper
             {
                 WindowFunctions.Maximize();
             }
+            else if (Settings.WindowProperties.Fullscreen)
+            {
+                WindowFunctions.Fullscreen(vm, desktop);
+            }
             else if (Settings.WindowProperties.AutoFit && !Settings.WindowProperties.Fullscreen)
             {
                 HandleAutoFit(vm);
