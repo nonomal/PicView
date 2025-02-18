@@ -16,6 +16,8 @@ namespace PicView.Avalonia.Navigation;
 
 public static class UpdateImage
 {
+    #region Update source
+
     /// <summary>
     ///     Updates the image source in the main view model based on the specified index and preloaded values.
     /// </summary>
@@ -127,6 +129,43 @@ public static class UpdateImage
         SetStats(vm, index, preLoadValue.ImageModel);
     }
 
+    #endregion
+
+    #region TIFF
+
+    /// <summary>
+    ///     Sets the image displayed in the view to the given TIFF image based on the given navigation info.
+    /// </summary>
+    /// <param name="tiffNavigationInfo">The navigation info for the TIFF image.</param>
+    /// <param name="index">The index of the image to display.</param>
+    /// <param name="fileInfo">The FileInfo object representing the file containing the image.</param>
+    /// <param name="vm">The main view model instance.</param>
+    public static void SetTiffImage(TiffManager.TiffNavigationInfo tiffNavigationInfo, int index, FileInfo fileInfo,
+        MainViewModel vm)
+    {
+        var source = tiffNavigationInfo.Pages[tiffNavigationInfo.CurrentPage].ToWriteableBitmap();
+        vm.ImageSource = source;
+        vm.SecondaryImageSource = null;
+        vm.ImageType = ImageType.Bitmap;
+        var width = source?.PixelSize.Width ?? 0;
+        var height = source?.PixelSize.Height ?? 0;
+
+        Dispatcher.UIThread.Invoke(() => { WindowResizing.SetSize(width, height, 0, 0, 0, vm); },
+            DispatcherPriority.Send);
+
+        if (vm.RotationAngle != 0)
+        {
+            vm.ImageViewer.Rotate(vm.RotationAngle);
+        }
+
+        SetTitleHelper.SetTiffTitle(tiffNavigationInfo, width, height, index, fileInfo, vm);
+
+        vm.PixelWidth = width;
+        vm.PixelHeight = height;
+    }
+
+    #endregion
+
     #region Single Image
 
     /// <summary>
@@ -229,41 +268,8 @@ public static class UpdateImage
     }
 
     #endregion
-    
-    #region TIFF
 
-    /// <summary>
-    ///     Sets the image displayed in the view to the given TIFF image based on the given navigation info.
-    /// </summary>
-    /// <param name="tiffNavigationInfo">The navigation info for the TIFF image.</param>
-    /// <param name="index">The index of the image to display.</param>
-    /// <param name="fileInfo">The FileInfo object representing the file containing the image.</param>
-    /// <param name="vm">The main view model instance.</param>
-    public static void SetTiffImage(TiffManager.TiffNavigationInfo tiffNavigationInfo, int index, FileInfo fileInfo,
-        MainViewModel vm)
-    {
-        var source = tiffNavigationInfo.Pages[tiffNavigationInfo.CurrentPage].ToWriteableBitmap();
-        vm.ImageSource = source;
-        vm.SecondaryImageSource = null;
-        vm.ImageType = ImageType.Bitmap;
-        var width = source?.PixelSize.Width ?? 0;
-        var height = source?.PixelSize.Height ?? 0;
-
-        Dispatcher.UIThread.Invoke(() => { WindowResizing.SetSize(width, height, 0, 0, 0, vm); },
-            DispatcherPriority.Send);
-
-        if (vm.RotationAngle != 0)
-        {
-            vm.ImageViewer.Rotate(vm.RotationAngle);
-        }
-
-        SetTitleHelper.SetTiffTitle(tiffNavigationInfo, width, height, index, fileInfo, vm);
-
-        vm.PixelWidth = width;
-        vm.PixelHeight = height;
-    }
-    
-    #endregion
+    #region Set stats and loading preview
 
     public static void SetStats(MainViewModel vm, int index, ImageModel imageModel)
     {
@@ -312,4 +318,6 @@ public static class UpdateImage
             vm.SecondaryImageSource = null;
         }
     }
+
+    #endregion
 }
