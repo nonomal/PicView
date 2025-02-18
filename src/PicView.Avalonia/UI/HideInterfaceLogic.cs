@@ -121,15 +121,15 @@ public static class HideInterfaceLogic
 
     #region HoverButtons
     
-    public static void AddHoverButtonEvents(Control parent, MainViewModel vm)
+    public static void AddHoverButtonEvents(Control parent,  MainViewModel vm)
     {
         parent.PointerEntered += async delegate
         {
-            await DoHoverButtonAnimation(isShown:true, parent, vm);
+            await DoHoverButtonAnimation(isShown:true, parent);
         };
         parent.PointerExited += async delegate
         {
-            await DoHoverButtonAnimation(isShown: false, parent, vm);
+            await DoHoverButtonAnimation(isShown: false, parent);
         };
     }
     
@@ -144,22 +144,31 @@ public static class HideInterfaceLogic
             
             if (vm.ImageIterator is null)
             {
-                parent.Opacity = 0;
-                childControl.Opacity = 0;
+                Dispatcher.UIThread.Invoke(() =>
+                {
+                    parent.Opacity = 0;
+                    childControl.Opacity = 0;
+                });
                 return;
             }
 
             if (vm.ImageIterator.ImagePaths?.Count <= 1)
             {
-                parent.Opacity = 0;
-                childControl.Opacity = 0;
+                Dispatcher.UIThread.Invoke(() =>
+                {
+                    parent.Opacity = 0;
+                    childControl.Opacity = 0;
+                });
                 return;
             }
 
             if (childControl.IsPointerOver)
             {
-                parent.Opacity = 1;
-                childControl.Opacity = 1;
+                Dispatcher.UIThread.Invoke(() =>
+                {
+                    parent.Opacity = 10;
+                    childControl.Opacity = 1;
+                });
             }
         };
         parent.PointerEntered += async delegate
@@ -184,11 +193,14 @@ public static class HideInterfaceLogic
                 x++;
                 if (x > 20)
                 {
-                    if (!childControl.IsPointerOver)
+                    await Dispatcher.UIThread.InvokeAsync(() =>
                     {
-                        parent.Opacity = 0;
-                        childControl.Opacity = 0;
-                    }
+                        if (!childControl.IsPointerOver)
+                        {
+                            parent.Opacity = 0;
+                            childControl.Opacity = 0;
+                        }
+                    });
                     break;
                 }
             }
@@ -202,24 +214,13 @@ public static class HideInterfaceLogic
     
     private static bool _isHoverButtonAnimationRunning;
     
-    private static async Task DoHoverButtonAnimation(bool isShown, Control parent, MainViewModel vm)
+    private static async Task DoHoverButtonAnimation(bool isShown, Control parent)
     {
         if (_isHoverButtonAnimationRunning || !Settings.UIProperties.ShowAltInterfaceButtons)
         {
             return;
         }
-
-        if (vm.ImageIterator is null)
-        {
-            parent.Opacity = 0;
-            return;
-        }
-
-        if (vm.ImageIterator.ImagePaths?.Count <= 1)
-        {
-            parent.Opacity = 0;
-            return;
-        }
+        
         _isHoverButtonAnimationRunning = true;
         var from = isShown ? 0d : 1d;
         var to = isShown ? 1d : 0d;

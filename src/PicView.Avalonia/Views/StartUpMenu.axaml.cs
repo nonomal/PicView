@@ -105,7 +105,11 @@ public partial class StartUpMenu : UserControl
         if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
             return;
         
-        if (Settings.WindowProperties.AutoFit)
+        if (Settings.WindowProperties.Fullscreen || Settings.WindowProperties.Maximized)
+        {
+            ShowFullLogo();
+        }
+        else if (Settings.WindowProperties.AutoFit)
         {
             ShowIcon();
             vm.TitleMaxWidth = logoWidth;
@@ -142,8 +146,16 @@ public partial class StartUpMenu : UserControl
             if (this.TryFindResource("LogoFullImage", Application.Current.RequestedThemeVariant, out var logo))
                 Logo.Source = logo as DrawingImage;
             LogoViewbox.Width = double.NaN;
-            Buttons.Margin = new Thickness(0, 220, 25, bottomMargin - 100);
-            Buttons.VerticalAlignment = VerticalAlignment.Center;
+            if (Settings.WindowProperties.Fullscreen || Settings.WindowProperties.Maximized)
+            {
+                Buttons.Margin = new Thickness(0, 0, 0, bottomMargin + SizeDefaults.WindowMinSize / 2);
+                Buttons.VerticalAlignment = VerticalAlignment.Bottom;
+            }
+            else
+            {
+                Buttons.Margin = new Thickness(0, 220, 25, bottomMargin - 100);
+                Buttons.VerticalAlignment = VerticalAlignment.Center;
+            }
         }
     }
 }
