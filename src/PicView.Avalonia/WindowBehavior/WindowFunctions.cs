@@ -355,6 +355,7 @@ public static class WindowFunctions
         {
             if (Settings.WindowProperties.Maximized)
             {
+                // Sometimes margin is 0 when it's not supposed to be, so replace with 7. Not sure why.
                 var left = desktop.MainWindow.OffScreenMargin.Left is 0 ? 7 : desktop.MainWindow.OffScreenMargin.Left;
                 var top = desktop.MainWindow.OffScreenMargin.Top is 0 ? 7 : desktop.MainWindow.OffScreenMargin.Top;
                 var right = desktop.MainWindow.OffScreenMargin.Right is 0 ? 7 : desktop.MainWindow.OffScreenMargin.Right;
@@ -364,8 +365,9 @@ public static class WindowFunctions
             }
             else
             {
-                vm.TopScreenMargin = new Thickness(0);
-                vm.BottomScreenMargin = new Thickness(0);
+                var noThickness = new Thickness(0);
+                vm.TopScreenMargin = noThickness;
+                vm.BottomScreenMargin = noThickness;
             }
         }
         else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))

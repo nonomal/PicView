@@ -458,7 +458,8 @@ public partial class ImageViewer : UserControl
         var newXproperty = _origin.X - dragMousePosition.X;
         var newYproperty = _origin.Y - dragMousePosition.Y;
         
-        if (Settings.WindowProperties.Fullscreen || Settings.WindowProperties.Maximized)
+        // #185
+        if (Settings.WindowProperties.Fullscreen || Settings.WindowProperties.Maximized || !Settings.WindowProperties.AutoFit)
         {
             // TODO: figure out how to pan when not auto fitting window while keeping it in bounds
             _translateTransform.Transitions = null;
