@@ -124,22 +124,7 @@ public static class UpdateImage
             }
         }
 
-        vm.PixelWidth = preLoadValue.ImageModel.PixelWidth;
-        vm.PixelHeight = preLoadValue.ImageModel.PixelHeight;
-        vm.GetIndex = index + 1;
-        vm.ExifOrientation = preLoadValue.ImageModel.EXIFOrientation;
-        vm.FileInfo = preLoadValue.ImageModel.FileInfo;
-        vm.ZoomValue = 1;
-
-        if (Settings.ImageScaling.ShowImageSideBySide)
-        {
-            // Fixes incorrect rendering in the side by side view
-            // TODO: Improve and fix side by side and remove this hack 
-            Dispatcher.UIThread.Post(() => { vm.ImageViewer?.MainImage?.InvalidateVisual(); });
-        }
-
-        // Reset effects
-        vm.EffectConfig = null;
+        SetStats(vm, index, preLoadValue.ImageModel);
     }
 
     #region Single Image
@@ -244,6 +229,8 @@ public static class UpdateImage
     }
 
     #endregion
+    
+    #region TIFF
 
     /// <summary>
     ///     Sets the image displayed in the view to the given TIFF image based on the given navigation info.
@@ -274,6 +261,28 @@ public static class UpdateImage
 
         vm.PixelWidth = width;
         vm.PixelHeight = height;
+    }
+    
+    #endregion
+
+    public static void SetStats(MainViewModel vm, int index, ImageModel imageModel)
+    {
+        vm.PixelWidth = imageModel.PixelWidth;
+        vm.PixelHeight = imageModel.PixelHeight;
+        vm.GetIndex = index + 1;
+        vm.ExifOrientation = imageModel.EXIFOrientation;
+        vm.FileInfo = imageModel.FileInfo;
+        vm.ZoomValue = 1;
+
+        if (Settings.ImageScaling.ShowImageSideBySide)
+        {
+            // Fixes incorrect rendering in the side by side view
+            // TODO: Improve and fix side by side and remove this hack 
+            Dispatcher.UIThread.Post(() => { vm.ImageViewer?.MainImage?.InvalidateVisual(); });
+        }
+
+        // Reset effects
+        vm.EffectConfig = null;
     }
 
     /// <summary>

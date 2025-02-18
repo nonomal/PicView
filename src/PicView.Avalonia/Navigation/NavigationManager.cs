@@ -267,7 +267,7 @@ public static class NavigationManager
         else
         {
             vm.PlatformService.StopTaskbarProgress();
-            await PreviewPicAndLoadGallery(new FileInfo(fileList[0]), vm, fileList);
+            await LoadWithoutImageIterator(new FileInfo(fileList[0]), vm, fileList);
             if (vm.Title == TranslationHelper.Translation.Loading)
             {
                 SetTitleHelper.SetTitle(vm);
@@ -411,7 +411,7 @@ public static class NavigationManager
             }
             else
             {
-                await PreviewPicAndLoadGallery(fileInfo, vm);
+                await LoadWithoutImageIterator(fileInfo, vm);
             }
         }
         else
@@ -421,7 +421,7 @@ public static class NavigationManager
                 vm.PlatformService.StopTaskbarProgress();
             }
 
-            await PreviewPicAndLoadGallery(fileInfo, vm);
+            await LoadWithoutImageIterator(fileInfo, vm);
         }
     }
 
@@ -743,7 +743,7 @@ public static class NavigationManager
     /// </param>
     /// <param name="index">Optional: The index at which to start the navigation. Defaults to 0.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    private static async Task PreviewPicAndLoadGallery(FileInfo fileInfo, MainViewModel vm, List<string>? files = null,
+    private static async Task LoadWithoutImageIterator(FileInfo fileInfo, MainViewModel vm, List<string>? files = null,
         int index = 0)
     {
         var imageModel = await GetImageModel.GetImageModelAsync(fileInfo).ConfigureAwait(false);
@@ -768,8 +768,13 @@ public static class NavigationManager
                     vm);
             });
         }
-
-        vm.IsLoading = false; //Don't show loading indicator
+        
+        if (Settings.ImageScaling.ShowImageSideBySide)
+        {
+            // Fixes incorrect rendering in the side by side view
+            // TODO: Improve and fix side by side and remove this hack 
+            Dispatcher.UIThread.Post(() => { vm.ImageViewer?.MainImage?.InvalidateVisual(); });
+        }
 
         if (vm.ImageIterator is not null)
         {
@@ -794,6 +799,8 @@ public static class NavigationManager
         {
             SetTitleHelper.SetTitle(vm, imageModel);
         }
+        
+        UpdateImage.SetStats(vm, index, imageModel);
 
         await CheckAndReloadGallery(fileInfo, vm);
     }
