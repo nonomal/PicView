@@ -103,9 +103,6 @@ public static class NavigationManager
             {
                 if (_tiffNavigationInfo.CurrentPage - 1 < 0)
                 {
-                    var index = TiffManager.IsTiff(currentFileName)
-                        ? vm.ImageIterator.NextIndex
-                        : vm.ImageIterator.CurrentIndex;
                     await ExitTiffNavigationAndNavigate().ConfigureAwait(false);
                     return;
                 }
@@ -123,7 +120,7 @@ public static class NavigationManager
             }
             else
             {
-                await UpdateImage.SetTiffImageAsync(_tiffNavigationInfo, nextIteration, vm.FileInfo, vm);
+                await UpdateImage.SetTiffImageAsync(_tiffNavigationInfo, vm.ImageIterator.CurrentIndex, vm.FileInfo, vm);
             }
         }
         return;
