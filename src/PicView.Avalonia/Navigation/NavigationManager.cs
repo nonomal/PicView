@@ -25,7 +25,7 @@ public static class NavigationManager
 {
     private static CancellationTokenSource? _cancellationTokenSource;
 
-    public static TiffManager.TiffNavigationInfo? TiffNavigationInfo { get; set; }
+    private static TiffManager.TiffNavigationInfo? _tiffNavigationInfo;
 
     #region Navigation
 
@@ -76,7 +76,7 @@ public static class NavigationManager
 
     private static async Task TiffNavigation(MainViewModel vm, string currentFileName, int nextIteration)
     {
-        if (TiffNavigationInfo is null && !vm.ImageIterator.IsReversed)
+        if (_tiffNavigationInfo is null && !vm.ImageIterator.IsReversed)
         {
             var tiffPages = await Task.FromResult(TiffManager.LoadTiffPages(currentFileName)).ConfigureAwait(false);
             if (tiffPages.Count < 1)
@@ -85,7 +85,7 @@ public static class NavigationManager
                 return;
             }
 
-            TiffNavigationInfo = new TiffManager.TiffNavigationInfo
+            _tiffNavigationInfo = new TiffManager.TiffNavigationInfo
             {
                 CurrentPage = 0,
                 PageCount = tiffPages.Count,
@@ -93,7 +93,7 @@ public static class NavigationManager
             };
         }
 
-        if (TiffNavigationInfo is null)
+        if (_tiffNavigationInfo is null)
         {
             await CheckCancellationAndStartIterateToIndex(nextIteration, vm).ConfigureAwait(false);
         }
@@ -101,39 +101,62 @@ public static class NavigationManager
         {
             if (vm.ImageIterator.IsReversed)
             {
-                if (TiffNavigationInfo.CurrentPage - 1 <= 0)
+                if (_tiffNavigationInfo.CurrentPage - 1 <= 0)
                 {
                     var index = TiffManager.IsTiff(currentFileName)
                         ? vm.ImageIterator.NextIndex
                         : vm.ImageIterator.CurrentIndex;
-                    await ExitTiffNavigationAndNavigate(index).ConfigureAwait(false);
+                    await ExitTiffNavigationAndNavigate().ConfigureAwait(false);
                     return;
                 }
 
-                TiffNavigationInfo.CurrentPage -= 1;
+                _tiffNavigationInfo.CurrentPage -= 1;
             }
             else
             {
-                TiffNavigationInfo.CurrentPage += 1;
+                _tiffNavigationInfo.CurrentPage += 1;
             }
 
-            if (TiffNavigationInfo.CurrentPage >= TiffNavigationInfo.PageCount || TiffNavigationInfo.CurrentPage <= 0)
+            if (_tiffNavigationInfo.CurrentPage >= _tiffNavigationInfo.PageCount || _tiffNavigationInfo.CurrentPage <= 0)
             {
-                await ExitTiffNavigationAndNavigate(nextIteration).ConfigureAwait(false);
+                await ExitTiffNavigationAndNavigate().ConfigureAwait(false);
             }
             else
             {
-                UpdateImage.SetTiffImage(TiffNavigationInfo, nextIteration, vm.FileInfo, vm);
+                await UpdateImage.SetTiffImageAsync(_tiffNavigationInfo, nextIteration, vm.FileInfo, vm);
             }
         }
         return;
         
-        async Task ExitTiffNavigationAndNavigate(int i)
+        async Task ExitTiffNavigationAndNavigate()
         {
             await CheckCancellationAndStartIterateToIndex(nextIteration, vm).ConfigureAwait(false);
-            TiffNavigationInfo?.Dispose();
-            TiffNavigationInfo = null;
+            _tiffNavigationInfo?.Dispose();
+            _tiffNavigationInfo = null;
         }
+    }
+    
+    private static async Task<bool> CheckTiffUpdate(MainViewModel vm, string file, int index)
+    {
+        if (!TiffManager.IsTiff(file))
+        {
+            return false;
+        }
+        
+        var tiffPages = await Task.FromResult(TiffManager.LoadTiffPages(file)).ConfigureAwait(false);
+        if (tiffPages.Count < 1)
+        {
+            return false;
+        }
+
+        _tiffNavigationInfo = new TiffManager.TiffNavigationInfo
+        {
+            CurrentPage = 0,
+            PageCount = tiffPages.Count,
+            Pages = tiffPages
+        };
+        await UpdateImage.SetTiffImageAsync(_tiffNavigationInfo, index, vm.FileInfo, vm);
+        return true;
     }
 
     public static async Task Navigate(int index, MainViewModel vm)
@@ -403,6 +426,7 @@ public static class NavigationManager
                 if (index != -1)
                 {
                     await vm.ImageIterator.IterateToIndex(index, _cancellationTokenSource).ConfigureAwait(false);
+                    await CheckTiffUpdate(vm, fileInfo.FullName, index);
                 }
                 else
                 {
@@ -619,10 +643,6 @@ public static class NavigationManager
         }
 
         fileInfo ??= new FileInfo(file);
-        if (vm.ImageIterator is not null)
-        {
-            await vm.ImageIterator.DisposeAsync();
-        }
 
         var newFileList = await Task.Run(() =>
         {
@@ -655,12 +675,8 @@ public static class NavigationManager
             return;
         }
 
-        vm.ImageIterator = new ImageIterator(fileInfo, newFileList, 0, vm);
-        var preloadValue = await vm.ImageIterator.GetPreLoadValueAsync(0).ConfigureAwait(false);
-        await UpdateImage.UpdateSource(vm, 0, newFileList, false, preloadValue)
-            .ConfigureAwait(false);
-
-        await CheckAndReloadGallery(fileInfo, vm);
+        var firstFileInfo = new FileInfo(newFileList[0]);
+        await LoadWithoutImageIterator(firstFileInfo, vm, newFileList);
     }
 
     #endregion
@@ -780,28 +796,33 @@ public static class NavigationManager
         {
             await vm.ImageIterator.DisposeAsync();
         }
-
-        // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
+        
         if (files is null)
         {
             vm.ImageIterator = new ImageIterator(fileInfo, vm);
+            index = vm.ImageIterator.CurrentIndex;
         }
         else
         {
             vm.ImageIterator = new ImageIterator(fileInfo, files, index, vm);
         }
-
-        if (Settings.ImageScaling.ShowImageSideBySide)
+        
+        var isTiffUpdated = await CheckTiffUpdate(vm, fileInfo.FullName, index); 
+        if (!isTiffUpdated)
         {
-            SetTitleHelper.SetSideBySideTitle(vm, imageModel, nextImageModel);
-        }
-        else
-        {
-            SetTitleHelper.SetTitle(vm, imageModel);
+            if (Settings.ImageScaling.ShowImageSideBySide)
+            {
+                SetTitleHelper.SetSideBySideTitle(vm, imageModel, nextImageModel);
+            }
+            else
+            {
+                SetTitleHelper.SetTitle(vm, imageModel);
+            }
+        
+            UpdateImage.SetStats(vm, index, imageModel);
         }
         
-        UpdateImage.SetStats(vm, index, imageModel);
-
+        vm.IsLoading = false;
         await CheckAndReloadGallery(fileInfo, vm);
     }
 

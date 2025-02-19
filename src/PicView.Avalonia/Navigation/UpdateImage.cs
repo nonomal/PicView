@@ -143,25 +143,55 @@ public static class UpdateImage
     public static void SetTiffImage(TiffManager.TiffNavigationInfo tiffNavigationInfo, int index, FileInfo fileInfo,
         MainViewModel vm)
     {
+        ExecuteTiffImage(tiffNavigationInfo, index, fileInfo, vm).GetAwaiter().GetResult();
+    }
+    
+    
+    /// <inheritdoc cref="SetTiffImage(TiffManager.TiffNavigationInfo,int,FileInfo,MainViewModel)" />
+    public static async Task SetTiffImageAsync(TiffManager.TiffNavigationInfo tiffNavigationInfo, int index, FileInfo fileInfo,
+        MainViewModel vm)
+    {
+        await ExecuteTiffImage(tiffNavigationInfo, index, fileInfo, vm);
+    }
+    
+    /// <inheritdoc cref="SetTiffImage(TiffManager.TiffNavigationInfo,int,FileInfo,MainViewModel)" />
+    private static async Task ExecuteTiffImage(TiffManager.TiffNavigationInfo tiffNavigationInfo, int index, FileInfo fileInfo,
+        MainViewModel vm)
+    {
         var source = tiffNavigationInfo.Pages[tiffNavigationInfo.CurrentPage].ToWriteableBitmap();
         vm.ImageSource = source;
         vm.SecondaryImageSource = null;
         vm.ImageType = ImageType.Bitmap;
         var width = source?.PixelSize.Width ?? 0;
         var height = source?.PixelSize.Height ?? 0;
-
-        Dispatcher.UIThread.Invoke(() => { WindowResizing.SetSize(width, height, 0, 0, 0, vm); },
-            DispatcherPriority.Send);
-
-        if (vm.RotationAngle != 0)
+        
+        await Dispatcher.UIThread.InvokeAsync(() =>
         {
-            vm.ImageViewer.Rotate(vm.RotationAngle);
-        }
-
+            if (vm.CurrentView != vm.ImageViewer)
+            {
+                vm.CurrentView = vm.ImageViewer;
+            }
+            
+            WindowResizing.SetSize(width, height, 0, 0, 0, vm);
+            
+            if (vm.RotationAngle != 0)
+            {
+                vm.ImageViewer.Rotate(vm.RotationAngle);
+            }
+        }, DispatcherPriority.Render);
+        
         SetTitleHelper.SetTiffTitle(tiffNavigationInfo, width, height, index, fileInfo, vm);
 
-        vm.PixelWidth = width;
-        vm.PixelHeight = height;
+        var imageModel = new ImageModel
+        {
+            EXIFOrientation = EXIFHelper.GetImageOrientation(fileInfo),
+            ImageType = ImageType.Bitmap,
+            FileInfo = fileInfo,
+            Image = source,
+            PixelWidth = width,
+            PixelHeight = height
+        };
+        SetStats(vm, index, imageModel);
     }
 
     #endregion
