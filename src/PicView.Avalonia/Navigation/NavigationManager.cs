@@ -64,13 +64,13 @@ public static class NavigationManager
         var navigateTo = next ? NavigateTo.Next : NavigateTo.Previous;
         var nextIteration = vm.ImageIterator.GetIteration(vm.ImageIterator.CurrentIndex, navigateTo);
         var currentFileName = vm.ImageIterator.ImagePaths[vm.ImageIterator.CurrentIndex];
-        if (!TiffManager.IsTiff(currentFileName))
+        if (TiffManager.IsTiff(currentFileName))
         {
-            await CheckCancellationAndStartIterateToIndex(nextIteration, vm).ConfigureAwait(false);
+            await TiffNavigation(vm, currentFileName, nextIteration).ConfigureAwait(false);
         }
         else
         {
-            await TiffNavigation(vm, currentFileName, nextIteration).ConfigureAwait(false);
+            await CheckCancellationAndStartIterateToIndex(nextIteration, vm).ConfigureAwait(false);
         }
     }
 
@@ -101,7 +101,7 @@ public static class NavigationManager
         {
             if (vm.ImageIterator.IsReversed)
             {
-                if (_tiffNavigationInfo.CurrentPage - 1 <= 0)
+                if (_tiffNavigationInfo.CurrentPage - 1 < 0)
                 {
                     var index = TiffManager.IsTiff(currentFileName)
                         ? vm.ImageIterator.NextIndex
@@ -117,7 +117,7 @@ public static class NavigationManager
                 _tiffNavigationInfo.CurrentPage += 1;
             }
 
-            if (_tiffNavigationInfo.CurrentPage >= _tiffNavigationInfo.PageCount || _tiffNavigationInfo.CurrentPage <= 0)
+            if (_tiffNavigationInfo.CurrentPage >= _tiffNavigationInfo.PageCount || _tiffNavigationInfo.CurrentPage < 0)
             {
                 await ExitTiffNavigationAndNavigate().ConfigureAwait(false);
             }

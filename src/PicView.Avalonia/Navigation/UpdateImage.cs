@@ -158,7 +158,7 @@ public static class UpdateImage
     private static async Task ExecuteTiffImage(TiffManager.TiffNavigationInfo tiffNavigationInfo, int index, FileInfo fileInfo,
         MainViewModel vm)
     {
-        var source = tiffNavigationInfo.Pages[tiffNavigationInfo.CurrentPage].ToWriteableBitmap();
+        var source = await Task.Run( () => tiffNavigationInfo.Pages[tiffNavigationInfo.CurrentPage].ToWriteableBitmap()).ConfigureAwait(false);
         vm.ImageSource = source;
         vm.SecondaryImageSource = null;
         vm.ImageType = ImageType.Bitmap;
