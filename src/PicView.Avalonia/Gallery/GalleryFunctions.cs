@@ -13,7 +13,7 @@ namespace PicView.Avalonia.Gallery;
 
 public static class GalleryFunctions
 {
-    public static bool RenameGalleryItem(int index, string newFileLocation, string newName, MainViewModel? vm)
+    public static bool RenameGalleryItem(int oldIndex, int newIndex, string newFileLocation, string newName, MainViewModel? vm)
     {
         var mainView = UIHelper.GetMainView;
 
@@ -23,17 +23,17 @@ public static class GalleryFunctions
             return false;
         }
 
-        if (galleryListBox.Items.Count <= index)
+        if (galleryListBox.Items.Count <= oldIndex)
         {
             return false;
         }
 
-        if (galleryListBox.Items.Count < 0 || index >= galleryListBox.ItemCount)
+        if (galleryListBox.Items.Count < 0 || oldIndex >= galleryListBox.ItemCount)
         {
             return false;
         }
 
-        if (galleryListBox.Items.Count <= 0 || index >= galleryListBox.Items.Count)
+        if (galleryListBox.Items.Count <= 0 || oldIndex >= galleryListBox.Items.Count)
         {
             return false;
         }
@@ -53,12 +53,14 @@ public static class GalleryFunctions
 
         bool Rename()
         {
-            if (galleryListBox.Items[index] is not GalleryItem galleryItem)
+            if (galleryListBox.Items[oldIndex] is not GalleryItem galleryItem)
             {
                 return false;
             }
             galleryItem.FileName.Text = newName;
             galleryItem.FileLocation.Text = newFileLocation;
+            galleryListBox.Items.RemoveAt(oldIndex);
+            galleryListBox.Items.Insert(newIndex, galleryItem);
             return true;
         }
     }
@@ -73,28 +75,13 @@ public static class GalleryFunctions
             return false;
         }
 
-        if (galleryListBox.Items.Count <= index)
-        {
-            return false;
-        }
-
-        if (galleryListBox.Items.Count < 0 || index >= galleryListBox.ItemCount)
-        {
-            return false;
-        }
-
-        if (galleryListBox.Items.Count <= 0 || index >= galleryListBox.Items.Count)
-        {
-            return false;
-        }
-
         if (Dispatcher.UIThread.CheckAccess())
         {
-            galleryListBox.Items.RemoveAt(index);
+            Removal();
         }
         else
         {
-            Dispatcher.UIThread.InvokeAsync(() => { galleryListBox.Items.RemoveAt(index); });
+            Dispatcher.UIThread.InvokeAsync(Removal);
         }
 
         if (vm != null)
@@ -103,6 +90,23 @@ public static class GalleryFunctions
         }
 
         return true;
+
+        void Removal()
+        {
+            if (galleryListBox.Items.Count > index)
+            {
+                galleryListBox.Items.RemoveAt(index);
+            }
+            else
+            {
+                var lastIndex = galleryListBox.Items.Count - 1 < 0 ? galleryListBox.Items.Count - 1 : 0;
+                if (galleryListBox.Items[lastIndex] is GalleryItem galleryItem)
+                {
+                    galleryListBox.Items.Remove(galleryItem);
+                }
+                
+            }
+        }
     }
 
     public static async Task<bool> AddGalleryItem(int index, FileInfo fileInfo, MainViewModel? vm)
@@ -111,21 +115,6 @@ public static class GalleryFunctions
 
         var galleryListBox = mainView.GalleryView.GalleryListBox;
         if (galleryListBox == null)
-        {
-            return false;
-        }
-
-        if (galleryListBox.Items.Count <= index)
-        {
-            return false;
-        }
-
-        if (galleryListBox.Items.Count < 0 || index >= galleryListBox.ItemCount)
-        {
-            return false;
-        }
-
-        if (galleryListBox.Items.Count <= 0 || index >= galleryListBox.Items.Count)
         {
             return false;
         }
@@ -165,7 +154,15 @@ public static class GalleryFunctions
 
                     await NavigationManager.Navigate(vm.ImageIterator.ImagePaths.IndexOf(fileInfo.FullName), vm).ConfigureAwait(false);
                 };
-                galleryListBox.Items.Insert(index, galleryItem);
+                if (galleryListBox.Items.Count > index)
+                {
+                    galleryListBox.Items.Insert(index, galleryItem);
+                }
+                else
+                {
+                    galleryListBox.Items.Add(galleryItem);
+                }
+                
                 var isSvg = fileInfo.Extension.Equals(".svg", StringComparison.OrdinalIgnoreCase) ||
                             fileInfo.Extension.Equals(".svgz", StringComparison.OrdinalIgnoreCase);
                 if (isSvg)
@@ -262,6 +259,10 @@ public static class GalleryFunctions
             var mainView = UIHelper.GetMainView;
 
             var galleryListBox = mainView.GalleryView.GalleryListBox;
+            if (vm.SelectedGalleryItemIndex < 0)
+            {
+                return;
+            }
             if (galleryListBox.Items[vm.SelectedGalleryItemIndex] is GalleryItem centerItem)
             {
                 galleryListBox.ScrollToCenterOfItem(centerItem);

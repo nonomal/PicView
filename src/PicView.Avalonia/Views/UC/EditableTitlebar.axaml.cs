@@ -161,7 +161,7 @@ public partial class EditableTitlebar : UserControl
             if (saved)
             {
                 // Delete old file
-                vm.ImageIterator?.RemoveCurrentItemFromPreLoader();
+                vm.ImageIterator?.RemoveItemFromPreLoader(oldPath);
                 
                 var deleteMsg = FileDeletionHelper.DeleteFileWithErrorMsg(oldPath, false);
                 if (!string.IsNullOrWhiteSpace(deleteMsg))
@@ -199,7 +199,7 @@ public partial class EditableTitlebar : UserControl
                 UIHelper.GetMainView.Focus();
             });
             vm.IsEditableTitlebarOpen = false;
-            vm.ImageIterator?.RefreshAllFileInfo();
+            await vm.ImageIterator?.ResynchronizeAsync();
             vm.FileInfo = new FileInfo(newPath);
             SetTitleHelper.RefreshTitle(vm);
             if (vm.Title == TranslationHelper.Translation.UnexpectedError)

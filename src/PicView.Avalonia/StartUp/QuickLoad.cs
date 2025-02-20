@@ -113,10 +113,12 @@ public static class QuickLoad
         {
             FileHistoryNavigation.Add(fileInfo.FullName);
         }
+
+        vm.ImageIterator.Add(vm.ImageIterator.CurrentIndex, imageModel);
         
         var tasks = new List<Task>
         {
-            vm.ImageIterator.AddAsync(vm.ImageIterator.CurrentIndex, imageModel)
+            vm.ImageIterator.AddAsync(vm.ImageIterator.CurrentIndex)
         };
         
         if (vm.ImageIterator.ImagePaths.Count > 1)
