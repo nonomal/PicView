@@ -740,7 +740,7 @@ public static class FunctionsHelper
 
     public static async Task Crop()
     {
-        await Dispatcher.UIThread.InvokeAsync(() => CropFunctions.Init(Vm));
+        await Dispatcher.UIThread.InvokeAsync(() => CropFunctions.StartCropControl(Vm));
     }
 
     public static Task Flip()

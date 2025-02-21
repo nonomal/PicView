@@ -4,6 +4,7 @@ using Avalonia.Input;
 using PicView.Avalonia.Crop;
 using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.UI;
+using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views.UC;
 
 namespace PicView.Avalonia.Input;
@@ -123,7 +124,10 @@ public static class MainKeyboardShortcuts
         
         if (CropFunctions.IsCropping)
         {
-            await UIHelper.GetMainView.MainGrid.Children.OfType<CropControl>().FirstOrDefault().KeyDownHandler(null,e);
+            if (UIHelper.GetMainView.MainGrid.DataContext is MainViewModel { CurrentView: CropControl cropControl })
+            {
+                await cropControl.KeyDownHandler(null, e);
+            }
             return;
         }
 
