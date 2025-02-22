@@ -1186,12 +1186,6 @@ public class MainViewModel : ViewModelBase
 
     #endregion Fields
 
-    #region Services
-
-    public ImageIterator? ImageIterator;
-
-    #endregion Services
-
     #region Methods
 
     #region Sorting Order
@@ -1216,10 +1210,7 @@ public class MainViewModel : ViewModelBase
         var success = await ConversionHelper.ResizeImageByPercentage(FileInfo, percentage);
         if (success)
         {
-            if (ImageIterator is not null)
-            {
-                await ImageIterator.QuickReload().ConfigureAwait(false);
-            }
+            await NavigationManager.QuickReload();
         }
         else
         {
@@ -1299,20 +1290,10 @@ public class MainViewModel : ViewModelBase
         {
             try
             {
-                var index = ImageIterator?.ImagePaths.IndexOf(path);
-                if (!index.HasValue)
-                {
-                    return;
-                }
-
                 var errorMsg = FileDeletionHelper.DeleteFileWithErrorMsg(path, recycle: false);
                 if (!string.IsNullOrWhiteSpace(errorMsg))
                 {
                     _ = TooltipHelper.ShowTooltipMessageAsync(errorMsg);
-                }
-                else
-                {
-                    ImageIterator?.RemoveItemFromPreLoader(index.Value);
                 }
             }
             catch (Exception e)

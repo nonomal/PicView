@@ -44,8 +44,8 @@ public static class QuickLoad
         PreLoadValue? secondaryPreloadValue = null;
         if (Settings.ImageScaling.ShowImageSideBySide)
         {
-            vm.ImageIterator = new ImageIterator(fileInfo, vm);
-            secondaryPreloadValue = await vm.ImageIterator.GetNextPreLoadValueAsync();
+            NavigationManager.InitializeImageIterator(vm);
+            secondaryPreloadValue = await NavigationManager.GetNextPreLoadValueAsync();
             vm.SecondaryImageSource = secondaryPreloadValue?.ImageModel?.Image;
         }
         await Dispatcher.UIThread.InvokeAsync(() =>
@@ -64,8 +64,8 @@ public static class QuickLoad
 
         vm.IsLoading = false;
         
-        vm.ImageIterator ??= new ImageIterator(fileInfo, vm);
-        vm.GetIndex = vm.ImageIterator.CurrentIndex + 1;
+        NavigationManager.InitializeImageIterator(vm);
+        vm.GetIndex = NavigationManager.GetNonZeroIndex;
 
         if (Settings.ImageScaling.ShowImageSideBySide)
         {
@@ -82,7 +82,7 @@ public static class QuickLoad
         {
             if (TiffManager.IsTiff(imageModel.FileInfo.FullName))
             {
-                SetTitleHelper.TrySetTiffTitle(imageModel.PixelWidth, imageModel.PixelHeight, vm.ImageIterator.CurrentIndex, fileInfo, vm);
+                SetTitleHelper.TrySetTiffTitle(imageModel.PixelWidth, imageModel.PixelHeight, NavigationManager.GetCurrentIndex, fileInfo, vm);
             }
             else
             {
@@ -114,24 +114,21 @@ public static class QuickLoad
             FileHistoryNavigation.Add(fileInfo.FullName);
         }
 
-        vm.ImageIterator.Add(vm.ImageIterator.CurrentIndex, imageModel);
+        NavigationManager.AddToPreloader(NavigationManager.GetCurrentIndex, imageModel);
         
-        var tasks = new List<Task>
-        {
-            vm.ImageIterator.AddAsync(vm.ImageIterator.CurrentIndex)
-        };
+        var tasks = new List<Task>();
         
-        if (vm.ImageIterator.ImagePaths.Count > 1)
+        if (NavigationManager.GetCount > 1)
         {
             if (Settings.UIProperties.IsTaskbarProgressEnabled)
             {
                 await Dispatcher.UIThread.InvokeAsync(() =>
                 {
-                    vm.PlatformService.SetTaskbarProgress((ulong)vm.ImageIterator.CurrentIndex, (ulong)vm.ImageIterator.ImagePaths.Count);
+                    vm.PlatformService.SetTaskbarProgress((ulong)NavigationManager.GetCurrentIndex, (ulong)NavigationManager.GetCount);
                 });
             }
 
-            tasks.Add(vm.ImageIterator.Preload());
+            tasks.Add(NavigationManager.PreloadAsync());
         }
 
         if (Settings.Gallery.IsBottomGalleryShown)

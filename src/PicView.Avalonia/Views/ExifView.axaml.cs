@@ -160,10 +160,7 @@ public partial class ExifView : UserControl
                 var success = await ConversionHelper.ResizeByWidth(vm.FileInfo, widthValue).ConfigureAwait(false);
                 if (success)
                 {
-                    if (vm.ImageIterator is not null)
-                    {
-                        await vm.ImageIterator.QuickReload().ConfigureAwait(false);
-                    }
+                    await NavigationManager.QuickReload().ConfigureAwait(false);
                 }
             }
         }
@@ -178,8 +175,7 @@ public partial class ExifView : UserControl
                 var success = await ConversionHelper.ResizeByHeight(vm.FileInfo, heightValue).ConfigureAwait(false);
                 if (success)
                 {
-                    vm.ImageIterator?.RemoveCurrentItemFromPreLoader();
-                    await NavigationManager.Navigate(vm.ImageIterator.CurrentIndex, vm).ConfigureAwait(false);
+                    await NavigationManager.QuickReload().ConfigureAwait(false);
                 }
             }
         }

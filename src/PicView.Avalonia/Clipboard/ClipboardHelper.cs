@@ -65,7 +65,6 @@ public static class ClipboardHelper
         {
             return;
         }
-        await vm.ImageIterator.ClearAsync();
         await NavigationManager.LoadPicFromFile(duplicatedPath, vm);
     }
     

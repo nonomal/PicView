@@ -22,8 +22,12 @@ public class ImageIterator : IAsyncDisposable
     public List<string> ImagePaths { get; private set; }
 
     public int CurrentIndex { get; private set; }
+    
+    public int GetNonZeroIndex => CurrentIndex + 1 > GetCount ? 1 : CurrentIndex + 1;
 
     public int NextIndex => GetIteration(CurrentIndex, NavigateTo.Next);
+    
+    public int GetCount => ImagePaths.Count;
 
     public FileInfo InitialFileInfo { get; private set; } = null!;
     public bool IsReversed { get; private set; }
@@ -321,7 +325,7 @@ public class ImageIterator : IAsyncDisposable
         await PreLoader.ClearAsync().ConfigureAwait(false);
     }
 
-    public async Task Preload()
+    public async Task PreloadAsync()
     {
         await PreLoader.PreLoadAsync(CurrentIndex, IsReversed, ImagePaths).ConfigureAwait(false);
     }
@@ -370,7 +374,7 @@ public class ImageIterator : IAsyncDisposable
 
     #region Navigation
 
-    public async Task ReloadFileList()
+    public async Task ReloadFileListAsync()
     {
         ImagePaths = await Task.FromResult(_vm.PlatformService.GetFiles(InitialFileInfo)).ConfigureAwait(false);
         CurrentIndex = ImagePaths.IndexOf(_vm.FileInfo.FullName);

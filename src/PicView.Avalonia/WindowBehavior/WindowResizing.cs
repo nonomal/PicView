@@ -4,10 +4,10 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using ImageMagick;
+using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.Calculations;
-using PicView.Core.Navigation;
 
 namespace PicView.Avalonia.WindowBehavior;
 
@@ -51,7 +51,7 @@ public static class WindowResizing
     public static void SetSize(MainViewModel vm)
     {
         double firstWidth, firstHeight;
-        var preloadValue = vm.ImageIterator?.GetCurrentPreLoadValue();
+        var preloadValue = NavigationManager.GetCurrentPreLoadValue();
         if (preloadValue == null)
         {
             if (vm.FileInfo is null)
@@ -86,19 +86,18 @@ public static class WindowResizing
 
         if (Settings.ImageScaling.ShowImageSideBySide)
         {
-            var secondaryPreloadValue = vm.ImageIterator?.GetNextPreLoadValue();
+            var secondaryPreloadValue = NavigationManager.GetNextPreLoadValue();
             double secondWidth, secondHeight;
             if (secondaryPreloadValue != null)
             {
                 secondWidth = GetWidth();
                 secondHeight = GetHeight();
             }
-            else if (vm.ImageIterator is not null)
+            else if (NavigationManager.CanNavigate(vm))
             {
-                var nextIndex = vm.ImageIterator.GetIteration(vm.ImageIterator.CurrentIndex,
-                    vm.ImageIterator.IsReversed ? NavigateTo.Previous : NavigateTo.Next);
+                var nextFileName = NavigationManager.GetNextFileName;
                 var magickImage = new MagickImage();
-                magickImage.Ping(vm.ImageIterator.ImagePaths[nextIndex]);
+                magickImage.Ping(nextFileName);
                 secondWidth = magickImage.Width;
                 secondHeight = magickImage.Height;
             }

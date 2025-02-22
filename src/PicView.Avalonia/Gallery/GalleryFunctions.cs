@@ -46,7 +46,7 @@ public static class GalleryFunctions
 
         if (vm != null)
         {
-            vm.SelectedGalleryItemIndex = vm.ImageIterator.CurrentIndex;
+            vm.SelectedGalleryItemIndex = NavigationManager.GetCurrentIndex;
         }
 
         return true;
@@ -86,7 +86,7 @@ public static class GalleryFunctions
 
         if (vm != null)
         {
-            vm.SelectedGalleryItemIndex = vm.ImageIterator.CurrentIndex;
+            vm.SelectedGalleryItemIndex = NavigationManager.GetCurrentIndex;
         }
 
         return true;
@@ -152,7 +152,7 @@ public static class GalleryFunctions
                         ToggleGallery(vm);
                     }
 
-                    await NavigationManager.Navigate(vm.ImageIterator.ImagePaths.IndexOf(fileInfo.FullName), vm).ConfigureAwait(false);
+                    await NavigationManager.Navigate(fileInfo.FullName, vm).ConfigureAwait(false);
                 };
                 if (galleryListBox.Items.Count > index)
                 {
@@ -321,7 +321,7 @@ public static class GalleryFunctions
         }
 
         
-        _ = Task.Run(() => GalleryLoad.LoadGallery(vm, Path.GetDirectoryName(vm.ImageIterator.ImagePaths[0])));
+        _ = Task.Run(() => GalleryLoad.LoadGallery(vm, NavigationManager.GetInitialFileInfo?.DirectoryName));
     }
 
     public static void OpenCloseBottomGallery(MainViewModel vm)
@@ -357,7 +357,7 @@ public static class GalleryFunctions
             return;
         }
 
-        Task.Run(() => GalleryLoad.LoadGallery(vm, Path.GetDirectoryName(vm.ImageIterator.ImagePaths[0])));
+        Task.Run(() => GalleryLoad.LoadGallery(vm, NavigationManager.GetInitialFileInfo?.DirectoryName));
     }
 
     public static void OpenBottomGallery(MainViewModel vm)

@@ -50,8 +50,7 @@ public static class ImageHelper
             }
             else
             {
-                var preloadValue = await vm.ImageIterator.GetPreLoadValueAsync(vm.ImageIterator.ImagePaths.IndexOf(path))
-                    .ConfigureAwait(false);
+                var preloadValue = await NavigationManager.GetPreLoadValueAsync(path).ConfigureAwait(false);
                 if (preloadValue?.ImageModel.Image is Bitmap bitmap)
                 {
                     source = bitmap;

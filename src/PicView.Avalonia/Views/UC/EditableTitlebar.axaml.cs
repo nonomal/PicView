@@ -143,7 +143,14 @@ public partial class EditableTitlebar : UserControl
         // Check if the file is being moved to a different directory
         if (Path.GetDirectoryName(oldPath) != Path.GetDirectoryName(newPath))
         {
-            vm.ImageIterator?.RemoveCurrentItemFromPreLoader();
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                TextBox.ClearSelection();
+                Cursor = new Cursor(StandardCursorType.Arrow);
+                MainKeyboardShortcuts.IsKeysEnabled = true;
+                UIHelper.GetMainView.Focus();
+            });
+            NavigationManager.RemoveCurrentItemFromPreLoader();
             await NavigationManager.Navigate(true, vm);
             FileHelper.RenameFile(oldPath, newPath);
             return;
@@ -161,7 +168,7 @@ public partial class EditableTitlebar : UserControl
             if (saved)
             {
                 // Delete old file
-                vm.ImageIterator?.RemoveItemFromPreLoader(oldPath);
+                NavigationManager.RemoveItemFromPreLoader(oldPath);
                 
                 var deleteMsg = FileDeletionHelper.DeleteFileWithErrorMsg(oldPath, false);
                 if (!string.IsNullOrWhiteSpace(deleteMsg))
@@ -199,17 +206,7 @@ public partial class EditableTitlebar : UserControl
                 UIHelper.GetMainView.Focus();
             });
             vm.IsEditableTitlebarOpen = false;
-            await vm.ImageIterator?.ResynchronizeAsync();
-            vm.FileInfo = new FileInfo(newPath);
-            SetTitleHelper.RefreshTitle(vm);
-            if (vm.Title == TranslationHelper.Translation.UnexpectedError)
-            {
-                var preloadValue = await vm.ImageIterator?.GetCurrentPreLoadValueAsync();
-                if (preloadValue?.ImageModel is not null)
-                {
-                    SetTitleHelper.SetTitle(vm, preloadValue.ImageModel);
-                }
-            }
+            await NavigationManager.LoadPicFromFile(newPath, vm);
         }
     }
     

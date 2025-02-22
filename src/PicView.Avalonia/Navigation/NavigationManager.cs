@@ -1,16 +1,20 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using ImageMagick;
+using PicView.Avalonia.Clipboard;
 using PicView.Avalonia.Crop;
 using PicView.Avalonia.Gallery;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Input;
+using PicView.Avalonia.Preloading;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.ArchiveHandling;
+using PicView.Core.FileHandling;
 using PicView.Core.Gallery;
 using PicView.Core.ImageDecoding;
 using PicView.Core.Localization;
@@ -19,13 +23,16 @@ using PicView.Core.Navigation;
 namespace PicView.Avalonia.Navigation;
 
 /// <summary>
-///     Helper class for navigation and image loading functionalities in the application.
+///     Manages image navigation within the application.
 /// </summary>
 public static class NavigationManager
 {
     private static CancellationTokenSource? _cancellationTokenSource;
 
     private static TiffManager.TiffNavigationInfo? _tiffNavigationInfo;
+
+    // Should be updated to handle multiple iterators, in the future when adding tab support
+    private static ImageIterator? _imageIterator;
 
     #region Navigation
 
@@ -36,8 +43,8 @@ public static class NavigationManager
     /// <returns>True if navigation is possible, otherwise false.</returns>
     public static bool CanNavigate(MainViewModel vm)
     {
-        return vm?.ImageIterator?.ImagePaths is not null &&
-               vm.ImageIterator.ImagePaths.Count > 0 && !CropFunctions.IsCropping &&
+        return _imageIterator?.ImagePaths is not null &&
+               _imageIterator.ImagePaths.Count > 0 && !CropFunctions.IsCropping &&
                !UIHelper.IsDialogOpen && !vm.IsEditableTitlebarOpen;
         // TODO: should probably turn this into CanExecute observable for ReactiveUI
     }
@@ -62,26 +69,26 @@ public static class NavigationManager
         }
 
         var navigateTo = next ? NavigateTo.Next : NavigateTo.Previous;
-        var nextIteration = vm.ImageIterator.GetIteration(vm.ImageIterator.CurrentIndex, navigateTo);
-        var currentFileName = vm.ImageIterator.ImagePaths[vm.ImageIterator.CurrentIndex];
+        var nextIteration = _imageIterator.GetIteration(_imageIterator.CurrentIndex, navigateTo);
+        var currentFileName = _imageIterator.ImagePaths[_imageIterator.CurrentIndex];
         if (TiffManager.IsTiff(currentFileName))
         {
             await TiffNavigation(vm, currentFileName, nextIteration).ConfigureAwait(false);
         }
         else
         {
-            await CheckCancellationAndStartIterateToIndex(nextIteration, vm).ConfigureAwait(false);
+            await CheckCancellationAndStartIterateToIndex(nextIteration).ConfigureAwait(false);
         }
     }
 
     private static async Task TiffNavigation(MainViewModel vm, string currentFileName, int nextIteration)
     {
-        if (_tiffNavigationInfo is null && !vm.ImageIterator.IsReversed)
+        if (_tiffNavigationInfo is null && !_imageIterator.IsReversed)
         {
             var tiffPages = await Task.FromResult(TiffManager.LoadTiffPages(currentFileName)).ConfigureAwait(false);
             if (tiffPages.Count < 1)
             {
-                await CheckCancellationAndStartIterateToIndex(nextIteration, vm).ConfigureAwait(false);
+                await CheckCancellationAndStartIterateToIndex(nextIteration).ConfigureAwait(false);
                 return;
             }
 
@@ -95,11 +102,11 @@ public static class NavigationManager
 
         if (_tiffNavigationInfo is null)
         {
-            await CheckCancellationAndStartIterateToIndex(nextIteration, vm).ConfigureAwait(false);
+            await CheckCancellationAndStartIterateToIndex(nextIteration).ConfigureAwait(false);
         }
         else
         {
-            if (vm.ImageIterator.IsReversed)
+            if (_imageIterator.IsReversed)
             {
                 if (_tiffNavigationInfo.CurrentPage - 1 < 0)
                 {
@@ -120,14 +127,14 @@ public static class NavigationManager
             }
             else
             {
-                await UpdateImage.SetTiffImageAsync(_tiffNavigationInfo, vm.ImageIterator.CurrentIndex, vm.FileInfo, vm);
+                await UpdateImage.SetTiffImageAsync(_tiffNavigationInfo, _imageIterator.CurrentIndex, vm.FileInfo, vm);
             }
         }
         return;
         
         async Task ExitTiffNavigationAndNavigate()
         {
-            await CheckCancellationAndStartIterateToIndex(nextIteration, vm).ConfigureAwait(false);
+            await CheckCancellationAndStartIterateToIndex(nextIteration).ConfigureAwait(false);
             _tiffNavigationInfo?.Dispose();
             _tiffNavigationInfo = null;
         }
@@ -163,7 +170,19 @@ public static class NavigationManager
             return;
         }
 
-        await CheckCancellationAndStartIterateToIndex(index, vm).ConfigureAwait(false);
+        await CheckCancellationAndStartIterateToIndex(index).ConfigureAwait(false);
+    }
+    
+    public static async Task Navigate(string fileName, MainViewModel vm)
+    {
+        if (!CanNavigate(vm))
+        {
+            return;
+        }
+        
+        var index = _imageIterator.ImagePaths.IndexOf(fileName);
+
+        await CheckCancellationAndStartIterateToIndex(index).ConfigureAwait(false);
     }
 
     private static async Task NavigateIncrements(MainViewModel vm, bool next, bool is10, bool is100)
@@ -173,11 +192,11 @@ public static class NavigationManager
             return;
         }
 
-        var currentIndex = vm.ImageIterator.CurrentIndex;
+        var currentIndex = _imageIterator.CurrentIndex;
         var direction = next ? NavigateTo.Next : NavigateTo.Previous;
-        var index = vm.ImageIterator.GetIteration(currentIndex, direction, false, is10, is100);
+        var index = _imageIterator.GetIteration(currentIndex, direction, false, is10, is100);
 
-        await CheckCancellationAndStartIterateToIndex(index, vm).ConfigureAwait(false);
+        await CheckCancellationAndStartIterateToIndex(index).ConfigureAwait(false);
     }
 
     public static Task Next10(MainViewModel vm) => NavigateIncrements(vm, true, true, false);
@@ -210,7 +229,7 @@ public static class NavigationManager
             }
 
             _cancellationTokenSource = new CancellationTokenSource();
-            await vm.ImageIterator.NextIteration(last ? NavigateTo.Last : NavigateTo.First, _cancellationTokenSource)
+            await _imageIterator.NextIteration(last ? NavigateTo.Last : NavigateTo.First, _cancellationTokenSource)
                 .ConfigureAwait(false);
             await ScrollToEndIfNecessary(last);
         }
@@ -340,11 +359,11 @@ public static class NavigationManager
             {
                 case ErrorHelper.LoadAbleFileType.File:
                     // Navigate to the image if it exists in the image iterator
-                    if (vm.ImageIterator is not null)
+                    if (_imageIterator is not null)
                     {
-                        if (vm.ImageIterator.ImagePaths.Contains(check.Value.Data))
+                        if (_imageIterator.ImagePaths.Contains(check.Value.Data))
                         {
-                            await vm.ImageIterator.IterateToIndex(vm.ImageIterator.ImagePaths.IndexOf(check.Value.Data),
+                            await _imageIterator.IterateToIndex(_imageIterator.ImagePaths.IndexOf(check.Value.Data),
                                     _cancellationTokenSource)
                                 .ConfigureAwait(false);
                             return;
@@ -415,14 +434,14 @@ public static class NavigationManager
 
         _cancellationTokenSource = new CancellationTokenSource();
 
-        if (vm.ImageIterator is not null)
+        if (_imageIterator is not null)
         {
-            if (fileInfo.DirectoryName == vm.ImageIterator.InitialFileInfo.DirectoryName)
+            if (fileInfo.DirectoryName == _imageIterator.InitialFileInfo.DirectoryName)
             {
-                var index = vm.ImageIterator.ImagePaths.IndexOf(fileInfo.FullName);
+                var index = _imageIterator.ImagePaths.IndexOf(fileInfo.FullName);
                 if (index != -1)
                 {
-                    await vm.ImageIterator.IterateToIndex(index, _cancellationTokenSource).ConfigureAwait(false);
+                    await _imageIterator.IterateToIndex(index, _cancellationTokenSource).ConfigureAwait(false);
                     await CheckTiffUpdate(vm, fileInfo.FullName, index);
                 }
                 else
@@ -571,7 +590,7 @@ public static class NavigationManager
     /// <returns>A task representing the asynchronous operation.</returns>
     public static async Task LoadPicFromBase64Async(string base64, MainViewModel vm)
     {
-        vm.ImageIterator = null;
+        _imageIterator = null;
         vm.ImageSource = null;
         vm.IsLoading = true;
         SetTitleHelper.SetLoadingTitle(vm);
@@ -678,15 +697,144 @@ public static class NavigationManager
 
     #endregion
 
-    #region Private helpers
+    #region Helpers
+
+    #region ImageIterator
+
+    public static void InitializeImageIterator(MainViewModel vm)
+    {
+        _imageIterator ??= new ImageIterator(vm.FileInfo, vm);
+    }
+    
+    public static async Task DisposeImageIteratorAsync()
+    {
+        if (_imageIterator is null)
+        {
+            return;
+        }
+        await _imageIterator.DisposeAsync();
+    }
+    
+    public static bool IsCollectionEmpty => _imageIterator.ImagePaths is null || _imageIterator.ImagePaths.Count < 0;
+    public static List<string> GetCollection => _imageIterator.ImagePaths;
+    
+    public static void UpdateFileListAndIndex(List<string> fileList, int index) => _imageIterator?.UpdateFileListAndIndex(fileList, index);
+    
+    public static int? GetFileNameIndex(string fileName) =>
+        IsCollectionEmpty ? null : _imageIterator.ImagePaths.IndexOf(fileName);
+
+    /// <summary>
+    ///     Returns the file name at a given index in the image collection.
+    /// </summary>
+    /// <param name="index">The index of the file to retrieve.</param>
+    /// <returns>The file name at the given index.</returns>
+    public static string? GetFileNameAt(int index)
+    {
+        if (IsCollectionEmpty)
+        {
+            return null;
+        }
+
+        if (index < 0 || index >= _imageIterator.ImagePaths.Count)
+        {
+            return null;
+        }
+
+        return _imageIterator.ImagePaths[index];
+    }
+    
+    /// <summary>
+    ///     Gets the current file name.
+    /// </summary>
+    public static string? GetCurrentFileName => GetFileNameAt(_imageIterator?.CurrentIndex ?? -1);
+    
+    /// <summary>
+    ///     Gets the next file name.
+    /// </summary>
+    public static string? GetNextFileName => GetFileNameAt(_imageIterator?.NextIndex ?? -1);
+
+    public static int GetCurrentIndex => _imageIterator?.CurrentIndex ?? -1;
+    
+    public static int GetNextIndex => _imageIterator?.NextIndex ?? -1;
+    
+    public static int GetNonZeroIndex => _imageIterator?.GetNonZeroIndex ?? -1;
+    
+    public static int GetCount => _imageIterator?.GetCount ?? -1;
+    
+    public static FileInfo? GetInitialFileInfo => _imageIterator?.InitialFileInfo;
+    
+    public static PreLoadValue? GetPreLoadValue(int index) => _imageIterator?.GetPreLoadValue(index) ?? null;
+    public static async Task<PreLoadValue?> GetPreLoadValueAsync(int index) => await _imageIterator?.GetPreLoadValueAsync(index) ?? null;
+    public static async Task<PreLoadValue?> GetPreLoadValueAsync(string fileName) => await _imageIterator?.GetPreLoadValueAsync(GetFileNameIndex(fileName) ?? GetCurrentIndex) ?? null;
+    public static PreLoadValue? GetCurrentPreLoadValue() => _imageIterator?.GetCurrentPreLoadValue() ?? null;
+    public static async Task<PreLoadValue?> GetCurrentPreLoadValueAsync() => await _imageIterator?.GetCurrentPreLoadValueAsync() ?? null;
+    public static PreLoadValue? GetNextPreLoadValue() => _imageIterator?.GetNextPreLoadValue() ?? null;
+    public static async Task<PreLoadValue?> GetNextPreLoadValueAsync() => await _imageIterator?.GetNextPreLoadValueAsync() ?? null;
+    
+    public static async Task ReloadFileListAsync() => await _imageIterator?.ReloadFileListAsync();
+    
+    public static void AddToPreloader(int index, ImageModel imageModel) => _imageIterator?.Add(index, imageModel);
+    public static async Task PreloadAsync() => await _imageIterator?.PreloadAsync();
+    
+    public static void RemoveCurrentItemFromPreLoader() => _imageIterator?.RemoveItemFromPreLoader(_imageIterator.CurrentIndex);
+    public static void RemoveItemFromPreLoader(string fileName) => _imageIterator?.RemoveItemFromPreLoader(fileName);
+
+    #endregion
+
+
+    #region Reload
+
+    public static async Task QuickReload()
+    {
+        if (_imageIterator is null)
+        {
+            return;
+        }
+        await _imageIterator.QuickReload();
+    }
+    
+    public static async Task FullReload(MainViewModel vm)
+    {
+        if (vm.ImageSource is null)
+        {
+            return;
+        }
+        
+        if (_imageIterator is null)
+        {
+            var url = vm.Title.GetURL();
+            if (!string.IsNullOrEmpty(url))
+            {
+                await LoadPicFromUrlAsync(url, vm).ConfigureAwait(false);
+            }
+            else 
+            {
+                if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+                {
+                    return;
+                }
+                var clipboard = desktop.MainWindow.Clipboard;
+                await ClipboardHelper.PasteClipboardImage(vm, clipboard);
+            }
+            return;
+        }
+
+        var index = _imageIterator.CurrentIndex;
+        await _imageIterator.DisposeAsync().ConfigureAwait(false);
+        _imageIterator = new ImageIterator(vm.FileInfo, vm);
+        await Navigate(index, vm).ConfigureAwait(false);
+    }
+
+    #endregion
+    
+
 
     /// <summary>
     ///     Checks if the previous iteration has been cancelled and starts the iteration at the given index in a new task.
     /// </summary>
     /// <param name="index">The index to iterate to.</param>
-    /// <param name="vm">The main view model instance.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    private static async Task CheckCancellationAndStartIterateToIndex(int index, MainViewModel vm)
+    private static async Task CheckCancellationAndStartIterateToIndex(int index)
     {
         await Task.Run(() =>
         {
@@ -696,7 +844,7 @@ public static class NavigationManager
             }
 
             _cancellationTokenSource = new CancellationTokenSource();
-            _ = vm.ImageIterator.NextIteration(index, _cancellationTokenSource).ConfigureAwait(false);
+            _ = _imageIterator.NextIteration(index, _cancellationTokenSource).ConfigureAwait(false);
             _cancellationTokenSource.CancelAfter(TimeSpan.FromMinutes(5));
         }).ConfigureAwait(false);
     }
@@ -712,7 +860,7 @@ public static class NavigationManager
         return await Task.Run(() =>
         {
             var indexChange = next ? 1 : -1;
-            var currentFolder = Path.GetDirectoryName(vm.ImageIterator?.ImagePaths[vm.ImageIterator.CurrentIndex]);
+            var currentFolder = Path.GetDirectoryName(_imageIterator?.ImagePaths[_imageIterator.CurrentIndex]);
             var parentFolder = Path.GetDirectoryName(currentFolder);
             var directories = Directory.GetDirectories(parentFolder, "*", SearchOption.TopDirectoryOnly);
             var directoryIndex = Array.IndexOf(directories, currentFolder);
@@ -765,7 +913,7 @@ public static class NavigationManager
         vm.ImageType = imageModel.ImageType;
         if (Settings.ImageScaling.ShowImageSideBySide)
         {
-            nextImageModel = (await vm.ImageIterator.GetNextPreLoadValueAsync()).ImageModel;
+            nextImageModel = (await _imageIterator.GetNextPreLoadValueAsync()).ImageModel;
             vm.SecondaryImageSource = nextImageModel.Image;
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
@@ -789,19 +937,16 @@ public static class NavigationManager
             Dispatcher.UIThread.Post(() => { vm.ImageViewer?.MainImage?.InvalidateVisual(); });
         }
 
-        if (vm.ImageIterator is not null)
-        {
-            await vm.ImageIterator.DisposeAsync();
-        }
+        await DisposeImageIteratorAsync();
         
         if (files is null)
         {
-            vm.ImageIterator = new ImageIterator(fileInfo, vm);
-            index = vm.ImageIterator.CurrentIndex;
+            _imageIterator = new ImageIterator(fileInfo, vm);
+            index = _imageIterator.CurrentIndex;
         }
         else
         {
-            vm.ImageIterator = new ImageIterator(fileInfo, files, index, vm);
+            _imageIterator = new ImageIterator(fileInfo, files, index, vm);
         }
         
         var isTiffUpdated = await CheckTiffUpdate(vm, fileInfo.FullName, index); 

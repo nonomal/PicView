@@ -20,7 +20,7 @@ public static class GalleryLoad
         // TODO: When list larger than 500, lazy load this when scrolling instead.
         // Figure out how to support virtualization. 
 
-        if (vm.ImageIterator?.ImagePaths.Count == 0 || IsLoading || vm.ImageIterator is null)
+        if (IsLoading || !NavigationManager.CanNavigate(vm) || string.IsNullOrEmpty(currentDirectory))
         {
             return;
         }
@@ -69,10 +69,10 @@ public static class GalleryLoad
         _cancellationTokenSource = new CancellationTokenSource();
         _currentDirectory = currentDirectory;
         IsLoading = true;
-        var index = vm.ImageIterator.CurrentIndex;
+        var index = NavigationManager.GetCurrentIndex;
         var galleryItemSize = Math.Max(vm.GetBottomGalleryItemHeight, vm.GetFullGalleryItemHeight);
 
-        var endIndex = vm.ImageIterator.ImagePaths.Count;
+        var endIndex = NavigationManager.GetCount;
         // Set priority low when loading excess images to ensure app responsiveness
         var priority = endIndex switch
         {
@@ -88,14 +88,13 @@ public static class GalleryLoad
         {
             for (var i = 0; i < endIndex; i++)
             {
-                if (currentDirectory != _currentDirectory || _cancellationTokenSource.IsCancellationRequested ||
-                    vm.ImageIterator is null)
+                if (NavigationManager.GetInitialFileInfo?.DirectoryName != _currentDirectory || _cancellationTokenSource.IsCancellationRequested)
                 {
                     await _cancellationTokenSource.CancelAsync();
                     return;
                 }
 
-                fileInfos[i] = new FileInfo(vm.ImageIterator.ImagePaths[i]);
+                fileInfos[i] = new FileInfo(NavigationManager.GetFileNameAt(i));
                 var thumbData = GalleryThumbInfo.GalleryThumbHolder.GetThumbData(fileInfos[i]);
                 await Dispatcher.UIThread.InvokeAsync(() =>
                 {
@@ -115,11 +114,10 @@ public static class GalleryLoad
                             GalleryFunctions.ToggleGallery(vm);
                         }
 
-                        await NavigationManager.Navigate(vm.ImageIterator.ImagePaths.IndexOf(fileInfos[i1].FullName), vm)
-                            .ConfigureAwait(false);
+                        await NavigationManager.Navigate(fileInfos[i1].FullName, vm).ConfigureAwait(false);
                     };
                     galleryListBox.Items.Add(galleryItem);
-                    if (i != vm.ImageIterator?.CurrentIndex)
+                    if (i != NavigationManager.GetCurrentIndex)
                     {
                         return;
                     }
@@ -142,7 +140,7 @@ public static class GalleryLoad
                 }
 
                 var horizontalItems = (int)Math.Floor(galleryListBox.Bounds.Width / galleryItem.ImageBorder.MinWidth);
-                index = (vm.ImageIterator.CurrentIndex - horizontalItems) % vm.ImageIterator.ImagePaths.Count;
+                index = (NavigationManager.GetCurrentIndex - horizontalItems) % NavigationManager.GetCount;
             });
 
             index = index < 0 ? 0 : index;
@@ -183,8 +181,7 @@ public static class GalleryLoad
         {
             await Parallel.ForAsync(0, endPosition, options, async (i, _) =>
             {
-                if (currentDirectory != _currentDirectory || _cancellationTokenSource.IsCancellationRequested ||
-                    vm.ImageIterator is null)
+                if (NavigationManager.GetInitialFileInfo?.DirectoryName != _currentDirectory || _cancellationTokenSource.IsCancellationRequested)
                 {
                     await _cancellationTokenSource.CancelAsync();
                     return;
@@ -192,7 +189,7 @@ public static class GalleryLoad
 
                 ct.ThrowIfCancellationRequested();
 
-                if (i < 0 || i >= vm.ImageIterator.ImagePaths.Count)
+                if (i < 0 || i >= NavigationManager.GetCount)
                 {
                     return;
                 }
@@ -229,19 +226,7 @@ public static class GalleryLoad
                         galleryItem.GalleryImage.Source = thumb;
                     }
 
-                    if (vm.ImageIterator is null)
-                    {
-                        ct.ThrowIfCancellationRequested();
-                        GalleryFunctions.Clear();
-                        if (GalleryFunctions.IsBottomGalleryOpen)
-                        {
-                            mainView.GalleryView.GalleryMode = GalleryMode.BottomToClosed;
-                        }
-
-                        return;
-                    }
-
-                    if (nextIndex == vm.ImageIterator.CurrentIndex)
+                    if (nextIndex == NavigationManager.GetCurrentIndex)
                     {
                         galleryListBox.ScrollToCenterOfItem(galleryItem);
                     }

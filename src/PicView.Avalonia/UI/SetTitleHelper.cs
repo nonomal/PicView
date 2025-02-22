@@ -1,4 +1,5 @@
 ﻿using PicView.Avalonia.ImageHandling;
+using PicView.Avalonia.Navigation;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.FileHandling;
 using PicView.Core.ImageDecoding;
@@ -11,7 +12,7 @@ public static class SetTitleHelper
 {
     public static void SetTitle(MainViewModel vm)
     {
-        if (vm.ImageIterator is null || vm.FileInfo is null)
+        if (!NavigationManager.CanNavigate(vm))
         {
             string title;
             var s = vm.Title;
@@ -35,8 +36,8 @@ public static class SetTitleHelper
             return;
         }
 
-        var windowTitles = ImageTitleFormatter.GenerateTitleStrings(vm.PixelWidth, vm.PixelHeight, vm.ImageIterator.CurrentIndex,
-            vm.FileInfo, vm.ZoomValue, vm.ImageIterator.ImagePaths);
+        var windowTitles = ImageTitleFormatter.GenerateTitleStrings(vm.PixelWidth, vm.PixelHeight, NavigationManager.GetCurrentIndex,
+            vm.FileInfo, vm.ZoomValue, NavigationManager.GetCollection);
         vm.WindowTitle = windowTitles.TitleWithAppName;
         vm.Title = windowTitles.BaseTitle;
         vm.TitleTooltip = windowTitles.FilePathTitle;
@@ -74,8 +75,8 @@ public static class SetTitleHelper
             return;
         }
 
-        var windowTitles = ImageTitleFormatter.GenerateTitleStrings(imageModel.PixelWidth, imageModel.PixelHeight,  vm.ImageIterator.CurrentIndex,
-            imageModel.FileInfo,  vm.ZoomValue,  vm.ImageIterator.ImagePaths);
+        var windowTitles = ImageTitleFormatter.GenerateTitleStrings(imageModel.PixelWidth, imageModel.PixelHeight,  NavigationManager.GetCurrentIndex,
+            imageModel.FileInfo,  vm.ZoomValue,  NavigationManager.GetCollection);
         vm.WindowTitle = windowTitles.TitleWithAppName;
         vm.Title = windowTitles.BaseTitle;
         vm.TitleTooltip = windowTitles.FilePathTitle;
@@ -93,7 +94,7 @@ public static class SetTitleHelper
     public static void SetTiffTitle(TiffManager.TiffNavigationInfo tiffNavigationInfo, int width, int height, int index, FileInfo fileInfo, MainViewModel vm)
     {
         var name = tiffNavigationInfo.Pages[tiffNavigationInfo.CurrentPage].FileName + $" [{tiffNavigationInfo.CurrentPage + 1}/{tiffNavigationInfo.PageCount}]";
-        var singeImageWindowTitles = ImageTitleFormatter.GenerateTiffTitleStrings(width, height, index, fileInfo, tiffNavigationInfo, 1, vm.ImageIterator.ImagePaths);
+        var singeImageWindowTitles = ImageTitleFormatter.GenerateTiffTitleStrings(width, height, index, fileInfo, tiffNavigationInfo, 1, NavigationManager.GetCollection);
         vm.WindowTitle = singeImageWindowTitles.TitleWithAppName;
         vm.Title = singeImageWindowTitles.BaseTitle; 
         vm.TitleTooltip = singeImageWindowTitles.BaseTitle;
@@ -110,7 +111,7 @@ public static class SetTitleHelper
                 Pages = TiffManager.LoadTiffPages(fileInfo.FullName)
             };
             SetTiffTitle(tiffNavigationInfo, width, height,
-                vm.ImageIterator.CurrentIndex, fileInfo, vm);
+                NavigationManager.GetCurrentIndex, fileInfo, vm);
         }
         else
         {
@@ -132,10 +133,10 @@ public static class SetTitleHelper
             return;
         }
 
-        var firstWindowTitles = ImageTitleFormatter.GenerateTitleStrings(imageModel1.PixelWidth, imageModel1.PixelHeight,  vm.ImageIterator.CurrentIndex,
-            imageModel1.FileInfo,  vm.ZoomValue,  vm.ImageIterator.ImagePaths);
-        var secondWindowTitles = ImageTitleFormatter.GenerateTitleStrings(imageModel2.PixelWidth, imageModel2.PixelHeight,  vm.ImageIterator.NextIndex,
-            imageModel2.FileInfo,  vm.ZoomValue,  vm.ImageIterator.ImagePaths);
+        var firstWindowTitles = ImageTitleFormatter.GenerateTitleStrings(imageModel1.PixelWidth, imageModel1.PixelHeight,  NavigationManager.GetCurrentIndex,
+            imageModel1.FileInfo,  vm.ZoomValue,  NavigationManager.GetCollection);
+        var secondWindowTitles = ImageTitleFormatter.GenerateTitleStrings(imageModel2.PixelWidth, imageModel2.PixelHeight,  NavigationManager.GetNextIndex,
+            imageModel2.FileInfo,  vm.ZoomValue,  NavigationManager.GetCollection);
         var windowTitle = $"{firstWindowTitles.BaseTitle} \u21dc || \u21dd {secondWindowTitles.BaseTitle} - PicView";
         var title = $"{firstWindowTitles.BaseTitle} \u21dc || \u21dd  {secondWindowTitles.BaseTitle}";
         var titleTooltip = $"{firstWindowTitles.FilePathTitle} \u21dc || \u21dd  {secondWindowTitles.FilePathTitle}";

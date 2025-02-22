@@ -1,12 +1,9 @@
 ﻿using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
-using PicView.Avalonia.Clipboard;
 using PicView.Avalonia.Gallery;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.Calculations;
-using PicView.Core.FileHandling;
 using PicView.Core.Gallery;
 using StartUpMenu = PicView.Avalonia.Views.StartUpMenu;
 
@@ -55,12 +52,12 @@ public static class ErrorHandling
             vm.GalleryMode = GalleryMode.Closed;
             GalleryFunctions.Clear();
             UIHelper.CloseMenus(vm);
-            vm.ImageIterator?.Dispose();
-            vm.ImageIterator = null;
             vm.GalleryMargin = new Thickness(0, 0, 0, 0);
             vm.GetIndex = 0;
             vm.PlatformService.StopTaskbarProgress();
             vm.IsLoading = false;
+
+            _ = NavigationManager.DisposeImageIteratorAsync();
         }
     }
 
@@ -83,7 +80,7 @@ public static class ErrorHandling
             return;
         }
         
-        if (vm.ImageIterator is null)
+        if (vm.ImageSource is null || !NavigationManager.CanNavigate(vm))
         {
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
@@ -94,10 +91,7 @@ public static class ErrorHandling
 
         try
         {
-            var index = vm.ImageIterator.CurrentIndex;
-            await vm.ImageIterator.DisposeAsync().ConfigureAwait(false);
-            vm.ImageIterator = new ImageIterator(vm.FileInfo, vm.ImageIterator.ImagePaths, index, vm);
-            await NavigationManager.Navigate(index, vm).ConfigureAwait(false);
+            await NavigationManager.FullReload(vm);
         }
         catch (Exception e)
         {
@@ -114,35 +108,6 @@ public static class ErrorHandling
     
     public static async Task ReloadImageAsync(MainViewModel vm)
     {
-        if (vm.ImageSource is null)
-        {
-            return;
-        }
-
-        if (NavigationManager.CanNavigate(vm))
-        {
-            var preloadValue = await vm.ImageIterator.GetPreLoadValueAsync(vm.ImageIterator.CurrentIndex).ConfigureAwait(false);
-            if (preloadValue?.ImageModel.Image is not null)
-            {
-                vm.ImageSource = preloadValue.ImageModel.Image;
-            }
-        }
-        else
-        {
-            var url = vm.Title.GetURL();
-            if (!string.IsNullOrEmpty(url))
-            {
-                await NavigationManager.LoadPicFromUrlAsync(url, vm).ConfigureAwait(false);
-            }
-            else 
-            {
-                if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-                {
-                    return;
-                }
-                var clipboard = desktop.MainWindow.Clipboard;
-                await ClipboardHelper.PasteClipboardImage(vm, clipboard);
-            }
-        }
+        await NavigationManager.FullReload(vm);
     }
 }

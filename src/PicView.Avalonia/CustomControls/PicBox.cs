@@ -12,9 +12,9 @@ using Avalonia.Svg.Skia;
 using ImageMagick;
 using PicView.Avalonia.AnimatedImage;
 using PicView.Avalonia.ImageHandling;
+using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
-using PicView.Core.Navigation;
 using ReactiveUI;
 using Vector = Avalonia.Vector;
 
@@ -234,7 +234,7 @@ public class PicBox : Control
                 return;
             }
 
-            var preloadValue = vm.ImageIterator?.GetCurrentPreLoadValue();
+            var preloadValue = NavigationManager.GetCurrentPreLoadValue();
             if (preloadValue?.ImageModel != null)
             {
                 sourceSize = new Size(preloadValue.ImageModel.PixelWidth, preloadValue.ImageModel.PixelHeight);
@@ -265,18 +265,17 @@ public class PicBox : Control
             }
             if (isSideBySide)
             {
-                var nextPreloadValue = vm.ImageIterator?.GetNextPreLoadValue();
+                var nextPreloadValue = NavigationManager.GetNextPreLoadValue();
                 if (nextPreloadValue?.ImageModel != null)
                 {
                     secondarySourceSize = new Size(nextPreloadValue.ImageModel.PixelWidth, nextPreloadValue.ImageModel.PixelHeight);
                 }
                 else
                 {
-                    if (vm.ImageIterator is not null)
+                    if (NavigationManager.CanNavigate(vm))
                     {
-                        var nextIndex = vm.ImageIterator.GetIteration(vm.ImageIterator.CurrentIndex, vm.ImageIterator.IsReversed ? NavigateTo.Previous : NavigateTo.Next);
                         var magickImage = new MagickImage();
-                        magickImage.Ping(vm.ImageIterator.ImagePaths[nextIndex]);
+                        magickImage.Ping(NavigationManager.GetNextFileName);
                         secondarySourceSize = new Size(magickImage.Width, magickImage.Height);
                     }
                     else return;
@@ -397,7 +396,7 @@ public class PicBox : Control
                 return new Size();
             }
 
-            var preloadValue = vm.ImageIterator?.GetCurrentPreLoadValue();
+            var preloadValue = NavigationManager.GetCurrentPreLoadValue();
             if (preloadValue is not null)
             {
                 return new Size(preloadValue.ImageModel.PixelWidth, preloadValue.ImageModel.PixelHeight);

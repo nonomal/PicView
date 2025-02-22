@@ -83,25 +83,11 @@ public static class FileHistoryNavigation
         }
     }
 
-    public static async Task NextAsync(MainViewModel vm)
-    {
-        if (!NavigationManager.CanNavigate(vm))
-        {
-            await OpenLastFileAsync(vm).ConfigureAwait(false);
-            return;
-        }
+    public static async Task NextAsync(MainViewModel vm) => await NextAsyncInternal(vm, true).ConfigureAwait(false);
 
-        if (vm.ImageIterator is null)
-        {
-            await OpenLastFileAsync(vm).ConfigureAwait(false);
-            return;
-        }
-
-        var index = vm.ImageIterator.CurrentIndex;
-        await LoadEntryAsync(vm, index, true).ConfigureAwait(false);
-    }
-
-    public static async Task PrevAsync(MainViewModel vm)
+    public static async Task PrevAsync(MainViewModel vm) => await NextAsyncInternal(vm, false).ConfigureAwait(false);
+    
+    private static async Task NextAsyncInternal(MainViewModel vm, bool next)
     {
         if (!NavigationManager.CanNavigate(vm))
         {
@@ -109,19 +95,18 @@ public static class FileHistoryNavigation
             return;
         }
         
-        if (vm.ImageIterator is null)
+        if (!NavigationManager.CanNavigate(vm))
         {
             await OpenLastFileAsync(vm).ConfigureAwait(false);
             return;
         }
 
-        var index = vm.ImageIterator.CurrentIndex;
-        await LoadEntryAsync(vm, index, false).ConfigureAwait(false);
+        await LoadEntryAsync(vm, NavigationManager.GetCurrentIndex, next).ConfigureAwait(false);
     }
 
     public static async Task LoadEntryAsync(MainViewModel vm, int index, bool next)
     {
-        var imagePaths = vm.ImageIterator.ImagePaths;
+        var imagePaths = NavigationManager.GetCollection;
 
         _fileHistory ??= new FileHistory();
         string? nextEntry;

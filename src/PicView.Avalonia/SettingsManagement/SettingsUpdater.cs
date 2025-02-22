@@ -59,8 +59,8 @@ public static class SettingsUpdater
                 vm.PlatformService.StopTaskbarProgress();
                 if (NavigationManager.CanNavigate(vm))
                 {
-                    vm.PlatformService.SetTaskbarProgress((ulong)vm.ImageIterator?.CurrentIndex!,
-                        (ulong)vm.ImageIterator?.ImagePaths?.Count!);
+                    vm.PlatformService.SetTaskbarProgress((ulong)NavigationManager.GetCurrentIndex,
+                        (ulong)NavigationManager.GetCount);
                 }
                 WindowResizing.SetSize(vm);
             });
@@ -120,7 +120,7 @@ public static class SettingsUpdater
         vm.IsIncludingSubdirectories = false;
         Settings.Sorting.IncludeSubDirectories = false;
         
-        await vm.ImageIterator.ReloadFileList().ConfigureAwait(false);
+        await NavigationManager.ReloadFileListAsync().ConfigureAwait(false);
         SetTitleHelper.SetTitle(vm);
     }
     
@@ -129,7 +129,7 @@ public static class SettingsUpdater
         vm.IsIncludingSubdirectories = true;
         Settings.Sorting.IncludeSubDirectories = true;
         
-        await vm.ImageIterator.ReloadFileList();
+        await NavigationManager.ReloadFileListAsync().ConfigureAwait(false);
         SetTitleHelper.SetTitle(vm);
     }
     
@@ -150,8 +150,8 @@ public static class SettingsUpdater
             {
                 await Dispatcher.UIThread.InvokeAsync(() =>
                 {
-                    vm.PlatformService.SetTaskbarProgress((ulong)vm.ImageIterator?.CurrentIndex!,
-                        (ulong)vm.ImageIterator?.ImagePaths?.Count!);
+                    vm.PlatformService.SetTaskbarProgress((ulong)NavigationManager.GetCurrentIndex,
+                        (ulong)NavigationManager.GetCount);
                 });
             }
         }
@@ -194,8 +194,15 @@ public static class SettingsUpdater
         vm.IsShowingSideBySide = true;
         if (NavigationManager.CanNavigate(vm))
         {
-            var preloadValue = await vm.ImageIterator?.GetNextPreLoadValueAsync();
-            vm.SecondaryImageSource = preloadValue?.ImageModel.Image;
+            var preloadValue = await NavigationManager.GetNextPreLoadValueAsync();
+            if (preloadValue is null)
+            {
+#if DEBUG
+                Console.WriteLine($"{nameof(TurnOnSideBySide)} {nameof(preloadValue)} is null");       
+#endif
+                return;
+            }
+            vm.SecondaryImageSource = preloadValue.ImageModel.Image;
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 WindowResizing.SetSize(vm.ImageWidth, vm.ImageHeight, preloadValue.ImageModel.PixelWidth,

@@ -66,9 +66,9 @@ public partial class ImageMenu  : AnimatedMenu
             {
                 number = 0;
             }
-            else if (number > vm.ImageIterator?.ImagePaths?.Count)
+            else if (number > NavigationManager.GetCount)
             {
-                number = vm.ImageIterator?.ImagePaths?.Count - 1 ?? 0;
+                number = NavigationManager.GetCount - 1;
             }
             else
             {

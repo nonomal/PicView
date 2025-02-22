@@ -142,7 +142,7 @@ public static class HideInterfaceLogic
                 return;
             }
             
-            if (vm.ImageIterator is null)
+            if (!NavigationManager.CanNavigate(vm))
             {
                 Dispatcher.UIThread.Invoke(() =>
                 {
@@ -152,7 +152,7 @@ public static class HideInterfaceLogic
                 return;
             }
 
-            if (vm.ImageIterator.ImagePaths?.Count <= 1)
+            if (NavigationManager.GetCount <= 1)
             {
                 Dispatcher.UIThread.Invoke(() =>
                 {
@@ -236,14 +236,14 @@ public static class HideInterfaceLogic
             return;
         }
 
-        if (vm.ImageIterator is null)
+        if (!NavigationManager.CanNavigate(vm))
         {
             parent.Opacity = 0;
             childControl.Opacity = 0;
             return;
         }
 
-        if (vm.ImageIterator.ImagePaths?.Count <= 1)
+        if (NavigationManager.GetCount <= 1)
         {
             parent.Opacity = 0;
             childControl.Opacity = 0;

@@ -163,14 +163,7 @@ public class ImageCropperViewModel : ViewModelBase
     }
 
     private (string fileName, FileInfo fileInfo, Bitmap? bitmap) PrepareCropData(MainViewModel vm)
-    {
-        if (vm.ImageIterator?.ImagePaths is null || vm.ImageIterator.ImagePaths.Count < 0)
-        {
-            return CreateNewCroppedImage();
-        }
-        
-        return (vm.FileInfo.FullName, vm.FileInfo, null);
-    }
+      => NavigationManager.IsCollectionEmpty ? CreateNewCroppedImage() : (vm.FileInfo.FullName, vm.FileInfo, null);
 
     private (string fileName, FileInfo fileInfo, Bitmap bitmap) CreateNewCroppedImage()
     {

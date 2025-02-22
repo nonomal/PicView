@@ -239,10 +239,7 @@ public partial class SingleImageResizeView : UserControl
     {
         if (destination == file)
         {
-            if (NavigationManager.CanNavigate(vm) && vm.ImageIterator is not null)
-            {
-                await vm.ImageIterator.QuickReload().ConfigureAwait(false);
-            }
+            await NavigationManager.QuickReload().ConfigureAwait(false);
         }
         else if (Path.GetDirectoryName(file) == Path.GetDirectoryName(destination))
         {

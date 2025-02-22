@@ -107,7 +107,7 @@ public static class FileListManager
                     return false;
                 }
 
-                vm.ImageIterator.UpdateFileListAndIndex(files, files.IndexOf(vm.FileInfo.FullName));
+                NavigationManager.UpdateFileListAndIndex(files, files.IndexOf(vm.FileInfo.FullName));
                 SetTitleHelper.SetTitle(vm);
                 return true;
             }

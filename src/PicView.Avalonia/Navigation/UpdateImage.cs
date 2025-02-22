@@ -32,8 +32,13 @@ public static class UpdateImage
         PreLoadValue? preLoadValue,
         PreLoadValue? nextPreloadValue = null)
     {
-        preLoadValue ??= await vm.ImageIterator.GetPreLoadValueAsync(index).ConfigureAwait(false);
-        if (preLoadValue.ImageModel?.Image is null && index == vm.ImageIterator.CurrentIndex)
+        preLoadValue ??= await NavigationManager.GetPreLoadValueAsync(index).ConfigureAwait(false);
+        if (preLoadValue is null)
+        {
+            await ErrorHandling.ReloadAsync(vm).ConfigureAwait(false);
+            return;
+        }
+        if (preLoadValue.ImageModel?.Image is null && index == NavigationManager.GetCurrentIndex)
         {
             var fileInfo = preLoadValue.ImageModel?.FileInfo ?? new FileInfo(imagePaths[index]);
             preLoadValue.ImageModel = await GetImageModel.GetImageModelAsync(fileInfo).ConfigureAwait(false);
@@ -41,25 +46,22 @@ public static class UpdateImage
 
         if (Settings.ImageScaling.ShowImageSideBySide)
         {
-            nextPreloadValue ??= await vm.ImageIterator.GetNextPreLoadValueAsync().ConfigureAwait(false);
-            if (nextPreloadValue.ImageModel?.Image is null && index == vm.ImageIterator.CurrentIndex)
+            nextPreloadValue ??= await NavigationManager.GetNextPreLoadValueAsync().ConfigureAwait(false);
+            if (nextPreloadValue.ImageModel?.Image is null && index == NavigationManager.GetCurrentIndex)
             {
-                var fileInfo = nextPreloadValue.ImageModel?.FileInfo ?? new FileInfo(
-                    imagePaths[
-                        vm.ImageIterator.GetIteration(index, isReversed ? NavigateTo.Previous : NavigateTo.Next,
-                            true)]);
+                var fileInfo = nextPreloadValue.ImageModel?.FileInfo ?? new FileInfo(NavigationManager.GetNextFileName);
                 nextPreloadValue.ImageModel = await GetImageModel.GetImageModelAsync(fileInfo).ConfigureAwait(false);
             }
         }
 
-        if (index != vm.ImageIterator.CurrentIndex)
+        if (index != NavigationManager.GetCurrentIndex)
         {
             return;
         }
 
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
-            if (index != vm.ImageIterator.CurrentIndex)
+            if (index != NavigationManager.GetCurrentIndex)
             {
                 return;
             }
@@ -98,7 +100,7 @@ public static class UpdateImage
                 if (TiffManager.IsTiff(preLoadValue.ImageModel.FileInfo.FullName))
                 {
                     SetTitleHelper.TrySetTiffTitle(preLoadValue.ImageModel.PixelWidth,
-                        preLoadValue.ImageModel.PixelHeight, vm.ImageIterator.CurrentIndex,
+                        preLoadValue.ImageModel.PixelHeight, NavigationManager.GetCurrentIndex,
                         preLoadValue.ImageModel.FileInfo, vm);
                 }
                 else
@@ -254,7 +256,7 @@ public static class UpdateImage
             }
         }, DispatcherPriority.Render);
 
-        vm.ImageIterator = null;
+        
         int width, height;
         if (imageType is ImageType.Svg)
         {
@@ -295,6 +297,7 @@ public static class UpdateImage
         vm.PixelHeight = height;
 
         await dispatchAction(() => { UIHelper.GetGalleryView.IsVisible = false; }, DispatcherPriority.Render);
+        await NavigationManager.DisposeImageIteratorAsync();
     }
 
     #endregion
@@ -337,11 +340,11 @@ public static class UpdateImage
             GalleryNavigation.CenterScrollToSelectedItem(vm);
         }
 
-        vm.ImageSource = GetThumbnails.GetExifThumb(vm.ImageIterator.ImagePaths[index]);
+        vm.ImageSource = GetThumbnails.GetExifThumb(NavigationManager.GetFileNameAt(index));
         if (Settings.ImageScaling.ShowImageSideBySide)
         {
             vm.SecondaryImageSource =
-                GetThumbnails.GetExifThumb(vm.ImageIterator.ImagePaths[vm.ImageIterator.NextIndex]);
+                GetThumbnails.GetExifThumb(NavigationManager.GetNextFileName);
         }
         else
         {
