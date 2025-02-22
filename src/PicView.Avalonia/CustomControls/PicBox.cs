@@ -200,17 +200,19 @@ public class PicBox : Control
 
     private void RenderBasedOnSettings(DrawingContext context, IImage source)
     {
-        var is1To1 = false; // TODO: replace with settings value
-        var isSideBySide = Settings.ImageScaling.ShowImageSideBySide;
-        var secondarySource = SecondarySource as IImage;
-        
-        var viewPort = DetermineViewPort();
-        Size sourceSize;
         if (source is null)
         {
             return;
         }
+        
+        const bool is1To1 = false; // TODO: replace with settings value
+        var isSideBySide = Settings.ImageScaling.ShowImageSideBySide;
+        var secondarySource = SecondarySource as IImage;
+        var viewPort = DetermineViewPort();
+        
+        Size sourceSize;
         Size? secondarySourceSize = null;
+        
         try
         {
             sourceSize = source.Size;
@@ -382,6 +384,10 @@ public class PicBox : Control
     /// <returns>The desired size of the control.</returns>
     protected override Size MeasureOverride(Size availableSize)
     {
+        if (Source is null)
+        {
+            return new Size();
+        }
         try
         {
             return Source is not IImage source ? new Size() : CalculateSize(availableSize, source.Size);

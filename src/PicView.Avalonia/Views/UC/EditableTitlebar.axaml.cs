@@ -68,7 +68,6 @@ public partial class EditableTitlebar : UserControl
         {
             return;
         }
-        SetTitleHelper.RefreshTitle(vm);
         vm.IsEditableTitlebarOpen = false;
         Cursor = new Cursor(StandardCursorType.Arrow);
         MainKeyboardShortcuts.IsKeysEnabled = true;
@@ -140,22 +139,6 @@ public partial class EditableTitlebar : UserControl
             return;
         }
         
-        // Check if the file is being moved to a different directory
-        if (Path.GetDirectoryName(oldPath) != Path.GetDirectoryName(newPath))
-        {
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                TextBox.ClearSelection();
-                Cursor = new Cursor(StandardCursorType.Arrow);
-                MainKeyboardShortcuts.IsKeysEnabled = true;
-                UIHelper.GetMainView.Focus();
-            });
-            NavigationManager.RemoveCurrentItemFromPreLoader();
-            await NavigationManager.Navigate(true, vm);
-            FileHelper.RenameFile(oldPath, newPath);
-            return;
-        }
-        
         // Handle renaming with different extensions
         if (Path.GetExtension(newPath) != Path.GetExtension(oldPath))
         {
@@ -167,9 +150,6 @@ public partial class EditableTitlebar : UserControl
 
             if (saved)
             {
-                // Delete old file
-                NavigationManager.RemoveItemFromPreLoader(oldPath);
-                
                 var deleteMsg = FileDeletionHelper.DeleteFileWithErrorMsg(oldPath, false);
                 if (!string.IsNullOrWhiteSpace(deleteMsg))
                 {

@@ -479,7 +479,6 @@ public class PreLoader : IAsyncDisposable
 
         try
         {
-            _cancellationTokenSource.CancelAfter(TimeSpan.FromMinutes(5));
             await PreLoadInternalAsync(currentIndex, reverse, list, _cancellationTokenSource.Token)
                 .ConfigureAwait(false);
         }
@@ -560,10 +559,10 @@ public class PreLoader : IAsyncDisposable
                 return;
             }
 
-            do
+            while (_preLoadList.Count > PreLoaderConfig.MaxCount)
             {
                 Remove(reverse ? _preLoadList.Keys.Max() : _preLoadList.Keys.Min(), list);
-            } while (_preLoadList.Count > PreLoaderConfig.MaxCount);
+            }
         }
     }
 

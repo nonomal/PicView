@@ -775,9 +775,6 @@ public static class NavigationManager
     
     public static void AddToPreloader(int index, ImageModel imageModel) => _imageIterator?.Add(index, imageModel);
     public static async Task PreloadAsync() => await _imageIterator?.PreloadAsync();
-    
-    public static void RemoveCurrentItemFromPreLoader() => _imageIterator?.RemoveItemFromPreLoader(_imageIterator.CurrentIndex);
-    public static void RemoveItemFromPreLoader(string fileName) => _imageIterator?.RemoveItemFromPreLoader(fileName);
 
     #endregion
 

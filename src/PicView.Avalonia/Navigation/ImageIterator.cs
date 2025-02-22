@@ -499,7 +499,7 @@ public class ImageIterator : IAsyncDisposable
             if (preloadValue is not null)
             {
                 // Wait for image to load
-                if (preloadValue is { IsLoading: true, ImageModel.Image: not null })
+                if (preloadValue is { IsLoading: true, ImageModel.Image: null })
                 {
                     UpdateImage.LoadingPreview(_vm, CurrentIndex);
 
