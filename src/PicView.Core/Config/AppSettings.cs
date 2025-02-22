@@ -2,7 +2,7 @@
 
 public class AppSettings
 {
-    public double Version { get; set; } = 1;
+    public double Version { get; set; } = 1.3;
     public WindowProperties? WindowProperties { get; set; }
     public UIProperties? UIProperties { get; set; }
     public Theme? Theme { get; set; }
@@ -19,7 +19,7 @@ public class WindowProperties
     public double Left { get; set; } = 0;
     public double Width { get; set; } = 750;
     public double Height { get; set; } = 1024;
-    public bool AutoFit { get; set; } = false;
+    public bool AutoFit { get; set; } = true;
     public bool TopMost { get; set; } = false;
     public bool Maximized { get; set; } = false;
     public bool Fullscreen { get; set; } = false;
@@ -31,7 +31,6 @@ public class UIProperties
     public string UserLanguage { get; set; } = "en";
     public bool ShowInterface { get; set; } = true;
     public bool ShowAltInterfaceButtons { get; set; } = true;
-    public bool ShowFileSavingDialog { get; set; } = true;
     public bool ShowBottomNavBar { get; set; } = true;
     public bool IsTaskbarProgressEnabled { get; set; } = true;
     public double NavSpeed { get; set; } = 0.3;
@@ -39,13 +38,16 @@ public class UIProperties
     public int BgColorChoice { get; set; } = 0;
     public double SlideShowTimer { get; set; } = 5000;
     public bool OpenInSameWindow { get; set; } = false;
+    public bool ShowConfirmationOnEsc { get; set; } = false;
 }
 
 public class Theme
 {
     public bool Dark { get; set; } = true;
-    public bool Light { get; set; } = false;
     public int ColorTheme { get; set; } = 3;
+    public bool UseSystemTheme { get; set; } = false;
+    
+    public bool GlassTheme { get; set; } = false;
 }
 
 public class Gallery
@@ -73,6 +75,7 @@ public class Zoom
     public bool CtrlZoom { get; set; } = true;
     public bool HorizontalReverseScroll { get; set; } = true;
     public bool ScrollEnabled { get; set; } = false;
+    public bool IsUsingTouchPad { get; set; } = false;
 }
 
 public class Sorting

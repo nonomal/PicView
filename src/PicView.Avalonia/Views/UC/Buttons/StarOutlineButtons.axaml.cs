@@ -1,8 +1,8 @@
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
-using Avalonia.Styling;
 using Avalonia.Threading;
 using PicView.Avalonia.ViewModels;
 
@@ -67,106 +67,109 @@ public partial class StarOutlineButtons : UserControl
 
     public void FillStar1()
     {
-        if (!this.TryFindResource("StarFilledDrawingImage", ThemeVariant.Default, out var resourceValue1))
+        if (!this.TryFindResource("StarFilledDrawingImage", Application.Current.RequestedThemeVariant, out var resourceValue1))
         {
             return;
         }
-        if (!this.TryFindResource("StarOutlineDrawingImage", ThemeVariant.Default, out var resourceValue2))
+        if (!this.TryFindResource("StarOutlineDrawingImage", Application.Current.RequestedThemeVariant, out var resourceValue2))
         {
             return;
         }
         var filledStar = resourceValue1 as DrawingImage;
-        Star1.Source = filledStar;
         var outlinedStar = resourceValue2 as DrawingImage;
-        Star2.Source = outlinedStar;
-        Star3.Source = outlinedStar;
-        Star4.Source = outlinedStar;
-        Star5.Source = outlinedStar;
+        Star1Icon.Source = filledStar;
+        Star2Icon.Source = outlinedStar;
+        Star3Icon.Source = outlinedStar;
+        Star4Icon.Source = outlinedStar;
+        Star5Icon.Source = outlinedStar;
     }
 
     public void FillStar2()
     {
-        if (!this.TryFindResource("StarFilledDrawingImage", ThemeVariant.Default, out var resourceValue1))
+        if (!this.TryFindResource("StarFilledDrawingImage", Application.Current.RequestedThemeVariant, out var resourceValue1))
         {
             return;
         }
 
-        if (!this.TryFindResource("StarOutlineDrawingImage", ThemeVariant.Default, out var resourceValue2))
+        if (!this.TryFindResource("StarOutlineDrawingImage", Application.Current.RequestedThemeVariant, out var resourceValue2))
         {
             return;
         }
         var filledStar = resourceValue1 as DrawingImage;
-        Star1.Source = filledStar;
-        Star2.Source = filledStar;
-        Star3.Source = resourceValue2 as DrawingImage;
-        Star4.Source = resourceValue2 as DrawingImage;
-        Star5.Source = resourceValue2 as DrawingImage;
+        Star1Icon.Source = filledStar;
+        Star2Icon.Source = filledStar;
+        Star3Icon.Source = resourceValue2 as DrawingImage;
+        Star4Icon.Source = resourceValue2 as DrawingImage;
+        Star5Icon.Source = resourceValue2 as DrawingImage;
     }
 
     public void FillStar3()
     {
-        if (!this.TryFindResource("StarFilledDrawingImage", ThemeVariant.Default, out var resourceValue1))
+        if (!this.TryFindResource("StarFilledDrawingImage", Application.Current.RequestedThemeVariant, out var resourceValue1))
         {
             return;
         }
 
-        if (!this.TryFindResource("StarOutlineDrawingImage", ThemeVariant.Default, out var resourceValue2))
+        if (!this.TryFindResource("StarOutlineDrawingImage", Application.Current.RequestedThemeVariant, out var resourceValue2))
         {
             return;
         }
         var filledStar = resourceValue1 as DrawingImage;
-        Star1.Source = filledStar;
-        Star2.Source = filledStar;
-        Star3.Source = filledStar;
-        Star4.Source = resourceValue2 as DrawingImage;
-        Star5.Source = resourceValue2 as DrawingImage;
+        Star1Icon.Source = filledStar;
+        Star2Icon.Source = filledStar;
+        Star3Icon.Source = filledStar;
+        Star4Icon.Source = resourceValue2 as DrawingImage;
+        Star5Icon.Source = resourceValue2 as DrawingImage;
     }
 
     public void FillStar4()
     {
-        if (!this.TryFindResource("StarFilledDrawingImage", ThemeVariant.Default, out var resourceValue1))
+        if (!this.TryFindResource("StarFilledDrawingImage", Application.Current.RequestedThemeVariant, out var resourceValue1))
         {
             return;
         }
 
-        if (!this.TryFindResource("StarOutlineDrawingImage", ThemeVariant.Default, out var resourceValue2))
+        if (!this.TryFindResource("StarOutlineDrawingImage", Application.Current.RequestedThemeVariant, out var resourceValue2))
         {
             return;
         }
         var filledStar = resourceValue1 as DrawingImage;
-        Star1.Source = filledStar;
-        Star2.Source = filledStar;
-        Star3.Source = filledStar;
-        Star4.Source = filledStar;
-        Star5.Source = resourceValue2 as DrawingImage;
+        Star1Icon.Source = filledStar;
+        Star2Icon.Source = filledStar;
+        Star3Icon.Source = filledStar;
+        Star4Icon.Source = filledStar;
+        Star5Icon.Source = resourceValue2 as DrawingImage;
     }
 
     public void FillStar5()
     {
-        if (!this.TryFindResource("StarFilledDrawingImage", ThemeVariant.Default, out var resourceValue))
+        if (!this.TryFindResource("StarFilledDrawingImage", Application.Current.RequestedThemeVariant, out var resourceValue))
         {
             return;
         }
         var filledStar = resourceValue as DrawingImage;
-        Star1.Source = filledStar;
-        Star2.Source = filledStar;
-        Star3.Source = filledStar;
-        Star4.Source = filledStar;
-        Star5.Source = filledStar;
+        Star1Icon.Source = filledStar;
+        Star2Icon.Source = filledStar;
+        Star3Icon.Source = filledStar;
+        Star4Icon.Source = filledStar;
+        Star5Icon.Source = filledStar;
     }
 
     public void OutlineStars()
     {
-        if (!this.TryFindResource("StarOutlineDrawingImage", ThemeVariant.Default, out var resourceValue))
+        if (!this.TryFindResource("StarOutlineDrawingImage", Application.Current.RequestedThemeVariant,
+                out var resourceValue))
         {
             return;
         }
+
         var drawingImage = resourceValue as DrawingImage;
-        Star1.Source = drawingImage;
-        Star2.Source = drawingImage;
-        Star3.Source = drawingImage;
-        Star4.Source = drawingImage;
-        Star5.Source = drawingImage;
+        Star1Icon.Source = drawingImage;
+        Star2Icon.Source = drawingImage;
+        Star3Icon.Source = drawingImage;
+        Star4Icon.Source = drawingImage;
+        Star5Icon.Source = drawingImage;
+            
     }
 
     private void Star1_OnPointerEntered(object? sender, PointerEventArgs e)

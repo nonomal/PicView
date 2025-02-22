@@ -103,6 +103,15 @@ public static class SupportedFiles
         ".cab"
     ];
 
+    public static bool IsCommon(this string file)
+    {
+        return Path.GetExtension(file).ToLower() switch
+        {
+            ".jpg" or ".jpeg" or ".png" or ".bmp" or ".gif" or ".jfif" => true,
+            _ => false
+        };
+    }
+
     public static List<string> ConvertArchivesToGlobFormat()
     {
         return FileExtensionsArchives.Select(ext => $"*{ext}").ToList();

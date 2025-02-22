@@ -1,5 +1,4 @@
-﻿using System;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.ReactiveUI;
 
@@ -22,6 +21,11 @@ internal class Program
             .LogToTrace()
 #endif
             .UseReactiveUI()
-            .UsePlatformDetect();
+            .UsePlatformDetect()
+            .With(new SkiaOptions
+            {
+                MaxGpuResourceSizeBytes = 256_000_000,
+                UseOpacitySaveLayer = true
+            });
     }
 }

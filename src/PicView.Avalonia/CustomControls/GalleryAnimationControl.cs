@@ -9,7 +9,7 @@ using PicView.Avalonia.Animations;
 using PicView.Avalonia.Gallery;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
-using PicView.Core.Config;
+using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Gallery;
 using ReactiveUI;
 
@@ -103,7 +103,7 @@ public class GalleryAnimationControl : UserControl
         {
             return;
         }
-        await vm.GalleryItemStretchTask(SettingsHelper.Settings.Gallery.FullGalleryStretchMode);
+        vm.SetGalleryItemStretch(Settings.Gallery.FullGalleryStretchMode);
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             IsVisible = true;
@@ -129,7 +129,7 @@ public class GalleryAnimationControl : UserControl
             vm.GalleryVerticalAlignment = VerticalAlignment.Stretch;
         });
         _isAnimating = false;
-        await Task.Delay(50); // Need to wait for the animation
+        await Task.Delay(opacityAnimation.Delay); // Need to wait for the animation
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             GalleryNavigation.CenterScrollToSelectedItem(vm);
@@ -169,12 +169,13 @@ public class GalleryAnimationControl : UserControl
         {
             return;
         }
-        await vm.GalleryItemStretchTask(SettingsHelper.Settings.Gallery.BottomGalleryStretchMode);
+        vm.SetGalleryItemStretch(Settings.Gallery.BottomGalleryStretchMode);
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
+            Height = 0;
             IsVisible = true;
             Opacity = 1;
-            WindowHelper.SetSize(vm);
+            WindowResizing.SetSize(vm);
             UIHelper.GetGalleryView.BlurMask.BlurEnabled = false;
             vm.GalleryItemMargin = new Thickness(2,0);
         });
@@ -202,32 +203,42 @@ public class GalleryAnimationControl : UserControl
 
     private async Task BottomToClosedAnimation()
     {
-        if (DataContext is not MainViewModel vm || _isAnimating)
-        {
-            return;
-        }
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
-            WindowHelper.SetSize(vm);
-            UIHelper.GetGalleryView.BlurMask.BlurEnabled = false;
+            Height = 0;
+            IsVisible = false;
+            WindowResizing.SetSize(DataContext as MainViewModel);
         });
         
-        vm.GalleryOrientation = Orientation.Horizontal;
-        vm.IsGalleryCloseIconVisible = false;
-        vm.GalleryMargin = new Thickness(2,0);
-        var from = vm.GalleryHeight;
-        const int to = 0;
-        const double speed = 0.7;
-        _isAnimating = true;
-        var heightAnimation = AnimationsHelper.HeightAnimation(from, to, speed);
-        await heightAnimation.RunAsync(this);
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            Height = to;
-            IsVisible = false;
-            WindowHelper.SetSize(vm);
-        });
-        _isAnimating = false;
+        // TODO make fancy animation that resizes the window
+        // if (DataContext is not MainViewModel vm || _isAnimating)
+        // {
+        //     return;
+        // }
+        //
+        // var from = vm.GetBottomGalleryItemHeight + SizeDefaults.ScrollbarSize;
+        // await Dispatcher.UIThread.InvokeAsync(() =>
+        // {
+        //     Height = from;
+        //     Opacity = 1;
+        //     IsVisible = true;
+        //     UIHelper.GetGalleryView.BlurMask.BlurEnabled = false;
+        // });
+        //
+        // const int to = 0;
+        // const double speed = 0.7;
+        // var galleryHeightAnimation = AnimationsHelper.HeightAnimation(from, to, speed);
+        // _isAnimating = true;
+        // await galleryHeightAnimation.RunAsync(this);
+        // await Dispatcher.UIThread.InvokeAsync(() =>
+        // {
+        //     Height = to;
+        //     IsVisible = false;
+        //     WindowResizing.SetSize(vm);
+        // });
+        // _isAnimating = false;
+        // vm.GalleryOrientation = Orientation.Horizontal;
+        // vm.IsGalleryCloseIconVisible = false;
     }
 
     private async Task BottomToFullAnimation()
@@ -274,12 +285,6 @@ public class GalleryAnimationControl : UserControl
         {
             return;
         }
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            Height = parent.Bounds.Height;
-            UIHelper.GetGalleryView.BlurMask.BlurEnabled = false;
-            vm.GalleryItemMargin = new Thickness(2,0);
-        });
         vm.GalleryVerticalAlignment = VerticalAlignment.Bottom;
         vm.IsGalleryCloseIconVisible = false;
         
@@ -289,15 +294,18 @@ public class GalleryAnimationControl : UserControl
         var heightAnimation = AnimationsHelper.HeightAnimation(from, to, speed);
         _isAnimating = true;
         await heightAnimation.RunAsync(this);
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            Height = double.NaN;
-            vm.GalleryOrientation = Orientation.Horizontal;
-        });
         if (!GalleryLoad.IsLoading)
         {
             GalleryStretchMode.DetermineStretchMode(vm);
         }
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            Height = parent.Bounds.Height;
+            UIHelper.GetGalleryView.BlurMask.BlurEnabled = false;
+            vm.GalleryItemMargin = new Thickness(2,0);
+            vm.GalleryOrientation = Orientation.Horizontal;
+        });
+
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             GalleryNavigation.CenterScrollToSelectedItem(vm);

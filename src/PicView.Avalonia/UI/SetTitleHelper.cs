@@ -1,6 +1,8 @@
 ﻿using PicView.Avalonia.ImageHandling;
+using PicView.Avalonia.Navigation;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.FileHandling;
+using PicView.Core.ImageDecoding;
 using PicView.Core.Localization;
 using PicView.Core.Navigation;
 
@@ -10,7 +12,7 @@ public static class SetTitleHelper
 {
     public static void SetTitle(MainViewModel vm)
     {
-        if (vm.ImageIterator is null || vm.FileInfo is null)
+        if (!NavigationManager.CanNavigate(vm))
         {
             string title;
             var s = vm.Title;
@@ -20,25 +22,25 @@ public static class SetTitleHelper
             }
             else if (s.Contains(TranslationHelper.Translation.Base64Image))
             {
-                title = TranslationHelper.Translation.Base64Image ?? "Base64Image";
+                title = TranslationHelper.Translation.Base64Image ?? "Base64 Image";
             }
             else
             {
-                title = TranslationHelper.Translation.ClipboardImage ?? "ClipboardImage";
+                title = TranslationHelper.Translation.ClipboardImage ?? "Clipboard Image";
             }
             
-            var titleString = TitleHelper.TitleString((int)vm.ImageWidth, (int)vm.ImageHeight, title, vm.ZoomValue);
-            vm.WindowTitle = titleString[0];
-            vm.Title = titleString[1];
-            vm.TitleTooltip = titleString[1];
+            var singeImageWindowTitles = ImageTitleFormatter.GenerateTitleForSingleImage(vm.PixelWidth, vm.PixelWidth, title, vm.ZoomValue);
+            vm.WindowTitle = singeImageWindowTitles.BaseTitle;
+            vm.Title = singeImageWindowTitles.TitleWithAppName;
+            vm.TitleTooltip = singeImageWindowTitles.TitleWithAppName;
             return;
         }
 
-        var getTitle = TitleHelper.GetTitle((int)vm.ImageWidth, (int)vm.ImageHeight, vm.ImageIterator.CurrentIndex,
-            vm.FileInfo, vm.ZoomValue, vm.ImageIterator.ImagePaths);
-        vm.WindowTitle = getTitle[0];
-        vm.Title = getTitle[1];
-        vm.TitleTooltip = getTitle[2];
+        var windowTitles = ImageTitleFormatter.GenerateTitleStrings(vm.PixelWidth, vm.PixelHeight, NavigationManager.GetCurrentIndex,
+            vm.FileInfo, vm.ZoomValue, NavigationManager.GetCollection);
+        vm.WindowTitle = windowTitles.TitleWithAppName;
+        vm.Title = windowTitles.BaseTitle;
+        vm.TitleTooltip = windowTitles.FilePathTitle;
     }
 
     public static void RefreshTitle(MainViewModel vm)
@@ -73,11 +75,74 @@ public static class SetTitleHelper
             return;
         }
 
-        var titleString = TitleHelper.GetTitle(imageModel.PixelWidth, imageModel.PixelHeight,  vm.ImageIterator.CurrentIndex,
-            imageModel.FileInfo,  vm.ZoomValue,  vm.ImageIterator.ImagePaths);
-        vm.WindowTitle = titleString[0];
-        vm.Title = titleString[1];
-        vm.TitleTooltip = titleString[2];
+        var windowTitles = ImageTitleFormatter.GenerateTitleStrings(imageModel.PixelWidth, imageModel.PixelHeight,  NavigationManager.GetCurrentIndex,
+            imageModel.FileInfo,  vm.ZoomValue,  NavigationManager.GetCollection);
+        vm.WindowTitle = windowTitles.TitleWithAppName;
+        vm.Title = windowTitles.BaseTitle;
+        vm.TitleTooltip = windowTitles.FilePathTitle;
+
+        return;
+
+        void ReturnError()
+        {
+            vm.WindowTitle =
+                vm.Title =
+                    vm.TitleTooltip = TranslationHelper.GetTranslation("UnableToRender");
+        }
+    }
+    
+    public static void SetTiffTitle(TiffManager.TiffNavigationInfo tiffNavigationInfo, int width, int height, int index, FileInfo fileInfo, MainViewModel vm)
+    {
+        var name = tiffNavigationInfo.Pages[tiffNavigationInfo.CurrentPage].FileName + $" [{tiffNavigationInfo.CurrentPage + 1}/{tiffNavigationInfo.PageCount}]";
+        var singeImageWindowTitles = ImageTitleFormatter.GenerateTiffTitleStrings(width, height, index, fileInfo, tiffNavigationInfo, 1, NavigationManager.GetCollection);
+        vm.WindowTitle = singeImageWindowTitles.TitleWithAppName;
+        vm.Title = singeImageWindowTitles.BaseTitle; 
+        vm.TitleTooltip = singeImageWindowTitles.BaseTitle;
+    }
+    
+    public static void TrySetTiffTitle(int width, int height, int index, FileInfo fileInfo, MainViewModel vm)
+    {
+        if (TiffManager.GetTiffPageCount(fileInfo.FullName) is { } pageCount and > 1)
+        {
+            var tiffNavigationInfo = new TiffManager.TiffNavigationInfo
+            {
+                CurrentPage = 0,
+                PageCount = pageCount,
+                Pages = TiffManager.LoadTiffPages(fileInfo.FullName)
+            };
+            SetTiffTitle(tiffNavigationInfo, width, height,
+                NavigationManager.GetCurrentIndex, fileInfo, vm);
+        }
+        else
+        {
+            SetTitle(vm);
+        }
+    }
+    
+    public static void SetSideBySideTitle(MainViewModel vm, ImageModel? imageModel1, ImageModel? imageModel2)
+    {
+        if (imageModel1 is null || imageModel2 is null)
+        {
+            ReturnError();
+            return;
+        }
+
+        if (imageModel1.FileInfo is null || imageModel2.FileInfo is null)
+        {
+            ReturnError();
+            return;
+        }
+
+        var firstWindowTitles = ImageTitleFormatter.GenerateTitleStrings(imageModel1.PixelWidth, imageModel1.PixelHeight,  NavigationManager.GetCurrentIndex,
+            imageModel1.FileInfo,  vm.ZoomValue,  NavigationManager.GetCollection);
+        var secondWindowTitles = ImageTitleFormatter.GenerateTitleStrings(imageModel2.PixelWidth, imageModel2.PixelHeight,  NavigationManager.GetNextIndex,
+            imageModel2.FileInfo,  vm.ZoomValue,  NavigationManager.GetCollection);
+        var windowTitle = $"{firstWindowTitles.BaseTitle} \u21dc || \u21dd {secondWindowTitles.BaseTitle} - PicView";
+        var title = $"{firstWindowTitles.BaseTitle} \u21dc || \u21dd  {secondWindowTitles.BaseTitle}";
+        var titleTooltip = $"{firstWindowTitles.FilePathTitle} \u21dc || \u21dd  {secondWindowTitles.FilePathTitle}";
+        vm.WindowTitle = windowTitle;
+        vm.Title = title;
+        vm.TitleTooltip = titleTooltip;
 
         return;
 

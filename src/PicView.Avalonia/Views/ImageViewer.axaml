@@ -1,5 +1,6 @@
 <UserControl
-    Background="Transparent"
+    Background="{CompiledBinding ImageBackground,
+                                 Mode=OneWay}"
     PointerPressed="InputElement_OnPointerPressed"
     mc:Ignorable="d"
     x:Class="PicView.Avalonia.Views.ImageViewer"
@@ -24,8 +25,6 @@
                                     Mode=OneWay}"
             x:Name="ImageScrollViewer">
             <Border
-                Background="{CompiledBinding ImageBackground,
-                                             Mode=OneWay}"
                 Height="{CompiledBinding ImageHeight,
                                          Mode=OneWay}"
                 Width="{CompiledBinding ImageWidth,
@@ -37,7 +36,6 @@
                     PointerMoved="MainImage_OnPointerMoved"
                     PointerPressed="MainImage_OnPointerPressed"
                     PointerReleased="MainImage_OnPointerReleased"
-                    RenderOptions.BitmapInterpolationMode="HighQuality"
                     SecondaryImageWidth="{CompiledBinding SecondaryImageWidth,
                                                           Mode=OneWay}"
                     SecondarySource="{CompiledBinding SecondaryImageSource,

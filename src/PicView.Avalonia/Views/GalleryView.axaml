@@ -16,18 +16,16 @@
 
         <customControls:BlurMask
             BlurEnabled="False"
-            BlurRadius="9"
+            BlurRadius="7"
             x:Name="BlurMask" />
 
         <Panel.ContextMenu>
             <ContextMenu Opened="MenuBase_OnOpened">
                 <MenuItem Header="{CompiledBinding Stretch, Mode=OneWay}">
                     <MenuItem.Icon>
-                        <Path
-                            Data="{StaticResource ImageGeometry}"
-                            Fill="{StaticResource MainIconColor}"
+                        <Image
                             Height="12"
-                            Stretch="Fill"
+                            Source="{StaticResource Image}"
                             Width="12" />
                     </MenuItem.Icon>
                     <MenuItem
@@ -79,18 +77,16 @@
                     PointerPressed="Flyout_OnPointerPressed"
                     StaysOpenOnClick="True">
                     <MenuItem.Icon>
-                        <Path
-                            Data="{StaticResource ImageGeometry}"
-                            Fill="{StaticResource MainIconColor}"
+                        <Image
                             Height="12"
-                            Stretch="Fill"
+                            Source="{StaticResource Image}"
                             Width="12" />
                     </MenuItem.Icon>
                     <FlyoutBase.AttachedFlyout>
                         <Flyout>
                             <Border
-                                Background="{StaticResource MainButtonBackgroundColor}"
-                                BorderBrush="{StaticResource MainBorderColor}"
+                                Background="{DynamicResource MainButtonBackgroundColor}"
+                                BorderBrush="{DynamicResource MainBorderColor}"
                                 BorderThickness="2"
                                 CornerRadius="4"
                                 Padding="10,3">
@@ -100,11 +96,11 @@
                     </FlyoutBase.AttachedFlyout>
                 </MenuItem>
                 <Separator />
-                <MenuItem Command="{CompiledBinding CloseGalleryCommand}" Header="{CompiledBinding Close, Mode=OneWay}">
+                <MenuItem Command="{CompiledBinding CloseGalleryCommand}" Header="{CompiledBinding HideBottomGallery, Mode=OneWay}">
                     <MenuItem.Icon>
                         <Path
                             Data="{StaticResource CloseGeometry}"
-                            Fill="{StaticResource MainIconColor}"
+                            Fill="{DynamicResource MainTextColor}"
                             Height="12"
                             Stretch="Fill"
                             Width="12" />
@@ -127,7 +123,7 @@
             ZIndex="99">
             <Path
                 Data="{StaticResource CloseGeometry}"
-                Fill="{StaticResource MainIconColor}"
+                Fill="{DynamicResource MainTextColor}"
                 Height="23"
                 Margin="7,0,0,11"
                 Stretch="Fill"
@@ -136,16 +132,16 @@
 
         <customControls:GalleryListBox
             AutoScrollToSelectedItem="False"
-            Background="{StaticResource BackgroundAlpha}"
-            BorderBrush="{StaticResource TertiaryBorderColor}"
+            Background="{DynamicResource SecondaryBackgroundColor}"
+            BorderBrush="{DynamicResource TertiaryBorderColor}"
             BorderThickness="0,1,0,0"
             Focusable="False"
             Padding="0"
-            VerticalAlignment="{CompiledBinding GalleryVerticalAlignment}"
             ScrollViewer.HorizontalScrollBarVisibility="Visible"
             ScrollViewer.IsScrollInertiaEnabled="True"
             ScrollViewer.VerticalScrollBarVisibility="Disabled"
             SelectedIndex="{CompiledBinding SelectedGalleryItemIndex}"
+            VerticalAlignment="{CompiledBinding GalleryVerticalAlignment}"
             x:Name="GalleryListBox">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>

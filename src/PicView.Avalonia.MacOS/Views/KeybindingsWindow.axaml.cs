@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Media;
 using PicView.Core.Localization;
 
 namespace PicView.Avalonia.MacOS.Views;
@@ -9,17 +10,15 @@ public partial class KeybindingsWindow : Window
     public KeybindingsWindow()
     {
         InitializeComponent();
+        if (!Settings.Theme.Dark || Settings.Theme.GlassTheme)
+        {
+            WindowBorder.Background = Brushes.Transparent;
+            XKeybindingsView.Background = Brushes.Transparent;
+        }
         Loaded += (sender, e) =>
         {
             MinWidth = MaxWidth = Width;
             Title = $"{TranslationHelper.Translation.ApplicationShortcuts} - PicView";
-        };
-        KeyDown += (_, e) =>
-        {
-            if (e.Key is Key.Escape)
-            {
-                Close();
-            }
         };
     }
 

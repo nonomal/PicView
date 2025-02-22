@@ -5,13 +5,13 @@ using System.Text.Json.Serialization;
 
 namespace PicView.Core.Config;
 
-[JsonSourceGenerationOptions(AllowTrailingCommas = true)]
+[JsonSourceGenerationOptions(AllowTrailingCommas = true, WriteIndented = true)]
 [JsonSerializable(typeof(AppSettings))]
 internal partial class SourceGenerationContext : JsonSerializerContext;
 
 public static class SettingsHelper
 {
-    private const double CurrentSettingsVersion = 1;
+    private const double CurrentSettingsVersion = 1.1;
     private const string ConfigPath = "Config/UserSettings.json";
     private const string RoamingConfigPath = "Ruben2776/PicView/Config/UserSettings.json";
 
@@ -41,14 +41,22 @@ public static class SettingsHelper
                 return await Retry().ConfigureAwait(false);
             }
         }
+#if DEBUG
         catch (Exception ex)
         {
-#if DEBUG
+
             Trace.WriteLine($"{nameof(LoadSettingsAsync)} error loading settings:\n {ex.Message}");
-#endif
+
             SetDefaults();
             return false;
         }
+#else
+        catch
+        {
+            SetDefaults();  
+            return false;
+        }
+#endif
         return true;
 
         async Task<bool> Retry()

@@ -2,8 +2,8 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
-using Avalonia.Styling;
-using PicView.Avalonia.UI;
+using PicView.Avalonia.DragAndDrop;
+using PicView.Avalonia.WindowBehavior;
 
 namespace PicView.Avalonia.Views;
 
@@ -12,53 +12,66 @@ public partial class BottomBar : UserControl
     public BottomBar()
     {
         InitializeComponent();
-        NextButton.PointerEntered += (s, e) =>
+        
+        Loaded += delegate
         {
-            if (!Application.Current.TryGetResource("ButtonForegroundPointerOver", ThemeVariant.Default, out var buttonForegroundPointerOver))
+            PointerPressed += (_, e) => MoveWindow(e);
+            PointerExited += (_, _) =>
             {
-                return;
-            }
-            var brush = new SolidColorBrush((Color)(buttonForegroundPointerOver ?? Brushes.White));
-            NextIcon.Fill = brush;
-        };
-        NextButton.PointerExited += (s, e) =>
-        {
-            if (!Application.Current.TryGetResource("MainIconColor", ThemeVariant.Default, out var mainIconColor))
+                DragAndDropHelper.RemoveDragDropView();
+            };
+
+            if (Settings.Theme.GlassTheme)
             {
-                return;
+                MainBottomBorder.Background = Brushes.Transparent;
+                MainBottomBorder.BorderThickness = new Thickness(0);
+                
+                FileMenuButton.Background = Brushes.Transparent;
+                FileMenuButton.Classes.Remove("noBorderHover");
+                FileMenuButton.Classes.Add("hover");
+                
+                ImageMenuButton.Background = Brushes.Transparent;
+                ImageMenuButton.Classes.Remove("noBorderHover");
+                ImageMenuButton.Classes.Add("hover");
+                
+                ToolsMenuButton.Background = Brushes.Transparent;
+                ToolsMenuButton.Classes.Remove("noBorderHover");
+                ToolsMenuButton.Classes.Add("hover");
+                
+                SettingsMenuButton.Background = Brushes.Transparent;
+                SettingsMenuButton.Classes.Remove("noBorderHover");
+                SettingsMenuButton.Classes.Add("hover");
+            
+                NextButton.Background = new SolidColorBrush(Color.FromArgb(15, 255, 255, 255));
+                
+                PreviousButton.Background = new SolidColorBrush(Color.FromArgb(15, 255, 255, 255));
+
+                if (!Application.Current.TryGetResource("SecondaryTextColor",
+                        Application.Current.RequestedThemeVariant, out var textColor))
+                {
+                    return;
+                }
+
+                if (textColor is not Color color)
+                {
+                    return;
+                }
+
+                FileMenuButton.Foreground = new SolidColorBrush(color);
+                ImageMenuButton.Foreground = new SolidColorBrush(color);
+                ToolsMenuButton.Foreground = new SolidColorBrush(color);
+                SettingsMenuButton.Foreground = new SolidColorBrush(color);
+            
+                NextButton.Foreground = new SolidColorBrush(color);
+                PreviousButton.Foreground = new SolidColorBrush(color);
             }
-            var brush = new SolidColorBrush((Color)(mainIconColor ?? Brushes.White));
-            NextIcon.Fill = brush;
-        };
-        PreviousButton.PointerEntered += (s, e) =>
-        {
-            if (!Application.Current.TryGetResource("ButtonForegroundPointerOver", ThemeVariant.Default, out var buttonForegroundPointerOver))
-            {
-                return;
-            }
-            var brush = new SolidColorBrush((Color)(buttonForegroundPointerOver ?? Brushes.White));
-            PrevIcon.Fill = brush;
-        };
-        PreviousButton.PointerExited += (s, e) =>
-        {
-            if (!Application.Current.TryGetResource("MainIconColor", ThemeVariant.Default, out var mainIconColor))
-            {
-                return;
-            }
-            var brush = new SolidColorBrush((Color)(mainIconColor ?? Brushes.White));
-            PrevIcon.Fill = brush;
-        };
-        PointerPressed += (_, e) => MoveWindow(e);
-        PointerExited += (_, _) =>
-        {
-            DragAndDropHelper.RemoveDragDropView();
         };
     }
 
     private void MoveWindow(PointerPressedEventArgs e)
     {
         if (VisualRoot is null) { return; }
-
+        
         if (e.GetCurrentPoint(this).Properties.IsRightButtonPressed)
         {
             // Context menu doesn't want to be opened normally
@@ -66,7 +79,6 @@ public partial class BottomBar : UserControl
             return;
         }
 
-        var hostWindow = (Window)VisualRoot;
-        hostWindow.BeginMoveDrag(e);
+        WindowFunctions.WindowDragBehavior((Window)VisualRoot, e);
     }
 }

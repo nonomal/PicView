@@ -1,6 +1,5 @@
 ﻿using Avalonia.Media;
 using PicView.Avalonia.ViewModels;
-using PicView.Core.Config;
 
 namespace PicView.Avalonia.Gallery;
 public static class GalleryStretchMode
@@ -32,7 +31,7 @@ public static class GalleryStretchMode
         vm.IsFillSquareBottomChecked = false;
         vm.IsFillSquareFullChecked = false;
 
-        if (SettingsHelper.Settings.Gallery.FullGalleryStretchMode.Equals("Square", StringComparison.OrdinalIgnoreCase))
+        if (Settings.Gallery.FullGalleryStretchMode.Equals("Square", StringComparison.OrdinalIgnoreCase))
         {
             vm.IsSquareFullChecked = true;
             if (GalleryFunctions.IsFullGalleryOpen)
@@ -41,7 +40,7 @@ public static class GalleryStretchMode
                 SetSquareStretch(vm);
             }
         }
-        else if (SettingsHelper.Settings.Gallery.FullGalleryStretchMode.Equals("FillSquare", StringComparison.OrdinalIgnoreCase))
+        else if (Settings.Gallery.FullGalleryStretchMode.Equals("FillSquare", StringComparison.OrdinalIgnoreCase))
         {
             vm.IsFillSquareFullChecked = true;
             if (GalleryFunctions.IsFullGalleryOpen)
@@ -50,7 +49,7 @@ public static class GalleryStretchMode
                 SetSquareFillStretch(vm);
             }
         }
-        else if (Enum.TryParse<Stretch>(SettingsHelper.Settings.Gallery.FullGalleryStretchMode, out var stretchMode))
+        else if (Enum.TryParse<Stretch>(Settings.Gallery.FullGalleryStretchMode, out var stretchMode))
         {
             SetStretchIsChecked(stretchMode, true);
             if (GalleryFunctions.IsFullGalleryOpen)
@@ -70,7 +69,7 @@ public static class GalleryStretchMode
         }
         
 
-        if (SettingsHelper.Settings.Gallery.BottomGalleryStretchMode.Equals("Square", StringComparison.OrdinalIgnoreCase))
+        if (Settings.Gallery.BottomGalleryStretchMode.Equals("Square", StringComparison.OrdinalIgnoreCase))
         {
             vm.IsSquareBottomChecked = true;
             if (!GalleryFunctions.IsFullGalleryOpen)
@@ -79,7 +78,7 @@ public static class GalleryStretchMode
                 SetSquareStretch(vm);
             }
         }
-        else if (SettingsHelper.Settings.Gallery.BottomGalleryStretchMode.Equals("FillSquare", StringComparison.OrdinalIgnoreCase))
+        else if (Settings.Gallery.BottomGalleryStretchMode.Equals("FillSquare", StringComparison.OrdinalIgnoreCase))
         {
             vm.IsFillSquareBottomChecked = true;
             if (!GalleryFunctions.IsFullGalleryOpen)
@@ -88,7 +87,7 @@ public static class GalleryStretchMode
                 SetSquareFillStretch(vm);
             }
         }
-        else if (Enum.TryParse<Stretch>(SettingsHelper.Settings.Gallery.BottomGalleryStretchMode, out var stretchMode))
+        else if (Enum.TryParse<Stretch>(Settings.Gallery.BottomGalleryStretchMode, out var stretchMode))
         {
             SetStretchIsChecked(stretchMode, false);
             if (!GalleryFunctions.IsFullGalleryOpen)
@@ -215,51 +214,45 @@ public static class GalleryStretchMode
         vm.GalleryStretch = Stretch.Fill;
     }
 
-    public static async Task ChangeBottomGalleryItemStretch(MainViewModel vm, Stretch stretch)
+    public static void ChangeBottomGalleryItemStretch(MainViewModel vm, Stretch stretch)
     {
         SetGalleryStretch(vm, stretch);
         
-        SettingsHelper.Settings.Gallery.BottomGalleryStretchMode = stretch.ToString();
-        await SettingsHelper.SaveSettingsAsync();
+        Settings.Gallery.BottomGalleryStretchMode = stretch.ToString();
     }
     
-    public static async Task ChangeFullGalleryItemStretch(MainViewModel vm, Stretch stretch)
+    public static void ChangeFullGalleryItemStretch(MainViewModel vm, Stretch stretch)
     {
         SetGalleryStretch(vm, stretch);
         
-        SettingsHelper.Settings.Gallery.FullGalleryStretchMode = stretch.ToString();
-        await SettingsHelper.SaveSettingsAsync();
+        Settings.Gallery.FullGalleryStretchMode = stretch.ToString();
     }
     
-    public static async Task ChangeBottomGalleryStretchSquare(MainViewModel vm)
+    public static void ChangeBottomGalleryStretchSquare(MainViewModel vm)
     {
         SetSquareStretch(vm);
         
-        SettingsHelper.Settings.Gallery.BottomGalleryStretchMode = "Square";
-        await SettingsHelper.SaveSettingsAsync();
+        Settings.Gallery.BottomGalleryStretchMode = "Square";
     }
     
-    public static async Task ChangeBottomGalleryStretchSquareFill(MainViewModel vm)
+    public static void ChangeBottomGalleryStretchSquareFill(MainViewModel vm)
     {
         SetSquareFillStretch(vm);
         
-        SettingsHelper.Settings.Gallery.BottomGalleryStretchMode = "FillSquare";
-        await SettingsHelper.SaveSettingsAsync();
+        Settings.Gallery.BottomGalleryStretchMode = "FillSquare";
     }
 
-    public static async Task ChangeFullGalleryStretchSquare(MainViewModel vm)
+    public static void ChangeFullGalleryStretchSquare(MainViewModel vm)
     {
         SetSquareStretch(vm);
         
-        SettingsHelper.Settings.Gallery.FullGalleryStretchMode = "Square";
-        await SettingsHelper.SaveSettingsAsync();
+        Settings.Gallery.FullGalleryStretchMode = "Square";
     }
     
-    public static async Task ChangeFullGalleryStretchSquareFill(MainViewModel vm)
+    public static void ChangeFullGalleryStretchSquareFill(MainViewModel vm)
     {
         SetSquareFillStretch(vm);
         
-        SettingsHelper.Settings.Gallery.FullGalleryStretchMode = "FillSquare";
-        await SettingsHelper.SaveSettingsAsync();
+        Settings.Gallery.FullGalleryStretchMode = "FillSquare";
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Threading;
 using PicView.Avalonia.Animations;
-using PicView.Avalonia.Views.UC;
 using VerticalAlignment = Avalonia.Layout.VerticalAlignment;
 
 namespace PicView.Avalonia.UI;
@@ -12,6 +11,8 @@ namespace PicView.Avalonia.UI;
 public static class TooltipHelper
 {
     private static bool _isRunning;
+    
+    private static CancellationTokenSource? _cancellationTokenSource;
 
     /// <summary>
     /// Shows the tooltip message on the UI.
@@ -23,108 +24,57 @@ public static class TooltipHelper
     {
         try
         {
-            var startAnimation = AnimationsHelper.OpacityAnimation(0, 1, .6);
             var endAnimation = AnimationsHelper.OpacityAnimation(1, 0, .5);
-        
-            if (_isRunning)
-            {
-                await Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    GetToolTipMessage.Opacity = 1;
-                    GetToolTipMessage.ToolTipMessageText.Text = message.ToString();
-                    GetToolTipMessage.Margin = center ? new Thickness(0) : new Thickness(0, 0, 0, 15);
-                    GetToolTipMessage.VerticalAlignment = center ? VerticalAlignment.Center : VerticalAlignment.Bottom;
-                });
-                await Task.Delay(interval);
-                await endAnimation.RunAsync(GetToolTipMessage);
-                _isRunning = false;
-                return;
-            }
 
+            // ReSharper disable once MethodHasAsyncOverload
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource = new CancellationTokenSource();
+            
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                _isRunning = true;
-                GetToolTipMessage.IsVisible = true;
-                GetToolTipMessage.ToolTipMessageText.Text = message.ToString();
-                GetToolTipMessage.Margin = center ? new Thickness(0) : new Thickness(0, 0, 0, 15);
-                GetToolTipMessage.VerticalAlignment = center ? VerticalAlignment.Center : VerticalAlignment.Bottom;
-                GetToolTipMessage.Opacity = 0;
-            });
-            await startAnimation.RunAsync(GetToolTipMessage);
-            await Task.Delay(interval);
-            await endAnimation.RunAsync(GetToolTipMessage);
-            _isRunning = false;
-        }
-        catch (Exception e)
-        {
-#if DEBUG
-            Console.WriteLine(e);
-#endif
-        }
-    }
-    
-    /// <summary>
-    /// Shows the tooltip message on the UI.
-    /// </summary>
-    /// <param name="message">The message to display in the tooltip.</param>
-    /// <param name="center">Determines whether the tooltip should be centered or aligned at the bottom.</param>
-    /// <param name="interval">The duration for which the tooltip should be visible.</param>
-    public static void ShowTooltipMessage(object message, bool center, TimeSpan interval)
-    {
-        var timer = new DispatcherTimer { Interval = interval };
-        timer.Tick += (_, _) =>
-        {
+                var toolTip = UIHelper.GetToolTipMessage;
+                toolTip.ToolTipMessageText.Text = message.ToString();
+                UIHelper.GetToolTipMessage.IsVisible = true;
+                
+                if (!_isRunning)
+                {
+                    UIHelper.GetToolTipMessage.Margin = center ? new Thickness(0) : new Thickness(0, 0, 0, 15);
+                    UIHelper.GetToolTipMessage.VerticalAlignment =
+                        center ? VerticalAlignment.Center : VerticalAlignment.Bottom;
+                }
+                else
+                {
+                    toolTip.Opacity = 1;
+                }
+            }, DispatcherPriority.Normal, _cancellationTokenSource.Token);
+
             if (!_isRunning)
             {
-                Dispatcher.UIThread.Invoke(() =>
-                {
-                    var toolTip = GetToolTipMessage;
-                    if (toolTip != null)
-                    {
-                        toolTip.Opacity = 0;
-                    }
-                });
-            }
-            _isRunning = false;
-            timer.Stop();
-        };
-        timer.Start();
-        
-        try
-        {
-            Dispatcher.UIThread.Invoke(() =>
-            {
-                var toolTip = GetToolTipMessage;
-                if (toolTip is null)
-                {
-                    return;
-                }
                 _isRunning = true;
-                toolTip.IsVisible = true;
-                toolTip.ToolTipMessageText.Text = message.ToString();
-                toolTip.Margin = center ? new Thickness(0) : new Thickness(0, 0, 0, 15);
-                toolTip.VerticalAlignment = center ? VerticalAlignment.Center : VerticalAlignment.Bottom;
-                toolTip.Opacity = 1;
-            });
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    UIHelper.GetToolTipMessage.Opacity = 1;
+                }, DispatcherPriority.Normal, _cancellationTokenSource.Token);
+                await Task.Delay(interval, _cancellationTokenSource.Token);
+                await endAnimation.RunAsync(UIHelper.GetToolTipMessage, _cancellationTokenSource.Token);
+            }
+        }
+        catch (TaskCanceledException)
+        {
+            // ignored
         }
         catch (Exception e)
         {
 #if DEBUG
-            Console.WriteLine(e);
+            Console.WriteLine($"{nameof(ShowTooltipMessageAsync)} exception {e.Message}: \n{e.StackTrace}");
 #endif
+        }
+        finally
+        {
+            _isRunning = false;
         }
     }
 
-    /// <summary>
-    /// Shows the tooltip message on the UI with a default duration of 2 seconds.
-    /// </summary>
-    /// <param name="message">The message to display in the tooltip.</param>
-    /// <param name="center">Determines whether the tooltip should be centered or aligned at the bottom.</param>
-    internal static void ShowTooltipMessage(object message, bool center = false)
-    {
-        ShowTooltipMessage(message, center, TimeSpan.FromSeconds(2));
-    }
-    
     /// <summary>
     /// Shows the tooltip message on the UI with a default duration of 2 seconds.
     /// </summary>
@@ -134,40 +84,15 @@ public static class TooltipHelper
     {
         await ShowTooltipMessageAsync(message, center, TimeSpan.FromSeconds(2));
     }
-
-    /// <summary>
-    /// Gets the tooltip message control from the main view.
-    /// </summary>
-    private static ToolTipMessage? GetToolTipMessage
+    
+    public static void StopTooltipMessage()
     {
-        get
-        {
-            return Dispatcher.UIThread.Invoke(() =>
-            {
-                var mainView = UIHelper.GetMainView;
-                return mainView.MainGrid.Children.OfType<ToolTipMessage>().FirstOrDefault();
-            });
-        }
-    }
-
-    /// <summary>
-    /// Closes the tooltip message.
-    /// </summary>
-    internal static void CloseToolTipMessage()
-    {
-        var toolTip = GetToolTipMessage;
-        if (toolTip == null)
+        if (!_isRunning)
         {
             return;
         }
-
-        if (toolTip.CheckAccess())
-        {
-            toolTip.IsVisible = false;
-        }
-        else
-        {
-            Dispatcher.UIThread.Invoke(() => toolTip.IsVisible = false);
-        }
+        _cancellationTokenSource?.Cancel();
+        _isRunning = false;
+        Dispatcher.UIThread.Invoke(() => UIHelper.GetToolTipMessage.IsVisible = false);
     }
 }

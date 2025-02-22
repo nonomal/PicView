@@ -1,145 +1,161 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
-using Avalonia.Styling;
 using PicView.Core.Localization;
+using Path = Avalonia.Controls.Shapes.Path;
 
-namespace PicView.Avalonia.CustomControls
+namespace PicView.Avalonia.CustomControls;
+
+public class FuncTextBox : TextBox
 {
-    public class FuncTextBox : TextBox
+    private bool _contextMenuLoaded;
+        
+    public FuncTextBox()
     {
-        public FuncTextBox()
+        ContextMenu = new ContextMenu();
+
+        PointerPressed += (_, e) =>
         {
-            if (!Application.Current.TryGetResource("MainIconColor", ThemeVariant.Default, out var mainIconColor))
+            if (e.GetCurrentPoint(this).Properties.IsRightButtonPressed)
             {
-                return;
+                ContextMenu.Open(this);
             }
+        };
 
-            var iconBrush = new SolidColorBrush((Color)(mainIconColor ?? Brushes.White));
-            if (!Application.Current.TryGetResource("CopyGeometry", ThemeVariant.Default, out var copyGeometry))
+        ContextMenu.Opening += (_, _) =>
+        {
+            if (!_contextMenuLoaded)
             {
-                return;
+                LoadContextMenu();
             }
+        };
+    }
 
-            if (!Application.Current.TryGetResource("CutGeometry", ThemeVariant.Default, out var cutGeometry))
-            {
-                return;
-            }
+    protected override Type StyleKeyOverride => typeof(TextBox);
 
-            if (!Application.Current.TryGetResource("RecycleGeometry", ThemeVariant.Default, out var recycleGeometry))
-            {
-                return;
-            }
-
-            if (!Application.Current.TryGetResource("PasteGeometry", ThemeVariant.Default, out var pasteGeometry))
-            {
-                return;
-            }
-
-            if (!Application.Current.TryGetResource("CheckboxOutlineImage", ThemeVariant.Default,
-                    out var checkboxOutlineImage))
-            {
-                return;
-            }
-
-            var contextMenu = new ContextMenu();
-            var selectAllMenuItem = new MenuItem
-            {
-                Header = TranslationHelper.GetTranslation("SelectAll"), // TODO: Add localization
-                Icon = new Image
-                {
-                    Width = 12,
-                    Height = 12,
-                    Source = checkboxOutlineImage as DrawingImage ?? null
-                }
-            };
-            selectAllMenuItem.Click += (_, _) => SelectAll();
-            contextMenu.Items.Add(selectAllMenuItem);
-
-            var cutMenuItem = new MenuItem
-            {
-                Header = TranslationHelper.GetTranslation("Cut"), // TODO: "Cut file" should be replaced with "Cut"
-                Icon = new PathIcon
-                {
-                    Width = 12,
-                    Height = 12,
-                    Foreground = iconBrush,
-                    Data = cutGeometry as Geometry ?? null
-                }
-            };
-            cutMenuItem.Click += (_, _) => Cut();
-            contextMenu.Items.Add(cutMenuItem);
-
-            var copyMenuItem = new MenuItem
-            {
-                Header = TranslationHelper.Translation.Copy,
-                Icon = new PathIcon
-                {
-                    Width = 12,
-                    Height = 12,
-                    Foreground = iconBrush,
-                    Data = copyGeometry as Geometry ?? null
-                }
-            };
-            copyMenuItem.Click += (_, _) => Copy();
-            contextMenu.Items.Add(copyMenuItem);
-
-            var pasteMenuItem = new MenuItem
-            {
-                Header = TranslationHelper
-                    .GetTranslation("Paste"), // TODO: "Paste file" should be replaced with "Paste"
-                Icon = new PathIcon
-                {
-                    Width = 12,
-                    Height = 12,
-                    Foreground = iconBrush,
-                    Data = pasteGeometry as Geometry ?? null
-                }
-            };
-            pasteMenuItem.Click += (_, _) => Paste();
-            contextMenu.Items.Add(pasteMenuItem);
-
-            var deleteMenuItem = new MenuItem
-            {
-                Header = TranslationHelper.GetTranslation("Delete"),
-                Icon = new PathIcon
-                {
-                    Width = 12,
-                    Height = 12,
-                    Foreground = iconBrush,
-                    Data = recycleGeometry as Geometry ?? null
-                }
-            };
-            deleteMenuItem.Click += (_, _) => Clear();
-            contextMenu.Items.Add(deleteMenuItem);
-
-            contextMenu.Opened += delegate
-            {
-                if (IsReadOnly)
-                {
-                    deleteMenuItem.IsEnabled = false;
-                    cutMenuItem.IsEnabled = false;
-                    pasteMenuItem.IsEnabled = false;
-                }
-                else
-                {
-                    deleteMenuItem.IsEnabled = true;
-                    cutMenuItem.IsEnabled = true;
-                    pasteMenuItem.IsEnabled = true;
-                }
-            };
-
-            ContextMenu = contextMenu;
-
-            PointerPressed += (_, e) =>
-            {
-                if (e.GetCurrentPoint(this).Properties.IsRightButtonPressed)
-                {
-                    contextMenu.Open(this);
-                }
-            };
+    private void LoadContextMenu()
+    {
+        if (!Application.Current.TryGetResource("MainTextColor", Application.Current.RequestedThemeVariant, out var mainTextColor))
+        {
+            return;
         }
 
-        protected override Type StyleKeyOverride => typeof(TextBox);
+        var iconBrush = new SolidColorBrush((Color)(mainTextColor ?? Brushes.White));
+        if (!Application.Current.TryGetResource("CopyGeometry", Application.Current.RequestedThemeVariant, out var copyGeometry))
+        {
+            return;
+        }
+
+        if (!Application.Current.TryGetResource("CutGeometry", Application.Current.RequestedThemeVariant, out var cutGeometry))
+        {
+            return;
+        }
+
+        if (!Application.Current.TryGetResource("RecycleGeometry", Application.Current.RequestedThemeVariant, out var recycleGeometry))
+        {
+            return;
+        }
+
+        if (!Application.Current.TryGetResource("PasteGeometry", Application.Current.RequestedThemeVariant, out var pasteGeometry))
+        {
+            return;
+        }
+
+        if (!Application.Current.TryGetResource("CheckboxOutlineImage", Application.Current.RequestedThemeVariant,
+                out var checkboxOutlineImage))
+        {
+            return;
+        }
+            
+        var selectAllMenuItem = new MenuItem
+        {
+            Header = TranslationHelper.Translation.SelectAll,
+            Icon = new Image
+            {
+                Width = 12,
+                Height = 12,
+                Source = checkboxOutlineImage as DrawingImage ?? null
+            }
+        };
+        selectAllMenuItem.Click += (_, _) => SelectAll();
+        ContextMenu.Items.Add(selectAllMenuItem);
+
+        var cutMenuItem = new MenuItem
+        {
+            Header = TranslationHelper.Translation.Cut,
+            Icon = new Path
+            {
+                Width = 12,
+                Height = 12,
+                Fill = iconBrush,
+                Stretch = Stretch.Fill,
+                Data = cutGeometry as Geometry ?? null,
+            }
+        };
+        cutMenuItem.Click += (_, _) => Cut();
+        ContextMenu.Items.Add(cutMenuItem);
+
+        var copyMenuItem = new MenuItem
+        {
+            Header = TranslationHelper.Translation.Copy,
+            Icon = new Path
+            {
+                Width = 12,
+                Height = 12,
+                Fill = iconBrush,
+                Stretch = Stretch.Fill,
+                Data = copyGeometry as Geometry ?? null
+            },
+        };
+        copyMenuItem.Click += (_, _) => Copy();
+        ContextMenu.Items.Add(copyMenuItem);
+
+        var pasteMenuItem = new MenuItem
+        {
+            Header = TranslationHelper.Translation.FilePaste,
+            Icon = new Path
+            {
+                Width = 12,
+                Height = 12,
+                Fill = iconBrush,
+                Stretch = Stretch.Fill,
+                Data = pasteGeometry as Geometry ?? null
+            }
+        };
+        pasteMenuItem.Click += (_, _) => Paste();
+        ContextMenu.Items.Add(pasteMenuItem);
+
+        var deleteMenuItem = new MenuItem
+        {
+            Header = TranslationHelper.Translation.DeleteFile,
+            Icon = new Path
+            {
+                Width = 12,
+                Height = 12,
+                Fill = iconBrush,
+                Stretch = Stretch.Fill,
+                Data = recycleGeometry as Geometry ?? null
+            }
+        };
+        deleteMenuItem.Click += (_, _) => Clear();
+        ContextMenu.Items.Add(deleteMenuItem);
+
+        ContextMenu.Opened += delegate
+        {
+            if (IsReadOnly)
+            {
+                deleteMenuItem.IsEnabled = false;
+                cutMenuItem.IsEnabled = false;
+                pasteMenuItem.IsEnabled = false;
+            }
+            else
+            {
+                deleteMenuItem.IsEnabled = true;
+                cutMenuItem.IsEnabled = true;
+                pasteMenuItem.IsEnabled = true;
+            }
+        };
+            
+        _contextMenuLoaded = true;
     }
 }

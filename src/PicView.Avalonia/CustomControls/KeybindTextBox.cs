@@ -1,11 +1,12 @@
-﻿using Avalonia;
+﻿using System.Runtime.InteropServices;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.Threading;
-using PicView.Avalonia.Keybindings;
+using PicView.Avalonia.Input;
 using PicView.Avalonia.UI;
 using PicView.Core.Localization;
 
@@ -45,8 +46,18 @@ public class KeybindTextBox : TextBox
     public KeybindTextBox()
     {
         this.GetObservable(MethodNameProperty).Subscribe(_ => Text = GetFunctionKey());
-        AddHandler(KeyDownEvent, KeyDownHandler, RoutingStrategies.Tunnel);
-        AddHandler(KeyUpEvent, KeyUpHandler, RoutingStrategies.Tunnel);
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            AddHandler(KeyUpEvent, KeyDownHandler, RoutingStrategies.Tunnel);
+            // On macOS, we only get KeyUp, because the option to select a different character
+            // when a key is held down interferes with the keyboard shortcuts
+        }
+        else
+        {
+            AddHandler(KeyDownEvent, KeyDownHandler, RoutingStrategies.Tunnel);
+            AddHandler(KeyUpEvent, KeyUpHandler, RoutingStrategies.Tunnel);
+        }
+        
         GotFocus += delegate
         {
             if (IsReadOnly)
@@ -99,10 +110,12 @@ public class KeybindTextBox : TextBox
             case Key.RightCtrl:
             case Key.LeftAlt:
             case Key.RightAlt:
+            case Key.LWin:
+            case Key.RWin:
                 return;
         }
 
-        KeybindingsHelper.CustomShortcuts.Remove(new KeyGesture(e.Key, e.KeyModifiers));
+        KeybindingManager.CustomShortcuts.Remove(new KeyGesture(e.Key, e.KeyModifiers));
 
         var function = await FunctionsHelper.GetFunctionByName(MethodName);
 
@@ -126,29 +139,34 @@ public class KeybindTextBox : TextBox
         // Handle whether it's an alternative key or not
         if (Alt)
         {
-            if (KeybindingsHelper.CustomShortcuts.ContainsValue(function))
+            if (KeybindingManager.CustomShortcuts.ContainsValue(function))
             {
                 // If the main key is not present, add a new entry with the alternative key
                 var altKey = (Key)Enum.Parse(typeof(Key), e.Key.ToString());
                 var keyGesture = new KeyGesture(altKey, e.KeyModifiers);
-                KeybindingsHelper.CustomShortcuts[keyGesture] = function;
+                KeybindingManager.CustomShortcuts[keyGesture] = function;
             }
             else
             {
                 // Update the key and function name in the CustomShortcuts dictionary
                 var keyGesture = new KeyGesture(e.Key, e.KeyModifiers);
-                KeybindingsHelper.CustomShortcuts[keyGesture] = function;
+                KeybindingManager.CustomShortcuts[keyGesture] = function;
             }
         }
         else
         {
             // Remove if it already contains
-            if (KeybindingsHelper.CustomShortcuts.ContainsValue(function))
+            if (KeybindingManager.CustomShortcuts.ContainsValue(function))
             {
                 Remove();
             }
             var keyGesture = new KeyGesture(e.Key, e.KeyModifiers);
-            KeybindingsHelper.CustomShortcuts[keyGesture] = function;
+            KeybindingManager.CustomShortcuts[keyGesture] = function;
+        }
+
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            KeyUpHandler(this, e);
         }
 
         await Save();
@@ -156,16 +174,16 @@ public class KeybindTextBox : TextBox
 
         async Task Save()
         {
-            await KeybindingsHelper.UpdateKeyBindingsFile();
+            await KeybindingManager.UpdateKeyBindingsFile();
         }
 
         void Remove()
         {
-            var keys = KeybindingsHelper.CustomShortcuts.Where(x => x.Value?.Method?.Name == MethodName)
+            var keys = KeybindingManager.CustomShortcuts.Where(x => x.Value?.Method?.Name == MethodName)
                 ?.Select(x => x.Key).ToList() ?? null;
             if (keys is not null)
             {
-                KeybindingsHelper.CustomShortcuts.Remove(Alt ? keys.LastOrDefault() : keys.FirstOrDefault());
+                KeybindingManager.CustomShortcuts.Remove(Alt ? keys.LastOrDefault() : keys.FirstOrDefault());
             }
         }
     }
@@ -182,14 +200,14 @@ public class KeybindTextBox : TextBox
             switch (MethodName)
             {
                 case "ScrollUpInternal":
-                    var rotateRightKey = KeybindingsHelper.CustomShortcuts.Where(x => x.Value?.Method?.Name == "Up")
+                    var rotateRightKey = KeybindingManager.CustomShortcuts.Where(x => x.Value?.Method?.Name == "Up")
                         ?.Select(x => x.Key).ToList() ?? null;
                     return rotateRightKey is not { Count: > 0 } ?
                         string.Empty :
                         Alt ? rotateRightKey.LastOrDefault().ToString() : rotateRightKey.FirstOrDefault().ToString();
 
                 case "ScrollDownInternal":
-                    var rotateLeftKey = KeybindingsHelper.CustomShortcuts.Where(x => x.Value?.Method?.Name == "Down")
+                    var rotateLeftKey = KeybindingManager.CustomShortcuts.Where(x => x.Value?.Method?.Name == "Down")
                         ?.Select(x => x.Key).ToList() ?? null;
                     return rotateLeftKey is not { Count: > 0 } ?
                         string.Empty :
@@ -198,7 +216,7 @@ public class KeybindTextBox : TextBox
         }
 
         // Find the key associated with the specified function
-        var keys = KeybindingsHelper.CustomShortcuts.Where(x => x.Value?.Method?.Name == MethodName)?.Select(x => x.Key).ToList() ?? null;
+        var keys = KeybindingManager.CustomShortcuts.Where(x => x.Value?.Method?.Name == MethodName)?.Select(x => x.Key).ToList() ?? null;
 
         if (keys is null)
         {

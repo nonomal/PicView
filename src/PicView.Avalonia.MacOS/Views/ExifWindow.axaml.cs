@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Media;
 using PicView.Core.Localization;
 
 namespace PicView.Avalonia.MacOS.Views;
@@ -9,6 +10,11 @@ public partial class ExifWindow : Window
     public ExifWindow()
     {
         InitializeComponent();
+        if (!Settings.Theme.Dark || Settings.Theme.GlassTheme)
+        {
+            WindowBorder.Background = Brushes.Transparent;
+            XExifView.Background = Brushes.Transparent;
+        }
         Title = TranslationHelper.Translation.ImageInfo + " - PicView";
         KeyDown += (_, e) =>
         {

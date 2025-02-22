@@ -1,6 +1,10 @@
+using System.Runtime.InteropServices;
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Styling;
+using PicView.Avalonia.Update;
+using PicView.Avalonia.ViewModels;
+using PicView.Core.Config;
 using PicView.Core.ProcessHandling;
 
 namespace PicView.Avalonia.Views;
@@ -12,11 +16,7 @@ public partial class AboutView : UserControl
         InitializeComponent();
         Loaded += (_, _) =>
         {
-            // TODO: Add version check when ready for release
-            // AppVersion.Text = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ?
-            //     VersionHelper.GetFileVersionInfo().FileVersion :
-            //     GetType().Assembly.GetName().Version.ToString();
-            AppVersion.Text = "Avalonia Beta Preview 1";
+            AppVersion.Text = VersionHelper.GetCurrentVersion();
 
             KofiImage.PointerEntered += (_, _) =>
             {
@@ -42,11 +42,29 @@ public partial class AboutView : UserControl
                     KofiImage.Source = drawingImage;
                 }
             };
-
-            // TODO: replace with auto download service
-            UpdateButton.Click += (_, _) =>
+            
+            UpdateButton.Click += async (_, _) =>
             {
-                ProcessHelper.OpenLink("https://picview.org/Avalonia-Download");
+                if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    // TODO: replace with auto update service
+                    ProcessHelper.OpenLink("https://PicView.org/avalonia-download");
+                    return;
+                }
+                //Set loading and prevent user from interacting with UI
+                ParentContainer.Opacity = .1;
+                ParentContainer.IsHitTestVisible = false;
+                SpinWaiter.IsVisible = true;
+                try
+                {
+                    await UpdateManager.UpdateCurrentVersion(DataContext as MainViewModel);
+                }
+                finally
+                {
+                    SpinWaiter.IsVisible = false;
+                    ParentContainer.IsHitTestVisible = true;
+                    ParentContainer.Opacity = 1;
+                }
             };
         };
     }

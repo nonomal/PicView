@@ -1,5 +1,6 @@
 <UserControl
     Background="Transparent"
+    Foreground="{StaticResource SecondaryTextColor}"
     mc:Ignorable="d"
     x:Class="PicView.Avalonia.Views.ExifView"
     x:DataType="vm:MainViewModel"
@@ -15,175 +16,219 @@
     <UserControl.Resources>
         <StreamGeometry x:Key="CopyGeometry">M320 448v40c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24V120c0-13.255 10.745-24 24-24h72v296c0 30.879 25.121 56 56 56h168zm0-344V0H152c-13.255 0-24 10.745-24 24v368c0 13.255 10.745 24 24 24h272c13.255 0 24-10.745 24-24V128H344c-13.2 0-24-10.8-24-24zm120.971-31.029L375.029 7.029A24 24 0 0 0 358.059 0H352v96h96v-6.059a24 24 0 0 0-7.029-16.97z</StreamGeometry>
     </UserControl.Resources>
+    <UserControl.Styles>
+        <Styles>
+            <Style Selector="TextBox.x">
+                <Setter Property="Background" Value="{DynamicResource DisabledBackgroundColor}" />
+                <Setter Property="Foreground" Value="{StaticResource SecondaryTextColor}" />
+            </Style>
+        </Styles>
+    </UserControl.Styles>
 
     <customControls:AutoScrollViewer
         Background="Transparent"
         Focusable="True"
-        VerticalScrollBarVisibility="Visible">
+        VerticalScrollBarVisibility="Visible"
+        x:Name="ScrollViewer">
 
         <StackPanel Margin="5">
             <StackPanel Orientation="Horizontal">
 
                 <StackPanel Width="347">
 
+                    <!--  File name  -->
                     <StackPanel Margin="15,10" Orientation="Horizontal">
                         <TextBlock
                             Classes="txt"
-                            Margin="0,8,2,0"
-                            Text="{CompiledBinding FileName}"
+                            Margin="0,8,0,0"
+                            Text="{CompiledBinding FileName,
+                                                   Mode=OneWay}"
                             Width="100" />
                         <customControls:FuncTextBox
-                            Background="{StaticResource SecondaryBackgroundColor}"
-                            Classes="hover TStyle"
-                            Foreground="{StaticResource MainTextColor}"
-                            Text="{Binding FileInfo.Name}" />
+                            Background="{DynamicResource SecondaryBackgroundColor}"
+                            Classes="hover TStyle x"
+                            Foreground="{StaticResource SecondaryTextColor}"
+                            Text="{Binding FileInfo.Name, FallbackValue=''}"
+                            x:Name="FileNameTextBox" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding FileInfo.Name}"
-                            ToolTip.Tip="{CompiledBinding Copy}">
+                            CopyText="{CompiledBinding FileInfo.Name,
+                                                       FallbackValue=''}"
+                            ToolTip.Tip="{CompiledBinding Copy,
+                                                          Mode=OneWay}">
                             <Path
                                 Data="{StaticResource CopyGeometry}"
-                                Fill="{StaticResource MainIconColor}"
+                                Fill="{StaticResource SecondaryTextColor}"
                                 Height="16"
                                 Stretch="Fill"
                                 Width="16" />
                         </customControls:CopyButton>
                     </StackPanel>
 
+                    <!--  Folder path  -->
                     <StackPanel Margin="15,10" Orientation="Horizontal">
                         <TextBlock
                             Classes="txt"
                             Margin="0,8,0,0"
-                            Text="{CompiledBinding Folder}"
+                            Text="{CompiledBinding Folder,
+                                                   Mode=OneWay}"
                             Width="100" />
                         <customControls:FuncTextBox
-                            Background="{StaticResource SecondaryBackgroundColor}"
-                            Classes="hover TStyle"
-                            Foreground="{StaticResource MainTextColor}"
-                            Text="{CompiledBinding FileInfo.DirectoryName}" />
+                            Background="{DynamicResource SecondaryBackgroundColor}"
+                            Classes="hover TStyle x"
+                            Foreground="{StaticResource SecondaryTextColor}"
+                            Text="{CompiledBinding FileInfo.DirectoryName,
+                                                   FallbackValue=''}"
+                            x:Name="DirectoryNameTextBox" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding FileInfo.DirectoryName}"
+                            CopyText="{CompiledBinding FileInfo.DirectoryName,
+                                                       FallbackValue=''}"
                             ToolTip.Tip="{CompiledBinding Copy}">
                             <Path
                                 Data="{StaticResource CopyGeometry}"
-                                Fill="{StaticResource MainIconColor}"
+                                Fill="{StaticResource SecondaryTextColor}"
                                 Height="16"
                                 Stretch="Fill"
                                 Width="16" />
                         </customControls:CopyButton>
                     </StackPanel>
 
+                    <!--  Full path  -->
                     <StackPanel Margin="15,10" Orientation="Horizontal">
                         <TextBlock
                             Classes="txt"
                             Margin="0,8,0,0"
-                            Text="{CompiledBinding FullPath}"
+                            Text="{CompiledBinding FullPath,
+                                                   Mode=OneWay}"
                             Width="100" />
                         <customControls:FuncTextBox
-                            Background="{StaticResource SecondaryBackgroundColor}"
-                            Classes="hover TStyle"
-                            Foreground="{StaticResource MainTextColor}"
-                            Text="{CompiledBinding FileInfo.FullName}" />
+                            Background="{DynamicResource SecondaryBackgroundColor}"
+                            Classes="hover TStyle x"
+                            Foreground="{StaticResource SecondaryTextColor}"
+                            Text="{CompiledBinding FileInfo.FullName,
+                                                   FallbackValue=''}"
+                            x:Name="FullPathTextBox" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding FileInfo.FullName}"
-                            ToolTip.Tip="{CompiledBinding Copy}">
+                            CopyText="{CompiledBinding FileInfo.FullName,
+                                                       FallbackValue=''}"
+                            ToolTip.Tip="{CompiledBinding Copy,
+                                                          Mode=OneWay}">
                             <Path
                                 Data="{StaticResource CopyGeometry}"
-                                Fill="{StaticResource MainIconColor}"
+                                Fill="{StaticResource SecondaryTextColor}"
                                 Height="16"
                                 Stretch="Fill"
                                 Width="16" />
                         </customControls:CopyButton>
                     </StackPanel>
 
+                    <!--  Created  -->
                     <StackPanel Margin="15,10" Orientation="Horizontal">
                         <TextBlock
                             Classes="txt"
                             Margin="0,8,0,0"
-                            Text="{CompiledBinding Created}"
+                            Text="{CompiledBinding Created,
+                                                   Mode=OneWay}"
                             Width="100" />
                         <customControls:FuncTextBox
-                            Classes=" TStyle"
+                            Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding FileInfo.CreationTime}" />
+                            Text="{CompiledBinding FileInfo.CreationTime,
+                                                   FallbackValue=''}" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding FileInfo.CreationTime}"
-                            ToolTip.Tip="{CompiledBinding Copy}">
+                            CopyText="{CompiledBinding FileInfo.CreationTime,
+                                                       FallbackValue=''}"
+                            ToolTip.Tip="{CompiledBinding Copy,
+                                                          Mode=OneWay}">
                             <Path
                                 Data="{StaticResource CopyGeometry}"
-                                Fill="{StaticResource MainIconColor}"
+                                Fill="{StaticResource SecondaryTextColor}"
                                 Height="16"
                                 Stretch="Fill"
                                 Width="16" />
                         </customControls:CopyButton>
                     </StackPanel>
 
+                    <!--  Modified  -->
                     <StackPanel Margin="15,10" Orientation="Horizontal">
                         <TextBlock
                             Classes="txt"
                             Margin="0,8,0,0"
-                            Text="{CompiledBinding Modified}"
+                            Text="{CompiledBinding Modified,
+                                                   Mode=OneWay}"
                             Width="100" />
                         <customControls:FuncTextBox
-                            Classes=" TStyle"
+                            Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding FileInfo.LastWriteTime}" />
+                            Text="{CompiledBinding FileInfo.LastWriteTime,
+                                                   FallbackValue=''}" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding FileInfo.LastWriteTime}"
+                            CopyText="{CompiledBinding FileInfo.LastWriteTime,
+                                                       FallbackValue=''}"
                             ToolTip.Tip="{CompiledBinding Copy}">
                             <Path
                                 Data="{StaticResource CopyGeometry}"
-                                Fill="{StaticResource MainIconColor}"
+                                Fill="{StaticResource SecondaryTextColor}"
                                 Height="16"
                                 Stretch="Fill"
                                 Width="16" />
                         </customControls:CopyButton>
                     </StackPanel>
 
+                    <!--  Last Accessed  -->
                     <StackPanel Margin="15,10" Orientation="Horizontal">
                         <TextBlock
                             Classes="txt"
                             Margin="0,8,0,0"
-                            Text="{CompiledBinding LastAccessTime}"
+                            Text="{CompiledBinding LastAccessTime,
+                                                   Mode=OneWay}"
                             Width="100" />
                         <customControls:FuncTextBox
-                            Classes=" TStyle"
+                            Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding FileInfo.LastAccessTime}" />
+                            Text="{CompiledBinding FileInfo.LastAccessTime,
+                                                   FallbackValue=''}" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding FileInfo.LastAccessTime}"
-                            ToolTip.Tip="{CompiledBinding Copy}">
+                            CopyText="{CompiledBinding FileInfo.LastAccessTime,
+                                                       FallbackValue=''}"
+                            ToolTip.Tip="{CompiledBinding Copy,
+                                                          Mode=OneWay}">
                             <Path
                                 Data="{StaticResource CopyGeometry}"
-                                Fill="{StaticResource MainIconColor}"
+                                Fill="{StaticResource SecondaryTextColor}"
                                 Height="16"
                                 Stretch="Fill"
                                 Width="16" />
                         </customControls:CopyButton>
                     </StackPanel>
 
+                    <!--  Bit Depth  -->
                     <StackPanel Margin="15,10" Orientation="Horizontal">
                         <TextBlock
                             Classes="txt"
                             Margin="0,8,0,0"
-                            Text="{CompiledBinding BitDepth}"
+                            Text="{CompiledBinding BitDepth,
+                                                   Mode=OneWay}"
                             Width="100" />
                         <customControls:FuncTextBox
-                            Classes="TStyle"
+                            Classes="TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding GetBitDepth}" />
+                            Text="{CompiledBinding GetBitDepth,
+                                                   Mode=OneWay}" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding GetBitDepth}"
-                            ToolTip.Tip="{CompiledBinding Copy}">
+                            CopyText="{CompiledBinding GetBitDepth,
+                                                       Mode=OneWay}"
+                            ToolTip.Tip="{CompiledBinding Copy,
+                                                          Mode=OneWay}">
                             <Path
                                 Data="{StaticResource CopyGeometry}"
-                                Fill="{StaticResource MainIconColor}"
+                                Fill="{StaticResource SecondaryTextColor}"
                                 Height="16"
                                 Stretch="Fill"
                                 Width="16" />
@@ -193,167 +238,208 @@
 
                 <StackPanel Width="347">
 
+                    <!--  Width  -->
                     <StackPanel Margin="15,10" Orientation="Horizontal">
                         <TextBlock
                             Classes="txt"
                             Margin="0,8,0,0"
-                            Text="{CompiledBinding Width}"
+                            Text="{CompiledBinding Width,
+                                                   Mode=OneWay}"
                             Width="100" />
-                        <customControls:FuncTextBox
-                            Background="{StaticResource SecondaryBackgroundColor}"
-                            Classes="hover TStyle"
-                            Foreground="{StaticResource MainTextColor}"
-                            Text="{CompiledBinding PixelWidth}"
-                            ToolTip.Tip="{CompiledBinding SizeTooltip}"
+                        <customControls:NumTextBox
+                            Background="{DynamicResource SecondaryBackgroundColor}"
+                            Classes="hover TStyle x"
+                            Foreground="{StaticResource SecondaryTextColor}"
+                            Text="{CompiledBinding PixelWidth,
+                                                   Mode=OneWay}"
+                            ToolTip.Tip="{CompiledBinding SizeTooltip,
+                                                          Mode=OneWay}"
                             x:Name="PixelWidthTextBox" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding PixelWidth}"
-                            ToolTip.Tip="{CompiledBinding Copy}">
+                            CopyText="{CompiledBinding PixelWidth,
+                                                       Mode=OneWay}"
+                            ToolTip.Tip="{CompiledBinding Copy,
+                                                          Mode=OneWay}">
                             <Path
                                 Data="{StaticResource CopyGeometry}"
-                                Fill="{StaticResource MainIconColor}"
+                                Fill="{StaticResource SecondaryTextColor}"
                                 Height="16"
                                 Stretch="Fill"
                                 Width="16" />
                         </customControls:CopyButton>
                     </StackPanel>
 
+                    <!--  Height  -->
                     <StackPanel Margin="15,10" Orientation="Horizontal">
                         <TextBlock
                             Classes="txt"
                             Margin="0,8,0,0"
-                            Text="{CompiledBinding Height}"
+                            Text="{CompiledBinding Height,
+                                                   Mode=OneWay}"
                             Width="100" />
-                        <customControls:FuncTextBox
-                            Background="{StaticResource SecondaryBackgroundColor}"
-                            Classes="hover TStyle"
-                            Foreground="{StaticResource MainTextColor}"
-                            Text="{CompiledBinding PixelHeight}"
-                            ToolTip.Tip="{CompiledBinding SizeTooltip}"
+                        <customControls:NumTextBox
+                            Background="{DynamicResource SecondaryBackgroundColor}"
+                            Classes="hover TStyle x"
+                            Foreground="{StaticResource SecondaryTextColor}"
+                            Text="{CompiledBinding PixelHeight,
+                                                   Mode=OneWay}"
+                            ToolTip.Tip="{CompiledBinding SizeTooltip,
+                                                          Mode=OneWay}"
                             x:Name="PixelHeightTextBox" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding PixelHeight}"
+                            CopyText="{CompiledBinding PixelHeight,
+                                                       Mode=OneWay}"
                             ToolTip.Tip="{CompiledBinding Copy}">
                             <Path
                                 Data="{StaticResource CopyGeometry}"
-                                Fill="{StaticResource MainIconColor}"
+                                Fill="{StaticResource SecondaryTextColor}"
                                 Height="16"
                                 Stretch="Fill"
                                 Width="16" />
                         </customControls:CopyButton>
                     </StackPanel>
 
+                    <!--  Size Mp  -->
                     <StackPanel Margin="15,10" Orientation="Horizontal">
                         <TextBlock
                             Classes="txt"
                             Margin="0,8,0,0"
-                            Text="{CompiledBinding SizeMp}"
+                            Text="{CompiledBinding SizeMp,
+                                                   Mode=OneWay}"
                             Width="100" />
                         <customControls:FuncTextBox
-                            Classes=" TStyle"
+                            Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding GetSizeMp}" />
+                            Text="{CompiledBinding GetSizeMp,
+                                                   Mode=OneWay}"
+                            x:Name="SizeMpTextBox" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding GetSizeMp}"
-                            ToolTip.Tip="{CompiledBinding Copy}">
+                            CopyText="{CompiledBinding GetSizeMp,
+                                                       Mode=OneWay}"
+                            ToolTip.Tip="{CompiledBinding Copy,
+                                                          Mode=OneWay}">
                             <Path
                                 Data="{StaticResource CopyGeometry}"
-                                Fill="{StaticResource MainIconColor}"
+                                Fill="{StaticResource SecondaryTextColor}"
                                 Height="16"
                                 Stretch="Fill"
                                 Width="16" />
                         </customControls:CopyButton>
                     </StackPanel>
 
+                    <!--  Resolution  -->
                     <StackPanel Margin="15,10" Orientation="Horizontal">
                         <TextBlock
                             Classes="txt"
                             Margin="0,8,0,0"
-                            Text="{CompiledBinding Resolution}"
-                            Width="100" />
+                            Text="{CompiledBinding Resolution,
+                                                   Mode=OneWay}"
+                            Width="100"
+                            x:Name="ResolutionTextBlock" />
                         <customControls:FuncTextBox
-                            Classes=" TStyle"
+                            Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding GetResolution}" />
+                            Text="{CompiledBinding GetResolution,
+                                                   Mode=OneWay}" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding GetResolution}"
-                            ToolTip.Tip="{CompiledBinding Copy}">
+                            CopyText="{CompiledBinding GetResolution,
+                                                       Mode=OneWay}"
+                            ToolTip.Tip="{CompiledBinding Copy,
+                                                          Mode=OneWay}">
                             <Path
                                 Data="{StaticResource CopyGeometry}"
-                                Fill="{StaticResource MainIconColor}"
+                                Fill="{StaticResource SecondaryTextColor}"
                                 Height="16"
                                 Stretch="Fill"
                                 Width="16" />
                         </customControls:CopyButton>
                     </StackPanel>
 
+                    <!--  Print Size Centimeters  -->
                     <StackPanel Margin="15,10" Orientation="Horizontal">
                         <TextBlock
                             Classes="txt"
                             Margin="0,8,0,0"
-                            Text="{CompiledBinding PrintSizeCm}"
+                            Text="{CompiledBinding PrintSizeCm,
+                                                   Mode=OneWay}"
                             Width="100" />
                         <customControls:FuncTextBox
-                            Classes=" TStyle"
+                            Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding GetPrintSizeCm}" />
+                            Text="{CompiledBinding GetPrintSizeCm,
+                                                   Mode=OneWay}"
+                            x:Name="PrintSizeCmTextBox" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding GetPrintSizeCm}"
-                            ToolTip.Tip="{CompiledBinding Copy}">
+                            CopyText="{CompiledBinding GetPrintSizeCm,
+                                                       Mode=OneWay}"
+                            ToolTip.Tip="{CompiledBinding Copy,
+                                                          Mode=OneWay}">
                             <Path
                                 Data="{StaticResource CopyGeometry}"
-                                Fill="{StaticResource MainIconColor}"
+                                Fill="{StaticResource SecondaryTextColor}"
                                 Height="16"
                                 Stretch="Fill"
                                 Width="16" />
                         </customControls:CopyButton>
                     </StackPanel>
 
+                    <!--  Print Size Inches  -->
                     <StackPanel Margin="15,10" Orientation="Horizontal">
                         <TextBlock
                             Classes="txt"
                             Margin="0,8,0,0"
-                            Text="{CompiledBinding PrintSizeIn}"
+                            Text="{CompiledBinding PrintSizeIn,
+                                                   Mode=OneWay}"
                             Width="100" />
                         <customControls:FuncTextBox
-                            Classes=" TStyle"
+                            Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding GetPrintSizeInch}" />
+                            Text="{CompiledBinding GetPrintSizeInch,
+                                                   Mode=OneWay}"
+                            x:Name="PrintSizeInchTextBox" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding GetPrintSizeInch}"
-                            ToolTip.Tip="{CompiledBinding Copy}">
+                            CopyText="{CompiledBinding GetPrintSizeInch,
+                                                       Mode=OneWay}"
+                            ToolTip.Tip="{CompiledBinding Copy,
+                                                          Mode=OneWay}">
                             <Path
                                 Data="{StaticResource CopyGeometry}"
-                                Fill="{StaticResource MainIconColor}"
+                                Fill="{StaticResource SecondaryTextColor}"
                                 Height="16"
                                 Stretch="Fill"
                                 Width="16" />
                         </customControls:CopyButton>
                     </StackPanel>
 
+                    <!--  Aspect Ratio  -->
                     <StackPanel Margin="15,10" Orientation="Horizontal">
                         <TextBlock
                             Classes="txt"
                             Margin="0,8,0,0"
-                            Text="{CompiledBinding AspectRatio}"
+                            Text="{CompiledBinding ReadAbleAspectRatio,
+                                                   Mode=OneWay}"
                             Width="100" />
                         <customControls:FuncTextBox
-                            Classes=" TStyle"
+                            Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding GetAspectRatio}" />
+                            Text="{CompiledBinding GetAspectRatio,
+                                                   Mode=OneWay}"
+                            x:Name="AspectRatioTextBox" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding GetAspectRatio}"
-                            ToolTip.Tip="{CompiledBinding Copy}">
+                            CopyText="{CompiledBinding GetAspectRatio,
+                                                       Mode=OneWay}"
+                            ToolTip.Tip="{CompiledBinding Copy,
+                                                          Mode=OneWay}">
                             <Path
                                 Data="{StaticResource CopyGeometry}"
-                                Fill="{StaticResource MainIconColor}"
+                                Fill="{StaticResource SecondaryTextColor}"
                                 Height="16"
                                 Stretch="Fill"
                                 Width="16" />
@@ -361,97 +447,75 @@
                     </StackPanel>
                 </StackPanel>
 
-                <StackPanel Margin="15,10" Width="130">
+                <!--  Convert To  -->
+                <StackPanel Margin="15,10" Width="140">
                     <TextBlock
                         Classes="txt"
                         FontSize="16"
                         Margin="0,25,0,10"
-                        Text="{CompiledBinding ConvertTo}"
+                        Text="{CompiledBinding ConvertTo,
+                                               Mode=OneWay}"
                         TextAlignment="Center" />
                     <ComboBox
-                        Background="{StaticResource SecondaryBackgroundColor}"
-                        BorderBrush="{StaticResource MainBorderColor}"
+                        Background="{DynamicResource SecondaryBackgroundColor}"
+                        BorderBrush="{DynamicResource MainBorderColor}"
                         BorderThickness="1"
+                        CornerRadius="2"
                         FontFamily="/Assets/Fonts/Roboto-Medium.ttf#Roboto"
                         Padding="5,7,0,7"
                         SelectedIndex="0"
-                        Width="130"
+                        Width="140"
                         x:Name="ConversionComboBox">
-                        <ComboBoxItem Content="{CompiledBinding NoConversion}" />
-                        <ComboBoxItem Content=".png" />
-                        <ComboBoxItem Content=".jpg" />
-                        <ComboBoxItem Content=".webp" />
-                        <ComboBoxItem Content=".avif" />
-                        <ComboBoxItem Content=".heic" />
-                        <ComboBoxItem Content=".jxl" />
+                        <ComboBoxItem Content="{CompiledBinding NoConversion, Mode=OneWay}" x:Name="NoConversion" />
+                        <ComboBoxItem Content=".png" x:Name="PngItem" />
+                        <ComboBoxItem Content=".jpg" x:Name="JpgItem" />
+                        <ComboBoxItem Content=".webp" x:Name="WebpItem" />
+                        <ComboBoxItem Content=".avif" x:Name="AvifItem" />
+                        <ComboBoxItem Content=".heic" x:Name="HeicItem" />
+                        <ComboBoxItem Content=".jxl" x:Name="JxlItem" />
                     </ComboBox>
-                    <Button
-                        Background="{StaticResource SecondaryBackgroundColor}"
-                        Classes="altHover BorderStyle"
-                        Command="{CompiledBinding ConvertCommand}"
-                        CommandParameter="{CompiledBinding Path=SelectedIndex,
-                                                           ElementName=ConversionComboBox}"
-                        HorizontalAlignment="Center"
-                        Margin="0,12"
-                        Width="130">
-                        <TextBlock
-                            Classes="txt"
-                            FontSize="14"
-                            Padding="5,7,5,2"
-                            Text="{CompiledBinding Apply}"
-                            TextAlignment="Center" />
-                    </Button>
 
-                    <TextBlock
-                        Classes="txt"
-                        FontSize="16"
-                        Margin="0,25,0,10"
-                        Text="{CompiledBinding Resize}"
-                        TextAlignment="Center" />
-                    <ComboBox
-                        Background="{StaticResource SecondaryBackgroundColor}"
-                        BorderBrush="{StaticResource MainBorderColor}"
-                        BorderThickness="1"
-                        FontFamily="/Assets/Fonts/Roboto-Medium.ttf#Roboto"
-                        Padding="5,7,0,7"
-                        SelectedIndex="0"
-                        Width="130"
-                        x:Name="PercentageComboBox">
-                        <ComboBoxItem Content="{CompiledBinding NoResize}" />
-                        <ComboBoxItem Content="95%" />
-                        <ComboBoxItem Content="90%" />
-                        <ComboBoxItem Content="85%" />
-                        <ComboBoxItem Content="80%" />
-                        <ComboBoxItem Content="75%" />
-                        <ComboBoxItem Content="70%" />
-                        <ComboBoxItem Content="65%" />
-                        <ComboBoxItem Content="60%" />
-                        <ComboBoxItem Content="55%" />
-                        <ComboBoxItem Content="50%" />
-                        <ComboBoxItem Content="45%" />
-                        <ComboBoxItem Content="40%" />
-                        <ComboBoxItem Content="35%" />
-                        <ComboBoxItem Content="30%" />
-                        <ComboBoxItem Content="25%" />
-                        <ComboBoxItem Content="20%" />
-                        <ComboBoxItem Content="15%" />
-                        <ComboBoxItem Content="10%" />
-                        <ComboBoxItem Content="5%" />
-                    </ComboBox>
-                    <Button
-                        Background="{StaticResource SecondaryBackgroundColor}"
-                        Classes="altHover BorderStyle"
-                        Command="{CompiledBinding ResizeCommand}"
-                        CommandParameter="{CompiledBinding Path=SelectedIndex,
-                                                           ElementName=PercentageComboBox}"
-                        HorizontalAlignment="Center"
-                        Margin="0,12"
-                        Width="130">
+                    <!--  Save, save as  -->
+                    <SplitButton
+                        Background="{DynamicResource AccentColor}"
+                        Classes="BorderStyle accentHover mainBtn"
+                        CornerRadius="2"
+                        Margin="0,40,0,0"
+                        Width="140"
+                        x:Name="SaveButton">
                         <TextBlock
                             Classes="txt"
-                            FontSize="14"
-                            Padding="5,7,5,2"
-                            Text="{CompiledBinding Apply}"
+                            Text="{CompiledBinding Save,
+                                                   Mode=OneWay}"
+                            TextAlignment="Center" />
+                        <SplitButton.Flyout>
+                            <MenuFlyout FlyoutPresenterClasses="noCornerRadius" Placement="Bottom">
+                                <Button
+                                    Background="Transparent"
+                                    Width="80"
+                                    x:Name="SaveAsButton">
+                                    <TextBlock
+                                        Classes="txt"
+                                        Foreground="{DynamicResource MainTextColor}"
+                                        Text="{CompiledBinding SaveAs,
+                                                               Mode=OneWay}"
+                                        TextAlignment="Center" />
+                                </Button>
+                            </MenuFlyout>
+                        </SplitButton.Flyout>
+                    </SplitButton>
+
+                    <!--  Reset  -->
+                    <Button
+                        Classes="BorderStyle altHover mainBtn"
+                        CornerRadius="2"
+                        Margin="0,20,0,0"
+                        Width="140"
+                        x:Name="ResetButton">
+                        <TextBlock
+                            Classes="txt"
+                            Text="{CompiledBinding Reset,
+                                                   Mode=OneWay}"
                             TextAlignment="Center" />
                     </Button>
                 </StackPanel>
@@ -462,16 +526,16 @@
                 Margin="15,15,15,10"
                 Orientation="Horizontal">
                 <Rectangle
-                    Fill="{StaticResource MainBorderColor}"
+                    Fill="{DynamicResource MainBorderColor}"
                     Height="1"
                     Margin="0,0,7,0"
                     Width="395" />
                 <Path
                     Data="M256 8C118.941 8 8 118.919 8 256c0 137.059 110.919 248 248 248 48.154 0 95.342-14.14 135.408-40.223 12.005-7.815 14.625-24.288 5.552-35.372l-10.177-12.433c-7.671-9.371-21.179-11.667-31.373-5.129C325.92 429.757 291.314 440 256 440c-101.458 0-184-82.542-184-184S154.542 72 256 72c100.139 0 184 57.619 184 160 0 38.786-21.093 79.742-58.17 83.693-17.349-.454-16.91-12.857-13.476-30.024l23.433-121.11C394.653 149.75 383.308 136 368.225 136h-44.981a13.518 13.518 0 0 0-13.432 11.993l-.01.092c-14.697-17.901-40.448-21.775-59.971-21.775-74.58 0-137.831 62.234-137.831 151.46 0 65.303 36.785 105.87 96 105.87 26.984 0 57.369-15.637 74.991-38.333 9.522 34.104 40.613 34.103 70.71 34.103C462.609 379.41 504 307.798 504 232 504 95.653 394.023 8 256 8zm-21.68 304.43c-22.249 0-36.07-15.623-36.07-40.771 0-44.993 30.779-72.729 58.63-72.729 22.292 0 35.601 15.241 35.601 40.77 0 45.061-33.875 72.73-58.161 72.73z"
-                    Fill="{StaticResource MainIconColor}"
+                    Fill="{StaticResource SecondaryTextColor}"
                     Stretch="Uniform" />
                 <Rectangle
-                    Fill="{StaticResource MainBorderColor}"
+                    Fill="{DynamicResource MainBorderColor}"
                     Height="1"
                     Margin="7,0,0,0"
                     Width="395" />
@@ -484,20 +548,24 @@
                         <TextBlock
                             Classes="txt"
                             Margin="0,8,2,0"
-                            Text="{CompiledBinding DateTaken}"
+                            Text="{CompiledBinding DateTaken,
+                                                   Mode=OneWay}"
                             Width="100" />
                         <customControls:FuncTextBox
-                            Classes=" TStyle"
+                            Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding GetDateTaken}"
+                            Text="{CompiledBinding GetDateTaken,
+                                                   Mode=OneWay}"
                             Width="230" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding GetDateTaken}"
-                            ToolTip.Tip="{CompiledBinding Copy}">
+                            CopyText="{CompiledBinding GetDateTaken,
+                                                       Mode=OneWay}"
+                            ToolTip.Tip="{CompiledBinding Copy,
+                                                          Mode=OneWay}">
                             <Path
                                 Data="{StaticResource CopyGeometry}"
-                                Fill="{StaticResource MainIconColor}"
+                                Fill="{StaticResource SecondaryTextColor}"
                                 Height="16"
                                 Stretch="Fill"
                                 Width="16" />
@@ -508,20 +576,24 @@
                         <TextBlock
                             Classes="txt"
                             Margin="0,8,2,0"
-                            Text="{CompiledBinding Authors}"
+                            Text="{CompiledBinding Authors,
+                                                   Mode=OneWay}"
                             Width="100" />
                         <customControls:FuncTextBox
-                            Classes=" TStyle"
+                            Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding GetAuthors}"
+                            Text="{CompiledBinding GetAuthors,
+                                                   Mode=OneWay}"
                             Width="230" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding GetAuthors}"
-                            ToolTip.Tip="{CompiledBinding Copy}">
+                            CopyText="{CompiledBinding GetAuthors,
+                                                       Mode=OneWay}"
+                            ToolTip.Tip="{CompiledBinding Copy,
+                                                          Mode=OneWay}">
                             <Path
                                 Data="{StaticResource CopyGeometry}"
-                                Fill="{StaticResource MainIconColor}"
+                                Fill="{StaticResource SecondaryTextColor}"
                                 Height="16"
                                 Stretch="Fill"
                                 Width="16" />
@@ -534,20 +606,24 @@
                         <TextBlock
                             Classes="txt"
                             Margin="0,8,2,0"
-                            Text="{CompiledBinding Copyright}"
+                            Text="{CompiledBinding Copyright,
+                                                   Mode=OneWay}"
                             Width="100" />
                         <customControls:FuncTextBox
-                            Classes=" TStyle"
+                            Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding GetCopyright}"
+                            Text="{CompiledBinding GetCopyright,
+                                                   Mode=OneWay}"
                             Width="230" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding GetCopyright}"
-                            ToolTip.Tip="{CompiledBinding Copy}">
+                            CopyText="{CompiledBinding GetCopyright,
+                                                       Mode=OneWay}"
+                            ToolTip.Tip="{CompiledBinding Copy,
+                                                          Mode=OneWay}">
                             <Path
                                 Data="{StaticResource CopyGeometry}"
-                                Fill="{StaticResource MainIconColor}"
+                                Fill="{StaticResource SecondaryTextColor}"
                                 Height="16"
                                 Stretch="Fill"
                                 Width="16" />
@@ -558,20 +634,24 @@
                         <TextBlock
                             Classes="txt"
                             Margin="0,8,2,0"
-                            Text="{CompiledBinding Software}"
+                            Text="{CompiledBinding Software,
+                                                   Mode=OneWay}"
                             Width="100" />
                         <customControls:FuncTextBox
-                            Classes=" TStyle"
+                            Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding GetSoftware}"
+                            Text="{CompiledBinding GetSoftware,
+                                                   Mode=OneWay}"
                             Width="230" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding GetSoftware}"
-                            ToolTip.Tip="{CompiledBinding Copy}">
+                            CopyText="{CompiledBinding GetSoftware,
+                                                       Mode=OneWay}"
+                            ToolTip.Tip="{CompiledBinding Copy,
+                                                          Mode=OneWay}">
                             <Path
                                 Data="{StaticResource CopyGeometry}"
-                                Fill="{StaticResource MainIconColor}"
+                                Fill="{StaticResource SecondaryTextColor}"
                                 Height="16"
                                 Stretch="Fill"
                                 Width="16" />
@@ -585,20 +665,24 @@
                             <TextBlock
                                 Classes="txt"
                                 Margin="0,8,2,0"
-                                Text="{CompiledBinding XPTitle}"
+                                Text="{CompiledBinding XPTitle,
+                                                       Mode=OneWay}"
                                 Width="100" />
                             <customControls:FuncTextBox
-                                Classes=" TStyle"
+                                Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding GetTitle}"
+                                Text="{CompiledBinding GetTitle,
+                                                       Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding GetTitle}"
-                                ToolTip.Tip="{CompiledBinding Copy}">
+                                CopyText="{CompiledBinding GetTitle,
+                                                           Mode=OneWay}"
+                                ToolTip.Tip="{CompiledBinding Copy,
+                                                              Mode=OneWay}">
                                 <Path
                                     Data="{StaticResource CopyGeometry}"
-                                    Fill="{StaticResource MainIconColor}"
+                                    Fill="{StaticResource SecondaryTextColor}"
                                     Height="16"
                                     Stretch="Fill"
                                     Width="16" />
@@ -609,20 +693,24 @@
                             <TextBlock
                                 Classes="txt"
                                 Margin="0,8,2,0"
-                                Text="{CompiledBinding Subject}"
+                                Text="{CompiledBinding Subject,
+                                                       Mode=OneWay}"
                                 Width="100" />
                             <customControls:FuncTextBox
-                                Classes=" TStyle"
+                                Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding GetSubject}"
+                                Text="{CompiledBinding GetSubject,
+                                                       Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding GetSubject}"
-                                ToolTip.Tip="{CompiledBinding Copy}">
+                                CopyText="{CompiledBinding GetSubject,
+                                                           Mode=OneWay}"
+                                ToolTip.Tip="{CompiledBinding Copy,
+                                                              Mode=OneWay}">
                                 <Path
                                     Data="{StaticResource CopyGeometry}"
-                                    Fill="{StaticResource MainIconColor}"
+                                    Fill="{StaticResource SecondaryTextColor}"
                                     Height="16"
                                     Stretch="Fill"
                                     Width="16" />
@@ -637,16 +725,16 @@
                 Margin="15,15,15,10"
                 Orientation="Horizontal">
                 <Rectangle
-                    Fill="{StaticResource MainBorderColor}"
+                    Fill="{DynamicResource MainBorderColor}"
                     Height="1"
                     Margin="0,0,7,0"
                     Width="395" />
                 <Path
                     Data="M172.268 501.67C26.97 291.031 0 269.413 0 192 0 85.961 85.961 0 192 0s192 85.961 192 192c0 77.413-26.97 99.031-172.268 309.67-9.535 13.774-29.93 13.773-39.464 0zM192 272c44.183 0 80-35.817 80-80s-35.817-80-80-80-80 35.817-80 80 35.817 80 80 80z"
-                    Fill="{StaticResource MainIconColor}"
+                    Fill="{StaticResource SecondaryTextColor}"
                     Stretch="Uniform" />
                 <Rectangle
-                    Fill="{StaticResource MainBorderColor}"
+                    Fill="{DynamicResource MainBorderColor}"
                     Height="1"
                     Margin="7,0,0,0"
                     Width="395" />
@@ -659,20 +747,24 @@
                         <TextBlock
                             Classes="txt"
                             Margin="0,8,2,0"
-                            Text="{CompiledBinding Latitude}"
+                            Text="{CompiledBinding Latitude,
+                                                   Mode=OneWay}"
                             Width="100" />
                         <customControls:FuncTextBox
-                            Classes=" TStyle"
+                            Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding GetLatitude}"
+                            Text="{CompiledBinding GetLatitude,
+                                                   Mode=OneWay}"
                             Width="230" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding GetLatitude}"
-                            ToolTip.Tip="{CompiledBinding Copy}">
+                            CopyText="{CompiledBinding GetLatitude,
+                                                       Mode=OneWay}"
+                            ToolTip.Tip="{CompiledBinding Copy,
+                                                          Mode=OneWay}">
                             <Path
                                 Data="{StaticResource CopyGeometry}"
-                                Fill="{StaticResource MainIconColor}"
+                                Fill="{StaticResource SecondaryTextColor}"
                                 Height="16"
                                 Stretch="Fill"
                                 Width="16" />
@@ -683,20 +775,24 @@
                         <TextBlock
                             Classes="txt"
                             Margin="0,8,2,0"
-                            Text="{CompiledBinding Longitude}"
+                            Text="{CompiledBinding Longitude,
+                                                   Mode=OneWay}"
                             Width="100" />
                         <customControls:FuncTextBox
-                            Classes=" TStyle"
+                            Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding GetLongitude}"
+                            Text="{CompiledBinding GetLongitude,
+                                                   Mode=OneWay}"
                             Width="230" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding GetLongitude}"
-                            ToolTip.Tip="{CompiledBinding Copy}">
+                            CopyText="{CompiledBinding GetLongitude,
+                                                       Mode=OneWay}"
+                            ToolTip.Tip="{CompiledBinding Copy,
+                                                          Mode=OneWay}">
                             <Path
                                 Data="{StaticResource CopyGeometry}"
-                                Fill="{StaticResource MainIconColor}"
+                                Fill="{StaticResource SecondaryTextColor}"
                                 Height="16"
                                 Stretch="Fill"
                                 Width="16" />
@@ -708,20 +804,24 @@
                     <TextBlock
                         Classes="txt"
                         Margin="0,8,2,0"
-                        Text="{CompiledBinding Altitude}"
+                        Text="{CompiledBinding Altitude,
+                                               Mode=OneWay}"
                         Width="100" />
                     <customControls:FuncTextBox
-                        Classes=" TStyle"
+                        Classes=" TStyle x"
                         IsReadOnly="True"
-                        Text="{CompiledBinding GetAltitude}"
+                        Text="{CompiledBinding GetAltitude,
+                                               Mode=OneWay}"
                         Width="230" />
                     <customControls:CopyButton
                         Classes="altHover BorderStyle"
-                        CopyText="{CompiledBinding GetAltitude}"
-                        ToolTip.Tip="{CompiledBinding Copy}">
+                        CopyText="{CompiledBinding GetAltitude,
+                                                   Mode=OneWay}"
+                        ToolTip.Tip="{CompiledBinding Copy,
+                                                      Mode=OneWay}">
                         <Path
                             Data="{StaticResource CopyGeometry}"
-                            Fill="{StaticResource MainIconColor}"
+                            Fill="{StaticResource SecondaryTextColor}"
                             Height="16"
                             Stretch="Fill"
                             Width="16" />
@@ -730,19 +830,20 @@
                     <StackPanel Margin="94,0,0,0" Orientation="Horizontal">
                         <Button
                             Classes="altHover BorderStyle"
-                            Command="{CompiledBinding OpenGoogleLinkCommand}"
+                            Command="{CompiledBinding OpenGoogleLinkCommand,
+                                                      Mode=OneWay}"
                             Margin="30,0,15,0">
                             <Path
                                 Data="M473.16 221.48l-2.26-9.59H262.46v88.22H387c-12.93 61.4-72.93 93.72-121.94 93.72-35.66 0-73.25-15-98.13-39.11a140.08 140.08 0 01-41.8-98.88c0-37.16 16.7-74.33 41-98.78s61-38.13 97.49-38.13c41.79 0 71.74 22.19 82.94 32.31l62.69-62.36C390.86 72.72 340.34 32 261.6 32c-60.75 0-119 23.27-161.58 65.71C58 139.5 36.25 199.93 36.25 256s20.58 113.48 61.3 155.6c43.51 44.92 105.13 68.4 168.58 68.4 57.73 0 112.45-22.62 151.45-63.66 38.34-40.4 58.17-96.3 58.17-154.9 0-24.67-2.48-39.32-2.59-39.96z"
-                                Fill="{StaticResource MainIconColor}"
+                                Fill="{StaticResource SecondaryTextColor}"
                                 Height="20"
                                 Stretch="Fill"
                                 Width="20" />
                         </Button>
-                        <Button Classes="altHover BorderStyle" Command="{CompiledBinding OpenBingLinkCommand}">
+                        <Button Classes="altHover BorderStyle" Command="{CompiledBinding OpenBingLinkCommand, Mode=OneWay}">
                             <Path
                                 Data="M31.87 30.58H244.7v212.81H31.87zM266.89 30.58H479.7v212.81H266.89zM31.87 265.61H244.7v212.8H31.87zM266.89 265.61H479.7v212.8H266.89z"
-                                Fill="{StaticResource MainIconColor}"
+                                Fill="{StaticResource SecondaryTextColor}"
                                 Height="20"
                                 Stretch="Fill"
                                 Width="20" />
@@ -756,16 +857,16 @@
                 Margin="15,15,15,10"
                 Orientation="Horizontal">
                 <Rectangle
-                    Fill="{StaticResource MainBorderColor}"
+                    Fill="{DynamicResource MainBorderColor}"
                     Height="1"
                     Margin="0,0,7,0"
                     Width="395" />
                 <Path
                     Data="M384 121.941V128H256V0h6.059a24 24 0 0 1 16.97 7.029l97.941 97.941a24.002 24.002 0 0 1 7.03 16.971zM248 160c-13.2 0-24-10.8-24-24V0H24C10.745 0 0 10.745 0 24v464c0 13.255 10.745 24 24 24h336c13.255 0 24-10.745 24-24V160H248zm-135.455 16c26.51 0 48 21.49 48 48s-21.49 48-48 48-48-21.49-48-48 21.491-48 48-48zm208 240h-256l.485-48.485L104.545 328c4.686-4.686 11.799-4.201 16.485.485L160.545 368 264.06 264.485c4.686-4.686 12.284-4.686 16.971 0L320.545 304v112z"
-                    Fill="{StaticResource MainIconColor}"
+                    Fill="{StaticResource SecondaryTextColor}"
                     Stretch="Uniform" />
                 <Rectangle
-                    Fill="{StaticResource MainBorderColor}"
+                    Fill="{DynamicResource MainBorderColor}"
                     Height="1"
                     Margin="7,0,0,0"
                     Width="395" />
@@ -778,20 +879,24 @@
                         <TextBlock
                             Classes="txt"
                             Margin="0,8,2,0"
-                            Text="{CompiledBinding ResolutionUnit}"
+                            Text="{CompiledBinding ResolutionUnit,
+                                                   Mode=OneWay}"
                             Width="100" />
                         <customControls:FuncTextBox
-                            Classes=" TStyle"
+                            Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding GetResolutionUnit}"
+                            Text="{CompiledBinding GetResolutionUnit,
+                                                   Mode=OneWay}"
                             Width="230" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding GetResolutionUnit}"
-                            ToolTip.Tip="{CompiledBinding Copy}">
+                            CopyText="{CompiledBinding GetResolutionUnit,
+                                                       Mode=OneWay}"
+                            ToolTip.Tip="{CompiledBinding Copy,
+                                                          Mode=OneWay}">
                             <Path
                                 Data="{StaticResource CopyGeometry}"
-                                Fill="{StaticResource MainIconColor}"
+                                Fill="{StaticResource SecondaryTextColor}"
                                 Height="16"
                                 Stretch="Fill"
                                 Width="16" />
@@ -802,20 +907,24 @@
                         <TextBlock
                             Classes="txt"
                             Margin="0,8,2,0"
-                            Text="{CompiledBinding ColorRepresentation}"
+                            Text="{CompiledBinding ColorRepresentation,
+                                                   Mode=OneWay}"
                             Width="100" />
                         <customControls:FuncTextBox
-                            Classes=" TStyle"
+                            Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding GetColorRepresentation}"
+                            Text="{CompiledBinding GetColorRepresentation,
+                                                   Mode=OneWay}"
                             Width="230" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding GetColorRepresentation}"
-                            ToolTip.Tip="{CompiledBinding Copy}">
+                            CopyText="{CompiledBinding GetColorRepresentation,
+                                                       Mode=OneWay}"
+                            ToolTip.Tip="{CompiledBinding Copy,
+                                                          Mode=OneWay}">
                             <Path
                                 Data="{StaticResource CopyGeometry}"
-                                Fill="{StaticResource MainIconColor}"
+                                Fill="{StaticResource SecondaryTextColor}"
                                 Height="16"
                                 Stretch="Fill"
                                 Width="16" />
@@ -829,20 +938,24 @@
                             <TextBlock
                                 Classes="txt"
                                 Margin="0,8,2,0"
-                                Text="{CompiledBinding Compression}"
+                                Text="{CompiledBinding Compression,
+                                                       Mode=OneWay}"
                                 Width="100" />
                             <customControls:FuncTextBox
-                                Classes=" TStyle"
+                                Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding GetCompression}"
+                                Text="{CompiledBinding GetCompression,
+                                                       Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding GetCompression}"
-                                ToolTip.Tip="{CompiledBinding Copy}">
+                                CopyText="{CompiledBinding GetCompression,
+                                                           Mode=OneWay}"
+                                ToolTip.Tip="{CompiledBinding Copy,
+                                                              Mode=OneWay}">
                                 <Path
                                     Data="{StaticResource CopyGeometry}"
-                                    Fill="{StaticResource MainIconColor}"
+                                    Fill="{StaticResource SecondaryTextColor}"
                                     Height="16"
                                     Stretch="Fill"
                                     Width="16" />
@@ -853,20 +966,24 @@
                             <TextBlock
                                 Classes="txt"
                                 Margin="0,8,2,0"
-                                Text="{CompiledBinding CompressedBitsPixel}"
+                                Text="{CompiledBinding CompressedBitsPixel,
+                                                       Mode=OneWay}"
                                 Width="100" />
                             <customControls:FuncTextBox
-                                Classes=" TStyle"
+                                Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding GetCompressedBitsPixel}"
+                                Text="{CompiledBinding GetCompressedBitsPixel,
+                                                       Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding GetCompressedBitsPixel}"
-                                ToolTip.Tip="{CompiledBinding Copy}">
+                                CopyText="{CompiledBinding GetCompressedBitsPixel,
+                                                           Mode=OneWay}"
+                                ToolTip.Tip="{CompiledBinding Copy,
+                                                              Mode=OneWay}">
                                 <Path
                                     Data="{StaticResource CopyGeometry}"
-                                    Fill="{StaticResource MainIconColor}"
+                                    Fill="{StaticResource SecondaryTextColor}"
                                     Height="16"
                                     Stretch="Fill"
                                     Width="16" />
@@ -881,7 +998,7 @@
                 Margin="15,15,15,10"
                 Orientation="Horizontal">
                 <Rectangle
-                    Fill="{StaticResource MainBorderColor}"
+                    Fill="{DynamicResource MainBorderColor}"
                     Height="1"
                     Margin="0,0,7,0"
                     Width="395" />
@@ -890,14 +1007,14 @@
                         <DrawingImage>
                             <DrawingImage.Drawing>
                                 <DrawingGroup ClipGeometry="M0,0 V512 H512 V0 H0 Z">
-                                    <GeometryDrawing Brush="{StaticResource MainIconColor}" Geometry="F1 M512,512z M0,0z M48,32C21.5,32,0,53.5,0,80L0,432C0,458.5,21.5,480,48,480L464,480C490.5,480,512,458.5,512,432L512,80C512,53.5,490.5,32,464,32L48,32z M48,64L154,64C157.3,64,160,66.7,160,70L160,90C160,93.3,157.3,96,154,96L38,96C34.7,96,32,93.3,32,90L32,80C32,71.2,39.2,64,48,64z M474,160L38,160C34.7,160,32,157.3,32,154L32,118C32,114.7,34.7,112,38,112L176,112 206.2,66.7C207.3,65,209.2,64,211.2,64L464,64C472.8,64,480,71.2,480,80L480,154C480,157.3,477.3,160,474,160z M256,424C189.8,424 136,370.2 136,304 136,237.8 189.8,184 256,184 322.2,184 376,237.8 376,304 376,370.2 322.2,424 256,424z M256,216C207.5,216 168,255.5 168,304 168,352.5 207.5,392 256,392 304.5,392 344,352.5 344,304 344,255.5 304.5,216 256,216z M208,320C199.2,320 192,312.8 192,304 192,268.7 220.7,240 256,240 264.8,240 272,247.2 272,256 272,264.8 264.8,272 256,272 238.4,272 224,286.4 224,304 224,312.8 216.8,320 208,320z" />
+                                    <GeometryDrawing Brush="{StaticResource SecondaryTextColor}" Geometry="F1 M512,512z M0,0z M48,32C21.5,32,0,53.5,0,80L0,432C0,458.5,21.5,480,48,480L464,480C490.5,480,512,458.5,512,432L512,80C512,53.5,490.5,32,464,32L48,32z M48,64L154,64C157.3,64,160,66.7,160,70L160,90C160,93.3,157.3,96,154,96L38,96C34.7,96,32,93.3,32,90L32,80C32,71.2,39.2,64,48,64z M474,160L38,160C34.7,160,32,157.3,32,154L32,118C32,114.7,34.7,112,38,112L176,112 206.2,66.7C207.3,65,209.2,64,211.2,64L464,64C472.8,64,480,71.2,480,80L480,154C480,157.3,477.3,160,474,160z M256,424C189.8,424 136,370.2 136,304 136,237.8 189.8,184 256,184 322.2,184 376,237.8 376,304 376,370.2 322.2,424 256,424z M256,216C207.5,216 168,255.5 168,304 168,352.5 207.5,392 256,392 304.5,392 344,352.5 344,304 344,255.5 304.5,216 256,216z M208,320C199.2,320 192,312.8 192,304 192,268.7 220.7,240 256,240 264.8,240 272,247.2 272,256 272,264.8 264.8,272 256,272 238.4,272 224,286.4 224,304 224,312.8 216.8,320 208,320z" />
                                 </DrawingGroup>
                             </DrawingImage.Drawing>
                         </DrawingImage>
                     </Image.Source>
                 </Image>
                 <Rectangle
-                    Fill="{StaticResource MainBorderColor}"
+                    Fill="{DynamicResource MainBorderColor}"
                     Height="1"
                     Margin="7,0,0,0"
                     Width="395" />
@@ -910,20 +1027,24 @@
                         <TextBlock
                             Classes="txt"
                             Margin="0,8,2,0"
-                            Text="{CompiledBinding CameraMaker}"
+                            Text="{CompiledBinding CameraMaker,
+                                                   Mode=OneWay}"
                             Width="100" />
                         <customControls:FuncTextBox
-                            Classes=" TStyle"
+                            Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding GetCameraMaker}"
+                            Text="{CompiledBinding GetCameraMaker,
+                                                   Mode=OneWay}"
                             Width="230" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding GetCameraMaker}"
-                            ToolTip.Tip="{CompiledBinding Copy}">
+                            CopyText="{CompiledBinding GetCameraMaker,
+                                                       Mode=OneWay}"
+                            ToolTip.Tip="{CompiledBinding Copy,
+                                                          Mode=OneWay}">
                             <Path
                                 Data="{StaticResource CopyGeometry}"
-                                Fill="{StaticResource MainIconColor}"
+                                Fill="{StaticResource SecondaryTextColor}"
                                 Height="16"
                                 Stretch="Fill"
                                 Width="16" />
@@ -934,20 +1055,24 @@
                         <TextBlock
                             Classes="txt"
                             Margin="0,8,2,0"
-                            Text="{CompiledBinding CameraModel}"
+                            Text="{CompiledBinding CameraModel,
+                                                   Mode=OneWay}"
                             Width="100" />
                         <customControls:FuncTextBox
-                            Classes=" TStyle"
+                            Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding GetCameraModel}"
+                            Text="{CompiledBinding GetCameraModel,
+                                                   Mode=OneWay}"
                             Width="230" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding GetCameraModel}"
-                            ToolTip.Tip="{CompiledBinding Copy}">
+                            CopyText="{CompiledBinding GetCameraModel,
+                                                       Mode=OneWay}"
+                            ToolTip.Tip="{CompiledBinding Copy,
+                                                          Mode=OneWay}">
                             <Path
                                 Data="{StaticResource CopyGeometry}"
-                                Fill="{StaticResource MainIconColor}"
+                                Fill="{StaticResource SecondaryTextColor}"
                                 Height="16"
                                 Stretch="Fill"
                                 Width="16" />
@@ -961,20 +1086,24 @@
                             <TextBlock
                                 Classes="txt"
                                 Margin="0,8,2,0"
-                                Text="{CompiledBinding Fstop}"
+                                Text="{CompiledBinding Fstop,
+                                                       Mode=OneWay}"
                                 Width="100" />
                             <customControls:FuncTextBox
-                                Classes=" TStyle"
+                                Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding GetFNumber}"
+                                Text="{CompiledBinding GetFNumber,
+                                                       Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding GetFNumber}"
-                                ToolTip.Tip="{CompiledBinding Copy}">
+                                CopyText="{CompiledBinding GetFNumber,
+                                                           Mode=OneWay}"
+                                ToolTip.Tip="{CompiledBinding Copy,
+                                                              Mode=OneWay}">
                                 <Path
                                     Data="{StaticResource CopyGeometry}"
-                                    Fill="{StaticResource MainIconColor}"
+                                    Fill="{StaticResource SecondaryTextColor}"
                                     Height="16"
                                     Stretch="Fill"
                                     Width="16" />
@@ -985,20 +1114,24 @@
                             <TextBlock
                                 Classes="txt"
                                 Margin="0,8,2,0"
-                                Text="{CompiledBinding MaxAperture}"
+                                Text="{CompiledBinding MaxAperture,
+                                                       Mode=OneWay}"
                                 Width="100" />
                             <customControls:FuncTextBox
-                                Classes=" TStyle"
+                                Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding GetMaxAperture}"
+                                Text="{CompiledBinding GetMaxAperture,
+                                                       Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding GetLensMaker}"
-                                ToolTip.Tip="{CompiledBinding Copy}">
+                                CopyText="{CompiledBinding GetLensMaker,
+                                                           Mode=OneWay}"
+                                ToolTip.Tip="{CompiledBinding Copy,
+                                                              Mode=OneWay}">
                                 <Path
                                     Data="{StaticResource CopyGeometry}"
-                                    Fill="{StaticResource MainIconColor}"
+                                    Fill="{StaticResource SecondaryTextColor}"
                                     Height="16"
                                     Stretch="Fill"
                                     Width="16" />
@@ -1013,20 +1146,24 @@
                             <TextBlock
                                 Classes="txt"
                                 Margin="0,8,2,0"
-                                Text="{CompiledBinding ExposureBias}"
+                                Text="{CompiledBinding ExposureBias,
+                                                       Mode=OneWay}"
                                 Width="100" />
                             <customControls:FuncTextBox
-                                Classes=" TStyle"
+                                Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding GetExposureBias}"
+                                Text="{CompiledBinding GetExposureBias,
+                                                       Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding GetExposureBias}"
-                                ToolTip.Tip="{CompiledBinding Copy}">
+                                CopyText="{CompiledBinding GetExposureBias,
+                                                           Mode=OneWay}"
+                                ToolTip.Tip="{CompiledBinding Copy,
+                                                              Mode=OneWay}">
                                 <Path
                                     Data="{StaticResource CopyGeometry}"
-                                    Fill="{StaticResource MainIconColor}"
+                                    Fill="{StaticResource SecondaryTextColor}"
                                     Height="16"
                                     Stretch="Fill"
                                     Width="16" />
@@ -1037,20 +1174,24 @@
                             <TextBlock
                                 Classes="txt"
                                 Margin="0,8,2,0"
-                                Text="{CompiledBinding ExposureTime}"
+                                Text="{CompiledBinding ExposureTime,
+                                                       Mode=OneWay}"
                                 Width="100" />
                             <customControls:FuncTextBox
-                                Classes=" TStyle"
+                                Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding GetExposureTime}"
+                                Text="{CompiledBinding GetExposureTime,
+                                                       Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding GetExposureTime}"
-                                ToolTip.Tip="{CompiledBinding Copy}">
+                                CopyText="{CompiledBinding GetExposureTime,
+                                                           Mode=OneWay}"
+                                ToolTip.Tip="{CompiledBinding Copy,
+                                                              Mode=OneWay}">
                                 <Path
                                     Data="{StaticResource CopyGeometry}"
-                                    Fill="{StaticResource MainIconColor}"
+                                    Fill="{StaticResource SecondaryTextColor}"
                                     Height="16"
                                     Stretch="Fill"
                                     Width="16" />
@@ -1065,20 +1206,24 @@
                             <TextBlock
                                 Classes="txt"
                                 Margin="0,8,2,0"
-                                Text="{CompiledBinding ExposureProgram}"
+                                Text="{CompiledBinding ExposureProgram,
+                                                       Mode=OneWay}"
                                 Width="100" />
                             <customControls:FuncTextBox
-                                Classes=" TStyle"
+                                Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding GetExposureProgram}"
+                                Text="{CompiledBinding GetExposureProgram,
+                                                       Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding GetExposureProgram}"
-                                ToolTip.Tip="{CompiledBinding Copy}">
+                                CopyText="{CompiledBinding GetExposureProgram,
+                                                           Mode=OneWay}"
+                                ToolTip.Tip="{CompiledBinding Copy,
+                                                              Mode=OneWay}">
                                 <Path
                                     Data="{StaticResource CopyGeometry}"
-                                    Fill="{StaticResource MainIconColor}"
+                                    Fill="{StaticResource SecondaryTextColor}"
                                     Height="16"
                                     Stretch="Fill"
                                     Width="16" />
@@ -1089,20 +1234,23 @@
                             <TextBlock
                                 Classes="txt"
                                 Margin="0,8,2,0"
-                                Text="{Binding DigitalZoom}"
+                                Text="{Binding DigitalZoom, Mode=OneWay}"
                                 Width="100" />
                             <customControls:FuncTextBox
-                                Classes=" TStyle"
+                                Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding GetDigitalZoom}"
+                                Text="{CompiledBinding GetDigitalZoom,
+                                                       Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding GetDigitalZoom}"
-                                ToolTip.Tip="{CompiledBinding Copy}">
+                                CopyText="{CompiledBinding GetDigitalZoom,
+                                                           Mode=OneWay}"
+                                ToolTip.Tip="{CompiledBinding Copy,
+                                                              Mode=OneWay}">
                                 <Path
                                     Data="{StaticResource CopyGeometry}"
-                                    Fill="{StaticResource MainIconColor}"
+                                    Fill="{StaticResource SecondaryTextColor}"
                                     Height="16"
                                     Stretch="Fill"
                                     Width="16" />
@@ -1117,20 +1265,24 @@
                             <TextBlock
                                 Classes="txt"
                                 Margin="0,8,2,0"
-                                Text="{CompiledBinding FocalLength}"
+                                Text="{CompiledBinding FocalLength,
+                                                       Mode=OneWay}"
                                 Width="100" />
                             <customControls:FuncTextBox
-                                Classes=" TStyle"
+                                Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding GetFocalLength}"
+                                Text="{CompiledBinding GetFocalLength,
+                                                       Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding GetFocalLength}"
-                                ToolTip.Tip="{CompiledBinding Copy}">
+                                CopyText="{CompiledBinding GetFocalLength,
+                                                           Mode=OneWay}"
+                                ToolTip.Tip="{CompiledBinding Copy,
+                                                              Mode=OneWay}">
                                 <Path
                                     Data="{StaticResource CopyGeometry}"
-                                    Fill="{StaticResource MainIconColor}"
+                                    Fill="{StaticResource SecondaryTextColor}"
                                     Height="16"
                                     Stretch="Fill"
                                     Width="16" />
@@ -1141,20 +1293,24 @@
                             <TextBlock
                                 Classes="txt"
                                 Margin="0,8,2,0"
-                                Text="{CompiledBinding FocalLength35mm}"
+                                Text="{CompiledBinding FocalLength35mm,
+                                                       Mode=OneWay}"
                                 Width="100" />
                             <customControls:FuncTextBox
-                                Classes=" TStyle"
+                                Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding GetFocalLength35Mm}"
+                                Text="{CompiledBinding GetFocalLength35Mm,
+                                                       Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding GetFocalLength35Mm}"
-                                ToolTip.Tip="{CompiledBinding Copy}">
+                                CopyText="{CompiledBinding GetFocalLength35Mm,
+                                                           Mode=OneWay}"
+                                ToolTip.Tip="{CompiledBinding Copy,
+                                                              Mode=OneWay}">
                                 <Path
                                     Data="{StaticResource CopyGeometry}"
-                                    Fill="{StaticResource MainIconColor}"
+                                    Fill="{StaticResource SecondaryTextColor}"
                                     Height="16"
                                     Stretch="Fill"
                                     Width="16" />
@@ -1169,20 +1325,24 @@
                             <TextBlock
                                 Classes="txt"
                                 Margin="0,8,2,0"
-                                Text="{CompiledBinding ISOSpeed}"
+                                Text="{CompiledBinding ISOSpeed,
+                                                       Mode=OneWay}"
                                 Width="100" />
                             <customControls:FuncTextBox
-                                Classes=" TStyle"
+                                Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding GetISOSpeed}"
+                                Text="{CompiledBinding GetISOSpeed,
+                                                       Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding GetISOSpeed}"
-                                ToolTip.Tip="{CompiledBinding Copy}">
+                                CopyText="{CompiledBinding GetISOSpeed,
+                                                           Mode=OneWay}"
+                                ToolTip.Tip="{CompiledBinding Copy,
+                                                              Mode=OneWay}">
                                 <Path
                                     Data="{StaticResource CopyGeometry}"
-                                    Fill="{StaticResource MainIconColor}"
+                                    Fill="{StaticResource SecondaryTextColor}"
                                     Height="16"
                                     Stretch="Fill"
                                     Width="16" />
@@ -1193,20 +1353,24 @@
                             <TextBlock
                                 Classes="txt"
                                 Margin="0,8,2,0"
-                                Text="{CompiledBinding MeteringMode}"
+                                Text="{CompiledBinding MeteringMode,
+                                                       Mode=OneWay}"
                                 Width="100" />
                             <customControls:FuncTextBox
-                                Classes=" TStyle"
+                                Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding GetMeteringMode}"
+                                Text="{CompiledBinding GetMeteringMode,
+                                                       Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding GetMeteringMode}"
-                                ToolTip.Tip="{CompiledBinding Copy}">
+                                CopyText="{CompiledBinding GetMeteringMode,
+                                                           Mode=OneWay}"
+                                ToolTip.Tip="{CompiledBinding Copy,
+                                                              Mode=OneWay}">
                                 <Path
                                     Data="{StaticResource CopyGeometry}"
-                                    Fill="{StaticResource MainIconColor}"
+                                    Fill="{StaticResource SecondaryTextColor}"
                                     Height="16"
                                     Stretch="Fill"
                                     Width="16" />
@@ -1221,20 +1385,24 @@
                             <TextBlock
                                 Classes="txt"
                                 Margin="0,8,2,0"
-                                Text="{CompiledBinding Contrast}"
+                                Text="{CompiledBinding Contrast,
+                                                       Mode=OneWay}"
                                 Width="100" />
                             <customControls:FuncTextBox
-                                Classes=" TStyle"
+                                Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding GetContrast}"
+                                Text="{CompiledBinding GetContrast,
+                                                       Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding GetContrast}"
-                                ToolTip.Tip="{CompiledBinding Copy}">
+                                CopyText="{CompiledBinding GetContrast,
+                                                           Mode=OneWay}"
+                                ToolTip.Tip="{CompiledBinding Copy,
+                                                              Mode=OneWay}">
                                 <Path
                                     Data="{StaticResource CopyGeometry}"
-                                    Fill="{StaticResource MainIconColor}"
+                                    Fill="{StaticResource SecondaryTextColor}"
                                     Height="16"
                                     Stretch="Fill"
                                     Width="16" />
@@ -1245,20 +1413,24 @@
                             <TextBlock
                                 Classes="txt"
                                 Margin="0,8,2,0"
-                                Text="{CompiledBinding Saturation}"
+                                Text="{CompiledBinding Saturation,
+                                                       Mode=OneWay}"
                                 Width="100" />
                             <customControls:FuncTextBox
-                                Classes=" TStyle"
+                                Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding GetSaturation}"
+                                Text="{CompiledBinding GetSaturation,
+                                                       Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding GetSaturation}"
-                                ToolTip.Tip="{CompiledBinding Copy}">
+                                CopyText="{CompiledBinding GetSaturation,
+                                                           Mode=OneWay}"
+                                ToolTip.Tip="{CompiledBinding Copy,
+                                                              Mode=OneWay}">
                                 <Path
                                     Data="{StaticResource CopyGeometry}"
-                                    Fill="{StaticResource MainIconColor}"
+                                    Fill="{StaticResource SecondaryTextColor}"
                                     Height="16"
                                     Stretch="Fill"
                                     Width="16" />
@@ -1273,20 +1445,24 @@
                             <TextBlock
                                 Classes="txt"
                                 Margin="0,8,2,0"
-                                Text="{CompiledBinding Sharpness}"
+                                Text="{CompiledBinding Sharpness,
+                                                       Mode=OneWay}"
                                 Width="100" />
                             <customControls:FuncTextBox
-                                Classes=" TStyle"
+                                Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding GetSharpness}"
+                                Text="{CompiledBinding GetSharpness,
+                                                       Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding GetSharpness}"
-                                ToolTip.Tip="{CompiledBinding Copy}">
+                                CopyText="{CompiledBinding GetSharpness,
+                                                           Mode=OneWay}"
+                                ToolTip.Tip="{CompiledBinding Copy,
+                                                              Mode=OneWay}">
                                 <Path
                                     Data="{StaticResource CopyGeometry}"
-                                    Fill="{StaticResource MainIconColor}"
+                                    Fill="{StaticResource SecondaryTextColor}"
                                     Height="16"
                                     Stretch="Fill"
                                     Width="16" />
@@ -1297,20 +1473,24 @@
                             <TextBlock
                                 Classes="txt"
                                 Margin="0,8,2,0"
-                                Text="{CompiledBinding WhiteBalance}"
+                                Text="{CompiledBinding WhiteBalance,
+                                                       Mode=OneWay}"
                                 Width="100" />
                             <customControls:FuncTextBox
-                                Classes=" TStyle"
+                                Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding GetWhiteBalance}"
+                                Text="{CompiledBinding GetWhiteBalance,
+                                                       Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding GetWhiteBalance}"
-                                ToolTip.Tip="{CompiledBinding Copy}">
+                                CopyText="{CompiledBinding GetWhiteBalance,
+                                                           Mode=OneWay}"
+                                ToolTip.Tip="{CompiledBinding Copy,
+                                                              Mode=OneWay}">
                                 <Path
                                     Data="{StaticResource CopyGeometry}"
-                                    Fill="{StaticResource MainIconColor}"
+                                    Fill="{StaticResource SecondaryTextColor}"
                                     Height="16"
                                     Stretch="Fill"
                                     Width="16" />
@@ -1325,20 +1505,24 @@
                             <TextBlock
                                 Classes="txt"
                                 Margin="0,8,2,0"
-                                Text="{CompiledBinding FlashEnergy}"
+                                Text="{CompiledBinding FlashEnergy,
+                                                       Mode=OneWay}"
                                 Width="100" />
                             <customControls:FuncTextBox
-                                Classes=" TStyle"
+                                Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding GetFlashEnergy}"
+                                Text="{CompiledBinding GetFlashEnergy,
+                                                       Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding GetFlashEnergy}"
-                                ToolTip.Tip="{CompiledBinding Copy}">
+                                CopyText="{CompiledBinding GetFlashEnergy,
+                                                           Mode=OneWay}"
+                                ToolTip.Tip="{CompiledBinding Copy,
+                                                              Mode=OneWay}">
                                 <Path
                                     Data="{StaticResource CopyGeometry}"
-                                    Fill="{StaticResource MainIconColor}"
+                                    Fill="{StaticResource SecondaryTextColor}"
                                     Height="16"
                                     Stretch="Fill"
                                     Width="16" />
@@ -1349,20 +1533,24 @@
                             <TextBlock
                                 Classes="txt"
                                 Margin="0,8,2,0"
-                                Text="{CompiledBinding FlashMode}"
+                                Text="{CompiledBinding FlashMode,
+                                                       Mode=OneWay}"
                                 Width="100" />
                             <customControls:FuncTextBox
-                                Classes=" TStyle"
+                                Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding GetFlashMode}"
+                                Text="{CompiledBinding GetFlashMode,
+                                                       Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding GetFlashMode}"
-                                ToolTip.Tip="{CompiledBinding Copy}">
+                                CopyText="{CompiledBinding GetFlashMode,
+                                                           Mode=OneWay}"
+                                ToolTip.Tip="{CompiledBinding Copy,
+                                                              Mode=OneWay}">
                                 <Path
                                     Data="{StaticResource CopyGeometry}"
-                                    Fill="{StaticResource MainIconColor}"
+                                    Fill="{StaticResource SecondaryTextColor}"
                                     Height="16"
                                     Stretch="Fill"
                                     Width="16" />
@@ -1377,20 +1565,24 @@
                             <TextBlock
                                 Classes="txt"
                                 Margin="0,8,2,0"
-                                Text="{CompiledBinding LightSource}"
+                                Text="{CompiledBinding LightSource,
+                                                       Mode=OneWay}"
                                 Width="100" />
                             <customControls:FuncTextBox
-                                Classes=" TStyle"
+                                Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding GetLightSource}"
+                                Text="{CompiledBinding GetLightSource,
+                                                       Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding GetLightSource}"
-                                ToolTip.Tip="{CompiledBinding Copy}">
+                                CopyText="{CompiledBinding GetLightSource,
+                                                           Mode=OneWay}"
+                                ToolTip.Tip="{CompiledBinding Copy,
+                                                              Mode=OneWay}">
                                 <Path
                                     Data="{StaticResource CopyGeometry}"
-                                    Fill="{StaticResource MainIconColor}"
+                                    Fill="{StaticResource SecondaryTextColor}"
                                     Height="16"
                                     Stretch="Fill"
                                     Width="16" />
@@ -1401,20 +1593,24 @@
                             <TextBlock
                                 Classes="txt"
                                 Margin="0,8,2,0"
-                                Text="{CompiledBinding Brightness}"
+                                Text="{CompiledBinding Brightness,
+                                                       Mode=OneWay}"
                                 Width="100" />
                             <customControls:FuncTextBox
-                                Classes=" TStyle"
+                                Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding GetBrightness}"
+                                Text="{CompiledBinding GetBrightness,
+                                                       Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding GetBrightness}"
-                                ToolTip.Tip="{CompiledBinding Copy}">
+                                CopyText="{CompiledBinding GetBrightness,
+                                                           Mode=OneWay}"
+                                ToolTip.Tip="{CompiledBinding Copy,
+                                                              Mode=OneWay}">
                                 <Path
                                     Data="{StaticResource CopyGeometry}"
-                                    Fill="{StaticResource MainIconColor}"
+                                    Fill="{StaticResource SecondaryTextColor}"
                                     Height="16"
                                     Stretch="Fill"
                                     Width="16" />
@@ -1429,20 +1625,24 @@
                             <TextBlock
                                 Classes="txt"
                                 Margin="0,8,2,0"
-                                Text="{CompiledBinding PhotometricInterpretation}"
+                                Text="{CompiledBinding PhotometricInterpretation,
+                                                       Mode=OneWay}"
                                 Width="100" />
                             <customControls:FuncTextBox
-                                Classes=" TStyle"
+                                Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding GetPhotometricInterpretation}"
+                                Text="{CompiledBinding GetPhotometricInterpretation,
+                                                       Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding GetPhotometricInterpretation}"
-                                ToolTip.Tip="{CompiledBinding Copy}">
+                                CopyText="{CompiledBinding GetPhotometricInterpretation,
+                                                           Mode=OneWay}"
+                                ToolTip.Tip="{CompiledBinding Copy,
+                                                              Mode=OneWay}">
                                 <Path
                                     Data="{StaticResource CopyGeometry}"
-                                    Fill="{StaticResource MainIconColor}"
+                                    Fill="{StaticResource SecondaryTextColor}"
                                     Height="16"
                                     Stretch="Fill"
                                     Width="16" />
@@ -1453,20 +1653,24 @@
                             <TextBlock
                                 Classes="txt"
                                 Margin="0,8,2,0"
-                                Text="{CompiledBinding Orientation}"
+                                Text="{CompiledBinding Orientation,
+                                                       Mode=OneWay}"
                                 Width="100" />
                             <customControls:FuncTextBox
-                                Classes=" TStyle"
+                                Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding GetOrientation}"
+                                Text="{CompiledBinding GetOrientation,
+                                                       Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding GetOrientation}"
-                                ToolTip.Tip="{CompiledBinding Copy}">
+                                CopyText="{CompiledBinding GetOrientation,
+                                                           Mode=OneWay}"
+                                ToolTip.Tip="{CompiledBinding Copy,
+                                                              Mode=OneWay}">
                                 <Path
                                     Data="{StaticResource CopyGeometry}"
-                                    Fill="{StaticResource MainIconColor}"
+                                    Fill="{StaticResource SecondaryTextColor}"
                                     Height="16"
                                     Stretch="Fill"
                                     Width="16" />
@@ -1481,20 +1685,24 @@
                             <TextBlock
                                 Classes="txt"
                                 Margin="0,8,2,0"
-                                Text="{CompiledBinding LensMaker}"
+                                Text="{CompiledBinding LensMaker,
+                                                       Mode=OneWay}"
                                 Width="100" />
                             <customControls:FuncTextBox
-                                Classes=" TStyle"
+                                Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding GetLensMaker}"
+                                Text="{CompiledBinding GetLensMaker,
+                                                       Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding GetLensMaker}"
-                                ToolTip.Tip="{CompiledBinding Copy}">
+                                CopyText="{CompiledBinding GetLensMaker,
+                                                           Mode=OneWay}"
+                                ToolTip.Tip="{CompiledBinding Copy,
+                                                              Mode=OneWay}">
                                 <Path
                                     Data="{StaticResource CopyGeometry}"
-                                    Fill="{StaticResource MainIconColor}"
+                                    Fill="{StaticResource SecondaryTextColor}"
                                     Height="16"
                                     Stretch="Fill"
                                     Width="16" />
@@ -1505,20 +1713,24 @@
                             <TextBlock
                                 Classes="txt"
                                 Margin="0,8,2,0"
-                                Text="{CompiledBinding LensModel}"
+                                Text="{CompiledBinding LensModel,
+                                                       Mode=OneWay}"
                                 Width="100" />
                             <customControls:FuncTextBox
-                                Classes=" TStyle"
+                                Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding GetLensModel}"
+                                Text="{CompiledBinding GetLensModel,
+                                                       Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding GetLensModel}"
-                                ToolTip.Tip="{CompiledBinding Copy}">
+                                CopyText="{CompiledBinding GetLensModel,
+                                                           Mode=OneWay}"
+                                ToolTip.Tip="{CompiledBinding Copy,
+                                                              Mode=OneWay}">
                                 <Path
                                     Data="{StaticResource CopyGeometry}"
-                                    Fill="{StaticResource MainIconColor}"
+                                    Fill="{StaticResource SecondaryTextColor}"
                                     Height="16"
                                     Stretch="Fill"
                                     Width="16" />
@@ -1532,20 +1744,24 @@
                         <TextBlock
                             Classes="txt"
                             Margin="0,8,2,0"
-                            Text="{CompiledBinding ExifVersion}"
+                            Text="{CompiledBinding ExifVersion,
+                                                   Mode=OneWay}"
                             Width="100" />
                         <customControls:FuncTextBox
-                            Classes=" TStyle"
+                            Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding GetExifVersion}"
+                            Text="{CompiledBinding GetExifVersion,
+                                                   Mode=OneWay}"
                             Width="230" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding GetExifVersion}"
-                            ToolTip.Tip="{CompiledBinding Copy}">
+                            CopyText="{CompiledBinding GetExifVersion,
+                                                       Mode=OneWay}"
+                            ToolTip.Tip="{CompiledBinding Copy,
+                                                          Mode=OneWay}">
                             <Path
                                 Data="{StaticResource CopyGeometry}"
-                                Fill="{StaticResource MainIconColor}"
+                                Fill="{StaticResource SecondaryTextColor}"
                                 Height="16"
                                 Stretch="Fill"
                                 Width="16" />

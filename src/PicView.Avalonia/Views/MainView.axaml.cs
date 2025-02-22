@@ -1,29 +1,22 @@
-﻿using System.Runtime.InteropServices;
-using System.Text;
+﻿using System.Diagnostics;
+using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
-using Avalonia.Platform.Storage;
-using Avalonia.Styling;
-using Avalonia.Threading;
-using PicView.Avalonia.ImageHandling;
-using PicView.Avalonia.Keybindings;
+using PicView.Avalonia.Crop;
+using PicView.Avalonia.DragAndDrop;
+using PicView.Avalonia.Input;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
-using PicView.Avalonia.Views.UC;
-using PicView.Core.Calculations;
-using PicView.Core.Config;
+using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Extensions;
-using PicView.Core.FileHandling;
-using PicView.Core.ProcessHandling;
 
 namespace PicView.Avalonia.Views;
 
 public partial class MainView : UserControl
 {
-    private DragDropView? _dragDropView;
     public MainView()
     {
         InitializeComponent();
@@ -39,6 +32,14 @@ public partial class MainView : UserControl
             PointerPressed += PointerPressedBehavior;
 
             MainContextMenu.Opened += OnMainContextMenuOpened;
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                // TODO Implement setting as wallpaper for macOS
+                WallpaperMenuItem.IsEnabled = false;
+                
+                MaximizeMenuItem.IsVisible = false;
+            }
             
             if (DataContext is not MainViewModel vm)
             {
@@ -46,21 +47,20 @@ public partial class MainView : UserControl
             }
             HideInterfaceLogic.AddHoverButtonEvents(AltButtonsPanel, vm);
             PointerWheelChanged += async (_, e) => await vm.ImageViewer.PreviewOnPointerWheelChanged(this, e);
+            
         };
-
     }
 
     private void PointerPressedBehavior(object? sender, PointerPressedEventArgs e)
     {
         CloseTitlebarIfOpen(sender, e);
-        if (MainKeyboardShortcuts.ShiftDown)
+        if (MainKeyboardShortcuts.ShiftDown && !CropFunctions.IsCropping)
         {
             var hostWindow = (Window)VisualRoot!;
-            WindowHelper.WindowDragAndDoubleClickBehavior(hostWindow, e);
+            WindowFunctions.WindowDragBehavior(hostWindow, e);
         }
         
-        MainKeyboardShortcuts.ClearKeyDownModifiers();
-        RemoveDragDropView();
+        DragAndDropHelper.RemoveDragDropView();
     }
     
     private void CloseTitlebarIfOpen(object? sender, EventArgs e)
@@ -69,15 +69,20 @@ public partial class MainView : UserControl
         {
             return;
         }
-        if (vm.IsEditableTitlebarOpen)
+
+        if (!vm.IsEditableTitlebarOpen)
         {
-            vm.IsEditableTitlebarOpen = false;
+            return;
         }
+
+        vm.IsEditableTitlebarOpen = false;
+        MainKeyboardShortcuts.IsKeysEnabled = true;
+        Focus();
     }
     
-    private void HandleLostFocus(object? sender, EventArgs e)
+    private static void HandleLostFocus(object? sender, EventArgs e)
     {
-        RemoveDragDropView();
+        DragAndDropHelper.RemoveDragDropView();
     }
 
     private void OnMainContextMenuOpened(object? sender, EventArgs e)
@@ -87,6 +92,22 @@ public partial class MainView : UserControl
             return;
         }
 
+        CropMenuItem.IsEnabled = CropFunctions.DetermineIfShouldBeEnabled(vm);
+
+        // Set source for ChangeCtrlZoomImage
+        // TODO should probably be refactored inside a command (It doesn't update the UI in the zoom view, so should be made into a command)
+        if (!Application.Current.TryGetResource("ScanEyeImage", Application.Current.RequestedThemeVariant, out var scanEyeImage ))
+        {
+            return;
+        }
+        if (!Application.Current.TryGetResource("LeftRightArrowsImage", Application.Current.RequestedThemeVariant, out var leftRightArrowsImage ))
+        {
+            return;
+        }
+        var isNavigatingWithCtrl = Settings.Zoom.CtrlZoom;
+        vm.ChangeCtrlZoomImage = isNavigatingWithCtrl ? leftRightArrowsImage as DrawingImage : scanEyeImage as DrawingImage;
+
+        // Update file history
         var count = FileHistoryNavigation.GetCount();
         if (RecentFilesCM.Items.Count < count)
         {
@@ -106,84 +127,65 @@ public partial class MainView : UserControl
 
     private void AddOrReplaceMenuItem(int index, MainViewModel vm, bool isReplace)
     {
-        if (!Application.Current.TryGetResource("LogoAccentColor", ThemeVariant.Default, out var secondaryAccentColor))
+        if (!Application.Current.TryGetResource("SecondaryAccentColor", Application.Current.RequestedThemeVariant, out var secondaryAccentColor))
         {
             return;
         }
 
-        var secondaryAccentBrush = new SolidColorBrush((Color)(secondaryAccentColor ?? Brushes.Yellow));
-        var fileLocation = FileHistoryNavigation.GetFileLocation(index);
-        var selected = vm.ImageIterator?.CurrentIndex == vm.ImageIterator?.ImagePaths.IndexOf(fileLocation);
-        var header = Path.GetFileNameWithoutExtension(fileLocation);
-        header = header.Length > 60 ? header.Shorten(60) : header;
-        
-        var item = new MenuItem
+        try
         {
-            Header = header,
-        };
+#if DEBUG
+            Debug.Assert(secondaryAccentColor != null, nameof(secondaryAccentColor) + " != null");
+#endif
+            var secondaryAccentBrush = (SolidColorBrush)secondaryAccentColor;
+            var fileLocation = FileHistoryNavigation.GetFileLocation(index);
+            var selected = NavigationManager.GetCurrentIndex == NavigationManager.GetCollection.IndexOf(fileLocation);
+            var header = Path.GetFileNameWithoutExtension(fileLocation);
+            header = header.Length > 60 ? header.Shorten(60) : header;
+        
+            var item = new MenuItem
+            {
+                Header = header,
+            };
 
-        if (selected)
-        {
-            item.Foreground = secondaryAccentBrush;
-        }
+            if (selected)
+            {
+                item.Foreground = secondaryAccentBrush;
+            }
         
-        item.Click += async delegate
-        {
-            await NavigationHelper.LoadPicFromStringAsync(fileLocation, vm).ConfigureAwait(false);
-        };
+            item.Click += async delegate
+            {
+                await NavigationManager.LoadPicFromStringAsync(fileLocation, vm).ConfigureAwait(false);
+            };
         
-        ToolTip.SetTip(item, fileLocation);
+            ToolTip.SetTip(item, fileLocation);
 
-        if (isReplace)
-        {
-            RecentFilesCM.Items[index] = item;
+            if (isReplace)
+            {
+                RecentFilesCM.Items[index] = item;
+            }
+            else
+            {
+                RecentFilesCM.Items.Insert(index, item);
+            }
         }
-        else
+#if DEBUG
+        catch (Exception e)
         {
-            RecentFilesCM.Items.Insert(index, item);
+            Console.WriteLine(e);
         }
+#else
+        catch (Exception){}
+#endif
     }
 
     private async Task Drop(object? sender, DragEventArgs e)
     {
-        RemoveDragDropView();
-        
         if (DataContext is not MainViewModel vm)
-            return;
-
-        var files = e.Data.GetFiles();
-        if (files == null)
         {
-            await HandleDropFromUrl(e, vm);
             return;
         }
-
-        var storageItems = files as IStorageItem[] ?? files.ToArray();
-        var firstFile = storageItems.FirstOrDefault();
-        var path = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? firstFile.Path.AbsolutePath : firstFile.Path.LocalPath;
-        await NavigationHelper.LoadPicFromStringAsync(path, vm).ConfigureAwait(false);
-        if (!SettingsHelper.Settings.UIProperties.OpenInSameWindow)
-        {
-            foreach (var file in storageItems.Skip(1))
-            {
-                var filepath = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? file.Path.AbsolutePath : file.Path.LocalPath;
-                ProcessHelper.StartNewProcess(filepath);
-            }
-        }
-    }
-    
-    private async Task HandleDropFromUrl(DragEventArgs e, MainViewModel vm)
-    {
-        var urlObject = e.Data.Get("text/x-moz-url");
-        if (urlObject is byte[] bytes)
-        {
-            var dataStr = Encoding.Unicode.GetString(bytes);
-            var url = dataStr.Split((char)10).FirstOrDefault();
-            if (url != null)
-            {
-                await NavigationHelper.LoadPicFromUrlAsync(url, vm).ConfigureAwait(false);
-            }
-        }
+        await DragAndDropHelper.Drop(e, vm);
     }
     
     private async Task DragEnter(object? sender, DragEventArgs e)
@@ -191,123 +193,11 @@ public partial class MainView : UserControl
         if (DataContext is not MainViewModel vm)
             return;
 
-        var files = e.Data.GetFiles();
-        if (files == null)
-        {
-            await HandleDragEnterFromUrl(e, vm);
-            return;
-        }
-
-        await HandleDragEnter(files, vm);
-    }
-
-    private async Task HandleDragEnter(IEnumerable<IStorageItem> files, MainViewModel vm)
-    {
-        var fileArray = files as IStorageItem[] ?? files.ToArray();
-        if (fileArray is null || fileArray.Length < 1)
-        {
-            RemoveDragDropView();
-            return;
-        }
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            if (_dragDropView == null)
-            {
-                _dragDropView = new DragDropView
-                {
-                    DataContext = vm
-                };
-                if (!IsPointerOver)
-                {
-                    MainGrid.Children.Add(_dragDropView);
-                }
-            }
-            else
-            {
-                _dragDropView.RemoveThumbnail();
-            }
-        });
-        var firstFile = fileArray[0];
-        var path = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? firstFile.Path.AbsolutePath : firstFile.Path.LocalPath;
-        if (Directory.Exists(path))
-        {
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                if (!IsPointerOver)
-                {
-                    _dragDropView.AddDirectoryIcon();
-                }
-            });
-        }
-        else
-        {
-            if (path.IsArchive())
-            {
-                if (!IsPointerOver)
-                {
-                    _dragDropView.AddZipIcon();
-                }
-            }
-            else if (path.IsSupported())
-            {
-                var ext = Path.GetExtension(path);
-                if (ext.Equals(".svg", StringComparison.InvariantCultureIgnoreCase) || ext.Equals(".svgz", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    await Dispatcher.UIThread.InvokeAsync(() =>
-                    {
-                        _dragDropView?.UpdateSvgThumbnail(path);
-                    });
-                }
-                else
-                {
-                    var thumb = await ImageHelper.GetThumbAsync(path, SizeDefaults.WindowMinSize - 30).ConfigureAwait(false);
-
-                    await Dispatcher.UIThread.InvokeAsync(() =>
-                    {
-                        _dragDropView?.UpdateThumbnail(thumb);
-                    });
-                }
-
-            }
-            else
-            {
-                RemoveDragDropView();
-            }
-        }
-    }
-    
-    private async Task HandleDragEnterFromUrl(DragEventArgs e, MainViewModel vm)
-    {
-        var urlObject = e.Data.Get("text/x-moz-url");
-        if (urlObject != null)
-        {
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                if (_dragDropView == null)
-                {
-                    _dragDropView = new DragDropView { DataContext = vm };
-                    _dragDropView.AddLinkChain();
-                    MainGrid.Children.Add(_dragDropView);
-                }
-                else
-                {
-                    _dragDropView.RemoveThumbnail();
-                }
-            });
-        }
+        await DragAndDropHelper.DragEnter(e, vm, this);
     }
     
     private void DragLeave(object? sender, DragEventArgs e)
     {
-        if (!IsPointerOver)
-        {
-            RemoveDragDropView();
-        }
-    }
-    
-    public void RemoveDragDropView()
-    {
-        MainGrid.Children.Remove(_dragDropView);
-        _dragDropView = null;
+        DragAndDropHelper.DragLeave(e, this);
     }
 }

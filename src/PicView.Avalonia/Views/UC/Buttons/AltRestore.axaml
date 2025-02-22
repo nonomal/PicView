@@ -11,16 +11,17 @@
     xmlns:viewModels="clr-namespace:PicView.Avalonia.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Button
-        Background="{StaticResource AltBackgroundColor}"
-        BorderBrush="{StaticResource MainBorderColor}"
+        Background="{DynamicResource AltBackgroundColor}"
+        BorderBrush="{DynamicResource MainBorderColor}"
         BorderThickness="1,0,0,1"
         Classes="ButtonBorder noBorderHover"
+        ClickMode="Release"
         Command="{CompiledBinding ToggleFullscreenCommand}"
         CornerRadius="0,0,0,0"
         DockPanel.Dock="Right"
         Height="30"
         HorizontalAlignment="Right"
-        IsVisible="{CompiledBinding !IsInterfaceShown}"
+        IsVisible="{CompiledBinding !IsUIShown}"
         VerticalAlignment="Top"
         Width="35"
         ZIndex="99"
@@ -28,7 +29,7 @@
         <Panel>
             <Path
                 Data="{StaticResource FullscreenGeometry}"
-                Fill="{StaticResource MainIconColor}"
+                Fill="{DynamicResource MainTextColor}"
                 Height="12"
                 IsVisible="{CompiledBinding !IsFullscreen}"
                 Margin="0,0,0,3"
@@ -36,7 +37,7 @@
                 Width="12" />
             <Path
                 Data="{StaticResource RestoreGeometry}"
-                Fill="{StaticResource MainIconColor}"
+                Fill="{DynamicResource MainTextColor}"
                 Height="12"
                 IsVisible="{CompiledBinding IsFullscreen}"
                 Margin="0,0,0,3"

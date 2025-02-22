@@ -1,33 +1,40 @@
-﻿using Avalonia;
-using Avalonia.Controls;
-using Avalonia.LogicalTree;
-using Avalonia.Platform;
+﻿using Avalonia.Controls;
 
 namespace PicView.Avalonia.UI;
 
-public readonly struct ScreenSize(int width, int height, int workingAreaWidth, int workingAreaHeight, double scaling)
+public readonly record struct ScreenSize
 {
-    public int Width { get; init; } = width;
-    public int Height { get; init; } = height;
-    public int WorkingAreaWidth { get; init; } = workingAreaWidth;
-    public int WorkingAreaHeight { get; init; } = workingAreaHeight;
-    public double Scaling { get; init; } = scaling;
+    public double WorkingAreaWidth { get; init; }
+    public double WorkingAreaHeight { get; init; }
+    public double Scaling { get; init; }
 }
 
 public static class ScreenHelper
 {
-    public static ScreenSize ScreenSize { get; set; }
-    public static ScreenSize GetScreenSize(Window window)
+    private static readonly Lock Lock = new();
+    public static ScreenSize ScreenSize { get; private set; }
+
+    public static void UpdateScreenSize(Window window)
     {
-        var screen = window.Screens.ScreenFromWindow(window);
+        // TODO: Add support for dragging between multiple monitors
+        // Dragging to monitor with different scaling (DPI) causes weird incorrect size behavior,
+        // but starting the application works fine for either monitor, until you drag it to the other.
+        // It works most of the time in debug mode, but not so much for AOT release
         
-        return new ScreenSize
+        // Need to lock it to prevent multiple calls
+        lock (Lock)
         {
-            Width = screen.Bounds.Width,
-            Height = screen.Bounds.Height,
-            WorkingAreaWidth = screen.WorkingArea.Width,
-            WorkingAreaHeight = screen.WorkingArea.Height,
-            Scaling = screen.Scaling
-        };
+            var screen = window.Screens.ScreenFromVisual(window);
+        
+            var monitorWidth = screen.WorkingArea.Width / screen.Scaling;
+            var monitorHeight = screen.WorkingArea.Height / screen.Scaling;
+        
+            ScreenSize = new ScreenSize           
+            {
+                WorkingAreaWidth = monitorWidth,
+                WorkingAreaHeight = monitorHeight,
+                Scaling = screen.Scaling,
+            };
+        }
     }
 }

@@ -8,7 +8,7 @@
     <Company>Ruben Hyldgaard Negendahl</Company>
     <Product>PicView</Product>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <PlatformTarget>x64</PlatformTarget>
+    <Platforms>x64;arm64</Platforms>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <IsAotCompatible>False</IsAotCompatible>
@@ -23,9 +23,19 @@
     <AvaloniaXamlIlDebuggerLaunch>False</AvaloniaXamlIlDebuggerLaunch>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Platform)' == 'x64'">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Platform)' == 'arm64'">
+    <PlatformTarget>ARM64</PlatformTarget>
+  </PropertyGroup>
+
   
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
+    <None Remove="PicViewTheme\Resources\noisy-texture-200x200-o4-d23-c-ffffff-t1.png" />
+    <AvaloniaResource Include="PicViewTheme\Resources\noisy-texture-200x200-o4-d23-c-ffffff-t1.png" />
   </ItemGroup>
 
   
@@ -46,6 +56,42 @@
       <DependentUpon>AltMinimize.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\SettingsView.axaml.cs">
+      <DependentUpon>SettingsView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\GallerySettingsView.axaml.cs">
+      <DependentUpon>GalleryViewView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\ImageSettingsView.axaml.cs">
+      <DependentUpon>ImageSettingsView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\MouseWheelView.axaml.cs">
+      <DependentUpon>MouseWheelView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\SlideshowSettingsView.axaml.cs">
+      <DependentUpon>SlideshowSettingsView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\ZoomSettingsView.axaml.cs">
+      <DependentUpon>ZoomSettingsView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\SingleImageResizeView.axaml.cs">
+      <DependentUpon>SingleImageResizeView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\UC\PopUps\DeleteDialog.axaml.cs">
+      <DependentUpon>DeleteDialog.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\EffectsView.axaml.cs">
+      <DependentUpon>EffectsView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
   
@@ -55,16 +101,16 @@
 
   
   <ItemGroup>
-    <AvaloniaResource Include="DarkTheme\Resources\noisy-texture-200x200-o4-d31-c-161616-t0.png" />
+    <AvaloniaResource Include="PicViewTheme\Resources\noisy-texture-200x200-o4-d31-c-161616-t0.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="11.2.999-cibuild0051810-alpha" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="11.2.999-cibuild0051810-alpha" />
+    <PackageReference Include="Avalonia" Version="11.2.4" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.2.4" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="11.2.4" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.2.999-cibuild0051810-alpha" />
-    <PackageReference Include="Avalonia.Svg.Skia" Version="11.1.0.1" />
-    <PackageReference Include="Magick.NET-Q8-OpenMP-x64" Version="14.0.0" />
+    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.2.4" />
+    <PackageReference Include="Avalonia.Svg.Skia" Version="11.2.0.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -77,7 +123,7 @@
     <Compile Update="Views\AboutView.axaml.cs">
       <DependentUpon>AboutView.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\ShortcutsView.axaml.cs">
+    <Compile Update="Views\KeybindingsView.axaml.cs">
       <DependentUpon>ShortcutsView.axaml</DependentUpon>
     </Compile>
     <Compile Update="Views\GeneralSettingsView.axaml.cs">

@@ -1,5 +1,5 @@
-﻿using System.Reactive;
-using System.Reactive.Linq;
+﻿using System.Diagnostics;
+using System.Reactive;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -8,13 +8,19 @@ using Avalonia.Media;
 using PicView.Avalonia.Clipboard;
 using PicView.Avalonia.Converters;
 using PicView.Avalonia.Gallery;
+using PicView.Avalonia.ImageEffects;
+using PicView.Avalonia.ImageHandling;
+using PicView.Avalonia.ImageTransformations;
 using PicView.Avalonia.Interfaces;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
+using PicView.Avalonia.Wallpaper;
+using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Calculations;
 using PicView.Core.Config;
 using PicView.Core.FileHandling;
 using PicView.Core.Gallery;
+using PicView.Core.Localization;
 using PicView.Core.ProcessHandling;
 using ReactiveUI;
 using ImageViewer = PicView.Avalonia.Views.ImageViewer;
@@ -26,170 +32,143 @@ public class MainViewModel : ViewModelBase
     public readonly IPlatformSpecificService? PlatformService;
     
     #region Image
-    
-    private object? _imageSource;
-    
+
     public object? ImageSource
     {
-        get => _imageSource;
-        set => this.RaiseAndSetIfChanged(ref _imageSource, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-    
-    private object? _secondaryImageSource;
-    
+
     public object? SecondaryImageSource
     {
-        get => _secondaryImageSource;
-        set => this.RaiseAndSetIfChanged(ref _secondaryImageSource, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-    
-    private ImageType _imageType;
-    
+
     public ImageType ImageType
     {
-        get => _imageType;
-        set => this.RaiseAndSetIfChanged(ref _imageType, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-    
-    private double _imageWidth;
 
     public double ImageWidth
     {
-        get => _imageWidth;
-        set => this.RaiseAndSetIfChanged(ref _imageWidth, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private double _imageHeight;
 
     public double ImageHeight
     {
-        get => _imageHeight;
-        set => this.RaiseAndSetIfChanged(ref _imageHeight, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-    
-    private double _imageSecondaryWidth;
-    
+
     public double SecondaryImageWidth
     {
-        get => _imageSecondaryWidth;
-        set => this.RaiseAndSetIfChanged(ref _imageSecondaryWidth, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    private Brush? _imageBackground;
-    
     public Brush? ImageBackground
     {
-        get => _imageBackground;
-        set => this.RaiseAndSetIfChanged(ref _imageBackground, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    private bool _isShowingSideBySide = SettingsHelper.Settings.ImageScaling.ShowImageSideBySide;
-    
     public bool IsShowingSideBySide
     {
-        get => _isShowingSideBySide;
-        set => this.RaiseAndSetIfChanged(ref _isShowingSideBySide, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    private double _scrollViewerWidth = double.NaN;
-    
     public double ScrollViewerWidth
     {
-        get => _scrollViewerWidth;
-        set => this.RaiseAndSetIfChanged(ref _scrollViewerWidth, value);
-    }
-    
-    private double _scrollViewerHeight = double.NaN;
-    
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    } = double.NaN;
+
     public double ScrollViewerHeight
     {
-        get => _scrollViewerHeight;
-        set => this.RaiseAndSetIfChanged(ref _scrollViewerHeight, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    } = double.NaN;
+    
+    public double AspectRatio
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
     
-    
+    public ImageEffectConfig? EffectConfig
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
+
     #endregion
 
     #region Gallery
-    
-    private Thickness _galleryMargin;
 
     public Thickness GalleryMargin
     {
-        get => _galleryMargin;
-        set => this.RaiseAndSetIfChanged(ref _galleryMargin, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-    
-    private bool _isGalleryShown = SettingsHelper.Settings.UIProperties.ShowInterface && SettingsHelper.Settings.Gallery.IsBottomGalleryShown;
 
     public bool IsGalleryShown
     {
-        get => _isGalleryShown;
-        set => this.RaiseAndSetIfChanged(ref _isGalleryShown, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private bool _isBottomGalleryShownInHiddenUi = SettingsHelper.Settings.Gallery.ShowBottomGalleryInHiddenUI;
 
     public bool IsBottomGalleryShownInHiddenUI
     {
-        get => _isBottomGalleryShownInHiddenUi;
-        set => this.RaiseAndSetIfChanged(ref _isBottomGalleryShownInHiddenUi, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private GalleryMode _galleryMode = GalleryMode.Closed;
 
     public GalleryMode GalleryMode
     {
-        get => _galleryMode;
-        set => this.RaiseAndSetIfChanged(ref _galleryMode, value);
-    }
-
-    private Stretch _galleryStretch;
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    } = GalleryMode.Closed;
 
     public Stretch GalleryStretch
     {
-        get => _galleryStretch;
-        set => this.RaiseAndSetIfChanged(ref _galleryStretch, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-    
-    private int _selectedGalleryItemIndex;
 
     public int SelectedGalleryItemIndex
     {
-        get => _selectedGalleryItemIndex;
-        set => this.RaiseAndSetIfChanged(ref _selectedGalleryItemIndex, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private VerticalAlignment _galleryVerticalAlignment = VerticalAlignment.Bottom;
 
     public VerticalAlignment GalleryVerticalAlignment
     {
-        get => _galleryVerticalAlignment;
-        set => this.RaiseAndSetIfChanged(ref _galleryVerticalAlignment, value);
-    }
-
-    private Orientation _galleryOrientation;
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    } = VerticalAlignment.Bottom;
 
     public Orientation GalleryOrientation
     {
-        set => this.RaiseAndSetIfChanged(ref _galleryOrientation, value);
-        get => _galleryOrientation;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+        get;
     }
-
-    private bool _isGalleryCloseIconVisible;
 
     public bool IsGalleryCloseIconVisible
     {
-        get => _isGalleryCloseIconVisible;
-        set => this.RaiseAndSetIfChanged(ref _isGalleryCloseIconVisible, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-    
-    private double _galleryWidth;
+
     public double GalleryWidth
     {
-        get => _galleryWidth;
-        set => this.RaiseAndSetIfChanged(ref _galleryWidth, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
+
     public double GalleryHeight
     {
         get
@@ -203,7 +182,7 @@ public class MainViewModel : ViewModelBase
             {
                 return SettingsHelper.Settings.Gallery.IsBottomGalleryShown ? GetBottomGalleryItemHeight + SizeDefaults.ScrollbarSize : 0;
             }
-            if (!SettingsHelper.Settings.Gallery.ShowBottomGalleryInHiddenUI && !IsInterfaceShown)
+            if (!SettingsHelper.Settings.Gallery.ShowBottomGalleryInHiddenUI && !IsUIShown)
             {
                 return 0;
             }
@@ -211,51 +190,30 @@ public class MainViewModel : ViewModelBase
         }
     }
 
-    private double _getGalleryItemWidth = double.NaN;
-
     public double GetGalleryItemWidth
     {
-        get => _getGalleryItemWidth;
-        set => this.RaiseAndSetIfChanged(ref _getGalleryItemWidth, value);
-    }
-    
-    private double _getGalleryItemHeight;
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    } = double.NaN;
+
     public double GetGalleryItemHeight
     {
-        get
-        {
-            return GalleryFunctions.IsFullGalleryOpen ? GetFullGalleryItemHeight : GetBottomGalleryItemHeight;
-        }
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _getGalleryItemHeight, value);
-            if (GalleryFunctions.IsBottomGalleryOpen && !GalleryFunctions.IsFullGalleryOpen)
-            {
-                GetBottomGalleryItemHeight = value;
-            }
-            else
-            {
-                GetFullGalleryItemHeight = value;
-            }
-        }
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private double _getFullGalleryItemHeight = SettingsHelper.Settings.Gallery.ExpandedGalleryItemSize;
 
     public double GetFullGalleryItemHeight
     {
-        get => _getFullGalleryItemHeight;
-        set => this.RaiseAndSetIfChanged(ref _getFullGalleryItemHeight, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-    
-    private double _getBottomGalleryItemHeight = SettingsHelper.Settings.Gallery.BottomGalleryItemSize;
-    
+
     public double GetBottomGalleryItemHeight
     {
-        get => _getBottomGalleryItemHeight;
-        set => this.RaiseAndSetIfChanged(ref _getBottomGalleryItemHeight, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-    
+
     public double MaxFullGalleryItemHeight
     {
         get => GalleryDefaults.MaxFullGalleryItemHeight;
@@ -274,142 +232,123 @@ public class MainViewModel : ViewModelBase
     {
         get => GalleryDefaults.MinBottomGalleryItemHeight;
     }
-    
-    private Thickness _galleryItemMargin;
-    
+
     public Thickness GalleryItemMargin
     {
-        get => _galleryItemMargin;
-        set => this.RaiseAndSetIfChanged(ref _galleryItemMargin, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
     #region Gallery Stretch IsChecked
-    
-    private bool _isUniformBottomChecked;
+
     public bool IsUniformBottomChecked
     {
-        get => _isUniformBottomChecked;
-        set => this.RaiseAndSetIfChanged(ref _isUniformBottomChecked, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-    
-    private bool _isUniformFullChecked;
+
     public bool IsUniformFullChecked
     {
-        get => _isUniformFullChecked;
-        set => this.RaiseAndSetIfChanged(ref _isUniformFullChecked, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    private bool _isUniformMenuChecked;
     public bool IsUniformMenuChecked
     {
-        get => _isUniformMenuChecked;
-        set => this.RaiseAndSetIfChanged(ref _isUniformMenuChecked, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-    
-    private bool _isUniformToFillBottomChecked;
+
     public bool IsUniformToFillBottomChecked
     {
-        get => _isUniformToFillBottomChecked;
-        set => this.RaiseAndSetIfChanged(ref _isUniformToFillBottomChecked, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-    
-    private bool _isUniformToFillFullChecked;
+
     public bool IsUniformToFillFullChecked
     {
-        get => _isUniformToFillFullChecked;
-        set => this.RaiseAndSetIfChanged(ref _isUniformToFillFullChecked, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    private bool _isUniformToFillMenuMenuChecked;
     public bool IsUniformToFillMenuChecked
     {
-        get => _isUniformToFillMenuMenuChecked;
-        set => this.RaiseAndSetIfChanged(ref _isUniformToFillMenuMenuChecked, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-    
-    private bool _isFillBottomChecked;
+
     public bool IsFillBottomChecked
     {
-        get => _isFillBottomChecked;
-        set => this.RaiseAndSetIfChanged(ref _isFillBottomChecked, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-    
-    private bool _isFillFullChecked;
+
     public bool IsFillFullChecked
     {
-        get => _isFillFullChecked;
-        set => this.RaiseAndSetIfChanged(ref _isFillFullChecked, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    private bool _isFillMenuMenuChecked;
     public bool IsFillMenuChecked
     {
-        get => _isFillMenuMenuChecked;
-        set => this.RaiseAndSetIfChanged(ref _isFillMenuMenuChecked, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-    
-    private bool _isNoneBottomChecked;
+
     public bool IsNoneBottomChecked
     {
-        get => _isNoneBottomChecked;
-        set => this.RaiseAndSetIfChanged(ref _isNoneBottomChecked, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-    
-    private bool _isNoneFullChecked;
+
     public bool IsNoneFullChecked
     {
-        get => _isNoneFullChecked;
-        set => this.RaiseAndSetIfChanged(ref _isNoneFullChecked, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    private bool _isNoneMenuChecked;
     public bool IsNoneMenuChecked
     {
-        get => _isNoneMenuChecked;
-        set => this.RaiseAndSetIfChanged(ref _isNoneMenuChecked, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-    
-    private bool _isSquareBottomChecked;
+
     public bool IsSquareBottomChecked
     {
-        get => _isSquareBottomChecked;
-        set => this.RaiseAndSetIfChanged(ref _isSquareBottomChecked, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-    
-    private bool _isSquareFullChecked;
+
     public bool IsSquareFullChecked
     {
-        get => _isSquareFullChecked;
-        set => this.RaiseAndSetIfChanged(ref _isSquareFullChecked, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    private bool _isSquareMenuChecked;
     public bool IsSquareMenuChecked
     {
-        get => _isSquareMenuChecked;
-        set => this.RaiseAndSetIfChanged(ref _isSquareMenuChecked, value);
-    }
-    
-    private bool _isFillSquareBottomChecked;
-    public bool IsFillSquareBottomChecked
-    {
-        get => _isFillSquareBottomChecked;
-        set => this.RaiseAndSetIfChanged(ref _isFillSquareBottomChecked, value);
-    }
-    
-    private bool _isFillSquareFullChecked;
-    public bool IsFillSquareFullChecked
-    {
-        get => _isFillSquareFullChecked;
-        set => this.RaiseAndSetIfChanged(ref _isFillSquareFullChecked, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    private bool _isFillSquareMenuChecked;
+    public bool IsFillSquareBottomChecked
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
+
+    public bool IsFillSquareFullChecked
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
+
     public bool IsFillSquareMenuChecked
     {
-        get => _isFillSquareMenuChecked;
-        set => this.RaiseAndSetIfChanged(ref _isFillSquareMenuChecked, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
+
     #endregion
 
     #endregion Gallery
@@ -420,8 +359,8 @@ public class MainViewModel : ViewModelBase
     public ReactiveCommand<Unit, Unit>? MinimizeCommand { get; }
     public ReactiveCommand<Unit, Unit>? MaximizeCommand { get; }
     
+    public ReactiveCommand<Unit, Unit>? RestoreCommand { get; }
     public ReactiveCommand<Unit, Unit>? ToggleFullscreenCommand { get; }
-
     public ReactiveCommand<Unit, Unit>? NextCommand { get; }
     public ReactiveCommand<Unit, Unit>? NextButtonCommand { get; }
     public ReactiveCommand<Unit, Unit>? NextArrowButtonCommand { get; }
@@ -432,8 +371,13 @@ public class MainViewModel : ViewModelBase
     public ReactiveCommand<Unit, Unit>? PreviousFolderCommand { get; }
     public ReactiveCommand<Unit, Unit>? FirstCommand { get; }
     public ReactiveCommand<Unit, Unit>? LastCommand { get; }
+    public ReactiveCommand<Unit, Unit>? Skip10Command { get; }
+    public ReactiveCommand<Unit, Unit>? Prev10Command { get; }
+    public ReactiveCommand<Unit, Unit>? Skip100Command { get; }
+    public ReactiveCommand<Unit, Unit>? Prev100Command { get; }
     public ReactiveCommand<Unit, Unit>? OpenFileCommand { get; }
     public ReactiveCommand<Unit, Unit>? SaveFileCommand { get; }
+    public ReactiveCommand<Unit, Unit>? SaveFileAsCommand { get; }
     public ReactiveCommand<Unit, Unit>? OpenLastFileCommand { get; }
     public ReactiveCommand<Unit, Unit>? PasteCommand { get; }
     public ReactiveCommand<string, Unit>? CopyFileCommand { get; }
@@ -458,23 +402,31 @@ public class MainViewModel : ViewModelBase
     public ReactiveCommand<string, Unit>? DuplicateFileCommand { get; }
     public ReactiveCommand<Unit, Unit>? ToggleLoopingCommand { get; }
     public ReactiveCommand<Unit, Unit>? RotateLeftCommand { get; }
+    public ReactiveCommand<Unit, Unit>? RotateLeftButtonCommand { get; }
     public ReactiveCommand<Unit, Unit>? RotateRightCommand { get; }
+    public ReactiveCommand<Unit, Unit>? RotateRightButtonCommand { get; }
+    public ReactiveCommand<Unit, Unit>? RotateRightWindowBorderButtonCommand { get; }
     public ReactiveCommand<Unit, Unit>? FlipCommand { get; }
     public ReactiveCommand<Unit, Unit>? StretchCommand { get; }
     public ReactiveCommand<Unit, Unit>? CropCommand { get; }
     public ReactiveCommand<Unit, Unit>? ChangeAutoFitCommand { get; }
     public ReactiveCommand<Unit, Unit>? ChangeTopMostCommand { get; }
     public ReactiveCommand<Unit, Unit>? ChangeCtrlZoomCommand { get; }
+    public ReactiveCommand<Unit, Unit>? ToggleUsingTouchpadCommand { get; }
     public ReactiveCommand<Unit, Unit>? ToggleUICommand { get; }
     public ReactiveCommand<Unit, Unit>? ChangeBackgroundCommand { get; }
     public ReactiveCommand<Unit, Unit>? ToggleBottomNavBarCommand { get; }
     public ReactiveCommand<Unit, Unit>? ToggleBottomGalleryShownInHiddenUICommand { get; }
+    
+    public ReactiveCommand<Unit, Unit>? ToggleFadeInButtonsOnHoverCommand { get; }
     public ReactiveCommand<Unit, Unit>? ToggleTaskbarProgressCommand { get; }
     public ReactiveCommand<Unit, Unit>? ShowExifWindowCommand { get; }
     public ReactiveCommand<Unit, Unit>? ShowAboutWindowCommand { get; }
     public ReactiveCommand<Unit, Unit>? ShowSettingsWindowCommand { get; }
     public ReactiveCommand<Unit, Unit>? ShowKeybindingsWindowCommand { get; }
-
+    public ReactiveCommand<Unit, Unit>? ShowBatchResizeWindowCommand { get; }
+    public ReactiveCommand<Unit, Unit>? ShowSingleImageResizeWindowCommand { get; }
+    public ReactiveCommand<Unit, Unit>? ShowEffectsWindowCommand { get; }
     public ReactiveCommand<Unit, Unit>? SetExifRating0Command { get; }
     public ReactiveCommand<Unit, Unit>? SetExifRating1Command { get; }
     public ReactiveCommand<Unit, Unit>? SetExifRating2Command { get; }
@@ -507,9 +459,13 @@ public class MainViewModel : ViewModelBase
 
     public ReactiveCommand<Unit, Unit>? ColorPickerCommand { get; }
 
-    public ReactiveCommand<Unit, Unit>? SlideshowCommand { get; }
+    public ReactiveCommand<int, Unit>? SlideshowCommand { get; }
     
     public ReactiveCommand<string, Unit>? SetAsWallpaperCommand { get; }
+    public ReactiveCommand<string, Unit>? SetAsWallpaperFilledCommand { get; }
+    public ReactiveCommand<string, Unit>? SetAsWallpaperStretchedCommand { get; }
+    public ReactiveCommand<string, Unit>? SetAsWallpaperTiledCommand { get; }
+    public ReactiveCommand<string, Unit>? SetAsWallpaperCenteredCommand { get; }
     
     public ReactiveCommand<string, Unit>? SetAsLockScreenCommand { get; }
     
@@ -518,6 +474,8 @@ public class MainViewModel : ViewModelBase
     public ReactiveCommand<Unit, Unit>? ResetSettingsCommand { get; }
     
     public ReactiveCommand<Unit, Unit>? ShowSideBySideCommand { get; }
+    
+    public ReactiveCommand<Unit, Unit>? RestartCommand { get; }
 
     #endregion Commands
 
@@ -525,199 +483,198 @@ public class MainViewModel : ViewModelBase
 
     #region Booleans
 
-    private bool _isLoading;
+    public bool IsAvoidingZoomingOut
+    {
+        get;
+        set
+        {
+            SettingsHelper.Settings.Zoom.AvoidZoomingOut = value;
+            this.RaiseAndSetIfChanged(ref field, value);
+        }
+    }
+
+    public IImage? ChangeCtrlZoomImage
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
 
     public bool IsLoading
     {
-        get => _isLoading;
-        set => this.RaiseAndSetIfChanged(ref _isLoading, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    private bool _isInterfaceShown = SettingsHelper.Settings.UIProperties.ShowInterface;
-
-    public bool IsInterfaceShown
+    public bool IsUIShown
     {
-        get => _isInterfaceShown;
-        set => this.RaiseAndSetIfChanged(ref _isInterfaceShown, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private bool _isTopToolbarShown = SettingsHelper.Settings.UIProperties.ShowInterface;
 
     public bool IsTopToolbarShown
     {
-        get => _isTopToolbarShown;
-        set => this.RaiseAndSetIfChanged(ref _isTopToolbarShown, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private bool _isBottomToolbarShown = SettingsHelper.Settings.UIProperties.ShowBottomNavBar &&
-                                         SettingsHelper.Settings.UIProperties.ShowInterface;
 
     public bool IsBottomToolbarShown
     {
-        get => _isBottomToolbarShown;
-        set => this.RaiseAndSetIfChanged(ref _isBottomToolbarShown, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private bool _isBottomToolbarShownSetting = SettingsHelper.Settings.UIProperties.ShowBottomNavBar;
-
-    public bool IsBottomToolbarShownSetting
-    {
-        get => _isBottomToolbarShownSetting;
-        set => this.RaiseAndSetIfChanged(ref _isBottomToolbarShownSetting, value);
-    }
-    
-    private bool _isShowingTaskbarProgress = SettingsHelper.Settings.UIProperties.IsTaskbarProgressEnabled;
 
     public bool IsShowingTaskbarProgress
     {
-        get => _isShowingTaskbarProgress;
-        set => this.RaiseAndSetIfChanged(ref _isShowingTaskbarProgress, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private bool _isFullscreen = SettingsHelper.Settings.WindowProperties.Fullscreen;
 
     public bool IsFullscreen
     {
-        get => _isFullscreen;
-        set => this.RaiseAndSetIfChanged(ref _isFullscreen, value);
+        get;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref field, value);
+            ShouldRestore = IsFullscreen || IsMaximized;
+            ShouldMaximizeBeShown = !IsFullscreen && !IsMaximized;
+        }
+    }
+    
+    public bool IsMaximized
+    {
+        get;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref field, value);
+            ShouldRestore = IsFullscreen || IsMaximized;
+            ShouldMaximizeBeShown = !IsFullscreen && !IsMaximized;
+        }
+    }
+    
+    public bool ShouldRestore
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    private bool _isTopMost = SettingsHelper.Settings.WindowProperties.TopMost;
+    public bool ShouldMaximizeBeShown
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    } = true;
 
     public bool IsTopMost
     {
-        get => _isTopMost;
-        set => this.RaiseAndSetIfChanged(ref _isTopMost, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private bool _isIncludingSubdirectories = SettingsHelper.Settings.Sorting.IncludeSubDirectories;
 
     public bool IsIncludingSubdirectories
     {
-        get => _isIncludingSubdirectories;
-        set => this.RaiseAndSetIfChanged(ref _isIncludingSubdirectories, value);
-    }
-
-    private bool _isScrollingEnabled;
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    } 
 
     public bool IsScrollingEnabled
     {
-        get => _isScrollingEnabled;
-        set => this.RaiseAndSetIfChanged(ref _isScrollingEnabled, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private bool _isStretched = SettingsHelper.Settings.ImageScaling.StretchImage;
 
     public bool IsStretched
     {
-        get => _isStretched;
+        get;
         set
         {
-            this.RaiseAndSetIfChanged(ref _isStretched, value);
+            this.RaiseAndSetIfChanged(ref field, value);
             SettingsHelper.Settings.ImageScaling.StretchImage = value;
-            WindowHelper.SetSize(this);
-            _ = SettingsHelper.SaveSettingsAsync();
+            WindowResizing.SetSize(this);
         }
-    }
-
-    private bool _isLooping = SettingsHelper.Settings.UIProperties.Looping;
+    } 
 
     public bool IsLooping
     {
-        get => _isLooping;
-        set => this.RaiseAndSetIfChanged(ref _isLooping, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private bool _isAutoFit = SettingsHelper.Settings.WindowProperties.AutoFit;
 
     public bool IsAutoFit
     {
-        get => _isAutoFit;
-        set => this.RaiseAndSetIfChanged(ref _isAutoFit, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private bool _isCtrlToZoomEnabled = SettingsHelper.Settings.Zoom.CtrlZoom;
-
-    public bool IsCtrlToZoomEnabled
-    {
-        get => _isCtrlToZoomEnabled;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _isCtrlToZoomEnabled, value);
-            SettingsHelper.Settings.Zoom.CtrlZoom = value;
-            _ = SettingsHelper.SaveSettingsAsync();
-        }
-    }
-
-    private bool _isNavigatingInReverse = SettingsHelper.Settings.Zoom.HorizontalReverseScroll;
-
-    public bool IsNavigatingInReverse
-    {
-        get => _isNavigatingInReverse;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _isNavigatingInReverse, value);
-            SettingsHelper.Settings.Zoom.HorizontalReverseScroll = value;
-            _ = SettingsHelper.SaveSettingsAsync();
-        }
-    }
-
-    private bool _isOpeningLastFileOnStartup = SettingsHelper.Settings.StartUp.OpenLastFile;
-
-    public bool IsOpeningLastFileOnStartup
-    {
-        get => _isOpeningLastFileOnStartup;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _isOpeningLastFileOnStartup, value);
-            SettingsHelper.Settings.StartUp.OpenLastFile = value;
-            _ = SettingsHelper.SaveSettingsAsync();
-        }
-    }
-
-    private bool _isStayingCentered = SettingsHelper.Settings.WindowProperties.KeepCentered;
 
     public bool IsStayingCentered
     {
-        get => _isStayingCentered;
+        get;
         set
         {
-            this.RaiseAndSetIfChanged(ref _isStayingCentered, value);
+            this.RaiseAndSetIfChanged(ref field, value);
             SettingsHelper.Settings.WindowProperties.KeepCentered = value;
-            _ = SettingsHelper.SaveSettingsAsync();
         }
     }
-
-    private bool _isFileSavingDialogShown = SettingsHelper.Settings.UIProperties.ShowFileSavingDialog;
-
-    public bool IsFileSavingDialogShown
-    {
-        get => _isFileSavingDialogShown;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _isFileSavingDialogShown, value);
-            SettingsHelper.Settings.UIProperties.ShowFileSavingDialog = value;
-            _ = SettingsHelper.SaveSettingsAsync();
-        }
-    }
-
-    private bool _isOpeningInSameWindow;
 
     public bool IsOpeningInSameWindow
     {
-        get => _isOpeningInSameWindow;
-        set => this.RaiseAndSetIfChanged(ref _isOpeningInSameWindow, value);
+        get;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref field, value);
+            SettingsHelper.Settings.UIProperties.OpenInSameWindow = value;
+        }
+    }
+    
+    public bool IsShowingConfirmationOnEsc
+    {
+        get;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref field, value);
+            SettingsHelper.Settings.UIProperties.ShowConfirmationOnEsc = value;
+        }
     }
 
-    private bool _isEditableTitlebarOpen;
-    
     public bool IsEditableTitlebarOpen
     {
-        get => _isEditableTitlebarOpen;
-        set => this.RaiseAndSetIfChanged(ref _isEditableTitlebarOpen, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
+
+    public bool IsUsingTouchpad
+    {
+        get;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref field, value);
+            SettingsHelper.Settings.Zoom.IsUsingTouchPad = value;
+        }
     }
 
     #endregion Booleans
+    
+    public Thickness TopScreenMargin
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
+
+    public Thickness BottomScreenMargin
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
+    
+    public CornerRadius BottomCornerRadius
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
+    
+    public int BackgroundChoice
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
 
     public double WindowMinSize
     {
@@ -726,661 +683,523 @@ public class MainViewModel : ViewModelBase
             return SizeDefaults.WindowMinSize;
         }
     }
-    
-    private double _titlebarHeight = SettingsHelper.Settings.WindowProperties.Fullscreen 
-                                     || !SettingsHelper.Settings.UIProperties.ShowInterface ? 0 : SizeDefaults.TitlebarHeight;
+
     public double TitlebarHeight
     {
-        set => this.RaiseAndSetIfChanged(ref _titlebarHeight, value);
-        get => _titlebarHeight;
-    }
-    private double _bottombarHeight = SettingsHelper.Settings.WindowProperties.Fullscreen 
-                                      || !SettingsHelper.Settings.UIProperties.ShowInterface ? 0 : SizeDefaults.BottombarHeight;
-    public double BottombarHeight         
-    {
-        set => this.RaiseAndSetIfChanged(ref _bottombarHeight, value);
-        get => _bottombarHeight;
-    }
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    } 
 
-    private int _scaleX = 1;
+    public double BottombarHeight
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+        
+    }
 
     // Used to flip the flip button
     public int ScaleX
     {
-        get => _scaleX;
-        set => this.RaiseAndSetIfChanged(ref _scaleX, value);
-    }
-
-    private UserControl? _currentView;
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    } = 1;
 
     public UserControl? CurrentView
     {
-        get => _currentView;
-        set => this.RaiseAndSetIfChanged(ref _currentView, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
     public ImageViewer? ImageViewer;
 
-    private uint _exifRating;
-
     public uint EXIFRating
     {
-        get => _exifRating;
-        set => this.RaiseAndSetIfChanged(ref _exifRating, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private int _getIndex;
 
     public int GetIndex
     {
-        get => _getIndex;
-        set => this.RaiseAndSetIfChanged(ref _getIndex, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private double _getSlideshowSpeed = SettingsHelper.Settings.UIProperties.SlideShowTimer;
 
     public double GetSlideshowSpeed
     {
-        get => _getSlideshowSpeed;
+        get;
         set
         {
             var roundedValue = Math.Round(value, 2);
-            this.RaiseAndSetIfChanged(ref _getSlideshowSpeed, roundedValue);
+            this.RaiseAndSetIfChanged(ref field, roundedValue);
             SettingsHelper.Settings.UIProperties.SlideShowTimer = roundedValue;
         }
-    }
-
-    private double _getNavSpeed = SettingsHelper.Settings.UIProperties.NavSpeed;
+    } 
 
     public double GetNavSpeed
     {
-        get => Math.Round(_getNavSpeed, 2);
+        get => Math.Round(field, 2);
         set 
         {
-            this.RaiseAndSetIfChanged(ref _getNavSpeed, value);
+            this.RaiseAndSetIfChanged(ref field, value);
             SettingsHelper.Settings.UIProperties.NavSpeed = value;
         }
     }
 
-    private double _getZoomSpeed = SettingsHelper.Settings.Zoom.ZoomSpeed;
-
     public double GetZoomSpeed
     {
-        get => _getZoomSpeed;
+        get;
         set
         {
             var roundedValue = Math.Round(value, 2);
-            this.RaiseAndSetIfChanged(ref _getZoomSpeed, roundedValue);
+            this.RaiseAndSetIfChanged(ref field, roundedValue);
             SettingsHelper.Settings.Zoom.ZoomSpeed = roundedValue;
         }
-    }
+    } 
 
     #region strings
-    
-    private string? _getFlipped;
 
-    public string? GetFlipped
+    public string? GetIsShowingUITranslation
     {
-        get => _getFlipped;
-        set => this.RaiseAndSetIfChanged(ref _getFlipped, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    private string? _getBottomGallery;
-
-    public string? GetBottomGallery
+    public string? GetIsShowingBottomToolbarTranslation
     {
-        get => _getBottomGallery;
-        set => this.RaiseAndSetIfChanged(ref _getBottomGallery, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    private string? _getLooping;
-
-    public string? GetLooping
+    public string? GetIsShowingFadingUIButtonsTranslation
     {
-        get => _getLooping;
-        set => this.RaiseAndSetIfChanged(ref _getLooping, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    private string? _getScrolling;
-
-    public string? GetScrolling
+    public string? GetIsUsingTouchpadTranslation
     {
-        get => _getScrolling;
-        set => this.RaiseAndSetIfChanged(ref _getScrolling, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    private string? _getCtrlZoom;
-
-    public string? GetCtrlZoom
+    public string? GetIsFlippedTranslation
     {
-        get => _getCtrlZoom;
-        set => this.RaiseAndSetIfChanged(ref _getCtrlZoom, value);
+        get => ScaleX == -1 ? UnFlip : Flip;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    private string? _getPrintSizeInch;
+    public string? GetIsShowingBottomGalleryTranslation
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
+
+    public string? GetIsLoopingTranslation
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
+
+    public string? GetIsScrollingTranslation
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
+
+    public string? GetIsCtrlZoomTranslation
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
 
     public string? GetPrintSizeInch
     {
-        get => _getPrintSizeInch;
-        set => this.RaiseAndSetIfChanged(ref _getPrintSizeInch, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getPrintSizeCm;
 
     public string? GetPrintSizeCm
     {
-        get => _getPrintSizeCm;
-        set => this.RaiseAndSetIfChanged(ref _getPrintSizeCm, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getSizeMp;
 
     public string? GetSizeMp
     {
-        get => _getSizeMp;
-        set => this.RaiseAndSetIfChanged(ref _getSizeMp, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getResolution;
 
     public string? GetResolution
     {
-        get => _getResolution;
-        set => this.RaiseAndSetIfChanged(ref _getResolution, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getBitDepth;
 
     public string? GetBitDepth
     {
-        get => _getBitDepth;
-        set => this.RaiseAndSetIfChanged(ref _getBitDepth, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getAspectRatio;
 
     public string? GetAspectRatio
     {
-        get => _getAspectRatio;
-        set => this.RaiseAndSetIfChanged(ref _getAspectRatio, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getLatitude;
 
     public string? GetLatitude
     {
-        get => _getLatitude;
-        set => this.RaiseAndSetIfChanged(ref _getLatitude, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getLongitude;
 
     public string? GetLongitude
     {
-        get => _getLongitude;
-        set => this.RaiseAndSetIfChanged(ref _getLongitude, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getAltitude;
 
     public string? GetAltitude
     {
-        get => _getAltitude;
-        set => this.RaiseAndSetIfChanged(ref _getAltitude, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _googleLink;
 
     public string? GoogleLink
     {
-        get => _googleLink;
-        set => this.RaiseAndSetIfChanged(ref _googleLink, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _bingLink;
 
     public string? BingLink
     {
-        get => _bingLink;
-        set => this.RaiseAndSetIfChanged(ref _bingLink, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getAuthors;
 
     public string? GetAuthors
     {
-        get => _getAuthors;
-        set => this.RaiseAndSetIfChanged(ref _getAuthors, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getDateTaken;
 
     public string? GetDateTaken
     {
-        get => _getDateTaken;
-        set => this.RaiseAndSetIfChanged(ref _getDateTaken, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getCopyright;
 
     public string? GetCopyright
     {
-        get => _getCopyright;
-        set => this.RaiseAndSetIfChanged(ref _getCopyright, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getTitle;
 
     public string? GetTitle
     {
-        get => _getTitle;
-        set => this.RaiseAndSetIfChanged(ref _getTitle, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getSubject;
 
     public string? GetSubject
     {
-        get => _getSubject;
-        set => this.RaiseAndSetIfChanged(ref _getSubject, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getSoftware;
 
     public string? GetSoftware
     {
-        get => _getSoftware;
-        set => this.RaiseAndSetIfChanged(ref _getSoftware, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getResolutionUnit;
 
     public string? GetResolutionUnit
     {
-        get => _getResolutionUnit;
-        set => this.RaiseAndSetIfChanged(ref _getResolutionUnit, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getColorRepresentation;
 
     public string? GetColorRepresentation
     {
-        get => _getColorRepresentation;
-        set => this.RaiseAndSetIfChanged(ref _getColorRepresentation, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getCompression;
 
     public string? GetCompression
     {
-        get => _getCompression;
-        set => this.RaiseAndSetIfChanged(ref _getCompression, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getCompressedBitsPixel;
 
     public string? GetCompressedBitsPixel
     {
-        get => _getCompressedBitsPixel;
-        set => this.RaiseAndSetIfChanged(ref _getCompressedBitsPixel, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getCameraMaker;
 
     public string? GetCameraMaker
     {
-        get => _getCameraMaker;
-        set => this.RaiseAndSetIfChanged(ref _getCameraMaker, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getCameraModel;
 
     public string? GetCameraModel
     {
-        get => _getCameraModel;
-        set => this.RaiseAndSetIfChanged(ref _getCameraModel, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _GetExposureProgram;
 
     public string? GetExposureProgram
     {
-        get => _GetExposureProgram;
-        set => this.RaiseAndSetIfChanged(ref _GetExposureProgram, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getExposureTime;
 
     public string? GetExposureTime
     {
-        get => _getExposureTime;
-        set => this.RaiseAndSetIfChanged(ref _getExposureTime, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _GetExposureBias;
 
     public string? GetExposureBias
     {
-        get => _GetExposureBias;
-        set => this.RaiseAndSetIfChanged(ref _GetExposureBias, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _GetFNumber;
 
     public string? GetFNumber
     {
-        get => _GetFNumber;
-        set => this.RaiseAndSetIfChanged(ref _GetFNumber, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getMaxAperture;
 
     public string? GetMaxAperture
     {
-        get => _getMaxAperture;
-        set => this.RaiseAndSetIfChanged(ref _getMaxAperture, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getDigitalZoom;
 
     public string? GetDigitalZoom
     {
-        get => _getDigitalZoom;
-        set => this.RaiseAndSetIfChanged(ref _getDigitalZoom, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getFocalLength35Mm;
 
     public string? GetFocalLength35Mm
     {
-        get => _getFocalLength35Mm;
-        set => this.RaiseAndSetIfChanged(ref _getFocalLength35Mm, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getFocalLength;
 
     public string? GetFocalLength
     {
-        get => _getFocalLength;
-        set => this.RaiseAndSetIfChanged(ref _getFocalLength, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getISOSpeed;
 
     public string? GetISOSpeed
     {
-        get => _getISOSpeed;
-        set => this.RaiseAndSetIfChanged(ref _getISOSpeed, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getMeteringMode;
 
     public string? GetMeteringMode
     {
-        get => _getMeteringMode;
-        set => this.RaiseAndSetIfChanged(ref _getMeteringMode, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getContrast;
 
     public string? GetContrast
     {
-        get => _getContrast;
-        set => this.RaiseAndSetIfChanged(ref _getContrast, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getSaturation;
 
     public string? GetSaturation
     {
-        get => _getSaturation;
-        set => this.RaiseAndSetIfChanged(ref _getSaturation, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getSharpness;
 
     public string? GetSharpness
     {
-        get => _getSharpness;
-        set => this.RaiseAndSetIfChanged(ref _getSharpness, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getWhiteBalance;
 
     public string? GetWhiteBalance
     {
-        get => _getWhiteBalance;
-        set => this.RaiseAndSetIfChanged(ref _getWhiteBalance, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getFlashMode;
 
     public string? GetFlashMode
     {
-        get => _getFlashMode;
-        set => this.RaiseAndSetIfChanged(ref _getFlashMode, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getFlashEnergy;
 
     public string? GetFlashEnergy
     {
-        get => _getFlashEnergy;
-        set => this.RaiseAndSetIfChanged(ref _getFlashEnergy, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getLightSource;
 
     public string? GetLightSource
     {
-        get => _getLightSource;
-        set => this.RaiseAndSetIfChanged(ref _getLightSource, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getBrightness;
 
     public string? GetBrightness
     {
-        get => _getBrightness;
-        set => this.RaiseAndSetIfChanged(ref _getBrightness, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getPhotometricInterpretation;
 
     public string? GetPhotometricInterpretation
     {
-        get => _getPhotometricInterpretation;
-        set => this.RaiseAndSetIfChanged(ref _getPhotometricInterpretation, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getOrientation;
 
     public string? GetOrientation
     {
-        get => _getOrientation;
-        set => this.RaiseAndSetIfChanged(ref _getOrientation, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getExifVersion;
 
     public string? GetExifVersion
     {
-        get => _getExifVersion;
-        set => this.RaiseAndSetIfChanged(ref _getExifVersion, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _GetLensModel;
 
     public string? GetLensModel
     {
-        get => _GetLensModel;
-        set => this.RaiseAndSetIfChanged(ref _GetLensModel, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private string? _getLensMaker;
 
     public string? GetLensMaker
     {
-        get => _getLensMaker;
-        set => this.RaiseAndSetIfChanged(ref _getLensMaker, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
     #endregion strings
 
     #region Window Properties
 
-    private string? _title = "Loading...";
-
     public string? Title
     {
-        get => _title;
-        set => this.RaiseAndSetIfChanged(ref _title, value);
-    }
-
-    private string? _titleTooltip = "Loading...";
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    } = "Loading...";
 
     public string? TitleTooltip
     {
-        get => _titleTooltip;
-        set => this.RaiseAndSetIfChanged(ref _titleTooltip, value);
-    }
-
-    private string? _windowTitle = "PicView";
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    } = "Loading...";
 
     public string? WindowTitle
     {
-        get => _windowTitle;
-        set => this.RaiseAndSetIfChanged(ref _windowTitle, value);
-    }
-
-    private SizeToContent _sizeToContent;
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    } = "PicView";
 
     public SizeToContent SizeToContent
     {
-        get => _sizeToContent;
-        set => this.RaiseAndSetIfChanged(ref _sizeToContent, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private bool _canResize;
 
     public bool CanResize
     {
-        get => _canResize;
-        set => this.RaiseAndSetIfChanged(ref _canResize, value);
-    }
-
-    private bool _isRotationAnimationEnabled;
-
-    public bool IsRotationAnimationEnabled
-    {
-        get => _isRotationAnimationEnabled;
-        set => this.RaiseAndSetIfChanged(ref _isRotationAnimationEnabled, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
     #endregion Window Properties
 
     #region Size
 
-    private double _titleMaxWidth;
-
     public double TitleMaxWidth
     {
-        get => _titleMaxWidth;
-        set => this.RaiseAndSetIfChanged(ref _titleMaxWidth, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-    
+
     #endregion Size
 
     #region Zoom
 
-    private double _rotationAngle;
-
     public double RotationAngle
     {
-        get => _rotationAngle;
-        set => this.RaiseAndSetIfChanged(ref _rotationAngle, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private double _zoomValue;
 
     public double ZoomValue
     {
-        get => _zoomValue;
-        set => this.RaiseAndSetIfChanged(ref _zoomValue, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private ScrollBarVisibility _toggleScrollBarVisibility;
 
     public ScrollBarVisibility ToggleScrollBarVisibility
     {
-        get => _toggleScrollBarVisibility;
-        set => this.RaiseAndSetIfChanged(ref _toggleScrollBarVisibility, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
     #endregion Zoom
 
     #region Menus
 
-    private bool _isFileMenuVisible;
-
     public bool IsFileMenuVisible
     {
-        get => _isFileMenuVisible;
-        set => this.RaiseAndSetIfChanged(ref _isFileMenuVisible, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private bool _isImageMenuVisible;
 
     public bool IsImageMenuVisible
     {
-        get => _isImageMenuVisible;
-        set => this.RaiseAndSetIfChanged(ref _isImageMenuVisible, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private bool _isSettingsMenuVisible;
 
     public bool IsSettingsMenuVisible
     {
-        get => _isSettingsMenuVisible;
-        set => this.RaiseAndSetIfChanged(ref _isSettingsMenuVisible, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private bool _isToolsMenuVisible;
 
     public bool IsToolsMenuVisible
     {
-        get => _isToolsMenuVisible;
-        set => this.RaiseAndSetIfChanged(ref _isToolsMenuVisible, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
     #endregion Menus
 
     #endregion Fields
 
-    #region Services
-
-    public ImageIterator? ImageIterator;
-
-    #endregion Services
-
     #region Methods
 
     #region Sorting Order
 
-    private FileListHelper.SortFilesBy _sortOrder;
-
     public FileListHelper.SortFilesBy SortOrder
     {
-        get => _sortOrder;
-        set => this.RaiseAndSetIfChanged(ref _sortOrder, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    private bool _isAscending = SettingsHelper.Settings.Sorting.Ascending;
 
     public bool IsAscending
     {
-        get => _isAscending;
-        set => this.RaiseAndSetIfChanged(ref _isAscending, value);
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
     #endregion Sorting Order
@@ -1391,8 +1210,7 @@ public class MainViewModel : ViewModelBase
         var success = await ConversionHelper.ResizeImageByPercentage(FileInfo, percentage);
         if (success)
         {
-            ImageIterator?.RemoveCurrentItemFromPreLoader();
-            await ImageIterator?.IterateToIndex(ImageIterator.CurrentIndex);
+            await NavigationManager.QuickReload();
         }
         else
         {
@@ -1407,20 +1225,10 @@ public class MainViewModel : ViewModelBase
             return;
         }
 
-        if (ImageIterator is not null)
-        {
-            ImageIterator.IsRenamingInProgress = true;
-        }
-
         var newPath = await ConversionHelper.ConvertTask(FileInfo, index);
         if (!string.IsNullOrWhiteSpace(newPath))
         {
-            await NavigationHelper.LoadPicFromStringAsync(newPath, this);
-        }
-
-        if (ImageIterator is not null)
-        {
-            ImageIterator.IsRenamingInProgress = false;
+            await NavigationManager.LoadPicFromStringAsync(newPath, this);
         }
     }
     
@@ -1469,7 +1277,7 @@ public class MainViewModel : ViewModelBase
         {
             return;
         }
-        await ClipboardHelper.CutFile(path);
+        await ClipboardHelper.CutFile(path, this);
     }
     
     private async Task DeleteFileTask(string path)
@@ -1480,8 +1288,23 @@ public class MainViewModel : ViewModelBase
         }
         await Task.Run(() =>
         {
-            FileDeletionHelper.DeleteFileWithErrorMsg(path, recycle: false);
+            try
+            {
+                var errorMsg = FileDeletionHelper.DeleteFileWithErrorMsg(path, recycle: false);
+                if (!string.IsNullOrWhiteSpace(errorMsg))
+                {
+                    _ = TooltipHelper.ShowTooltipMessageAsync(errorMsg);
+                }
+            }
+            catch (Exception e)
+            {
+                _ = TooltipHelper.ShowTooltipMessageAsync(e);
+#if DEBUG
+                Console.WriteLine(e);
+#endif
+            }
         });
+        
     }
     
     private async Task RecycleFileTask(string path)
@@ -1503,17 +1326,20 @@ public class MainViewModel : ViewModelBase
             return;
         }
 
-        if (Path.GetFileName(path) == FileInfo.FullName)
+        IsLoading = true;
+        if (path == FileInfo.FullName)
         {
             await FunctionsHelper.DuplicateFile();
         }
         else
         {
-            await Task.Run(() =>
+            var duplicatedPath = await FileHelper.DuplicateAndReturnFileNameAsync(path);
+            if (!string.IsNullOrWhiteSpace(duplicatedPath))
             {
-                FileHelper.DuplicateAndReturnFileName(path);
-            });
+                await ClipboardHelper.CopyAnimation();
+            }
         }
+        IsLoading = false;
     }
     
     private async Task ShowFilePropertiesTask(string path)
@@ -1580,20 +1406,77 @@ public class MainViewModel : ViewModelBase
         });
     }
     
-    private async Task SetAsWallpaperTask(string path)
+    public async Task SetAsWallpaperTask(string path)
     {
         if (string.IsNullOrWhiteSpace(path))
         {
             return;
         }
+        await SetAsWallpaperTask(path, WallpaperStyle.Fit).ConfigureAwait(false);
+    }
+    
+    public async Task SetAsWallpaperFilledTask(string path)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return;
+        }
+        await SetAsWallpaperTask(path, WallpaperStyle.Fill).ConfigureAwait(false);
+    }
+    
+    public async Task SetAsWallpaperTiledTask(string path)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return;
+        }
+        await SetAsWallpaperTask(path, WallpaperStyle.Tile).ConfigureAwait(false);
+    }
+    
+    public async Task SetAsWallpaperStretchedTask(string path)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return;
+        }
+        await SetAsWallpaperTask(path, WallpaperStyle.Stretch).ConfigureAwait(false);
+    }
+    
+    public async Task SetAsWallpaperCenteredTask(string path)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return;
+        }
+        await SetAsWallpaperTask(path, WallpaperStyle.Center).ConfigureAwait(false);
+    }
+    
+    public async Task SetAsWallpaperTask(string path, WallpaperStyle style)
+    {
+
         if (PlatformService is null)
         {
             return;
         }
-        await Task.Run(() =>
+        
+        IsLoading = true;
+        try
         {
-            PlatformService?.SetAsWallpaper(path, 4);
-        });
+            var file = await ImageHelper.ConvertToCommonSupportedFormatAsync(path, this).ConfigureAwait(false);
+
+            PlatformService?.SetAsWallpaper(file, WallpaperManager.GetWallpaperStyle(style));
+        }
+        catch (Exception e)
+        {
+            await TooltipHelper.ShowTooltipMessageAsync(e.Message, true);
+#if DEBUG
+            Console.WriteLine(e);   
+#endif
+        }
+        finally
+        {
+            IsLoading = false;
+        }
     }
     
     private async Task SetAsLockScreenTask(string path)
@@ -1606,23 +1489,52 @@ public class MainViewModel : ViewModelBase
         {
             return;
         }
-        await Task.Run(() =>
+        
+        IsLoading = true;
+
+        try
         {
-            PlatformService?.SetAsLockScreen(path);
-        });
+            var file = await ImageHelper.ConvertToCommonSupportedFormatAsync(path, this).ConfigureAwait(false);
+
+            var process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    Verb = "runas",
+                    UseShellExecute = true,
+                    FileName = "PicView.exe",
+                    Arguments = "lockscreen," + file,
+                    WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory
+                }
+            };
+            process.Start();
+            await TooltipHelper.ShowTooltipMessageAsync(TranslationHelper.Translation.Applying, true);
+            await process.WaitForExitAsync();
+        }
+        catch (Exception e)
+        {
+            await TooltipHelper.ShowTooltipMessageAsync(e.Message, true);
+#if DEBUG
+         Console.WriteLine(e);   
+#endif
+        }
+        finally
+        {
+            IsLoading = false;
+        }
     }
 
-    public async Task GalleryItemStretchTask(string value)
+    public void SetGalleryItemStretch(string value)
     {
         if (value.Equals("Square", StringComparison.OrdinalIgnoreCase))
         {
             if (GalleryFunctions.IsFullGalleryOpen)
             {
-                await GalleryStretchMode.ChangeFullGalleryStretchSquare(this);
+                GalleryStretchMode.ChangeFullGalleryStretchSquare(this);
             }
             else
             {
-                await GalleryStretchMode.ChangeBottomGalleryStretchSquare(this);
+                GalleryStretchMode.ChangeBottomGalleryStretchSquare(this);
             }
             return;
         }
@@ -1631,11 +1543,11 @@ public class MainViewModel : ViewModelBase
         {
             if (GalleryFunctions.IsFullGalleryOpen)
             {
-                await GalleryStretchMode.ChangeFullGalleryStretchSquareFill(this);
+                GalleryStretchMode.ChangeFullGalleryStretchSquareFill(this);
             }
             else
             {
-                await GalleryStretchMode.ChangeBottomGalleryStretchSquareFill(this);
+                GalleryStretchMode.ChangeBottomGalleryStretchSquareFill(this);
             }
             return;
         }
@@ -1644,12 +1556,24 @@ public class MainViewModel : ViewModelBase
         {
             if (GalleryFunctions.IsFullGalleryOpen)
             {
-                await GalleryStretchMode.ChangeFullGalleryItemStretch(this, stretch);
+                GalleryStretchMode.ChangeFullGalleryItemStretch(this, stretch);
             }
             else
             {
-                await GalleryStretchMode.ChangeBottomGalleryItemStretch(this, stretch);
+                GalleryStretchMode.ChangeBottomGalleryItemStretch(this, stretch);
             }
+        }
+    }
+
+    public async Task StartSlideShowTask(int milliseconds)
+    {
+        if (milliseconds <= 0)
+        {
+            await Avalonia.Navigation.Slideshow.StartSlideshow(this);
+        }
+        else
+        {
+            await Avalonia.Navigation.Slideshow.StartSlideshow(this, milliseconds);
         }
     }
 
@@ -1662,48 +1586,107 @@ public class MainViewModel : ViewModelBase
 
         #region Window commands
 
-        ExitCommand = ReactiveCommand.CreateFromTask(WindowHelper.Close);
-        MinimizeCommand = ReactiveCommand.CreateFromTask(WindowHelper.Minimize);
-        MaximizeCommand = ReactiveCommand.CreateFromTask(WindowHelper.MaximizeRestore);
-        ToggleFullscreenCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.Fullscreen);
+        ExitCommand = ReactiveCommand.CreateFromTask(WindowFunctions.Close);
+        MinimizeCommand = ReactiveCommand.CreateFromTask(WindowFunctions.Minimize);
+        MaximizeCommand = ReactiveCommand.CreateFromTask(WindowFunctions.MaximizeRestore);
+        RestoreCommand = ReactiveCommand.Create(WindowFunctions.Restore);
+        ToggleFullscreenCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.ToggleFullscreen);
         NewWindowCommand = ReactiveCommand.Create(ProcessHelper.StartNewProcess);
 
         ShowExifWindowCommand = ReactiveCommand.Create(platformSpecificService.ShowExifWindow);
         ShowSettingsWindowCommand = ReactiveCommand.Create(platformSpecificService.ShowSettingsWindow);
         ShowKeybindingsWindowCommand = ReactiveCommand.Create(platformSpecificService.ShowKeybindingsWindow);
         ShowAboutWindowCommand = ReactiveCommand.Create(platformSpecificService.ShowAboutWindow);
-
+        ShowBatchResizeWindowCommand = ReactiveCommand.Create(platformSpecificService.ShowBatchResizeWindow);
+        ShowSingleImageResizeWindowCommand = ReactiveCommand.Create(platformSpecificService.ShowSingleImageResizeWindow);
+        ShowEffectsWindowCommand = ReactiveCommand.Create(platformSpecificService.ShowEffectsWindow);
         #endregion Window commands
 
         #region Navigation Commands
 
-        NextCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.Next);
+        NextCommand = ReactiveCommand.Create(() =>
+        {
+            Task.Run(FunctionsHelper.Next);
+        });
+        
+        NextButtonCommand = ReactiveCommand.Create(() =>
+        {
+            var button = UIHelper.GetBottomBar?.NextButton;
+            if (button != null)
+            {
+                button.Interval =
+                    (int)TimeSpan.FromSeconds(SettingsHelper.Settings.UIProperties.NavSpeed).TotalMilliseconds;
+            }
 
-        NextButtonCommand = ReactiveCommand.CreateFromTask(async () =>
-        {
-           await NavigationHelper.NavigateAndPositionCursor(next:true, arrow: false, vm: this);
+            Task.Run(() =>
+               NavigationManager.NavigateAndPositionCursor(next: true, arrow: false, vm: this)
+            );
         });
         
-        NextArrowButtonCommand = ReactiveCommand.CreateFromTask(async () =>
+        NextArrowButtonCommand = ReactiveCommand.Create( () =>
         {
-            await NavigationHelper.NavigateAndPositionCursor(next:true, arrow: true, vm: this);
-        });
-        
-        NextFolderCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.NextFolder);
+            var button = UIHelper.GetMainView?.ClickArrowRight?.PolyButton;
+            if (button != null)
+            {
+                button.Interval =
+                    (int)TimeSpan.FromSeconds(SettingsHelper.Settings.UIProperties.NavSpeed).TotalMilliseconds;
+            }
 
-        PreviousCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.Prev);
+            Task.Run(() =>
+                NavigationManager.NavigateAndPositionCursor(next:true, arrow: true, vm: this)
+            );
+        });
+        
+        NextFolderCommand = ReactiveCommand.Create(() =>
+        {
+            Task.Run(FunctionsHelper.NextFolder);
+        });
+        
+        PreviousCommand = ReactiveCommand.Create(() =>
+        {
+            Task.Run(FunctionsHelper.Prev);
+        });
+        
+        PreviousButtonCommand = ReactiveCommand.Create( () =>
+        {
+            var button = UIHelper.GetBottomBar?.PreviousButton;
+            if (button != null)
+            {
+                button.Interval =
+                    (int)TimeSpan.FromSeconds(SettingsHelper.Settings.UIProperties.NavSpeed).TotalMilliseconds;
+            }
 
-        PreviousButtonCommand = ReactiveCommand.CreateFromTask(async () =>
-        {
-            await NavigationHelper.NavigateAndPositionCursor(next:false, arrow: false, vm: this);
+            Task.Run(() =>
+                NavigationManager.NavigateAndPositionCursor(next:false, arrow: false, vm: this)
+            );
         });
         
-        PreviousArrowButtonCommand = ReactiveCommand.CreateFromTask(async () =>
+        PreviousArrowButtonCommand = ReactiveCommand.Create( () =>
         {
-            await NavigationHelper.NavigateAndPositionCursor(next:false, arrow: true, vm: this);
+            var button = UIHelper.GetMainView?.ClickArrowLeft?.PolyButton;
+            if (button != null)
+            {
+                button.Interval =
+                    (int)TimeSpan.FromSeconds(SettingsHelper.Settings.UIProperties.NavSpeed).TotalMilliseconds;
+            }
+
+            Task.Run(() =>
+                NavigationManager.NavigateAndPositionCursor(next:false, arrow: true, vm: this)
+            );
         });
         
-        PreviousFolderCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.PrevFolder);
+        PreviousFolderCommand = ReactiveCommand.Create(() =>
+        {
+            Task.Run(FunctionsHelper.PrevFolder);
+        });
+        
+        Skip10Command = ReactiveCommand.CreateFromTask(FunctionsHelper.Next10);
+
+        Skip100Command = ReactiveCommand.CreateFromTask(FunctionsHelper.Next100);
+        
+        Prev10Command = ReactiveCommand.CreateFromTask(FunctionsHelper.Prev10);
+
+        Prev100Command = ReactiveCommand.CreateFromTask(FunctionsHelper.Prev100);
 
         FirstCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.First);
 
@@ -1750,8 +1733,21 @@ public class MainViewModel : ViewModelBase
         #region Image commands
 
         RotateLeftCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.RotateLeft);
+        RotateLeftButtonCommand = ReactiveCommand.CreateFromTask(async () =>
+        {
+            await Rotation.RotateLeft(this, Rotation.RotationButton.RotateLeftButton);
+        });
 
         RotateRightCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.RotateRight);
+        RotateRightButtonCommand = ReactiveCommand.CreateFromTask(async () =>
+        {
+            await Rotation.RotateRight(this, Rotation.RotationButton.RotateRightButton);
+        });
+        
+        RotateRightWindowBorderButtonCommand = ReactiveCommand.CreateFromTask(async () =>
+        {
+            await Rotation.RotateRight(this, Rotation.RotationButton.WindowBorderButton);
+        });
 
         FlipCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.Flip);
 
@@ -1770,12 +1766,20 @@ public class MainViewModel : ViewModelBase
         #endregion Image commands
 
         #region File commands
-
-        OpenFileCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.Open, Observable.Return(true));
-
-        OpenLastFileCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.OpenLastFile);
+        
+        OpenFileCommand = ReactiveCommand.Create( () =>
+        {
+            Task.Run(FunctionsHelper.Open);
+        });
+        
+        OpenLastFileCommand = ReactiveCommand.Create( () =>
+        {
+            Task.Run(FunctionsHelper.OpenLastFile);
+        });
 
         SaveFileCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.Save);
+
+        SaveFileAsCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.SaveAs);
 
         CopyFileCommand = ReactiveCommand.CreateFromTask<string>(CopyFileTask);
 
@@ -1788,8 +1792,11 @@ public class MainViewModel : ViewModelBase
         CopyBase64Command = ReactiveCommand.CreateFromTask<string>(CopyBase64Task);
 
         CutCommand = ReactiveCommand.CreateFromTask<string>(CutFileTask);
-
-        PasteCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.Paste);
+        
+        PasteCommand = ReactiveCommand.Create( () =>
+        {
+            Task.Run(FunctionsHelper.Paste);
+        });
 
         OpenWithCommand = ReactiveCommand.CreateFromTask<string>(OpenWithTask);
 
@@ -1809,6 +1816,11 @@ public class MainViewModel : ViewModelBase
         LocateOnDiskCommand = ReactiveCommand.CreateFromTask<string>(LocateOnDiskTask);
         
         SetAsWallpaperCommand = ReactiveCommand.CreateFromTask<string>(SetAsWallpaperTask);
+        SetAsWallpaperTiledCommand = ReactiveCommand.CreateFromTask<string>(SetAsWallpaperTiledTask);
+        SetAsWallpaperStretchedCommand = ReactiveCommand.CreateFromTask<string>(SetAsWallpaperStretchedTask);
+        SetAsWallpaperCenteredCommand = ReactiveCommand.CreateFromTask<string>(SetAsWallpaperCenteredTask);
+        SetAsWallpaperFilledCommand = ReactiveCommand.CreateFromTask<string>(SetAsWallpaperFilledTask);
+        
         SetAsLockScreenCommand = ReactiveCommand.CreateFromTask<string>(SetAsLockScreenTask);
 
         #endregion File commands
@@ -1835,7 +1847,7 @@ public class MainViewModel : ViewModelBase
         
         CloseGalleryCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.CloseGallery);
         
-        GalleryItemStretchCommand = ReactiveCommand.CreateFromTask<string>(GalleryItemStretchTask);
+        GalleryItemStretchCommand = ReactiveCommand.Create<string>(SetGalleryItemStretch);
 
         #endregion Gallery Commands
 
@@ -1849,12 +1861,17 @@ public class MainViewModel : ViewModelBase
         {
             await HideInterfaceLogic.ToggleBottomGalleryShownInHiddenUI(this);
         });
+        
+        ToggleFadeInButtonsOnHoverCommand = ReactiveCommand.CreateFromTask(async() =>
+        {
+            await HideInterfaceLogic.ToggleFadeInButtonsOnHover(this);
+        });
 
         ChangeCtrlZoomCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.ChangeCtrlZoom);
         
         ColorPickerCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.ColorPicker);
         
-        SlideshowCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.Slideshow);
+        SlideshowCommand = ReactiveCommand.CreateFromTask<int>(StartSlideShowTask);
         
         ToggleTaskbarProgressCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.ToggleTaskbarProgress);
 
@@ -1871,6 +1888,10 @@ public class MainViewModel : ViewModelBase
         ToggleLoopingCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.ToggleLooping);
         
         ResetSettingsCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.ResetSettings);
+        
+        RestartCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.Restart);
+        
+        ToggleUsingTouchpadCommand = ReactiveCommand.CreateFromTask(FunctionsHelper.ToggleUsingTouchpad);
 
         #endregion Settings commands
     }

@@ -1,15 +1,18 @@
-﻿using System.Diagnostics;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
-using ImageMagick;
 using PicView.Avalonia.Clipboard;
+using PicView.Avalonia.ColorManagement;
+using PicView.Avalonia.Crop;
 using PicView.Avalonia.FileSystem;
 using PicView.Avalonia.Gallery;
+using PicView.Avalonia.ImageHandling;
+using PicView.Avalonia.ImageTransformations;
 using PicView.Avalonia.Navigation;
+using PicView.Avalonia.SettingsManagement;
 using PicView.Avalonia.ViewModels;
-using PicView.Core.Config;
+using PicView.Avalonia.WindowBehavior;
 using PicView.Core.FileHandling;
 using PicView.Core.ImageDecoding;
 using PicView.Core.ProcessHandling;
@@ -34,6 +37,14 @@ public static class FunctionsHelper
             "Down" => Down,
             "Last" => Last,
             "First" => First,
+            "Next10" => Next10,
+            "Prev10" => Prev10,
+            "Next100" => Next100,
+            "Prev100" => Prev100,
+            
+            // Rotate
+            "RotateLeft" => RotateLeft,
+            "RotateRight" => RotateRight,
 
             // Scroll
             "ScrollUp" => ScrollUp,
@@ -60,11 +71,13 @@ public static class FunctionsHelper
 
             // Window functions
             "Fullscreen" => Fullscreen,
+            "ToggleFullscreen" => ToggleFullscreen,
             "SetTopMost" => SetTopMost,
             "Close" => Close,
             "ToggleInterface" => ToggleInterface,
             "NewWindow" => NewWindow,
             "Center" => Center,
+            "Maximize" => Maximize,
 
             // Windows
             "AboutWindow" => AboutWindow,
@@ -73,12 +86,14 @@ public static class FunctionsHelper
             "ResizeWindow" => ResizeWindow,
             "SettingsWindow" => SettingsWindow,
             "KeybindingsWindow" => KeybindingsWindow,
+            "BatchResizeWindow" => BatchResizeWindow,
 
             // Open functions
             "Open" => Open,
             "OpenWith" => OpenWith,
             "OpenInExplorer" => OpenInExplorer,
             "Save" => Save,
+            "SaveAs" => SaveAs,
             "Print" => Print,
             "Reload" => Reload,
 
@@ -93,6 +108,7 @@ public static class FunctionsHelper
 
             // File functions
             "DeleteFile" => DeleteFile,
+            "DeleteFilePermanently" => DeleteFilePermanently,
             "Rename" => Rename,
             "ShowFileProperties" => ShowFileProperties,
 
@@ -110,6 +126,16 @@ public static class FunctionsHelper
             "Set3Star" => Set3Star,
             "Set4Star" => Set4Star,
             "Set5Star" => Set5Star,
+            
+            // Background and lock screen image
+            "SetAsLockScreen" => SetAsLockScreen,
+            "SetAsLockscreenCentered" => SetAsLockscreenCentered,
+            "SetAsWallpaper" => SetAsWallpaper,
+            "SetAsWallpaperFitted" => SetAsWallpaperFitted,
+            "SetAsWallpaperStretched" => SetAsWallpaperStretched,
+            "SetAsWallpaperFilled" => SetAsWallpaperFilled,
+            "SetAsWallpaperCentered" => SetAsWallpaperCentered,
+            "SetAsWallpaperTiled" => SetAsWallpaperTiled,
 
             // Misc
             "ChangeBackground" => ChangeBackground,
@@ -117,6 +143,7 @@ public static class FunctionsHelper
             "GalleryClick" => GalleryClick,
             "Slideshow" => Slideshow,
             "ColorPicker" => ColorPicker,
+            "Restart" => Restart,
 
             _ => null
         });
@@ -182,33 +209,54 @@ public static class FunctionsHelper
 
     public static async Task Next()
     {
-        await NavigationHelper.Iterate(next: true, Vm);
+        await NavigationManager.Iterate(next: true, Vm);
     }
     
     public static async Task NextFolder()
     {
-        await NavigationHelper.GoToNextFolder(true, Vm);
+        await NavigationManager.GoToNextFolder(true, Vm);
     }
     
     public static async Task Last()
     {
-        await NavigationHelper.NavigateFirstOrLast(last: true, Vm);
+        await NavigationManager.NavigateFirstOrLast(last: true, Vm);
     }
 
     public static async Task Prev()
     {
-        await NavigationHelper.Iterate(next: false, Vm);
+        await NavigationManager.Iterate(next: false, Vm);
     }
     
     public static async Task PrevFolder()
     {
-        await NavigationHelper.GoToNextFolder(false, Vm);
+        await NavigationManager.GoToNextFolder(false, Vm);
     }
 
     public static async Task First()
     {
-        await NavigationHelper.NavigateFirstOrLast(last: false, Vm);
+        await NavigationManager.NavigateFirstOrLast(last: false, Vm);
     }
+    
+    public static async Task Next10()
+    {
+        await NavigationManager.Next10(Vm).ConfigureAwait(false);
+    }
+    
+    public static async Task Next100()
+    {
+        await NavigationManager.Next100(Vm).ConfigureAwait(false);
+    }
+    
+    public static async Task Prev10()
+    {
+        await NavigationManager.Prev10(Vm).ConfigureAwait(false);
+    }
+    
+    public static async Task Prev100()
+    {
+        await NavigationManager.Prev100(Vm).ConfigureAwait(false);
+    }
+    
 
     public static async Task Up()
     {
@@ -217,22 +265,12 @@ public static class FunctionsHelper
 
     public static async Task RotateRight()
     {
-        await UIHelper.RotateRight(Vm);
+        await Rotation.RotateRight(Vm);
     }
 
-    public static Task RotateLeft()
+    public static async Task RotateLeft()
     {
-        if (Vm is null)
-        {
-            return Task.CompletedTask;
-        }
-
-        if (GalleryFunctions.IsFullGalleryOpen)
-        {
-            return Task.CompletedTask;
-        }
-        Vm.ImageViewer.Rotate(clockWise: true);
-        return Task.CompletedTask;
+        await Rotation.RotateLeft(Vm);
     }
 
     public static async Task Down()
@@ -305,50 +343,27 @@ public static class FunctionsHelper
 
     public static async Task ToggleScroll()
     {
-        if (Vm is null)
-        {
-            return;
-        }
-        
-        UIHelper.ToggleScroll(Vm);
-        await SettingsHelper.SaveSettingsAsync();
+        await SettingsUpdater.ToggleScroll(Vm).ConfigureAwait(false);
     }
 
     public static async Task ChangeCtrlZoom()
     {
-        if (Vm is null)
-        {
-            return;
-        }
-        await UIHelper.ChangeCtrlZoom(Vm);
+        await SettingsUpdater.ToggleCtrlZoom(Vm).ConfigureAwait(false);
     }
 
     public static async Task ToggleLooping()
     {
-        if (Vm is null)
-        {
-            return;
-        }
-        await UIHelper.ToggleLooping(Vm);
+        await SettingsUpdater.ToggleLooping(Vm).ConfigureAwait(false);
     }
     
     public static async Task ToggleInterface()
     {
-        if (Vm is null)
-        {
-            return;
-        }
-        await HideInterfaceLogic.ToggleUI(Vm);
+        await HideInterfaceLogic.ToggleUI(Vm).ConfigureAwait(false);
     }
     
     public static async Task ToggleSubdirectories()
     {
-        if (Vm is null)
-        {
-            return;
-        }
-
-        await UIHelper.ToggleSubdirectories(vm: Vm);
+        await SettingsUpdater.ToggleSubdirectories(vm: Vm).ConfigureAwait(false);
     }
     
     public static async Task ToggleBottomToolbar()
@@ -357,35 +372,34 @@ public static class FunctionsHelper
         {
             return;
         }
-        await HideInterfaceLogic.ToggleBottomToolbar(Vm);
+        await HideInterfaceLogic.ToggleBottomToolbar(Vm).ConfigureAwait(false);
     }
     
     public static async Task ToggleTaskbarProgress()
     {
-        if (Vm is null)
-        {
-            return;
-        }
-        await UIHelper.ToggleTaskbarProgress(Vm);
+        await SettingsUpdater.ToggleTaskbarProgress(Vm).ConfigureAwait(false);
     }
     
     #endregion
 
     #region Gallery functions
 
-    public static async Task ToggleGallery()
+    public static Task ToggleGallery()
     {
-        await GalleryFunctions.ToggleGallery(Vm).ConfigureAwait(false);
+        GalleryFunctions.ToggleGallery(Vm);
+        return Task.CompletedTask;
     }
 
-    public static async Task OpenCloseBottomGallery()
+    public static Task OpenCloseBottomGallery()
     {
-        await GalleryFunctions.OpenCloseBottomGallery(Vm).ConfigureAwait(false);
+        GalleryFunctions.OpenCloseBottomGallery(Vm);
+        return Task.CompletedTask;
     }
     
-    public static async Task CloseGallery()
+    public static Task CloseGallery()
     {
-        await GalleryFunctions.CloseGallery(Vm);
+        GalleryFunctions.CloseGallery(Vm);
+        return Task.CompletedTask;
     }
     
     public static async Task GalleryClick()
@@ -407,41 +421,24 @@ public static class FunctionsHelper
     
     public static async Task Close()
     {
-        if (UIHelper.IsAnyMenuOpen(Vm))
-        {
-            UIHelper.CloseMenus(Vm);
-            return;
-        }
-        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+        if (Vm is null)
         {
             return;
         }
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            // TODO: Make it a setting to close the window
-            desktop.MainWindow?.Close();
-        });
-    }
-    
-    public static async Task Quit()
-    {
-        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            return;
-        }
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            desktop.MainWindow?.Close();
-        });
+        await UIHelper.Close(Vm);
     }
     
     public static async Task Center()
     {
-        // TODO: scroll to center when the gallery is open
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
-            WindowHelper.CenterWindowOnScreen();
+            UIHelper.Center(Vm);
         });
+    }
+    
+    public static async Task Maximize()
+    {
+        await WindowFunctions.MaximizeRestore();
     }
 
     public static async Task NewWindow()
@@ -475,7 +472,13 @@ public static class FunctionsHelper
 
     public static Task ResizeWindow()
     {
-        Vm?.PlatformService?.ShowResizeWindow();
+        Vm?.PlatformService?.ShowSingleImageResizeWindow();
+        return Task.CompletedTask;
+    }
+    
+    public static Task BatchResizeWindow()
+    {
+        Vm?.PlatformService?.ShowBatchResizeWindow();
         return Task.CompletedTask;
     }
 
@@ -491,36 +494,47 @@ public static class FunctionsHelper
     
     public static async Task Stretch()
     {
-        await WindowHelper.Stretch(Vm);
+        await WindowFunctions.Stretch(Vm);
     }
     public static async Task AutoFitWindow()
     {
-        await WindowHelper.ToggleAutoFit(Vm);
+        await WindowFunctions.ToggleAutoFit(Vm);
     }
 
     public static async Task AutoFitWindowAndStretch()
     {
-        await WindowHelper.AutoFitAndStretch(Vm);
+        await WindowFunctions.AutoFitAndStretch(Vm);
     }
 
     public static async Task NormalWindow()
     {
-        await WindowHelper.NormalWindow(Vm);
+        await WindowFunctions.NormalWindow(Vm);
     }
 
     public static async Task NormalWindowAndStretch()
     {
-        await WindowHelper.NormalWindowStretch(Vm);
+        await WindowFunctions.NormalWindowStretch(Vm);
     }
 
-    public static async Task Fullscreen()
+    public static async Task ToggleFullscreen()
     {
         if (Vm is null)
         {
             return;
         }
 
-        await WindowHelper.ToggleFullscreen(Vm);
+        await WindowFunctions.ToggleFullscreen(Vm);
+    }
+    
+    public static Task Fullscreen()
+    {
+        if (Vm is null)
+        {
+            return Task.CompletedTask;
+        }
+
+        WindowFunctions.Fullscreen(Vm, Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime);
+        return Task.CompletedTask;
     }
 
     public static async Task SetTopMost()
@@ -530,7 +544,7 @@ public static class FunctionsHelper
             return;
         }
 
-        await WindowHelper.ToggleTopMost(Vm);
+        await WindowFunctions.ToggleTopMost(Vm);
     }
 
     #endregion
@@ -576,19 +590,7 @@ public static class FunctionsHelper
 
     public static async Task Open()
     {
-        if (Vm is null)
-        {
-            return;
-        }
-
-        var file = await FilePickerHelper.OpenFile();
-        if (file is null)
-        {
-            return;
-        }
-        
-        var path = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? file.Path.AbsolutePath : file.Path.LocalPath;
-        _ = Task.Run(() => NavigationHelper.LoadPicFromStringAsync(path, Vm));
+        await FilePicker.SelectAndLoadFile(Vm);
     }
 
     public static Task OpenWith()
@@ -605,11 +607,12 @@ public static class FunctionsHelper
 
     public static async Task Save()
     {
-        if (Vm is null)
-        {
-            return;
-        }
-        await FilePickerHelper.SaveFileAsync(Vm.FileInfo?.FullName, Vm);
+        await FileSaverHelper.SaveCurrentFile(Vm);
+    }
+    
+    public static async Task SaveAs()
+    {
+        await FileSaverHelper.SaveFileAs(Vm);
     }
     
     public static async Task DeleteFile()
@@ -618,10 +621,18 @@ public static class FunctionsHelper
         {
             return;
         }
-        await Task.Run(() =>
+
+        await FileManager.DeleteFile(true, Vm);
+    }
+    
+    public static async Task DeleteFilePermanently()
+    {
+        if (Vm is null)
         {
-            FileDeletionHelper.DeleteFileWithErrorMsg(Vm.FileInfo?.FullName, true);
-        });
+            return;
+        }
+
+        await FileManager.DeleteFile(false, Vm);
     }
 
     public static async Task Rename()
@@ -653,7 +664,11 @@ public static class FunctionsHelper
 
     public static async Task CopyImage()
     {
-        await ClipboardHelper.CopyImageToClipboard();
+        if (Vm is null)
+        {
+            return;
+        }
+        await ClipboardHelper.CopyImageToClipboard(Vm);
     }
 
     public static async Task CopyBase64()
@@ -667,20 +682,7 @@ public static class FunctionsHelper
 
     public static async Task DuplicateFile()
     {
-        if (Vm is null)
-        {
-            return;
-        }
-        if (!NavigationHelper.CanNavigate(Vm))
-        {
-            return;
-        }
-        var oldPath = Vm.FileInfo.FullName;
-        var newPath = FileHelper.DuplicateAndReturnFileName(oldPath);
-        if (File.Exists(newPath))
-        {
-            await NavigationHelper.LoadPicFromFile(newPath, Vm);
-        }
+        await ClipboardHelper.Duplicate(Vm).ConfigureAwait(false);
     }
 
     public static async Task CutFile()
@@ -689,7 +691,7 @@ public static class FunctionsHelper
         {
             return;
         }
-        await ClipboardHelper.CutFile(Vm.FileInfo.FullName);
+        await ClipboardHelper.CutFile(Vm.FileInfo.FullName, Vm);
     }
 
     public static async Task Paste()
@@ -712,13 +714,13 @@ public static class FunctionsHelper
             return;
         }
         
-        ThemeHelper.ChangeBackground(Vm);
-        await SettingsHelper.SaveSettingsAsync();
+        BackgroundManager.ChangeBackground(Vm);
+        await SaveSettingsAsync();
     }
     
     public static async Task SideBySide()
     {
-        await UIHelper.SideBySide(Vm);
+        await SettingsUpdater.ToggleSideBySide(Vm);
     }
     
     public static async Task Reload()
@@ -732,58 +734,29 @@ public static class FunctionsHelper
 
     public static Task ResizeImage()
     {
+        Vm?.PlatformService?.ShowSingleImageResizeWindow();
         return Task.CompletedTask;
     }
 
-    public static Task Crop()
+    public static async Task Crop()
     {
-        return Task.CompletedTask;
+        await Dispatcher.UIThread.InvokeAsync(() => CropFunctions.StartCropControl(Vm));
     }
 
-    public static async Task Flip()
+    public static Task Flip()
     {
-        if (Vm is null)
-        {
-            return;
-        }
-        await UIHelper.Flip(Vm);
+        ImageControl.Flip(Vm);
+        return Task.CompletedTask;
     }
 
     public static async Task OptimizeImage()
     {
-        if (Vm is null)
-        {
-            return;
-        }
-        if (!NavigationHelper.CanNavigate(Vm))
-        {
-            return;
-        }
-        if (Vm.FileInfo is null)
-        {
-            return;
-        }
-        await Task.Run(() =>
-        {
-            try
-            {
-                ImageOptimizer imageOptimizer = new()
-                {
-                    OptimalCompression = true
-                };
-                imageOptimizer.LosslessCompress(Vm.FileInfo.FullName);
-            }
-            catch (Exception e)
-            {
-                Trace.WriteLine(e);
-            }
-        });
-        SetTitleHelper.RefreshTitle(Vm);
+        await ImageHelper.OptimizeImage(Vm);
     }
 
-    public static Task Slideshow()
+    public static async Task Slideshow()
     {
-        return Task.CompletedTask;
+        await Navigation.Slideshow.StartSlideshow(Vm);
     }
 
     public static Task ColorPicker()
@@ -801,7 +774,7 @@ public static class FunctionsHelper
         {
             return;
         }
-        await SortingHelper.UpdateFileList(Vm.PlatformService, Vm, FileListHelper.SortFilesBy.Name);
+        await FileListManager.UpdateFileList(Vm.PlatformService, Vm, FileListHelper.SortFilesBy.Name);
     }
 
     public static async Task SortFilesByCreationTime()
@@ -810,7 +783,7 @@ public static class FunctionsHelper
         {
             return;
         }
-        await SortingHelper.UpdateFileList(Vm?.PlatformService, Vm, FileListHelper.SortFilesBy.CreationTime);
+        await FileListManager.UpdateFileList(Vm?.PlatformService, Vm, FileListHelper.SortFilesBy.CreationTime);
     }
 
     public static async Task SortFilesByLastAccessTime()
@@ -819,7 +792,7 @@ public static class FunctionsHelper
         {
             return;
         }
-        await SortingHelper.UpdateFileList(Vm?.PlatformService, Vm, FileListHelper.SortFilesBy.LastAccessTime);
+        await FileListManager.UpdateFileList(Vm?.PlatformService, Vm, FileListHelper.SortFilesBy.LastAccessTime);
     }
 
     public static async Task SortFilesByLastWriteTime()
@@ -828,7 +801,7 @@ public static class FunctionsHelper
         {
             return;
         }
-        await SortingHelper.UpdateFileList(Vm?.PlatformService, Vm, FileListHelper.SortFilesBy.LastWriteTime);
+        await FileListManager.UpdateFileList(Vm?.PlatformService, Vm, FileListHelper.SortFilesBy.LastWriteTime);
     }
 
     public static async Task SortFilesBySize()
@@ -837,7 +810,7 @@ public static class FunctionsHelper
         {
             return;
         }
-        await SortingHelper.UpdateFileList(Vm?.PlatformService, Vm, FileListHelper.SortFilesBy.FileSize);
+        await FileListManager.UpdateFileList(Vm?.PlatformService, Vm, FileListHelper.SortFilesBy.FileSize);
     }
 
     public static async Task SortFilesByExtension()
@@ -846,7 +819,7 @@ public static class FunctionsHelper
         {
             return;
         }
-        await SortingHelper.UpdateFileList(Vm?.PlatformService, Vm, FileListHelper.SortFilesBy.Extension);
+        await FileListManager.UpdateFileList(Vm?.PlatformService, Vm, FileListHelper.SortFilesBy.Extension);
     }
 
     public static async Task SortFilesRandomly()
@@ -855,7 +828,7 @@ public static class FunctionsHelper
         {
             return;
         }
-        await SortingHelper.UpdateFileList(Vm?.PlatformService, Vm, FileListHelper.SortFilesBy.Random);
+        await FileListManager.UpdateFileList(Vm?.PlatformService, Vm, FileListHelper.SortFilesBy.Random);
     }
 
     public static async Task SortFilesAscending()
@@ -864,7 +837,7 @@ public static class FunctionsHelper
         {
             return;
         }
-        await SortingHelper.UpdateFileList(Vm?.PlatformService, Vm, ascending: true);
+        await FileListManager.UpdateFileList(Vm?.PlatformService, Vm, ascending: true);
     }
 
     public static async Task SortFilesDescending()
@@ -873,7 +846,7 @@ public static class FunctionsHelper
         {
             return;
         }
-        await SortingHelper.UpdateFileList(Vm?.PlatformService, Vm, ascending: false);
+        await FileListManager.UpdateFileList(Vm?.PlatformService, Vm, ascending: false);
     }
 
     #endregion Sorting
@@ -989,7 +962,7 @@ public static class FunctionsHelper
         {
             await SetAsWallpaperFilled();
         }
-        // TODO: Add support for macOS
+        // TODO: Add setting wallpaper support for macOS
     }
 
     public static async Task SetAsWallpaperTiled()
@@ -1061,24 +1034,67 @@ public static class FunctionsHelper
 
     public static async Task ResetSettings()
     {
-        SettingsHelper.DeleteSettingFiles();
-        SettingsHelper.SetDefaults();
-        await SettingsHelper.SaveSettingsAsync();
-        string args;
-        if (!NavigationHelper.CanNavigate(Vm))
+        await SettingsUpdater.ResetSettings(Vm);
+    }
+    
+    public static async Task Restart()
+    {
+        var openFile = string.Empty;
+        var getFromArgs = false;
+        if (Vm?.FileInfo is not null)
         {
-            var argsList = Environment.GetCommandLineArgs();
-            args = argsList.Length > 1 ? argsList[1] : string.Empty;
+            if (Vm.FileInfo.Exists)
+            {
+                openFile = Vm.FileInfo.FullName;
+            }
+            else
+            {
+                getFromArgs = true;
+            }
         }
         else
         {
-            args = Vm.FileInfo.FullName;
+            getFromArgs = true;
         }
-        ProcessHelper.RestartApp(args);
-        await Quit();
+        if (getFromArgs)
+        {
+            var args = Environment.GetCommandLineArgs();
+            if (args is not null && args.Length > 0)
+            {
+                openFile = args[1];
+            }
+        }
+        ProcessHelper.RestartApp(openFile);
+
+        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            Environment.Exit(0);
+            return;
+        }
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            desktop.MainWindow?.Close();
+        });
+    }
+    
+    public static async Task ToggleUsingTouchpad()
+    {
+        if (Vm is null)
+        {
+            return;
+        }
+        await SettingsUpdater.ToggleUsingTouchpad(Vm);
     }
 
     #endregion
     
     #endregion
+
+    #if DEBUG
+    public static async Task Invalidate()
+    {
+        Vm?.ImageViewer?.MainImage?.InvalidateVisual();
+        //Vm?.ImageViewer?.InvalidateVisual();
+    }
+    #endif
 }

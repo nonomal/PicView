@@ -9,14 +9,13 @@ using Avalonia.Media.Imaging;
 using Avalonia.Metadata;
 using Avalonia.Rendering.Composition;
 using Avalonia.Svg.Skia;
-using Avalonia.Utilities;
 using ImageMagick;
 using PicView.Avalonia.AnimatedImage;
+using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
-using PicView.Core.Config;
-using PicView.Core.Navigation;
+using ReactiveUI;
 using Vector = Avalonia.Vector;
 
 
@@ -29,8 +28,7 @@ public class PicBox : Control
     private FileStream? _stream;
     private IGifInstance? _animInstance;
     public string? InitialAnimatedSource;
-
-    private static readonly Lock Lock = new();
+    private readonly IDisposable? _imageTypeSubscription;
     
     /// <summary>
     /// Defines the <see cref="Source"/> property.
@@ -98,19 +96,18 @@ public class PicBox : Control
         AffectsRender<PicBox>(SourceProperty);
     }
 
+    public PicBox()
+    {
+        _imageTypeSubscription = this.WhenAnyValue(x => x.ImageType)
+            .Subscribe(UpdateSource);
+    }
+
     #endregion
 
     #region Rendering
 
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    private void UpdateSource(ImageType imageType)
     {
-        base.OnPropertyChanged(change);
-
-        if (change.Property != SourceProperty)
-        {
-            return;
-        }
-        
         switch (ImageType)
         {
             case ImageType.Svg:
@@ -120,27 +117,21 @@ public class PicBox : Control
                 }
                 var svgSource = SvgSource.Load(svg);
                 Source = new SvgImage { Source = svgSource };
-                lock (Lock)
-                {
-                    _animInstance?.Dispose();
-                }
+                DestroyVisual();
+                _animInstance?.Dispose();
                 _stream?.Dispose();
                 break;
             case ImageType.AnimatedGif:
             case ImageType.AnimatedWebp:
+                CreateVisual();
                 Source = Source as Bitmap;
-                lock (Lock)
-                {
-                    _animInstance?.Dispose();
-                }
+                _animInstance?.Dispose();
                 
                 break;
             case ImageType.Bitmap:
                 Source = Source as Bitmap;
-                lock (Lock)
-                {
-                    _animInstance?.Dispose();
-                }
+                DestroyVisual();
+                _animInstance?.Dispose();
                 _stream?.Dispose();
                 break;
             case ImageType.Invalid:
@@ -209,17 +200,19 @@ public class PicBox : Control
 
     private void RenderBasedOnSettings(DrawingContext context, IImage source)
     {
-        var is1To1 = false; // TODO: replace with settings value
-        var isSideBySide = SettingsHelper.Settings.ImageScaling.ShowImageSideBySide;
-        var secondarySource = SecondarySource as IImage;
-        
-        var viewPort = DetermineViewPort();
-        Size sourceSize;
         if (source is null)
         {
             return;
         }
+        
+        const bool is1To1 = false; // TODO: replace with settings value
+        var isSideBySide = Settings.ImageScaling.ShowImageSideBySide;
+        var secondarySource = SecondarySource as IImage;
+        var viewPort = DetermineViewPort();
+        
+        Size sourceSize;
         Size? secondarySourceSize = null;
+        
         try
         {
             sourceSize = source.Size;
@@ -243,7 +236,7 @@ public class PicBox : Control
                 return;
             }
 
-            var preloadValue = vm.ImageIterator?.GetCurrentPreLoadValue();
+            var preloadValue = NavigationManager.GetCurrentPreLoadValue();
             if (preloadValue?.ImageModel != null)
             {
                 sourceSize = new Size(preloadValue.ImageModel.PixelWidth, preloadValue.ImageModel.PixelHeight);
@@ -274,18 +267,17 @@ public class PicBox : Control
             }
             if (isSideBySide)
             {
-                var nextPreloadValue = vm.ImageIterator?.GetNextPreLoadValue();
+                var nextPreloadValue = NavigationManager.GetNextPreLoadValue();
                 if (nextPreloadValue?.ImageModel != null)
                 {
                     secondarySourceSize = new Size(nextPreloadValue.ImageModel.PixelWidth, nextPreloadValue.ImageModel.PixelHeight);
                 }
                 else
                 {
-                    if (vm.ImageIterator is not null)
+                    if (NavigationManager.CanNavigate(vm))
                     {
-                        var nextIndex = vm.ImageIterator.GetIteration(vm.ImageIterator.CurrentIndex, vm.ImageIterator.IsReversed ? NavigateTo.Previous : NavigateTo.Next);
                         var magickImage = new MagickImage();
-                        magickImage.Ping(vm.ImageIterator.ImagePaths[nextIndex]);
+                        magickImage.Ping(NavigationManager.GetNextFileName);
                         secondarySourceSize = new Size(magickImage.Width, magickImage.Height);
                     }
                     else return;
@@ -332,7 +324,6 @@ public class PicBox : Control
         {
 #if DEBUG
             Console.WriteLine(e);
-            TooltipHelper.ShowTooltipMessage(e, true);
 #endif
         }
     }
@@ -393,6 +384,10 @@ public class PicBox : Control
     /// <returns>The desired size of the control.</returns>
     protected override Size MeasureOverride(Size availableSize)
     {
+        if (Source is null)
+        {
+            return new Size();
+        }
         try
         {
             return Source is not IImage source ? new Size() : CalculateSize(availableSize, source.Size);
@@ -407,7 +402,7 @@ public class PicBox : Control
                 return new Size();
             }
 
-            var preloadValue = vm.ImageIterator?.GetCurrentPreLoadValue();
+            var preloadValue = NavigationManager.GetCurrentPreLoadValue();
             if (preloadValue is not null)
             {
                 return new Size(preloadValue.ImageModel.PixelWidth, preloadValue.ImageModel.PixelHeight);
@@ -418,8 +413,24 @@ public class PicBox : Control
                 return new Size();
             }
 
+            if (!vm.FileInfo.Exists)
+            {
+                return new Size();
+            }
+
             using var magickImage = new MagickImage();
-            magickImage.Ping(vm.FileInfo);
+            try
+            {
+                magickImage.Ping(vm.FileInfo);
+            }
+            catch (Exception exception)
+            {
+#if DEBUG
+                Console.WriteLine(exception);
+#endif
+                return new Size();
+            }
+            
             return new Size(magickImage.Width, magickImage.Height);
         }
     }
@@ -440,8 +451,8 @@ public class PicBox : Control
         var isConstrainedHeight = !double.IsPositiveInfinity(destinationSize.Height);
 
         // Compute scaling factors for both axes
-        var scaleX = MathUtilities.IsZero(sourceSize.Width) ? 0.0 : destinationSize.Width / sourceSize.Width;
-        var scaleY = MathUtilities.IsZero(sourceSize.Height) ? 0.0 : destinationSize.Height / sourceSize.Height;
+        var scaleX = Math.Abs(sourceSize.Width) < double.Epsilon ? 0.0 : destinationSize.Width / sourceSize.Width;
+        var scaleY = Math.Abs(sourceSize.Height) < double.Epsilon ? 0.0 : destinationSize.Height / sourceSize.Height;
 
         if (!isConstrainedWidth)
         {
@@ -481,20 +492,17 @@ public class PicBox : Control
 
     private void UpdateAnimationInstance(FileStream fileStream)
     {
-        lock (Lock)
+        _animInstance?.Dispose();
+        if (ImageType == ImageType.AnimatedGif)
         {
-            _animInstance?.Dispose();
-            if (ImageType == ImageType.AnimatedGif)
-            {
-                _animInstance = new GifInstance(fileStream);
-            }
-            else
-            {
-                _animInstance = new WebpInstance(fileStream);
-            }
-            _animInstance.IterationCount = IterationCount.Infinite;
-            _customVisual?.SendHandlerMessage(_animInstance);
+            _animInstance = new GifInstance(fileStream);
         }
+        else
+        {
+            _animInstance = new WebpInstance(fileStream);
+        }
+        _animInstance.IterationCount = IterationCount.Infinite;
+        _customVisual?.SendHandlerMessage(_animInstance);
         AnimationUpdate();
     }
     
@@ -514,6 +522,22 @@ public class PicBox : Control
         _customVisual.Offset = new Vector3((float)destRect.Position.X, (float)destRect.Position.Y, 0);
     }
 
+    private void CreateVisual()
+    {
+        var compositor = ElementComposition.GetElementVisual(this)?.Compositor;
+        if (compositor == null || _customVisual?.Compositor == compositor) return;
+
+        _customVisual ??= compositor.CreateCustomVisual(new CustomVisualHandler());
+        ElementComposition.SetElementChildVisual(this, _customVisual);
+        _customVisual.SendHandlerMessage(CustomVisualHandler.StartMessage);
+    }
+    
+    private void DestroyVisual()
+    {
+        _customVisual?.SendHandlerMessage(CustomVisualHandler.StopMessage);
+        _customVisual = null;
+    }
+
     #endregion
     
     #region Visual Tree
@@ -524,18 +548,7 @@ public class PicBox : Control
         if (_customVisual is null) return;
         _customVisual.SendHandlerMessage(CustomVisualHandler.StopMessage);
         _customVisual = null;
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        var compositor = ElementComposition.GetElementVisual(this)?.Compositor;
-        if (compositor == null || _customVisual?.Compositor == compositor) return;
-
-        _customVisual = compositor.CreateCustomVisual(new CustomVisualHandler());
-        ElementComposition.SetElementChildVisual(this, _customVisual);
-        _customVisual.SendHandlerMessage(CustomVisualHandler.StartMessage);
-
-        base.OnAttachedToVisualTree(e);
+        _imageTypeSubscription.Dispose();
     }
 
     protected override AutomationPeer OnCreateAutomationPeer()

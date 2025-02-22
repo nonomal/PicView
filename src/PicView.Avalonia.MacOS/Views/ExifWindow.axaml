@@ -4,7 +4,7 @@
     ExtendClientAreaTitleBarHeightHint="-1"
     Height="385"
     Title="ExifWindow"
-    Width="890"
+    Width="900"
     mc:Ignorable="d"
     x:Class="PicView.Avalonia.MacOS.Views.ExifWindow"
     x:DataType="viewModels:MainViewModel"
@@ -21,24 +21,24 @@
     </Design.DataContext>
     <DockPanel PointerPressed="MoveWindow">
         <StackPanel
-            Background="{StaticResource SecondaryBackgroundColor}"
+            Background="{DynamicResource SecondaryBackgroundColor}"
             DockPanel.Dock="Top"
             Height="28"
-            Orientation="Horizontal">
+            Orientation="Horizontal"
+            x:Name="WindowBorder">
             <Rectangle DockPanel.Dock="Left" Width="70" />
 
             <Button
-                BorderBrush="{StaticResource MainBorderColor}"
+                BorderBrush="{DynamicResource MainBorderColor}"
                 BorderThickness="1,0,1,0"
                 Classes="noBorderHover"
                 Command="{CompiledBinding DuplicateFileCommand}"
                 CommandParameter="{CompiledBinding FileInfo.FullName,
                                                    FallbackValue=''}"
                 Height="28"
-                Width="130">
+                Width="135">
                 <TextBlock
                     Classes="txt"
-                    Foreground="{StaticResource MainTextColor}"
                     HorizontalAlignment="Center"
                     Text="{CompiledBinding DuplicateFile}"
                     VerticalAlignment="Center" />
@@ -53,60 +53,61 @@
                 Width="130">
                 <TextBlock
                     Classes="txt"
-                    Foreground="{StaticResource MainTextColor}"
                     HorizontalAlignment="Center"
                     Text="{Binding DeleteFile}"
                     VerticalAlignment="Center" />
             </Button>
 
             <Button
-                BorderBrush="{StaticResource MainBorderColor}"
+                BorderBrush="{DynamicResource MainBorderColor}"
                 BorderThickness="0,0,1,0"
                 Classes="noBorderHover"
                 Command="{CompiledBinding OptimizeImageCommand}"
                 Height="28"
-                Width="130">
+                Width="135">
                 <TextBlock
                     Classes="txt"
-                    Foreground="{StaticResource MainTextColor}"
                     HorizontalAlignment="Center"
                     Text="{CompiledBinding OptimizeImage}"
                     VerticalAlignment="Center" />
             </Button>
 
             <Button
-                BorderBrush="{StaticResource MainBorderColor}"
+                BorderBrush="{DynamicResource MainBorderColor}"
                 BorderThickness="0,0,1,0"
                 Classes="noBorderHover"
                 Command="{CompiledBinding OpenWithCommand}"
-                CommandParameter="{CompiledBinding FileInfo.FullName}"
+                CommandParameter="{CompiledBinding FileInfo.FullName,
+                                                   FallbackValue=''}"
                 Height="28"
                 Width="130">
                 <TextBlock
                     Classes="txt"
-                    Foreground="{StaticResource MainTextColor}"
                     HorizontalAlignment="Center"
                     Text="{Binding OpenWith}"
                     VerticalAlignment="Center" />
             </Button>
 
             <Button
-                BorderBrush="{StaticResource MainBorderColor}"
+                BorderBrush="{DynamicResource MainBorderColor}"
                 BorderThickness="0,0,1,0"
                 Classes="noBorderHover"
                 Command="{CompiledBinding LocateOnDiskCommand}"
-                CommandParameter="{CompiledBinding FileInfo.FullName}"
+                CommandParameter="{CompiledBinding FileInfo.FullName,
+                                                   FallbackValue=''}"
                 Height="28"
                 Width="130">
                 <TextBlock
                     Classes="txt"
-                    Foreground="{StaticResource MainTextColor}"
                     HorizontalAlignment="Center"
-                    Text="{Binding ShowInFolder}"
+                    Text="{CompiledBinding ShowInFolder}"
                     VerticalAlignment="Center" />
             </Button>
             <buttons:StarOutlineButtons Margin="10,0,0,0" />
         </StackPanel>
-        <views:ExifView Background="{StaticResource WindowBackgroundColor}" PointerPressed="MoveWindow" />
+        <views:ExifView
+            Background="{DynamicResource WindowBackgroundColor}"
+            PointerPressed="MoveWindow"
+            x:Name="XExifView" />
     </DockPanel>
 </Window>

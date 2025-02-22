@@ -1,5 +1,11 @@
+using System.Reactive.Linq;
 using Avalonia.Input;
+using Avalonia.Media;
+using PicView.Avalonia.Crop;
 using PicView.Avalonia.CustomControls;
+using PicView.Avalonia.Navigation;
+using PicView.Avalonia.ViewModels;
+using ReactiveUI;
 
 namespace PicView.Avalonia.Views.UC.Menus;
 
@@ -8,14 +14,45 @@ public partial class ImageMenu  : AnimatedMenu
     public ImageMenu()
     {
         InitializeComponent();
-        GoToPicBox.KeyDown += async (_, e) => await GoToPicBox_OnKeyDown(e);
+        Loaded += delegate
+        {
+            if (Settings.Theme.GlassTheme)
+            {
+               GoToPicButton.Classes.Remove("noBorderHover");
+               GoToPicButton.Classes.Add("hover");
+               GoToPicBox.Background = new SolidColorBrush(Color.FromArgb(90, 197, 197, 197));
+            }
+            else if (!Settings.Theme.Dark)
+            {
+                TopBorder.Background = Brushes.White;
+            }
+            GoToPicBox.KeyDown += async (_, e) => await GoToPicBox_OnKeyDown(e);
+            this.WhenAnyValue(x => x.IsVisible)
+                .Where(isVisible => !isVisible).Subscribe(_ => SlideShowButton.Flyout.Hide());
+            this.WhenAnyValue(x => x.IsOpen).Subscribe(_ => DetermineIfCropShouldBeEnabled());
+        };
+    }
+
+    private void DetermineIfCropShouldBeEnabled()
+    {
+        if (DataContext is not MainViewModel vm)
+        {
+            return;
+        }
+
+        CropButton.IsEnabled = CropFunctions.DetermineIfShouldBeEnabled(vm);
     }
 
     private async Task GoToPicBox_OnKeyDown(KeyEventArgs e)
     {
         if (e.Key == Key.Enter)
         {
-            if (DataContext is not ViewModels.MainViewModel vm)
+            if (DataContext is not MainViewModel vm)
+            {
+                return;
+            }
+
+            if (!NavigationManager.CanNavigate(vm))
             {
                 return;
             }
@@ -29,21 +66,16 @@ public partial class ImageMenu  : AnimatedMenu
             {
                 number = 0;
             }
-            else if (number > vm.ImageIterator?.ImagePaths?.Count)
+            else if (number > NavigationManager.GetCount)
             {
-                number = vm.ImageIterator?.ImagePaths?.Count - 1 ?? 0;
+                number = NavigationManager.GetCount - 1;
             }
             else
             {
                 number--;
             }
 
-            if (vm.ImageIterator is null)
-            {
-                return;
-            }
-
-            await vm.ImageIterator.IterateToIndex(number).ConfigureAwait(false);
+            await NavigationManager.Navigate(number, vm).ConfigureAwait(false);
         }
     }
 }

@@ -1,7 +1,7 @@
 using Avalonia.Controls;
 using PicView.Avalonia.ViewModels;
-using System;
-using PicView.Avalonia.UI;
+using PicView.Avalonia.WindowBehavior;
+using ReactiveUI;
 
 namespace PicView.Avalonia.MacOS.Views;
 
@@ -16,7 +16,26 @@ public partial class MacMainWindow : Window
             // Keep window position when resizing
             ClientSizeProperty.Changed.Subscribe(size =>
             {
-                WindowHelper.HandleWindowResize(this, size);
+                WindowResizing.HandleWindowResize(this, size);
+            });
+            this.WhenAnyValue(x => x.WindowState).Subscribe(state =>
+            {
+                if (DataContext is not MainViewModel vm)
+                {
+                    return;
+                }
+                switch (state)
+                {
+                    case WindowState.FullScreen:
+                    case WindowState.Maximized:
+                        Settings.WindowProperties.Fullscreen = true;
+                        vm.IsFullscreen = true;
+                        break;
+                    case WindowState.Normal:
+                        Settings.WindowProperties.Fullscreen = false;
+                        vm.IsFullscreen = false;
+                        break;
+                }
             });
         };
     }
@@ -33,13 +52,13 @@ public partial class MacMainWindow : Window
             return;
         }
         var vm = (MainViewModel)DataContext;
-        WindowHelper.SetSize(vm);
+        WindowResizing.SetSize(vm);
     }
 
     protected override async void OnClosing(WindowClosingEventArgs e)
     {
         e.Cancel = true;
-        await WindowHelper.WindowClosingBehavior(this);
+        await WindowFunctions.WindowClosingBehavior(this);
         base.OnClosing(e);
     }
 }

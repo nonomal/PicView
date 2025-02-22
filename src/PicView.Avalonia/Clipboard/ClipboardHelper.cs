@@ -3,21 +3,24 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Shapes;
 using Avalonia.Input;
+using Avalonia.Input.Platform;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using PicView.Avalonia.Animations;
+using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
+using PicView.Core.FileHandling;
 using PicView.Core.Localization;
 using PicView.Core.ProcessHandling;
 
 namespace PicView.Avalonia.Clipboard;
 public static class ClipboardHelper
 {
-    private static async Task CopyAnimation()
+    public static async Task CopyAnimation()
     {
         const double speed = 0.2;
         const double opacity = 0.4;
@@ -44,6 +47,27 @@ public static class ClipboardHelper
             UIHelper.GetMainView.MainGrid.Children.Remove(rectangle);
         });
     }
+
+    public static async Task Duplicate(MainViewModel vm)
+    {
+        if (!NavigationManager.CanNavigate(vm))
+        {
+            return;
+        }
+        vm.IsLoading = true;
+        var oldPath = vm.FileInfo.FullName;
+        var duplicatedPath = await FileHelper.DuplicateAndReturnFileNameAsync(oldPath, vm.FileInfo);
+        if (!string.IsNullOrWhiteSpace(duplicatedPath))
+        {
+            await CopyAnimation();
+        }
+        if (!File.Exists(duplicatedPath))
+        {
+            return;
+        }
+        await NavigationManager.LoadPicFromFile(duplicatedPath, vm);
+    }
+    
     public static async Task CopyTextToClipboard(string text)
     {
         if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
@@ -56,13 +80,40 @@ public static class ClipboardHelper
 
     public static async Task CopyFileToClipboard(string? file, MainViewModel vm)
     {
-        await Task.Run(() => vm.PlatformService.CopyFile(file));
-        await CopyAnimation();
+        var success = await Task.Run(() => vm.PlatformService.CopyFile(file));
+        if (success)
+        {
+            await CopyAnimation();
+        }
     }
 
-    public static async Task CopyImageToClipboard()
+    public static async Task CopyImageToClipboard(MainViewModel vm)
     {
-        // TODO: Implement CopyImageToClipboard
+        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            return;
+        }
+        var clipboard = desktop.MainWindow.Clipboard;
+        
+        if (vm.ImageSource is not Bitmap bitmap)
+        {
+            return;
+        }
+        await clipboard.ClearAsync();
+        
+        // Handle for Windows
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            await Task.WhenAll(vm.PlatformService.CopyImageToClipboard(bitmap), CopyAnimation());
+            return;
+        }
+        
+        using var ms = new MemoryStream();
+        bitmap.Save(ms);
+                        
+        var dataObject = new DataObject();
+        dataObject.Set("image/png", ms.ToArray());
+        await Task.WhenAll(clipboard.SetDataObjectAsync(dataObject), CopyAnimation());
     }
 
     public static async Task CopyBase64ToClipboard(string path, MainViewModel vm)
@@ -90,7 +141,7 @@ public static class ClipboardHelper
                     base64 = Convert.ToBase64String(stream.ToArray());
                     break;
                 case ImageType.Svg:
-                    throw new ArgumentOutOfRangeException();
+                    return;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -109,9 +160,13 @@ public static class ClipboardHelper
         await CopyAnimation();
     }   
 
-    public static async Task CutFile(string path)
+    public static async Task CutFile(string path, MainViewModel vm)
     {
-        // TODO: Implement CutFile
+        var success = await Task.Run(() => vm.PlatformService.CutFile(path));
+        if (success)
+        {
+            await CopyAnimation();
+        }
     }
     
     public static async Task Paste(MainViewModel vm)
@@ -121,13 +176,6 @@ public static class ClipboardHelper
             return;
         }
         var clipboard = desktop.MainWindow.Clipboard;
-        var text = await clipboard.GetTextAsync();
-        if (text is not null)
-        {   
-            await NavigationHelper.LoadPicFromStringAsync(text, vm).ConfigureAwait(false);
-            return;
-        }
-
         var files = await clipboard.GetDataAsync(DataFormats.Files);
         if (files is not null)
         {
@@ -140,7 +188,7 @@ public static class ClipboardHelper
                     // load the first file
                     var firstFile = storageItems[0];
                     var firstPath = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? firstFile.Path.AbsolutePath : firstFile.Path.LocalPath;
-                    await NavigationHelper.LoadPicFromStringAsync(firstPath, vm).ConfigureAwait(false);
+                    await NavigationManager.LoadPicFromStringAsync(firstPath, vm).ConfigureAwait(false);
 
                     // Open consecutive files in a new process
                     foreach (var file in storageItems.Skip(1))
@@ -153,72 +201,94 @@ public static class ClipboardHelper
             else if (files is IStorageItem singleFile)
             {
                 var path = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? singleFile.Path.AbsolutePath : singleFile.Path.LocalPath;
-                await NavigationHelper.LoadPicFromStringAsync(path, vm).ConfigureAwait(false);
+                await NavigationManager.LoadPicFromStringAsync(path, vm).ConfigureAwait(false);
             }
             return;
         }
         
+        var text = await clipboard.GetTextAsync();
+        if (!string.IsNullOrWhiteSpace(text))
+        {   
+            await NavigationManager.LoadPicFromStringAsync(text, vm).ConfigureAwait(false);
+            return;
+        }
+        
+        await PasteClipboardImage(vm, clipboard);
+        
+
+    }
+    
+    public static async Task PasteClipboardImage(MainViewModel vm, IClipboard clipboard)
+    {
         var name = TranslationHelper.Translation.ClipboardImage;
         var imageType = ImageType.Bitmap;
         var bitmap = await GetBitmapFromBytes("PNG");
         if (bitmap is not null)
         {
-            NavigationHelper.SetSingleImage(bitmap, imageType, name, vm);
+            await UpdateImage.SetSingleImageAsync(bitmap, imageType, name, vm);
             return;
         }
         
         bitmap = await GetBitmapFromBytes("image/jpeg");
         if (bitmap is not null)
         {
-            NavigationHelper.SetSingleImage(bitmap, imageType, name, vm);
+            await UpdateImage.SetSingleImageAsync(bitmap, imageType, name, vm);
             return;
         }
         bitmap = await GetBitmapFromBytes("image/png");
         if (bitmap is not null)
         {
-            NavigationHelper.SetSingleImage(bitmap, imageType, name, vm);
+            await UpdateImage.SetSingleImageAsync(bitmap, imageType, name, vm);
             return;
         }
         bitmap = await GetBitmapFromBytes("image/bmp");
         if (bitmap is not null)
         {
-            NavigationHelper.SetSingleImage(bitmap, imageType, name, vm);
+            await UpdateImage.SetSingleImageAsync(bitmap, imageType, name, vm);
             return;
         }
         bitmap = await GetBitmapFromBytes("BMP");
         if (bitmap is not null)
         {
-            NavigationHelper.SetSingleImage(bitmap, imageType, name, vm);
+            await UpdateImage.SetSingleImageAsync(bitmap, imageType, name, vm);
             return;
         }
         bitmap = await GetBitmapFromBytes("JPG");
         if (bitmap is not null)
         {
-            NavigationHelper.SetSingleImage(bitmap, imageType, name, vm);
+            await UpdateImage.SetSingleImageAsync(bitmap, imageType, name, vm);
             return;
         }
         bitmap = await GetBitmapFromBytes("JPEG");
         if (bitmap is not null)
         {
-            NavigationHelper.SetSingleImage(bitmap, imageType, name, vm);
+            await UpdateImage.SetSingleImageAsync(bitmap, imageType, name, vm);
             return;
         }
         bitmap = await GetBitmapFromBytes("image/tiff");
         if (bitmap is not null)
         {
-            NavigationHelper.SetSingleImage(bitmap, imageType, name, vm);
+            await UpdateImage.SetSingleImageAsync(bitmap, imageType, name, vm);
             return;
         }
         bitmap = await GetBitmapFromBytes("GIF");
         if (bitmap is not null)
         {
-            NavigationHelper.SetSingleImage(bitmap, imageType, name, vm);
+            await UpdateImage.SetSingleImageAsync(bitmap, imageType, name, vm);
             return;
         }
         bitmap = await GetBitmapFromBytes("image/gif");
         if (bitmap is not null)
         {
-            NavigationHelper.SetSingleImage(bitmap, imageType, name, vm);
+            await UpdateImage.SetSingleImageAsync(bitmap, imageType, name, vm);
+            return;
+        }
+
+        // Handle for Windows
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            bitmap = await vm.PlatformService.GetImageFromClipboard();
+            await UpdateImage.SetSingleImageAsync(bitmap, imageType, name, vm);
             return;
         }
         return;
