@@ -61,6 +61,8 @@ public static class CropFunctions
         IsCropping = true;
         vm.Title = TranslationHelper.Translation.CropMessage;
         vm.TitleTooltip = TranslationHelper.Translation.CropMessage;
+        
+        FunctionsHelper.CloseMenus();
     }
     
     public static void CloseCropControl(MainViewModel vm)
