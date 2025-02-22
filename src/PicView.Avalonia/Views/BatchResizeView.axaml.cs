@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Documents;
 using Avalonia.Media;
+using Avalonia.Styling;
 using Avalonia.Threading;
 using ImageMagick;
 using PicView.Avalonia.FileSystem;
@@ -30,6 +31,21 @@ public partial class BatchResizeView : UserControl
             if (DataContext is not MainViewModel vm)
             {
                 return;
+            }
+
+            if (Settings.Theme.GlassTheme)
+            {
+                if (!Application.Current.TryGetResource("DisabledBackgroundColor",
+                        ThemeVariant.Dark, out var cc))
+                {
+                    return;
+                }
+                if (cc is not Color bgColor)
+                {
+                    return;
+                }
+                var background = new SolidColorBrush(bgColor);
+                BatchLogBorder.Background = background;
             }
 
             SourceFolderTextBox.TextChanged += delegate { CheckIfValidDirectory(SourceFolderTextBox.Text); };
@@ -494,7 +510,7 @@ public partial class BatchResizeView : UserControl
     {
         var textBlock = new TextBlock
         {
-            Classes = { "txt" },
+            Classes = { "txt", "txtShadow" },
             Padding = new Thickness(0, 0, 0, 5),
             MaxWidth = 580
         };

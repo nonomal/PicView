@@ -61,6 +61,7 @@
 
             <DropShadowDirectionEffect
                 BlurRadius="1"
+                Color="#E6000000"
                 Direction="360"
                 x:Key="TextShadow" />
         </ResourceDictionary>

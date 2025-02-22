@@ -57,7 +57,13 @@ public static class ThemeManager
 
         Application.Current.Resources["MainTextColor"] = mainColor;
         
-        Application.Current.Resources["MainButtonBackgroundColor"] = Color.Parse("#E5F1F1F1");
+        Application.Current.Resources["MainButtonBackgroundColor"] = Color.Parse("#4D000000");
+        Application.Current.Resources["MainBackgroundColor"] = Color.Parse("#4D000000");
+        
+        Application.Current.Resources["SecondaryButtonBackgroundColor"] = Color.Parse("#D1464646");
+        Application.Current.Resources["SecondaryBackgroundColor"] = Color.Parse("#DE5B5B5B");
+        
+        Application.Current.Resources["DisabledBackgroundColor"] = Color.Parse("#4D5B5B5B");
 
         Application.Current.Resources["MainBorderColor"] = Colors.Transparent;
         Application.Current.Resources["SecondaryBorderColor"] = Colors.Transparent;

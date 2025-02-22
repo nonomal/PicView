@@ -909,7 +909,8 @@
             BorderThickness="1"
             CornerRadius="4"
             Effect="{StaticResource MenuShadowButtonBorder}"
-            Margin="5,10">
+            Margin="5,10"
+            x:Name="BatchLogBorder">
             <customControls:AutoScrollViewer
                 Height="200"
                 Padding="12,7"

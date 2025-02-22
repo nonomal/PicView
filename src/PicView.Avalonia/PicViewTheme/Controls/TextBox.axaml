@@ -94,5 +94,9 @@
         <Style Selector="^:disabled /template/ Border#border">
             <Setter Property="Background" Value="{StaticResource DisabledBackgroundColor}" />
         </Style>
+
+        <Style Selector="^.txtShadow /template/ TextPresenter#PART_TextPresenter">
+            <Setter Property="Effect" Value="{StaticResource TextShadow}" />
+        </Style>
     </ControlTheme>
 </ResourceDictionary>

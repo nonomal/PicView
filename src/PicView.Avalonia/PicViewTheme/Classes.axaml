@@ -62,7 +62,7 @@
 
     <Style Selector="TextBox.TStyle">
         <Setter Property="FontSize" Value="12" />
-        <Setter Property="Foreground" Value="{DynamicResource MainTextColorFaded}" />
+        <Setter Property="Foreground" Value="{DynamicResource SecondaryTextColor}" />
         <Setter Property="FontFamily" Value="/Assets/Fonts/Roboto-Medium.ttf#Roboto" />
         <Setter Property="Background" Value="{DynamicResource SecondaryBackgroundColor}" />
         <Setter Property="BorderBrush" Value="{DynamicResource MainBorderColor}" />
